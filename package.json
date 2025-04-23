@@ -7,7 +7,7 @@
     "type": "git",
     "directory": "https://github.com/ocet247/tf2-vscript-support.git"
   },
-  "version": "1.0.0",
+  "version": "1.0.1",
   "engines": {
     "vscode": "^1.99.0"
   },
