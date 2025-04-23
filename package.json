@@ -3,6 +3,10 @@
   "displayName": "TF2 VScript Support",
   "description": "Provides basic support for Team Fortress 2 VScript - Squirrel language (.nut).",
   "publisher": "ocet247",
+  "repository": {
+    "type": "git",
+    "directory": "https://github.com/ocet247/tf2-vscript-support.git"
+  },
   "version": "1.0.0",
   "engines": {
     "vscode": "^1.99.0"
@@ -61,6 +65,9 @@
     }
   },
   "main": "./out/extension.js",
+  "activationEvents": [
+    "onLanguage:nut"
+  ],
   "scripts": {
     "vscode:prepublish": "npm run compile",
     "compile": "tsc -p ./",
