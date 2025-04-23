@@ -10,4 +10,4 @@ src/**
 .git/**
 .gitignore
 wikiparsing/**
-images/syntax.gif
+images/*.gif
