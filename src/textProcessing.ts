@@ -58,7 +58,7 @@ export class BackwardIterator {
 }
 
 export class CharCode {
-	private constructor() {} // Prevent instantiation
+	private constructor() {} // Prevent initialisation
 
 
 	public static readonly UNDERSCORE = '_'.charCodeAt(0);

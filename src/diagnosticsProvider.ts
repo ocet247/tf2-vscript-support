@@ -116,7 +116,7 @@ export default class TF2VScriptDiagnosticsProvider {
 
 				const isVariadic = signature.indexOf("...") != -1;
 				const { paramCount, defaultParamCount } = this.getParamCount(signature);
-				//const usedParamCount = this.getUsedParamCount(text.slice(match.index + match[0].length));
+				// The slices are probably expensive, needs to be remade with iterator instead.
 				const usedParamCount = this.getUsedParamCount(text.slice(match.index + match[0].length));
 
 				let message;
