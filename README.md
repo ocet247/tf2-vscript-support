@@ -12,19 +12,29 @@ Includes highlighting for built-in classes, constants, variables etc.
 
 ### Completion Items Providing
 
+![](https://raw.githubusercontent.com/ocet247/tf2-vscript-support/main/images/completion.gif)
+
 ### Shortcuts for full constants / methods path
 
 If you try to complete a constant / global instance method like `SetPropInt` with a dot to the left, it'll autocomplete the full path  required to receive the completion item.
 
+![](https://raw.githubusercontent.com/ocet247/tf2-vscript-support/main/images/shortcut.gif)
+
 ### Hover Providing
 
+![](https://raw.githubusercontent.com/ocet247/tf2-vscript-support/main/images/hover.gif)
+
 ### Signature Help Providing
+
+![](https://raw.githubusercontent.com/ocet247/tf2-vscript-support/main/images/signature.gif)
 
 ### Diagnostics Providing
 
 Provides basic diagnostics in 2 ways:
 * Compiles your script and takes the squirrel compiler error message
 * Checks for the number of provided arguments to the global functions / methods
+
+![](https://raw.githubusercontent.com/ocet247/tf2-vscript-support/main/images/diagnostic.gif)
 
 ## Credits
 

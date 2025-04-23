@@ -26,6 +26,9 @@ class a.cdb extends a.abc {
 }
 
 
+ent.AcceptInput
+
+
 
 
 
