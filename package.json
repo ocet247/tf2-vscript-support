@@ -5,7 +5,7 @@
   "publisher": "ocet247",
   "repository": {
     "type": "git",
-    "directory": "https://github.com/ocet247/tf2-vscript-support.git"
+    "url": "https://github.com/ocet247/tf2-vscript-support.git"
   },
   "version": "1.0.1",
   "engines": {
