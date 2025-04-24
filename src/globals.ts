@@ -2679,19 +2679,19 @@ export const allMethods: Docs = {
 		description: "Returns a weak reference to the object."
 	},
 	tofloat: {
-		signature: "integer/bool/float/string.tofloat() -> float",
+		signature: "int/bool/float/string.tofloat() -> float",
 		description: "Returns float value represented by the integer/bool/float/string. For string it must only contain numeric characters and/or plus and minus symbols. An exception is thrown otherwise."
 	},
 	tointeger: {
-		signature: "integer/bool/float/string.tointeger(base: int = 10) -> int",
+		signature: "int/bool/float/string.tointeger(base: int = 10) -> int",
 		description: "Returns integer value represented by the integer/bool/float/string. For string it must only contain numeric characters. An exception is thrown otherwise. Hexadecimal notation is supported (i.e. 0xFF). If a hexadecimal string contains more than 10 characters, including the 0x, returns -1."
 	},
 	tochar: {
-		signature: "integer/float.tochar() -> int",
+		signature: "int/float.tochar() -> int",
 		description: "Returns a string containing a single character represented by the integer/integer part of the float."
 	},
 	tostring: {
-		signature: "integer/bool/float/string/handle.tostring() -> string",
+		signature: "int/bool/float/string/handle.tostring() -> string",
 		description: "Returns a string representation of the corresponding data type. For handles/tables the default return behaviour can be redefined by using _tostring metamethod in the handle's class / table's delegate."
 	},
 	/* --------------------------- *

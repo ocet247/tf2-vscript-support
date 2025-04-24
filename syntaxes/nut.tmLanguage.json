@@ -127,18 +127,8 @@
 		"runscriptcode-input": {
 			"patterns": [
 				{
-					"begin": "(?i)\\x1brunscriptcode\\x1b",
-					"beginCaptures": {
-						"0": {
-							"name": "string.quoted.double"
-						}
-					},
-					"end": "[\"\\x1b]",
-					"endCaptures": {
-						"0": {
-							"name": "string.quoted.double"
-						}
-					},
+					"begin": "(?i)(?<=\\x1brunscriptcode\\x1b)(?!\\x1b)",
+					"end": "(?=\"|\\x1b)",
 					"patterns": [
 						{
 							"include": "#comments"
@@ -158,18 +148,8 @@
 					]
 				},
 				{
-					"begin": "(?i),runscriptcode,",
-					"beginCaptures": {
-						"0": {
-							"name": "string.quoted.double"
-						}
-					},
-					"end": "[\",]",
-					"endCaptures": {
-						"0": {
-							"name": "string.quoted.double"
-						}
-					},
+					"begin": "(?i)(?<=,runscriptcode,)(?!,)",
+					"end": "(?=\"|,)",
 					"patterns": [
 						{
 							"include": "#comments"
@@ -189,59 +169,20 @@
 					]
 				},
 				{
-					"match": "(?i)(\\x1bcallscriptfunction\\x1b)([_A-Za-z]\\w*?)([\"\\x1b])",
-					"captures": {
-						"1": {
-							"name": "string.quoted.double"
-						},
-						"2": {
-							"name": "entity.name.function"
-						},
-						"3": {
-							"name": "string.quoted.double"
-						}
-					}
+					"match": "(?i)(?<=\\x1bcallscriptfunction\\x1b)([_A-Za-z]\\w*?)(?=\"|\\x1b)",
+					"name": "entity.name.function"
 				},
 				{
-					"match": "(?i)(\\x1bcallscriptfunction\\x1b)(.*?)([\"\\x1b])",
-					"captures": {
-						"1": {
-							"name": "string.quoted.double"
-						},
-						"2": {
-							"name": "invalid.illegal.input"
-						},
-						"3": {
-							"name": "string.quoted.double"
-						}
-					}
-				},{
-					"match": "(?i)(,callscriptfunction,)([_A-Za-z]\\w*?)([\",])",
-					"captures": {
-						"1": {
-							"name": "string.quoted.double"
-						},
-						"2": {
-							"name": "entity.name.function"
-						},
-						"3": {
-							"name": "string.quoted.double"
-						}
-					}
+					"match": "(?i)(?<=\\x1bcallscriptfunction\\x1b)([^\\x1b]+)(?=\"|\\x1b)",
+					"name": "invalid.illegal.input"
 				},
 				{
-					"match": "(?i)(,callscriptfunction,)(.*?)([\",])",
-					"captures": {
-						"1": {
-							"name": "string.quoted.double"
-						},
-						"2": {
-							"name": "invalid.illegal.input"
-						},
-						"3": {
-							"name": "string.quoted.double"
-						}
-					}
+					"match": "(?i)(?<=,callscriptfunction,)([_A-Za-z]\\w*?)(?=\"|,)",
+					"name": "entity.name.function"
+				},
+				{
+					"match": "(?i)(?<=,callscriptfunction,)([^,]+)(?=\"|,)",
+					"name": "invalid.illegal.input"
 				},
 				{
 					"match": ".",
