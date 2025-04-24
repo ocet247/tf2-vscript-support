@@ -9,20 +9,20 @@ export default class TF2VScriptCompletionProvider implements CompletionItemProvi
 
 		const dotRange = this.getDotRange(document, iterator);
 		if (dotRange) {
-			const read = this.readDotLeftHand(iterator);
-			if (typeof read === "string") {
-				const methods = vscriptGlobals.instancesMethods[read];
+			const name = iterator.readIdentity();
+			if (name) {
+				const methods = vscriptGlobals.instancesMethods[name];
 				if (methods) {
 					this.addFunctionItem(items, methods, CompletionItemKind.Method);
 					return Promise.resolve(items);
 				}
 
-				if (read === "Constants") {
+				if (name === "Constants") {
 					this.addFunctionItem(items, vscriptGlobals.builtInEnums, CompletionItemKind.Enum);
 					return Promise.resolve(items);
 				}
 
-				const variables = vscriptGlobals.enumMembers[read];
+				const variables = vscriptGlobals.enumMembers[name];
 				if (variables) {
 					this.addFunctionItem(items, variables, CompletionItemKind.EnumMember);
 					return Promise.resolve(items);
@@ -34,7 +34,7 @@ export default class TF2VScriptCompletionProvider implements CompletionItemProvi
 			}
 			// No name but a dot means that we're searching for a shortcut
 			// If the last symbol was paranthesis it means that we have a method call which could return an entity
-			if (read != CharCode.RIGHT_ROUND) {
+			if (iterator.back() != CharCode.RIGHT_ROUND) {
 				for (const [instance, docs] of Object.entries(vscriptGlobals.instancesMethods)) {
 					this.addFunctionItem(items, docs, CompletionItemKind.Method, dotRange, instance + ".");
 				}
@@ -134,43 +134,5 @@ export default class TF2VScriptCompletionProvider implements CompletionItemProvi
 		}
 
 		return null;
-	}
-
-	private readDotLeftHand(iterator: BackwardIterator): string | number {
-		const firstChar = this.findFirstChar(iterator);
-		if (!CharCode.isAlphaNumeric(firstChar)) {
-			return firstChar;
-		}
-
-		let name = String.fromCharCode(firstChar);
-		while (iterator.hasNext()) {
-			const ch = iterator.next();
-			if (!CharCode.isAlphaNumeric(ch)) {
-				break;
-			}
-
-			name = String.fromCharCode(ch) + name;
-		}
-
-		return name;
-	}
-
-	private findFirstChar(iterator: BackwardIterator): number {
-		while (iterator.hasNext()) {
-			const ch = iterator.next();
-			// We do not allow a traversal between lines in this case
-			// So \n or \r are invalid characters
-			// Otherwise non semicolon code will not give correct results
-			//
-			// local a = Constants.ETFTeam.TF_TEAM_RED
-			// .
-			//
-			// will read TF_TEAM_RED instead of the empty space
-			if (CharCode.isIndentation(ch)) {
-				continue;
-			}
-			return ch;
-		}
-		return -1;
 	}
 }

@@ -1,4 +1,6 @@
 import { TextDocument, Position, Range } from 'vscode';
+import * as vscriptGlobals from './globals';
+
 
 export class ForwardIterator {
 	private readonly text: string;
@@ -12,10 +14,6 @@ export class ForwardIterator {
 	constructor(text: string) {
 		this.text = text;
 		this.cursor = 0;
-	}
-
-	public getCursor(): number {
-		return this.cursor;
 	}
 
 	public hasNext(): boolean {
@@ -39,7 +37,7 @@ export class BackwardIterator {
 
 	constructor(text: string) {
 		this.text = text;
-		this.cursor = Math.max(text.length - 1, 0);
+		this.cursor = text.length - 1;
 	}
 
 	public getCursor(): number {
@@ -47,13 +45,157 @@ export class BackwardIterator {
 	}
 
 	public hasNext(): boolean {
-		return this.cursor != 0;
+		return this.cursor != -1;
 	}
 
 	public next(): number {
 		const char = this.text.charCodeAt(this.cursor);
 		this.cursor--;
 		return char;
+	}
+
+	public back(): number {
+		this.cursor++;
+		const char = this.text.charCodeAt(this.cursor);
+		return char;
+	}
+
+	public hasDot(multiline: boolean = true): boolean {
+		while (this.hasNext()) {
+			const char = this.next();
+			if (CharCode.isIndentation(char)) {
+				continue;
+			}
+			if (multiline && (char === CharCode.CARRIAGE_RETURN || char === CharCode.LINE_FEED)) {
+				continue;
+			}
+
+			if (char === CharCode.DOT) {
+				return true;
+			}
+
+			break;
+		}
+
+		return false;
+	}
+
+	private findFirstLetter(multiline: boolean): string | null {
+		while (this.hasNext()) {
+			const char = this.next();
+			if (CharCode.isWhitespace(char)) {
+				continue;
+			}
+			if (multiline && (char === CharCode.CARRIAGE_RETURN || char === CharCode.LINE_FEED)) {
+				continue;
+			}
+			if (CharCode.isAlphaNumeric(char)) {
+				return String.fromCharCode(char);
+			}
+
+			break;
+		}
+		return null;
+	}
+
+	public readIdentity(mutliline: boolean = true): string | null {
+		let name = this.findFirstLetter(mutliline);
+		if (!name) {
+			return null;
+		}
+
+		while (this.hasNext()) {
+			const ch = this.next();
+			if (!CharCode.isAlphaNumeric(ch)) {
+				break;
+			}
+
+			name = String.fromCharCode(ch) + name;
+		}
+
+		return name;
+	}
+
+	public findMethodDoc(name: string, multiline: boolean = true): vscriptGlobals.Doc | undefined {
+		// Return 1 step back since we could've looked at the dot when canceling the identity reading
+		if (!this.hasDot(multiline)) {
+			let entry =
+				vscriptGlobals.safeLookup(vscriptGlobals.allFunctions, name) ||
+				vscriptGlobals.safeLookup(vscriptGlobals.allDeprecatedFunctions, name);
+			
+			if (entry) {
+				return entry;
+			}
+
+			for (const instance of Object.values(vscriptGlobals.instancesMethods)) {
+				entry = vscriptGlobals.safeLookup(instance, name);
+				if (entry) {
+					return entry;
+				}
+			}
+
+			return undefined;
+		}
+		const instanceName = this.readIdentity(multiline);
+		if (instanceName) {
+			const entry = vscriptGlobals.safeLookup(vscriptGlobals.instancesMethods, instanceName);
+			if (entry) {
+				return vscriptGlobals.safeLookup(entry, name);
+			}
+		}
+
+		return vscriptGlobals.safeLookup(vscriptGlobals.allMethods, name) ||
+			vscriptGlobals.safeLookup(vscriptGlobals.allDeprecatedMethods, name);
+	}
+
+
+	public findDoc(name: string, multiline: boolean = true): vscriptGlobals.Doc | undefined { 
+		if (!this.hasDot(multiline)) {
+			let entry =
+				vscriptGlobals.safeLookup(vscriptGlobals.allFunctions, name) ||
+				vscriptGlobals.safeLookup(vscriptGlobals.allDeprecatedFunctions, name) ||
+				vscriptGlobals.safeLookup(vscriptGlobals.builtInConstants, name) ||
+				vscriptGlobals.safeLookup(vscriptGlobals.builtInVariables, name);
+			
+			if (entry) {
+				return entry;
+			}
+
+			for (const instance of Object.values(vscriptGlobals.instancesMethods)) {
+				entry = vscriptGlobals.safeLookup(instance, name);
+				if (entry) {
+					return entry;
+				}
+			}
+
+			for (const instance of Object.values(vscriptGlobals.enumMembers)) {
+				entry = vscriptGlobals.safeLookup(instance, name);
+				if (entry) {
+					return entry;
+				}
+			}
+
+			return undefined;
+		}
+
+		const instanceName = this.readIdentity(multiline);
+		if (instanceName) {
+			let entry = vscriptGlobals.safeLookup(vscriptGlobals.instancesMethods, instanceName);
+			if (entry) {
+				return vscriptGlobals.safeLookup(entry, name);
+			}
+
+			entry = vscriptGlobals.safeLookup(vscriptGlobals.enumMembers, instanceName);
+			if (entry) {
+				return vscriptGlobals.safeLookup(entry, name);
+			}
+		}
+
+		
+		return vscriptGlobals.safeLookup(vscriptGlobals.allMethods, name) ||
+			vscriptGlobals.safeLookup(vscriptGlobals.allDeprecatedMethods, name) ||
+			vscriptGlobals.safeLookup(vscriptGlobals.builtInEnums, name);
+
 	}
 }
 

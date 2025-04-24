@@ -12,18 +12,20 @@ export default class TF2VScriptSignatureHelpProvider implements SignatureHelpPro
 			return null;
 		}
 
-		const name = this.readName(iterator);
+		const name = iterator.readIdentity();
 		if (!name) {
 			return null;
 		}
 
-		const signatureInformation = this.getSignatureInformation(name);
-		if (!signatureInformation) {
+		// Return 1 step back since we could've looked at the dot when canceling the identity reading
+		iterator.back();
+
+		const doc = iterator.findMethodDoc(name);
+		if (!doc) {
 			return null;
 		}
 
-		
-		const isVariadic = signatureInformation.label.indexOf("...") != -1;
+		const { signatureInformation, isVariadic } = this.getSignatureInformation(doc);
 		
 		const signatureHelp = new SignatureHelp();
 		signatureHelp.signatures = [signatureInformation];
@@ -78,39 +80,6 @@ export default class TF2VScriptSignatureHelpProvider implements SignatureHelpPro
 		return -1;
 	}
 
-	private findFirstLetter(iterator: BackwardIterator): string | null {
-		while (iterator.hasNext()) {
-			const ch = iterator.next();
-			if (CharCode.isWhitespace(ch)) {
-				continue;
-			}
-			if (CharCode.isAlphaNumeric(ch)) {
-				return String.fromCharCode(ch);
-			}
-
-			break;
-		}
-		return null;
-	}
-
-	private readName(iterator: BackwardIterator): string | null {
-		let name = this.findFirstLetter(iterator);
-		if (!name) {
-			return null;
-		}
-
-		while (iterator.hasNext()) {
-			const ch = iterator.next();
-			if (!CharCode.isAlphaNumeric(ch)) {
-				break;
-			}
-
-			name = String.fromCharCode(ch) + name;
-		}
-
-		return name;
-	}
-
 	private getSignatureParams(signature: string): ParameterInformation[] {
 		const open = signature.indexOf('(');
 		const close = signature.lastIndexOf(')');
@@ -127,17 +96,8 @@ export default class TF2VScriptSignatureHelpProvider implements SignatureHelpPro
 		return paramStrings.map(param => new ParameterInformation(param));
 	}
 
-	private getSignatureInformation(name: string): SignatureInformation | null {
-		const entry = vscriptGlobals.findDoc(name);
-		if (!entry) {
-			return null;
-		}
-
-		let signature = entry.signature;
-		
-		if (!signature) {
-			return null;
-		}
+	private getSignatureInformation(doc: vscriptGlobals.Doc): { signatureInformation: SignatureInformation, isVariadic: boolean } {
+		let signature = doc.signature;
 
 		// Cut the class at the left if present
 		const dotIndex = signature.search(/(?<!\(.*)\./);
@@ -145,10 +105,15 @@ export default class TF2VScriptSignatureHelpProvider implements SignatureHelpPro
 			signature = signature.slice(dotIndex + 1);
 		}
 
+		const isVariadic = signature.indexOf("...") != -1;
+
 		const signatureInformation = new SignatureInformation(signature);//, description);
 		signatureInformation.parameters = this.getSignatureParams(signature);
 
 
-		return signatureInformation;
+		return {
+			signatureInformation,
+			isVariadic
+		};
 	}
 }

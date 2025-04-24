@@ -4,7 +4,7 @@ import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
 import * as vscriptGlobals from './globals';
-import { ForwardIterator, CharCode } from './textProcessing';
+import { ForwardIterator, CharCode, BackwardIterator } from './textProcessing';
 
 export default class TF2VScriptDiagnosticsProvider {
 	private readonly diagnosticCollection: DiagnosticCollection;
@@ -110,17 +110,17 @@ export default class TF2VScriptDiagnosticsProvider {
 		let match: RegExpExecArray | null;
 		while ((match = regex.exec(text))) {
 			const name = match[1];
-			const doc = vscriptGlobals.findMethod(name);
+			const iterator = new BackwardIterator(text.slice(0, match.index));
+			const doc = iterator.findMethodDoc(name);
 			if (doc) {
 				const signature = doc.signature;
 
-				const isVariadic = signature.indexOf("...") != -1;
 				const { paramCount, defaultParamCount } = this.getParamCount(signature);
 				// The slices are probably expensive, needs to be remade with iterator instead.
 				const usedParamCount = this.getUsedParamCount(text.slice(match.index + match[0].length));
 
 				let message;
-				if (isVariadic) {
+				if (defaultParamCount === -1) {
 					const requiredParamCount = paramCount - 1;
 					if (usedParamCount >= requiredParamCount) {
 						continue;
@@ -151,7 +151,6 @@ export default class TF2VScriptDiagnosticsProvider {
 		return diagnostics;
 	}
 
-
 	private getParamCount(signature: string): { paramCount: number, defaultParamCount: number } {
 		const open = signature.indexOf('(');
 		const close = signature.lastIndexOf(')');
@@ -164,9 +163,24 @@ export default class TF2VScriptDiagnosticsProvider {
 				defaultParamCount: 0
 			};
 		}
-
+		
 		const iterator = new ForwardIterator(signature.slice(open + 1, close));
 		let paramCount = 1;
+
+		// variadic
+		if (signature.indexOf("...") != -1) {	
+			while (iterator.hasNext()) {
+				const char = iterator.next();
+				if (char === CharCode.COMMA) {
+					paramCount++;
+				}
+			}
+			return {
+				paramCount,
+				defaultParamCount: -1
+			}
+		}
+
 		let defaultParamCount = 0;
 		while (iterator.hasNext()) {
 			const char = iterator.next();
@@ -176,12 +190,11 @@ export default class TF2VScriptDiagnosticsProvider {
 				defaultParamCount++;
 			}
 		}
-
+		
 		return {
 			paramCount,
 			defaultParamCount
 		}
-		
 	}
 
 	private getUsedParamCount(text: string): number {

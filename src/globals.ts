@@ -1,3 +1,6 @@
+import { BackwardIterator } from "./textProcessing";
+
+
 export interface Doc {
 	signature: string,
 	description?: string | { [line: string]: boolean };
@@ -12,11 +15,11 @@ export interface InstancesDocs {
 }
 
 // JS will otherwise find prototype methods like "constructor" and return it as a function
-function safeLookup<T>(obj: Record<string, T>, key: string): T | undefined {
+export function safeLookup<T>(obj: Record<string, T>, key: string): T | undefined {
 	return Object.hasOwn(obj, key) ? obj[key] : undefined;
 }
 
-export function findDoc(name: string): Doc | undefined {
+export function findDoc(name: string, a: string): Doc | undefined {
 	// Js programming at it's finest
 	let entry: Doc | undefined = 
 		safeLookup(allFunctions, name) ??
@@ -8121,7 +8124,7 @@ export const enumMembers: InstancesDocs = {
 		},
 		UNDEFINED: {
 			signature: "UNDEFINED: int",
-			description: "Value: -1"
+			description: "Value: `-1`"
 		}
 	},
 	ETFClass: {
@@ -8705,7 +8708,7 @@ export const enumMembers: InstancesDocs = {
 		},
 		TF_COND_INVALID: {
 			signature: "TF_COND_INVALID: int",
-			description: "Value: -1"
+			description: "Value: `-1`"
 		}
 	},
 	ETFDmgCustom: {
@@ -9093,11 +9096,11 @@ export const enumMembers: InstancesDocs = {
 		},
 		TEAM_ANY: {
 			signature: "TEAM_ANY: int",
-			description: "Value: -2"
+			description: "Value: `-2`"
 		},
 		TEAM_INVALID: {
 			signature: "TEAM_INVALID: int",
-			description: "Value: -1"
+			description: "Value: `-1`"
 		}
 	},
 	Math: {
