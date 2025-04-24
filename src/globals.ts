@@ -3445,7 +3445,7 @@ export const allFunctions: Docs = {
 		description: "Creates a new cooperative thread object(coroutine) and returns it ."
 	},
 	print: {
-		signature: "message: string) -> string",
+		signature: "print(message: string) -> string",
 		description: "Prints the given parameter but with no newline unlike `printl()`."
 	},
 	resurrectunreachable: {

@@ -124,10 +124,135 @@
 				}
 			]
 		},
+		"runscriptcode-input": {
+			"patterns": [
+				{
+					"begin": "(?i)\\x1brunscriptcode\\x1b",
+					"beginCaptures": {
+						"0": {
+							"name": "string.quoted.double"
+						}
+					},
+					"end": "[\"\\x1b]",
+					"endCaptures": {
+						"0": {
+							"name": "string.quoted.double"
+						}
+					},
+					"patterns": [
+						{
+							"include": "#comments"
+						},
+						{
+							"include": "#code_inputs"
+						},
+						{
+							"include": "#strings-runscriptcode"
+						},
+						{
+							"include": "#string-escape-sequences"
+						},
+						{
+							"include": "#code-blocks"
+						}
+					]
+				},
+				{
+					"begin": "(?i),runscriptcode,",
+					"beginCaptures": {
+						"0": {
+							"name": "string.quoted.double"
+						}
+					},
+					"end": "[\",]",
+					"endCaptures": {
+						"0": {
+							"name": "string.quoted.double"
+						}
+					},
+					"patterns": [
+						{
+							"include": "#comments"
+						},
+						{
+							"include": "#code_inputs"
+						},
+						{
+							"include": "#strings-runscriptcode"
+						},
+						{
+							"include": "#string-escape-sequences"
+						},
+						{
+							"include": "#code-blocks"
+						}
+					]
+				},
+				{
+					"match": "(?i)(\\x1bcallscriptfunction\\x1b)([_A-Za-z]\\w*?)([\"\\x1b])",
+					"captures": {
+						"1": {
+							"name": "string.quoted.double"
+						},
+						"2": {
+							"name": "entity.name.function"
+						},
+						"3": {
+							"name": "string.quoted.double"
+						}
+					}
+				},
+				{
+					"match": "(?i)(\\x1bcallscriptfunction\\x1b)(.*?)([\"\\x1b])",
+					"captures": {
+						"1": {
+							"name": "string.quoted.double"
+						},
+						"2": {
+							"name": "invalid.illegal.input"
+						},
+						"3": {
+							"name": "string.quoted.double"
+						}
+					}
+				},{
+					"match": "(?i)(,callscriptfunction,)([_A-Za-z]\\w*?)([\",])",
+					"captures": {
+						"1": {
+							"name": "string.quoted.double"
+						},
+						"2": {
+							"name": "entity.name.function"
+						},
+						"3": {
+							"name": "string.quoted.double"
+						}
+					}
+				},
+				{
+					"match": "(?i)(,callscriptfunction,)(.*?)([\",])",
+					"captures": {
+						"1": {
+							"name": "string.quoted.double"
+						},
+						"2": {
+							"name": "invalid.illegal.input"
+						},
+						"3": {
+							"name": "string.quoted.double"
+						}
+					}
+				},
+				{
+					"match": ".",
+					"name": "string.quoted.double"
+				}
+			]
+		},
 		"strings": {
 			"patterns": [
 				{
-					"begin": "(?<=compilestring\\s*\\([\\s\\w\\(]*)@?\"",
+					"begin": "(?<=compilestring\\s*\\(\\s*(?:format\\s*\\(\\s*)?)@?\"",
 					"beginCaptures": {
 						"0": {
 							"name": "punctuation.definition.string.begin.nut"
@@ -158,7 +283,7 @@
 					]
 				},
 				{
-					"match": "(?i)(?<=\"callscriptfunction\"\\s*,[\\s\\w\\(]*)(\")([_A-Za-z]\\w*)(\")",
+					"match": "(?i)(?<=\"callscriptfunction\"\\s*,?\\s*)(\")([_A-Za-z]\\w*)(\")",
 					"captures": {
 						"1": {
 							"name": "punctuation.definition.string.begin.nut"
@@ -172,7 +297,7 @@
 					}
 				},
 				{
-					"match": "(?i)(?<=\"callscriptfunction\"\\s*,[\\s\\w\\(]*)(\")(.*)(\")",
+					"match": "(?i)(?<=\"callscriptfunction\"\\s*,?\\s*)(\")(.*)(\")",
 					"captures": {
 						"1": {
 							"name": "punctuation.definition.string.begin.nut"
@@ -186,7 +311,7 @@
 					}
 				},
 				{
-					"begin": "(?i)(?<=\"runscriptcode\"\\s*,[\\s\\w\\(]*)@?\"",
+					"begin": "(?i)(?<=\"runscriptcode\"\\s*,?\\s*(?:format\\s*\\(\\s*)?)@?\"",
 					"beginCaptures": {
 						"0": {
 							"name": "punctuation.definition.string.begin.nut"
@@ -217,22 +342,24 @@
 					]
 				},
 				{
-					"name": "string.quoted.double.nut",
 					"begin": "@?\"",
 					"beginCaptures": {
 						"0": {
-							"name": "punctuation.definition.string.begin.nut"
+							"name": "punctuation.definition.string.begin.nut string.quoted.double"
 						}
 					},
 					"end": "\"",
 					"endCaptures": {
 						"0": {
-							"name": "punctuation.definition.string.end.nut"
+							"name": "punctuation.definition.string.end.nut string.quoted.double"
 						}
 					},
 					"patterns": [
 						{
 							"include": "#string-escape-sequences"
+						},
+						{
+							"include": "#runscriptcode-input"
 						}
 					]
 				}
@@ -241,7 +368,7 @@
 		"strings-compilestring": {
 			"patterns": [
 				{
-					"begin": "(?<=compilestring\\s*\\([\\s\\w\\(]*)@?\\\\\"",
+					"begin": "(?<=compilestring\\s*\\(\\s*(?:format\\s*\\(\\s*)?)@?\\\\\"",
 					"beginCaptures": {
 						"0": {
 							"name": "punctuation.definition.string.begin.nut"
@@ -272,7 +399,7 @@
 					]
 				},
 				{
-					"match": "(?i)(?<=\\\\\"callscriptfunction\\\\\"\\s*,[\\s\\w\\(]*)(\\\\\")([_A-Za-z]\\w*)(\\\\\")",
+					"match": "(?i)(?<=\\\\\"callscriptfunction\\\\\"\\s*,?\\s*)(\\\\\")(.*)(\\\\\")",
 					"captures": {
 						"1": {
 							"name": "punctuation.definition.string.begin.nut"
@@ -286,7 +413,7 @@
 					}
 				},
 				{
-					"match": "(?i)(?<=\\\\\"callscriptfunction\\\\\"\\s*,[\\s\\w\\(]*)(\\\\\")(.*)(\\\\\")",
+					"match": "(?i)(?<=\\\\\"callscriptfunction\\\\\"\\s*,?\\s*)(\\\\\")(.*)(\\\\\")",
 					"captures": {
 						"1": {
 							"name": "punctuation.definition.string.begin.nut"
@@ -300,7 +427,7 @@
 					}
 				},
 				{
-					"begin": "(?i)(?<=\\\\\"runscriptcode\\\\\"\\s*,[\\s\\w\\(]*)@?\\\\\"",
+					"begin": "(?i)(?<=\\\\\"runscriptcode\\\\\"\\s*,?\\s*(?:format\\s*\\(\\s*)?)@?\\\\\"",
 					"beginCaptures": {
 						"0": {
 							"name": "punctuation.definition.string.begin.nut"
@@ -355,7 +482,7 @@
 		"strings-runscriptcode": {
 			"patterns": [
 				{
-					"begin": "(?<=compilestring\\s*\\([\\s\\w\\(]*)@?`",
+					"begin": "(?<=compilestring\\s*\\(\\s*(?:format\\s*\\(\\s*)?)@?`",
 					"beginCaptures": {
 						"0": {
 							"name": "punctuation.definition.string.begin.nut"
@@ -386,7 +513,7 @@
 					]
 				},
 				{
-					"match": "(?i)(?<=`callscriptfunction`\\s*,[\\s\\w\\(]*)(`)([_A-Za-z]\\w*)(`)",
+					"match": "(?i)(?<=`callscriptfunction`\\s*,?\\s*)(`)([_A-Za-z]\\w*)(`)",
 					"captures": {
 						"1": {
 							"name": "punctuation.definition.string.begin.nut"
@@ -400,7 +527,7 @@
 					}
 				},
 				{
-					"match": "(?i)(?<=`callscriptfunction`\\s*,[\\s\\w\\(]*)(`)(.*)(`)",
+					"match": "(?i)(?<=`callscriptfunction`\\s*,?\\s*)(`)(.*)(`)",
 					"captures": {
 						"1": {
 							"name": "punctuation.definition.string.begin.nut"
@@ -414,7 +541,7 @@
 					}
 				},
 				{
-					"begin": "(?i)(?<=`runscriptcode`\\s*,[\\s\\w\\(]*)@?`",
+					"begin": "(?i)(?<=`runscriptcode`\\s*,?\\s*(?:format\\s*\\(\\s*)?)@?`",
 					"beginCaptures": {
 						"0": {
 							"name": "punctuation.definition.string.begin.nut"
