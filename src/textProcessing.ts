@@ -83,7 +83,7 @@ export class BackwardIterator {
 	private findFirstLetter(multiline: boolean): string | null {
 		while (this.hasNext()) {
 			const char = this.next();
-			if (CharCode.isWhitespace(char)) {
+			if (CharCode.isIndentation(char)) {
 				continue;
 			}
 			if (multiline && (char === CharCode.CARRIAGE_RETURN || char === CharCode.LINE_FEED)) {

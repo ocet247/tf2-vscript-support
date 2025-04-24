@@ -9,7 +9,7 @@ export default class TF2VScriptCompletionProvider implements CompletionItemProvi
 
 		const dotRange = this.getDotRange(document, iterator);
 		if (dotRange) {
-			const name = iterator.readIdentity();
+			const name = iterator.readIdentity(false);
 			if (name) {
 				const methods = vscriptGlobals.instancesMethods[name];
 				if (methods) {
