@@ -19,60 +19,6 @@ export function safeLookup<T>(obj: Record<string, T>, key: string): T | undefine
 	return Object.hasOwn(obj, key) ? obj[key] : undefined;
 }
 
-export function findDoc(name: string, a: string): Doc | undefined {
-	// Js programming at it's finest
-	let entry: Doc | undefined = 
-		safeLookup(allFunctions, name) ??
-		safeLookup(allMethods, name) ??
-		safeLookup(allDeprecatedFunctions, name) ??
-		safeLookup(allDeprecatedMethods, name) ??
-		safeLookup(builtInConstants, name) ??
-		safeLookup(builtInVariables, name) ??
-		safeLookup(builtInEnums, name);
-
-	if (entry) {
-		return entry;
-	}
-
-	for (const instance of Object.values(instancesMethods)) {
-		entry = safeLookup(instance, name);
-		if (entry) {
-			return entry;
-		}
-	}
-
-	for (const instance of Object.values(enumMembers)) {
-		entry = safeLookup(instance, name);
-		if (entry) {
-			return entry;
-		}
-	}
-
-	return undefined;
-}
-
-export function findMethod(name: string): Doc | undefined {
-	// yes js does lookup prototype methods on objects that were meant to be maps
-	let entry: Doc | undefined = 
-		safeLookup(allFunctions, name) ??
-		safeLookup(allMethods, name) ??
-		safeLookup(allDeprecatedFunctions, name) ??
-		safeLookup(allDeprecatedMethods, name);
-	
-	if (entry) {
-		return entry;
-	}
-
-	for (const method of Object.values(instancesMethods)) {
-		entry = safeLookup(method, name);
-		if (entry) {
-			return entry;
-		}
-	}
-	
-	return undefined;
-}
-
 export const keywords: string[] = [
 	"base",
 	"break",
@@ -10385,8 +10331,4 @@ export const enumMembers: InstancesDocs = {
 			description: "Value: `1988098048`"
 		}
 	}
-}
-
-export const gameEvents: Docs = {
-
 }
