@@ -117,23 +117,23 @@ export const allMethods: Docs = {
 		description: "Generate a synchronous I/O event. Unlike `EntFireByHandle`, this is processed immediately. Returns false if `input` is a null/empty string, or if the input wasn't handled."
 	},
 	AddEFlags: {
-		signature: "CBaseEntity.AddEFlags(flags: FEntityEFlags) -> void",
+		signature: "CBaseEntity.AddEFlags(flags: FEntityEFlags) -> null",
 		description: "Adds the supplied `flags` to the **Entity Flags** in the entity. *(m_iEFlags datamap)*\n\nSee [FEntityEFlags](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#FEntityEFlags)."
 	},
 	AddFlag: {
-		signature: "CBaseEntity.AddFlag(flags: FPlayer) -> void",
+		signature: "CBaseEntity.AddFlag(flags: FPlayer) -> null",
 		description: "Adds the supplied `flags` to another separate player-related entity flags system in the entity. *(m_fFlags datamap)*\n\nSee [FPlayer](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#FPlayer)."
 	},
 	AddSolidFlags: {
-		signature: "CBaseEntity.AddSolidFlags(flags: FSolid) -> void",
+		signature: "CBaseEntity.AddSolidFlags(flags: FSolid) -> null",
 		description: "Adds the supplied `flags` to the *Solid Flags* in the entity. *(m_Collision.m_usSolidFlags datamap)*\n\nSee [FSolid](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#FSolid)."
 	},
 	ApplyAbsVelocityImpulse: {
-		signature: "CBaseEntity.ApplyAbsVelocityImpulse(impulse: Vector) -> void",
+		signature: "CBaseEntity.ApplyAbsVelocityImpulse(impulse: Vector) -> null",
 		description: "Apply a Velocity Impulse as a world space impulse vector. Works for most physics-based objects including dropped weapons and even dropped Sandviches."
 	},
 	ApplyLocalAngularVelocityImpulse: {
-		signature: "CBaseEntity.ApplyLocalAngularVelocityImpulse(impulse: Vector) -> void",
+		signature: "CBaseEntity.ApplyLocalAngularVelocityImpulse(impulse: Vector) -> null",
 		description: "Apply an Angular Velocity Impulse in entity local space. The direction of the input vector is the rotation axis, and the length is the magnitude of the impulse."
 	},
 	BecomeRagdollOnClient: {
@@ -141,39 +141,39 @@ export const allMethods: Docs = {
 		description: "Acts like the `BecomeRagdoll` input, with the required `impulse` value applied as a force on the ragdoll. Does NOT spawn a `[prop_ragdoll](https://developer.valvesoftware.com/wiki/prop_ragdoll)` or any other entity."
 	},
 	ClearFlags: {
-		signature: "CBaseEntity.ClearFlags() -> void",
+		signature: "CBaseEntity.ClearFlags() -> null",
 		description: "Sets the player-related entity flags to 0 on an entity, clearing them."
 	},
 	ClearSolidFlags: {
-		signature: "CBaseEntity.ClearSolidFlags() -> void",
+		signature: "CBaseEntity.ClearSolidFlags() -> null",
 		description: "Sets *Solid Flags* to 0 on an entity, clearing them."
 	},
 	ConnectOutput: {
-		signature: "CBaseEntity.ConnectOutput(output_name: string, function_name: string) -> void",
+		signature: "CBaseEntity.ConnectOutput(output_name: string, function_name: string) -> null",
 		description: "Adds an I/O connection that will call the named function when the specified output fires."
 	},
 	Destroy: {
-		signature: "CBaseEntity.Destroy() -> void",
+		signature: "CBaseEntity.Destroy() -> null",
 		description: "Removes the entity. Simply calls [UTIL_Remove](https://developer.valvesoftware.com/wiki/UTIL_Remove)."
 	},
 	DisableDraw: {
-		signature: "CBaseEntity.DisableDraw() -> void",
+		signature: "CBaseEntity.DisableDraw() -> null",
 		description: "Disable drawing and transmitting the entity to clients. *(adds EF_NODRAW)*"
 	},
 	DisconnectOutput: {
-		signature: "CBaseEntity.DisconnectOutput(output_name: string, function_name: string) -> void",
+		signature: "CBaseEntity.DisconnectOutput(output_name: string, function_name: string) -> null",
 		description: "Removes a connected script function from an I/O event."
 	},
 	DispatchSpawn: {
-		signature: "CBaseEntity.DispatchSpawn() -> void",
+		signature: "CBaseEntity.DispatchSpawn() -> null",
 		description: "Alternative dispatch spawn, same as the one in CEntities, for convenience."
 	},
 	EmitSound: {
-		signature: "CBaseEntity.EmitSound(sound_name: string) -> void",
+		signature: "CBaseEntity.EmitSound(sound_name: string) -> null",
 		description: "Plays a sound from this entity. The sound must be precached first for it to play (using `PrecacheSound` or `PrecacheScriptSound`)."
 	},
 	EnableDraw: {
-		signature: "CBaseEntity.EnableDraw() -> void",
+		signature: "CBaseEntity.EnableDraw() -> null",
 		description: "Enable drawing and transmitting the entity to clients. *(removes EF_NODRAW)*"
 	},
 	entindex: {
@@ -398,7 +398,7 @@ export const allMethods: Docs = {
 		description: "Executes KeyValue with a vector."
 	},
 	Kill: {
-		signature: "CBaseEntity.Kill() -> void",
+		signature: "CBaseEntity.Kill() -> null",
 		description: "Removes the entity. Equivalent of firing the `Kill` I/O input, but instantaneous."
 	},
 	LocalEyeAngles: {
@@ -410,149 +410,149 @@ export const allMethods: Docs = {
 		description: "Returns the next entity parented *with* the entity. Intended for iteration use with `FirstMoveChild()`."
 	},
 	PrecacheModel: {
-		signature: "CBaseEntity.PrecacheModel(model_name: string) -> void",
+		signature: "CBaseEntity.PrecacheModel(model_name: string) -> null",
 		description: "Precache a model (`.mdl`) or sprite (`.vmt`). The extension must be specified."
 	},
 	PrecacheScriptSound: {
-		signature: "CBaseEntity.PrecacheScriptSound(sound_script: string) -> void",
+		signature: "CBaseEntity.PrecacheScriptSound(sound_script: string) -> null",
 		description: "Precache a sound script. Same as `PrecacheSoundScript`."
 	},
 	PrecacheSoundScript: {
-		signature: "CBaseEntity.PrecacheSoundScript(sound_script: string) -> void",
+		signature: "CBaseEntity.PrecacheSoundScript(sound_script: string) -> null",
 		description: "Precache a sound script. Same as `PrecacheScriptSound`."
 	},
 	RemoveEFlags: {
-		signature: "CBaseEntity.RemoveEFlags(flags: FEntityEFlags) -> void",
+		signature: "CBaseEntity.RemoveEFlags(flags: FEntityEFlags) -> null",
 		description: "See [FEntityEFlags](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#FEntityEFlags)."
 	},
 	RemoveFlag: {
-		signature: "CBaseEntity.RemoveFlag(flags: FPlayer) -> void",
+		signature: "CBaseEntity.RemoveFlag(flags: FPlayer) -> null",
 		description: "See [FPlayer](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#FPlayer)."
 	},
 	RemoveSolidFlags: {
-		signature: "CBaseEntity.RemoveSolidFlags(flags: FSolid) -> void",
+		signature: "CBaseEntity.RemoveSolidFlags(flags: FSolid) -> null",
 		description: "See [FSolid](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#FSolid)."
 	},
 	SetAbsAngles: {
-		signature: "CBaseEntity.SetAbsAngles(angles: QAngle) -> void",
+		signature: "CBaseEntity.SetAbsAngles(angles: QAngle) -> null",
 		description: "Set entity pitch, yaw, roll as QAngles. Does not work on players, use `SnapEyeAngles` instead."
 	},
 	SetAbsVelocity: {
-		signature: "CBaseEntity.SetAbsVelocity(velocity: Vector) -> void",
+		signature: "CBaseEntity.SetAbsVelocity(velocity: Vector) -> null",
 		description: "Sets the current absolute velocity of the entity. Does nothing on [VPhysics](https://developer.valvesoftware.com/wiki/VPhysics) objects (such as `prop_physics`). For those, use `SetPhysVelocity` instead."
 	},
 	SetAbsOrigin: {
-		signature: "CBaseEntity.SetAbsOrigin(origin: Vector) -> void",
+		signature: "CBaseEntity.SetAbsOrigin(origin: Vector) -> null",
 		description: "Sets the absolute origin of the entity."
 	},
 	SetAngularVelocity: {
-		signature: "CBaseEntity.SetAngularVelocity(pitch: float, yaw: float, roll: float) -> void",
+		signature: "CBaseEntity.SetAngularVelocity(pitch: float, yaw: float, roll: float) -> null",
 		description: "Set the local angular velocity."
 	},
 	SetCollisionGroup: {
-		signature: "CBaseEntity.SetCollisionGroup(group: ECollisionGroup) -> void",
+		signature: "CBaseEntity.SetCollisionGroup(group: ECollisionGroup) -> null",
 		description: "Set the current collision group of the entity.\n\nSee [ECollisionGroup](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ECollisionGroup)."
 	},
 	SetDrawEnabled: {
-		signature: "CBaseEntity.SetDrawEnabled(toggle: bool) -> void",
+		signature: "CBaseEntity.SetDrawEnabled(toggle: bool) -> null",
 		description: "Enables drawing if you pass true, disables drawing if you pass false."
 	},
 	SetEFlags: {
-		signature: "CBaseEntity.SetEFlags(flags: FEntityEFlags) -> void",
+		signature: "CBaseEntity.SetEFlags(flags: FEntityEFlags) -> null",
 		description: "See [FEntityEFlags](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#FEntityEFlags)."
 	},
 	SetForwardVector: {
-		signature: "CBaseEntity.SetForwardVector(forward: Vector) -> void",
+		signature: "CBaseEntity.SetForwardVector(forward: Vector) -> null",
 		description: "Set the orientation of the entity to have this forward vector."
 	},
 	SetFriction: {
-		signature: "CBaseEntity.SetFriction(friction: float) -> void"
+		signature: "CBaseEntity.SetFriction(friction: float) -> null"
 	},
 	SetGravity: {
-		signature: "CBaseEntity.SetGravity(gravity: float) -> void",
+		signature: "CBaseEntity.SetGravity(gravity: float) -> null",
 		description: "Sets a multiplier for gravity. 1 is default gravity."
 	},
 	SetHealth: {
-		signature: "CBaseEntity.SetHealth(health: int) -> void"
+		signature: "CBaseEntity.SetHealth(health: int) -> null"
 	},
 	SetLocalAngles: {
-		signature: "CBaseEntity.SetLocalAngles(angles: QAngle) -> void"
+		signature: "CBaseEntity.SetLocalAngles(angles: QAngle) -> null"
 	},
 	SetLocalOrigin: {
-		signature: "CBaseEntity.SetLocalOrigin(origin: Vector) -> void"
+		signature: "CBaseEntity.SetLocalOrigin(origin: Vector) -> null"
 	},
 	SetMaxHealth: {
-		signature: "CBaseEntity.SetMaxHealth(health: int) -> void",
+		signature: "CBaseEntity.SetMaxHealth(health: int) -> null",
 		description: "Sets the maximum health this entity can have. Does not update the current health, so `SetHealth` should be used afterwards."
 	},
 	SetModel: {
-		signature: "CBaseEntity.SetModel(model_name: string) -> void",
+		signature: "CBaseEntity.SetModel(model_name: string) -> null",
 		description: "Set a model for this entity."
 	},
 	SetMoveType: {
-		signature: "CBaseEntity.SetMoveType(movetype: EMoveType, movecollide: EMoveCollide) -> void",
+		signature: "CBaseEntity.SetMoveType(movetype: EMoveType, movecollide: EMoveCollide) -> null",
 		description: "See [EMoveType](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#EMoveType) ,[EMoveCollide](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#EMoveCollide)."
 	},
 	SetOwner: {
-		signature: "CBaseEntity.SetOwner(entity: handle) -> void",
+		signature: "CBaseEntity.SetOwner(entity: handle) -> null",
 		description: "Sets this entity's owner."
 	},
 	SetPhysAngularVelocity: {
-		signature: "CBaseEntity.SetPhysAngularVelocity(angular_velocity: Vector) -> void"
+		signature: "CBaseEntity.SetPhysAngularVelocity(angular_velocity: Vector) -> null"
 	},
 	SetPhysVelocity: {
-		signature: "CBaseEntity.SetPhysVelocity(velocity: Vector) -> void"
+		signature: "CBaseEntity.SetPhysVelocity(velocity: Vector) -> null"
 	},
 	SetSize: {
-		signature: "CBaseEntity.SetSize(mins: Vector, maxs: Vector) -> void",
+		signature: "CBaseEntity.SetSize(mins: Vector, maxs: Vector) -> null",
 		description: "Sets the bounding box's scale for this entity."
 	},
 	SetSolid: {
-		signature: "CBaseEntity.SetSolid(solid: ESolidType) -> void",
+		signature: "CBaseEntity.SetSolid(solid: ESolidType) -> null",
 		description: "See [ESolidType](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ESolidType)."
 	},
 	SetSolidFlags: {
-		signature: "CBaseEntity.SetSolidFlags(flags: FSolid) -> void",
+		signature: "CBaseEntity.SetSolidFlags(flags: FSolid) -> null",
 		description: "See [FSolid](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#FSolid)."
 	},
 	SetTeam: {
-		signature: "CBaseEntity.SetTeam(team: ETFTeam) -> void",
+		signature: "CBaseEntity.SetTeam(team: ETFTeam) -> null",
 		description: "Sets entity team.\n\nSee [ETFTeam](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ETFTeam)."
 	},
 	SetWaterLevel: {
-		signature: "CBaseEntity.SetWaterLevel(water_level: int) -> void",
+		signature: "CBaseEntity.SetWaterLevel(water_level: int) -> null",
 		description: "This sets how much of the entity is underwater. Setting it to 0 means it is not underwater, 1 if the feet are (touching water brush), 2 if the waist is (center of the hull of the entity), and 3 if the head is (eyes position)."
 	},
 	SetWaterType: {
-		signature: "CBaseEntity.SetWaterType(water_type: int) -> void",
+		signature: "CBaseEntity.SetWaterType(water_type: int) -> null",
 		description: "Set the type of water the entity is currently submerged in. Generic values to use are 32 for water and 16 for slime."
 	},
 	StopSound: {
-		signature: "CBaseEntity.StopSound(sound_name: string) -> void",
+		signature: "CBaseEntity.StopSound(sound_name: string) -> null",
 		description: "Stops a sound on this entity."
 	},
 	TakeDamage: {
-		signature: "CBaseEntity.TakeDamage(damage: float, damage_type: FDmgType, attacker: handle) -> void",
+		signature: "CBaseEntity.TakeDamage(damage: float, damage_type: FDmgType, attacker: handle) -> null",
 		description: "Deals damage to the entity.\n\nSee [FDmgType](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#FDmgType)."
 	},
 	TakeDamageEx: {
-		signature: "CBaseEntity.TakeDamageEx(inflictor: handle, attacker: handle, weapon: handle, damage_force: Vector, damage_position: Vector, damage: float, damage_type: FDmgType) -> void",
+		signature: "CBaseEntity.TakeDamageEx(inflictor: handle, attacker: handle, weapon: handle, damage_force: Vector, damage_position: Vector, damage: float, damage_type: FDmgType) -> null",
 		description: "Extended version of `TakeDamage`.\n\nSee [FDmgType](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#FDmgType)."
 	},
 	TakeDamageCustom: {
-		signature: "CBaseEntity.TakeDamageCustom(inflictor: handle, attacker: handle, weapon: handle, damage_force: Vector, damage_position: Vector, damage: float, damage_type: FDmgType, custom_damage_type: ETFDmgCustom) -> void",
+		signature: "CBaseEntity.TakeDamageCustom(inflictor: handle, attacker: handle, weapon: handle, damage_force: Vector, damage_position: Vector, damage: float, damage_type: FDmgType, custom_damage_type: ETFDmgCustom) -> null",
 		description: "Extended version of `TakeDamageEx` that can apply a custom damage type.\n\nSee [FDmgType](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#FDmgType) ,[ETFDmgCustom](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ETFDmgCustom)."
 	},
 	Teleport: {
-		signature: "CBaseEntity.Teleport(use_origin: bool, origin: Vector, use_angles: bool, angles: QAngle, use_velocity: bool, velocity: Vector) -> void",
+		signature: "CBaseEntity.Teleport(use_origin: bool, origin: Vector, use_angles: bool, angles: QAngle, use_velocity: bool, velocity: Vector) -> null",
 		description: "Teleports this entity. For this function, set the bools to false if you want that entity's property unchanged. (do not use null arguments!)"
 	},
 	TerminateScriptScope: {
-		signature: "CBaseEntity.TerminateScriptScope() -> void",
+		signature: "CBaseEntity.TerminateScriptScope() -> null",
 		description: "Clear the current script scope for this entity."
 	},
 	ToggleFlag: {
-		signature: "CBaseEntity.ToggleFlag(flags: FPlayer) -> void",
+		signature: "CBaseEntity.ToggleFlag(flags: FPlayer) -> null",
 		description: "See [FPlayer](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#FPlayer)."
 	},
 	ValidateScriptScope: {
@@ -563,7 +563,7 @@ export const allMethods: Docs = {
 	 * CBaseAnimating              *
 	 * --------------------------- */
 	DispatchAnimEvents: {
-		signature: "CBaseAnimating.DispatchAnimEvents(entity: handle) -> void",
+		signature: "CBaseAnimating.DispatchAnimEvents(entity: handle) -> null",
 		description: "Dispatch animation events to a CBaseAnimating entity."
 	},
 	FindBodygroupByName: {
@@ -659,27 +659,27 @@ export const allMethods: Docs = {
 		description: "Looks up a sequence by names of sequences or activities. Returns -1 if the sequence does not exist."
 	},
 	ResetSequence: {
-		signature: "CBaseAnimating.ResetSequence(id: int) -> void",
+		signature: "CBaseAnimating.ResetSequence(id: int) -> null",
 		description: "Reset a sequence by sequence ID. If the ID is different than the current sequence, switch to the new sequence."
 	},
 	SetBodygroup: {
-		signature: "CBaseAnimating.SetBodygroup(id: int, value: int) -> void",
+		signature: "CBaseAnimating.SetBodygroup(id: int, value: int) -> null",
 		description: "Set the bodygroup by ID."
 	},
 	SetCycle: {
-		signature: "CBaseAnimating.SetCycle(cycle: float) -> void",
+		signature: "CBaseAnimating.SetCycle(cycle: float) -> null",
 		description: "Sets the model's current animation cycle from 0 to 1."
 	},
 	SetModelSimple: {
-		signature: "CBaseAnimating.SetModelSimple(model_name: string) -> void",
+		signature: "CBaseAnimating.SetModelSimple(model_name: string) -> null",
 		description: "Set a model for this entity. Matches easier behaviour of the SetModel input, automatically precaches, maintains sequence/cycle if possible. Also clears the bone cache."
 	},
 	SetModelScale: {
-		signature: "CBaseAnimating.SetModelScale(scale: float, change_duration: float) -> void",
+		signature: "CBaseAnimating.SetModelScale(scale: float, change_duration: float) -> null",
 		description: "Changes a model's scale over time. Set the change duration to 0.0 to change the scale instantly."
 	},
 	SetPlaybackRate: {
-		signature: "CBaseAnimating.SetPlaybackRate(rate: float) -> void",
+		signature: "CBaseAnimating.SetPlaybackRate(rate: float) -> null",
 		description: "Set the current animation's playback rate."
 	},
 	SetPoseParameter: {
@@ -687,23 +687,23 @@ export const allMethods: Docs = {
 		description: "Sets a pose parameter value. Returns the effective value after clamping or looping."
 	},
 	SetSequence: {
-		signature: "CBaseAnimating.SetSequence(id: int) -> void",
+		signature: "CBaseAnimating.SetSequence(id: int) -> null",
 		description: "Plays a sequence by sequence ID."
 	},
 	SetSkin: {
-		signature: "CBaseAnimating.SetSkin(index: int) -> void",
+		signature: "CBaseAnimating.SetSkin(index: int) -> null",
 		description: "Sets the model's skin."
 	},
 	StopAnimation: {
-		signature: "CBaseAnimating.StopAnimation() -> void",
+		signature: "CBaseAnimating.StopAnimation() -> null",
 		description: "Stop the current animation (same as SetPlaybackRate 0.0)."
 	},
 	StudioFrameAdvance: {
-		signature: "CBaseAnimating.StudioFrameAdvance() -> void",
+		signature: "CBaseAnimating.StudioFrameAdvance() -> null",
 		description: "Advance animation frame to some time in the future with an automatically calculated interval."
 	},
 	StudioFrameAdvanceManual: {
-		signature: "CBaseAnimating.StudioFrameAdvanceManual(dt: float) -> void",
+		signature: "CBaseAnimating.StudioFrameAdvanceManual(dt: float) -> null",
 		description: "Advance animation frame to some time in the future with a manual interval."
 	},
 	/* --------------------------- *
@@ -802,31 +802,31 @@ export const allMethods: Docs = {
 		description: "Returns whether this is a melee weapon."
 	},
 	PrimaryAttack: {
-		signature: "CBaseCombatWeapon.PrimaryAttack() -> void",
+		signature: "CBaseCombatWeapon.PrimaryAttack() -> null",
 		description: "Force a primary attack."
 	},
 	SecondaryAttack: {
-		signature: "CBaseCombatWeapon.SecondaryAttack() -> void",
+		signature: "CBaseCombatWeapon.SecondaryAttack() -> null",
 		description: "Force a secondary attack."
 	},
 	SetClip1: {
-		signature: "CBaseCombatWeapon.SetClip1(amount: int) -> void",
+		signature: "CBaseCombatWeapon.SetClip1(amount: int) -> null",
 		description: "Set current ammo in clip1."
 	},
 	SetClip2: {
-		signature: "CBaseCombatWeapon.SetClip2(amount: int) -> void",
+		signature: "CBaseCombatWeapon.SetClip2(amount: int) -> null",
 		description: "Set current ammo in clip2."
 	},
 	SetCustomViewModel: {
-		signature: "CBaseCombatWeapon.SetCustomViewModel(model_name: string) -> void",
+		signature: "CBaseCombatWeapon.SetCustomViewModel(model_name: string) -> null",
 		description: "Sets a custom view model for this weapon by model name."
 	},
 	SetCustomViewModelModelIndex: {
-		signature: "CBaseCombatWeapon.SetCustomViewModelModelIndex(model_index: int) -> void",
+		signature: "CBaseCombatWeapon.SetCustomViewModelModelIndex(model_index: int) -> null",
 		description: "Sets a custom view model for this weapon by modelindex."
 	},
 	SetSubType: {
-		signature: "CBaseCombatWeapon.SetSubType(subtype: int) -> void",
+		signature: "CBaseCombatWeapon.SetSubType(subtype: int) -> null",
 		description: "Set the weapon subtype."
 	},
 	UsesClipsForAmmo1: {
@@ -887,30 +887,30 @@ export const allMethods: Docs = {
 		description: "Returns true if the player is in noclip mode."
 	},
 	SetForceLocalDraw: {
-		signature: "CBasePlayer.SetForceLocalDraw(toggle: bool) -> void",
+		signature: "CBasePlayer.SetForceLocalDraw(toggle: bool) -> null",
 		description: "Forces the player to be drawn as if they were in thirdperson."
 	},
 	SetScriptOverlayMaterial: {
-		signature: "CBasePlayer.SetScriptOverlayMaterial(material: string) -> void",
+		signature: "CBasePlayer.SetScriptOverlayMaterial(material: string) -> null",
 		description: "Sets the overlay material that can't be overriden by other overlays. E.g. Jarate."
 	},
 	SnapEyeAngles: {
-		signature: "CBasePlayer.SnapEyeAngles(angles: QAngle) -> void",
+		signature: "CBasePlayer.SnapEyeAngles(angles: QAngle) -> null",
 		description: "Snap the player's eye angles to this."
 	},
 	ViewPunch: {
-		signature: "CBasePlayer.ViewPunch(angle_offset: QAngle) -> void",
+		signature: "CBasePlayer.ViewPunch(angle_offset: QAngle) -> null",
 		description: "Ow! Punches the player's view."
 	},
 	ViewPunchReset: {
-		signature: "CBasePlayer.ViewPunchReset(tolerance: float) -> void",
+		signature: "CBasePlayer.ViewPunchReset(tolerance: float) -> null",
 		description: "Reset's the player's view punch if the offset stays below the given tolerance."
 	},
 	/* --------------------------- *
 	 * CEconEntity                 *
 	 * --------------------------- */
 	AddAttribute: {
-		signature: "CEconEntity.AddAttribute(name: string, value: float, duration: float) -> void",
+		signature: "CEconEntity.AddAttribute(name: string, value: float, duration: float) -> null",
 		description: "Add an attribute to the entity. <s>Set duration to 0 or lower for the attribute to be applied forever</s> See the bug below. The attribute must be one that exists in the game, invalid ones will not be added."
 	},
 	GetAttribute: {
@@ -918,34 +918,34 @@ export const allMethods: Docs = {
 		description: "Get an attribute float from the entity. If the attribute does not exist, returns `default_value`."
 	},
 	RemoveAttribute: {
-		signature: "CEconEntity.RemoveAttribute(name: string) -> void",
+		signature: "CEconEntity.RemoveAttribute(name: string) -> null",
 		description: "Remove an attribute from the entity."
 	},
 	ReapplyProvision: {
-		signature: "CEconEntity.ReapplyProvision() -> void",
+		signature: "CEconEntity.ReapplyProvision() -> null",
 		description: "Relinks attributes to provisioners, e.g. calling this on a weapon will add it's attributes to the player."
 	},
 	/* --------------------------- *
 	 * CTFPlayer                   *
 	 * --------------------------- */
 	AddCond: {
-		signature: "CTFPlayer.AddCond(cond: ETFCond) -> void",
+		signature: "CTFPlayer.AddCond(cond: ETFCond) -> null",
 		description: "See [ETFCond](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ETFCond)."
 	},
 	AddCondEx: {
-		signature: "CTFPlayer.AddCondEx(cond: ETFCond, duration: float, provider: handle) -> void",
+		signature: "CTFPlayer.AddCondEx(cond: ETFCond, duration: float, provider: handle) -> null",
 		description: "See [ETFCond](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ETFCond)."
 	},
 	AddCurrency: {
-		signature: "CTFPlayer.AddCurrency(amount: int) -> void",
+		signature: "CTFPlayer.AddCurrency(amount: int) -> null",
 		description: "Kaching! Give the player some cash for game modes with upgrades, ie. MvM. The new value is bounded between 0-30000."
 	},
 	AddCustomAttribute: {
-		signature: "CTFPlayer.AddCustomAttribute(name: string, value: float, duration: float) -> void",
+		signature: "CTFPlayer.AddCustomAttribute(name: string, value: float, duration: float) -> null",
 		description: "Add a custom attribute to the player. Set duration to 0 or lower for the attribute to be applied forever. The attribute must be one that exists in the game, invalid ones will not be added."
 	},
 	AddHudHideFlags: {
-		signature: "CTFPlayer.AddHudHideFlags(flags: FHideHUD) -> void",
+		signature: "CTFPlayer.AddHudHideFlags(flags: FHideHUD) -> null",
 		description: "Hides a hud element(-s).\n\nSee [FHideHUD](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#FHideHUD)."
 	},
 	ApplyPunchImpulseX: {
@@ -953,15 +953,15 @@ export const allMethods: Docs = {
 		description: "Apply a view punch along the pitch angle. Used to flinch players when hit. If the player is a fully charged scoped-in sniper and the weapon has the `aiming_no_flinch` attribute, the punch will not apply. Returns true if the punch was applied."
 	},
 	BleedPlayer: {
-		signature: "CTFPlayer.BleedPlayer(duration: float) -> void",
+		signature: "CTFPlayer.BleedPlayer(duration: float) -> null",
 		description: "Make a player bleed for a set duration of time."
 	},
 	BleedPlayerEx: {
-		signature: "CTFPlayer.BleedPlayerEx(duration: float, damage: int, endless: bool, custom_damage_type: ETFDmgCustom) -> void",
+		signature: "CTFPlayer.BleedPlayerEx(duration: float, damage: int, endless: bool, custom_damage_type: ETFDmgCustom) -> null",
 		description: "Make a player bleed for a set duration of time, or forever, with specific damage per tick and damage_custom index.\n\nSee [ETFDmgCustom](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ETFDmgCustom)."
 	},
 	CancelTaunt: {
-		signature: "CTFPlayer.CancelTaunt() -> void",
+		signature: "CTFPlayer.CancelTaunt() -> null",
 		description: "Cancels any taunt in progress."
 	},
 	CanAirDash: {
@@ -987,13 +987,13 @@ export const allMethods: Docs = {
 		description: "Can the player jump? Returns false if the player is taunting or if the `no_jump` attribute is present and non-zero. There is other conditions that prevent jumping but this function by itself doesn't check those."
 	},
 	ClearCustomModelRotation: {
-		signature: "CTFPlayer.ClearCustomModelRotation() -> void"
+		signature: "CTFPlayer.ClearCustomModelRotation() -> null"
 	},
 	ClearSpells: {
-		signature: "CTFPlayer.ClearSpells() -> void"
+		signature: "CTFPlayer.ClearSpells() -> null"
 	},
 	ClearTauntAttack: {
-		signature: "CTFPlayer.ClearTauntAttack() -> void",
+		signature: "CTFPlayer.ClearTauntAttack() -> null",
 		description: "Stops active taunt from damaging or cancels Rock-Paper-Scissors result."
 	},
 	CanPlayerMove: {
@@ -1001,42 +1001,42 @@ export const allMethods: Docs = {
 		description: "Can the player move?"
 	},
 	DoTauntAttack: {
-		signature: "CTFPlayer.DoTauntAttack() -> void",
+		signature: "CTFPlayer.DoTauntAttack() -> null",
 		description: "Performs taunts attacks if available. Player must be already taunting and taunt must have a valid attack assigned (`taunt attack name` attribute)."
 	},
 	DropFlag: {
-		signature: "CTFPlayer.DropFlag(silent: bool) -> void",
+		signature: "CTFPlayer.DropFlag(silent: bool) -> null",
 		description: "Force player to drop the flag (intelligence)."
 	},
 	DropRune: {
-		signature: "CTFPlayer.DropRune(apply_force: bool, team: ETFTeam) -> void",
+		signature: "CTFPlayer.DropRune(apply_force: bool, team: ETFTeam) -> null",
 		description: "Force player to drop the rune.\n\nSee [ETFTeam](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ETFTeam)."
 	},
 	EndLongTaunt: {
-		signature: "CTFPlayer.EndLongTaunt() -> void",
+		signature: "CTFPlayer.EndLongTaunt() -> null",
 		description: "Stops a looping taunt (obeys minimum time rules and plays outro animation if available)."
 	},
 	EquipWearableViewModel: {
-		signature: "CTFPlayer.EquipWearableViewModel(entity: handle) -> void",
+		signature: "CTFPlayer.EquipWearableViewModel(entity: handle) -> null",
 		description: "Equips a wearable on the viewmodel. Intended to be used with [tf_wearable_vm](https://developer.valvesoftware.com/wiki/tf_wearable_vm) entities."
 	},
 	ExtinguishPlayerBurning: {
-		signature: "CTFPlayer.ExtinguishPlayerBurning() -> void"
+		signature: "CTFPlayer.ExtinguishPlayerBurning() -> null"
 	},
 	FiringTalk: {
-		signature: "CTFPlayer.FiringTalk() -> void",
+		signature: "CTFPlayer.FiringTalk() -> null",
 		description: "Makes eg. a heavy go AAAAAAAAAAaAaa like they are firing their minigun."
 	},
 	ForceChangeTeam: {
-		signature: "CTFPlayer.ForceChangeTeam(team: ETFTeam, full_team_switch: bool) -> void",
+		signature: "CTFPlayer.ForceChangeTeam(team: ETFTeam, full_team_switch: bool) -> null",
 		description: "Force player to change their team. Setting the bool to true will not remove nemesis relationships or reset the player's class, as well as not slaying the player.\n\nSee [ETFTeam](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ETFTeam)."
 	},
 	ForceRegenerateAndRespawn: {
-		signature: "CTFPlayer.ForceRegenerateAndRespawn() -> void",
+		signature: "CTFPlayer.ForceRegenerateAndRespawn() -> null",
 		description: "Force regenerates and respawns the player."
 	},
 	ForceRespawn: {
-		signature: "CTFPlayer.ForceRespawn() -> void",
+		signature: "CTFPlayer.ForceRespawn() -> null",
 		description: "Force respawns the player."
 	},
 	GetActiveWeapon: {
@@ -1169,18 +1169,18 @@ export const allMethods: Docs = {
 		description: "When did the player last call medic."
 	},
 	GrantOrRemoveAllUpgrades: {
-		signature: "CTFPlayer.GrantOrRemoveAllUpgrades(remove: bool, refund: bool) -> void"
+		signature: "CTFPlayer.GrantOrRemoveAllUpgrades(remove: bool, refund: bool) -> null"
 	},
 	HasItem: {
 		signature: "CTFPlayer.HasItem() -> bool",
 		description: "Currently holding an item? Eg. capture flag."
 	},
 	HandleTauntCommand: {
-		signature: "CTFPlayer.HandleTauntCommand(taunt_slot: int) -> void",
+		signature: "CTFPlayer.HandleTauntCommand(taunt_slot: int) -> null",
 		description: "Spoofs a taunt command from the player, as if they selected this taunt. This can be abused to give the player any taunt, see the [examples page](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/VScript_Examples#Giving a taunt)."
 	},
 	IgnitePlayer: {
-		signature: "CTFPlayer.IgnitePlayer() -> void",
+		signature: "CTFPlayer.IgnitePlayer() -> null",
 		description: "Supposed to set the player on fire, but..."
 	},
 	InAirDueToExplosion: {
@@ -1282,151 +1282,151 @@ export const allMethods: Docs = {
 		signature: "CTFPlayer.IsViewingCYOAPDA() -> bool"
 	},
 	Regenerate: {
-		signature: "CTFPlayer.Regenerate(refill_health_ammo: bool) -> void",
+		signature: "CTFPlayer.Regenerate(refill_health_ammo: bool) -> null",
 		description: "Resupplies a player. If refill health/ammo is set, clears negative conds, gives back player health/ammo."
 	},
 	RemoveAllItems: {
-		signature: "CTFPlayer.RemoveAllItems(unused: bool) -> void"
+		signature: "CTFPlayer.RemoveAllItems(unused: bool) -> null"
 	},
 	RemoveAllObjects: {
-		signature: "CTFPlayer.RemoveAllObjects(explode: bool) -> void",
+		signature: "CTFPlayer.RemoveAllObjects(explode: bool) -> null",
 		description: "Remove all player objects. Eg. dispensers/sentries."
 	},
 	RemoveCond: {
-		signature: "CTFPlayer.RemoveCond(cond: ETFCond) -> void",
+		signature: "CTFPlayer.RemoveCond(cond: ETFCond) -> null",
 		description: "Removes a condition. Does not remove a condition if the minimum duration has not passed. Does nothing if the condition isn't added (interally does `InCond` check).\n\nSee [ETFCond](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ETFCond)."
 	},
 	RemoveCondEx: {
-		signature: "CTFPlayer.RemoveCondEx(cond: ETFCond, ignore_duration: bool) -> void",
+		signature: "CTFPlayer.RemoveCondEx(cond: ETFCond, ignore_duration: bool) -> null",
 		description: "Extended version of above function. Allows forcefully removing the condition even if minimum duration is not met.\n\nSee [ETFCond](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ETFCond)."
 	},
 	RemoveCurrency: {
-		signature: "CTFPlayer.RemoveCurrency(amount: int) -> void",
+		signature: "CTFPlayer.RemoveCurrency(amount: int) -> null",
 		description: "Take away money from a player for reasons such as ie. spending. Lower bounded to 0."
 	},
 	RemoveCustomAttribute: {
-		signature: "CTFPlayer.RemoveCustomAttribute(name: string) -> void",
+		signature: "CTFPlayer.RemoveCustomAttribute(name: string) -> null",
 		description: "Remove a custom attribute to the player."
 	},
 	RemoveDisguise: {
-		signature: "CTFPlayer.RemoveDisguise() -> void",
+		signature: "CTFPlayer.RemoveDisguise() -> null",
 		description: "Undisguise a spy."
 	},
 	RemoveHudHideFlags: {
-		signature: "CTFPlayer.RemoveHudHideFlags(flags: FHideHUD) -> void",
+		signature: "CTFPlayer.RemoveHudHideFlags(flags: FHideHUD) -> null",
 		description: "Unhides a hud element(-s).\n\nSee [FHideHUD](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#FHideHUD)."
 	},
 	RemoveInvisibility: {
-		signature: "CTFPlayer.RemoveInvisibility() -> void",
+		signature: "CTFPlayer.RemoveInvisibility() -> null",
 		description: "Un-invisible a spy."
 	},
 	RemoveTeleportEffect: {
-		signature: "CTFPlayer.RemoveTeleportEffect() -> void"
+		signature: "CTFPlayer.RemoveTeleportEffect() -> null"
 	},
 	ResetScores: {
-		signature: "CTFPlayer.ResetScores() -> void"
+		signature: "CTFPlayer.ResetScores() -> null"
 	},
 	RollRareSpell: {
-		signature: "CTFPlayer.RollRareSpell() -> void"
+		signature: "CTFPlayer.RollRareSpell() -> null"
 	},
 	SetCondDuration: {
-		signature: "CTFPlayer.SetCondDuration(cond: ETFCond, duration: float) -> void",
+		signature: "CTFPlayer.SetCondDuration(cond: ETFCond, duration: float) -> null",
 		description: "See [ETFCond](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ETFCond)."
 	},
 	SetCurrency: {
-		signature: "CTFPlayer.SetCurrency(amount: int) -> void",
+		signature: "CTFPlayer.SetCurrency(amount: int) -> null",
 		description: "Set player's cash for game modes with upgrades, ie. MvM. Does not have any bounds checking."
 	},
 	SetCurrentTauntMoveSpeed: {
-		signature: "CTFPlayer.SetCurrentTauntMoveSpeed(speed: float) -> void"
+		signature: "CTFPlayer.SetCurrentTauntMoveSpeed(speed: float) -> null"
 	},
 	SetCustomModel: {
-		signature: "CTFPlayer.SetCustomModel(model_name: string) -> void",
+		signature: "CTFPlayer.SetCustomModel(model_name: string) -> null",
 		description: "Sets a custom player model without animations (model will T-pose). To enable animations, use `SetCustomModelWithClassAnimations` instead."
 	},
 	SetCustomModelOffset: {
-		signature: "CTFPlayer.SetCustomModelOffset(offset: Vector) -> void"
+		signature: "CTFPlayer.SetCustomModelOffset(offset: Vector) -> null"
 	},
 	SetCustomModelRotates: {
-		signature: "CTFPlayer.SetCustomModelRotates(toggle: bool) -> void"
+		signature: "CTFPlayer.SetCustomModelRotates(toggle: bool) -> null"
 	},
 	SetCustomModelRotation: {
-		signature: "CTFPlayer.SetCustomModelRotation(angles: QAngle) -> void"
+		signature: "CTFPlayer.SetCustomModelRotation(angles: QAngle) -> null"
 	},
 	SetCustomModelVisibleToSelf: {
-		signature: "CTFPlayer.SetCustomModelVisibleToSelf(toggle: bool) -> void"
+		signature: "CTFPlayer.SetCustomModelVisibleToSelf(toggle: bool) -> null"
 	},
 	SetCustomModelWithClassAnimations: {
-		signature: "CTFPlayer.SetCustomModelWithClassAnimations(model_name: string) -> void",
+		signature: "CTFPlayer.SetCustomModelWithClassAnimations(model_name: string) -> null",
 		description: "Sets a custom player model with full animations."
 	},
 	SetDisguiseAmmoCount: {
-		signature: "CTFPlayer.SetDisguiseAmmoCount(count: int) -> void"
+		signature: "CTFPlayer.SetDisguiseAmmoCount(count: int) -> null"
 	},
 	SetForcedTauntCam: {
-		signature: "CTFPlayer.SetForcedTauntCam(toggle: int) -> void"
+		signature: "CTFPlayer.SetForcedTauntCam(toggle: int) -> null"
 	},
 	SetGrapplingHookTarget: {
-		signature: "CTFPlayer.SetGrapplingHookTarget(entity: handle, bleed: bool) -> void",
+		signature: "CTFPlayer.SetGrapplingHookTarget(entity: handle, bleed: bool) -> null",
 		description: "Set the player's target grapple entity."
 	},
 	SetHudHideFlags: {
-		signature: "CTFPlayer.SetHudHideFlags(flags: FHideHUD) -> void",
+		signature: "CTFPlayer.SetHudHideFlags(flags: FHideHUD) -> null",
 		description: "Force hud hide flags to a value.\n\nSee [FHideHUD](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#FHideHUD)."
 	},
 	SetIsMiniBoss: {
-		signature: "CTFPlayer.SetIsMiniBoss(toggle: bool) -> void",
+		signature: "CTFPlayer.SetIsMiniBoss(toggle: bool) -> null",
 		description: "Make this player an MvM mini-boss."
 	},
 	SetNextChangeClassTime: {
-		signature: "CTFPlayer.SetNextChangeClassTime(time: float) -> void",
+		signature: "CTFPlayer.SetNextChangeClassTime(time: float) -> null",
 		description: "Set next change class time."
 	},
 	SetNextChangeTeamTime: {
-		signature: "CTFPlayer.SetNextChangeTeamTime(time: float) -> void",
+		signature: "CTFPlayer.SetNextChangeTeamTime(time: float) -> null",
 		description: "Set next change team time."
 	},
 	SetNextRegenTime: {
-		signature: "CTFPlayer.SetNextRegenTime(time: float) -> void",
+		signature: "CTFPlayer.SetNextRegenTime(time: float) -> null",
 		description: "Set next available resupply time."
 	},
 	SetPlayerClass: {
-		signature: "CTFPlayer.SetPlayerClass(class_index: ETFClass) -> void",
+		signature: "CTFPlayer.SetPlayerClass(class_index: ETFClass) -> null",
 		description: "Sets the player class. Updates the player's visuals and model.\n\nSee [ETFClass](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ETFClass)."
 	},
 	SetRageMeter: {
-		signature: "CTFPlayer.SetRageMeter(percent: float) -> void",
+		signature: "CTFPlayer.SetRageMeter(percent: float) -> null",
 		description: "Sets rage meter from 0 - 100."
 	},
 	SetRPSResult: {
-		signature: "CTFPlayer.SetRPSResult(result: int) -> void",
+		signature: "CTFPlayer.SetRPSResult(result: int) -> null",
 		description: "Rig the result of Rock-Paper-Scissors (0 - rock, 1 - paper, 2 - scissors)."
 	},
 	SetScoutHypeMeter: {
-		signature: "CTFPlayer.SetScoutHypeMeter(percent: float) -> void",
+		signature: "CTFPlayer.SetScoutHypeMeter(percent: float) -> null",
 		description: "Sets hype meter from 0 - 100."
 	},
 	SetSpyCloakMeter: {
-		signature: "CTFPlayer.SetSpyCloakMeter(float) -> void",
+		signature: "CTFPlayer.SetSpyCloakMeter(float) -> null",
 		description: "Sets cloakmeter from 0 - 100."
 	},
 	SetVehicleReverseTime: {
-		signature: "CTFPlayer.SetVehicleReverseTime(time: float) -> void",
+		signature: "CTFPlayer.SetVehicleReverseTime(time: float) -> null",
 		description: "Set the timestamp when kart was reversed."
 	},
 	SetUseBossHealthBar: {
-		signature: "CTFPlayer.SetUseBossHealthBar(toggle: bool) -> void"
+		signature: "CTFPlayer.SetUseBossHealthBar(toggle: bool) -> null"
 	},
 	StopTaunt: {
-		signature: "CTFPlayer.StopTaunt(remove_prop: bool) -> void",
+		signature: "CTFPlayer.StopTaunt(remove_prop: bool) -> null",
 		description: "Stops current taunt. If `remove_prop` is true, the taunt prop will be immediately deleted instead of potentially delaying."
 	},
 	StunPlayer: {
-		signature: "CTFPlayer.StunPlayer(duration: float, move_speed_reduction: float, flags: TF_STUN, attacker: handle) -> void",
+		signature: "CTFPlayer.StunPlayer(duration: float, move_speed_reduction: float, flags: TF_STUN, attacker: handle) -> null",
 		description: "Stuns the player for a specified duration. Move speed reduction is a fraction (0 = no reduction. 1 = total reduction, no movement). Flag combinations control the stun type and behavior.\n\nSee [TF_STUN](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#TF_STUN)."
 	},
 	Taunt: {
-		signature: "CTFPlayer.Taunt(taunt_index: FTaunts, taunt_concept: MP_CONCEPT) -> void",
+		signature: "CTFPlayer.Taunt(taunt_index: FTaunts, taunt_concept: MP_CONCEPT) -> null",
 		description: "Performs a taunt if allowed. Concept is the \"voiceline\" index to use with the taunt. For `TAUNT_SHOW_ITEM` and `TAUNT_BASE_WEAPON` this is set automatically. `TAUNT_LONG` is not supported.\n\nSee [FTaunts](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#FTaunts) ,[MP_CONCEPT](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#MP_CONCEPT)."
 	},
 	TryToPickupBuilding: {
@@ -1434,7 +1434,7 @@ export const allMethods: Docs = {
 		description: "Make the player attempt to pick up a building in front of them."
 	},
 	UpdateSkin: {
-		signature: "CTFPlayer.UpdateSkin(skin: int) -> void"
+		signature: "CTFPlayer.UpdateSkin(skin: int) -> null"
 	},
 	WasInCond: {
 		signature: "CTFPlayer.WasInCond(cond: ETFCond) -> bool",
@@ -1444,69 +1444,69 @@ export const allMethods: Docs = {
 		signature: "CTFPlayer.Weapon_CanUse(weapon: handle) -> bool"
 	},
 	Weapon_Drop: {
-		signature: "CTFPlayer.Weapon_Drop(weapon: handle) -> void",
+		signature: "CTFPlayer.Weapon_Drop(weapon: handle) -> null",
 		description: "Does nothing!"
 	},
 	Weapon_DropEx: {
-		signature: "CTFPlayer.Weapon_DropEx(weapon: handle, target: Vector, velocity: Vector) -> void",
+		signature: "CTFPlayer.Weapon_DropEx(weapon: handle, target: Vector, velocity: Vector) -> null",
 		description: "Does nothing!"
 	},
 	Weapon_Equip: {
-		signature: "CTFPlayer.Weapon_Equip(weapon: handle) -> void",
+		signature: "CTFPlayer.Weapon_Equip(weapon: handle) -> null",
 		description: "Equips a weapon in the player. This places it inside the `m_hMyWeapons` array."
 	},
 	Weapon_SetLast: {
-		signature: "CTFPlayer.Weapon_SetLast(weapon: handle) -> void"
+		signature: "CTFPlayer.Weapon_SetLast(weapon: handle) -> null"
 	},
 	Weapon_ShootPosition: {
 		signature: "CTFPlayer.Weapon_ShootPosition() -> Vector",
 		description: "The same as calling `EyePosition`."
 	},
 	Weapon_Switch: {
-		signature: "CTFPlayer.Weapon_Switch(weapon: handle) -> void",
+		signature: "CTFPlayer.Weapon_Switch(weapon: handle) -> null",
 		description: "Attempts a switch to the given weapon, if present in the player's inventory (`m_hMyWeapons` array)."
 	},
 	/* --------------------------- *
 	 * CTFBot                      *
 	 * --------------------------- */
 	AddBotAttribute: {
-		signature: "CTFBot.AddBotAttribute(attribute: FTFBotAttributeType) -> void",
+		signature: "CTFBot.AddBotAttribute(attribute: FTFBotAttributeType) -> null",
 		description: "Sets attribute flags on this TFBot.\n\nSee [FTFBotAttributeType](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#FTFBotAttributeType)."
 	},
 	AddBotTag: {
-		signature: "CTFBot.AddBotTag(tag: string) -> void",
+		signature: "CTFBot.AddBotTag(tag: string) -> null",
 		description: "Adds a bot tag."
 	},
 	AddWeaponRestriction: {
-		signature: "CTFBot.AddWeaponRestriction(flags: TFBotWeaponRestrictionType) -> void",
+		signature: "CTFBot.AddWeaponRestriction(flags: TFBotWeaponRestrictionType) -> null",
 		description: "Adds weapon restriction flags.\n\nSee [TFBotWeaponRestrictionType](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#TFBotWeaponRestrictionType)."
 	},
 	ClearAllBotAttributes: {
-		signature: "CTFBot.ClearAllBotAttributes() -> void",
+		signature: "CTFBot.ClearAllBotAttributes() -> null",
 		description: "Clears all attribute flags on this TFBot."
 	},
 	ClearAllBotTags: {
-		signature: "CTFBot.ClearAllBotTags() -> void",
+		signature: "CTFBot.ClearAllBotTags() -> null",
 		description: "Clears bot tags."
 	},
 	ClearAllWeaponRestrictions: {
-		signature: "CTFBot.ClearAllWeaponRestrictions() -> void",
+		signature: "CTFBot.ClearAllWeaponRestrictions() -> null",
 		description: "Removes all weapon restriction flags."
 	},
 	ClearAttentionFocus: {
-		signature: "CTFBot.ClearAttentionFocus() -> void",
+		signature: "CTFBot.ClearAttentionFocus() -> null",
 		description: "Clear current focus."
 	},
 	ClearBehaviorFlag: {
-		signature: "CTFBot.ClearBehaviorFlag(flags: TFBOT_BEHAVIOR) -> void",
+		signature: "CTFBot.ClearBehaviorFlag(flags: TFBOT_BEHAVIOR) -> null",
 		description: "Clear the given behavior flag(s) for this bot.\n\nSee [TFBOT_BEHAVIOR](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#TFBOT_BEHAVIOR)."
 	},
 	DelayedThreatNotice: {
-		signature: "CTFBot.DelayedThreatNotice(threat: handle, delay: float) -> void",
+		signature: "CTFBot.DelayedThreatNotice(threat: handle, delay: float) -> null",
 		description: "Notice the threat after a delay in seconds."
 	},
 	DisbandCurrentSquad: {
-		signature: "CTFBot.DisbandCurrentSquad() -> void",
+		signature: "CTFBot.DisbandCurrentSquad() -> null",
 		description: "Forces the current squad to be entirely disbanded by everyone."
 	},
 	FindVantagePoint: {
@@ -1514,7 +1514,7 @@ export const allMethods: Docs = {
 		description: "Get the nav area of the closest vantage point (within distance)."
 	},
 	GenerateAndWearItem: {
-		signature: "CTFBot.GenerateAndWearItem(item_name: string) -> void",
+		signature: "CTFBot.GenerateAndWearItem(item_name: string) -> null",
 		description: "Give me an item!"
 	},
 	GetActionPoint: {
@@ -1522,7 +1522,7 @@ export const allMethods: Docs = {
 		description: "Get the given action point for this bot."
 	},
 	GetAllBotTags: {
-		signature: "CTFBot.GetAllBotTags(result: table) -> void",
+		signature: "CTFBot.GetAllBotTags(result: table) -> null",
 		description: "Get all bot tags. The key is the index, and the value is the tag."
 	},
 	GetHomeArea: {
@@ -1612,80 +1612,80 @@ export const allMethods: Docs = {
 		description: "Checks if the given weapon is restricted for use on the bot."
 	},
 	LeaveSquad: {
-		signature: "CTFBot.LeaveSquad() -> void",
+		signature: "CTFBot.LeaveSquad() -> null",
 		description: "Makes us leave the current squad (if any)."
 	},
 	PressAltFireButton: {
-		signature: "CTFBot.PressAltFireButton(duration: float) -> void"
+		signature: "CTFBot.PressAltFireButton(duration: float) -> null"
 	},
 	PressFireButton: {
-		signature: "CTFBot.PressFireButton(duration: float) -> void"
+		signature: "CTFBot.PressFireButton(duration: float) -> null"
 	},
 	PressSpecialFireButton: {
-		signature: "CTFBot.PressSpecialFireButton(duration: float) -> void"
+		signature: "CTFBot.PressSpecialFireButton(duration: float) -> null"
 	},
 	RemoveBotAttribute: {
-		signature: "CTFBot.RemoveBotAttribute(attribute: FTFBotAttributeType) -> void",
+		signature: "CTFBot.RemoveBotAttribute(attribute: FTFBotAttributeType) -> null",
 		description: "Removes attribute flags on this TFBot.\n\nSee [FTFBotAttributeType](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#FTFBotAttributeType)."
 	},
 	RemoveBotTag: {
-		signature: "CTFBot.RemoveBotTag(tag: string) -> void",
+		signature: "CTFBot.RemoveBotTag(tag: string) -> null",
 		description: "Removes a bot tag."
 	},
 	RemoveWeaponRestriction: {
-		signature: "CTFBot.RemoveWeaponRestriction(flags: TFBotWeaponRestrictionType) -> void",
+		signature: "CTFBot.RemoveWeaponRestriction(flags: TFBotWeaponRestrictionType) -> null",
 		description: "Removes weapon restriction flags.\n\nSee [TFBotWeaponRestrictionType](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#TFBotWeaponRestrictionType)."
 	},
 	SetActionPoint: {
-		signature: "CTFBot.SetActionPoint(entity: handle) -> void",
+		signature: "CTFBot.SetActionPoint(entity: handle) -> null",
 		description: "Set the given action point for this bot."
 	},
 	SetAttentionFocus: {
-		signature: "CTFBot.SetAttentionFocus(entity: handle) -> void",
+		signature: "CTFBot.SetAttentionFocus(entity: handle) -> null",
 		description: "Sets our current attention focus to this entity."
 	},
 	SetAutoJump: {
-		signature: "CTFBot.SetAutoJump(min_time: float, max_time: float) -> void",
+		signature: "CTFBot.SetAutoJump(min_time: float, max_time: float) -> null",
 		description: "Sets if the bot should automatically jump, and how often."
 	},
 	SetBehaviorFlag: {
-		signature: "CTFBot.SetBehaviorFlag(flags: TFBOT_BEHAVIOR) -> void",
+		signature: "CTFBot.SetBehaviorFlag(flags: TFBOT_BEHAVIOR) -> null",
 		description: "Set the given behavior flag(s) for this bot.\n\nSee [TFBOT_BEHAVIOR](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#TFBOT_BEHAVIOR)."
 	},
 	SetDifficulty: {
-		signature: "CTFBot.SetDifficulty(difficulty: ETFBotDifficultyType) -> void",
+		signature: "CTFBot.SetDifficulty(difficulty: ETFBotDifficultyType) -> null",
 		description: "Sets the bots difficulty level.\n\nSee [ETFBotDifficultyType](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ETFBotDifficultyType)."
 	},
 	SetHomeArea: {
-		signature: "CTFBot.SetHomeArea(area: handle) -> void",
+		signature: "CTFBot.SetHomeArea(area: handle) -> null",
 		description: "Set the home nav area of the bot, may be null."
 	},
 	SetMaxVisionRangeOverride: {
-		signature: "CTFBot.SetMaxVisionRangeOverride(range: float) -> void",
+		signature: "CTFBot.SetMaxVisionRangeOverride(range: float) -> null",
 		description: "Sets max vision range override for the bot."
 	},
 	SetMission: {
-		signature: "CTFBot.SetMission(mission: ETFBotMissionType, reset_behavior: bool) -> void",
+		signature: "CTFBot.SetMission(mission: ETFBotMissionType, reset_behavior: bool) -> null",
 		description: "Set this bot's current mission to the given mission.\n\nSee [ETFBotMissionType](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ETFBotMissionType)."
 	},
 	SetMissionTarget: {
-		signature: "CTFBot.SetMissionTarget(entity: handle) -> void",
+		signature: "CTFBot.SetMissionTarget(entity: handle) -> null",
 		description: "Set this bot's mission target to the given entity."
 	},
 	SetPrevMission: {
-		signature: "CTFBot.SetPrevMission(mission: ETFBotMissionType) -> void",
+		signature: "CTFBot.SetPrevMission(mission: ETFBotMissionType) -> null",
 		description: "Set this bot's previous mission to the given mission.\n\nSee [ETFBotMissionType](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ETFBotMissionType)."
 	},
 	SetScaleOverride: {
-		signature: "CTFBot.SetScaleOverride(scale: float) -> void",
+		signature: "CTFBot.SetScaleOverride(scale: float) -> null",
 		description: "Sets the scale override for the bot."
 	},
 	SetShouldQuickBuild: {
-		signature: "CTFBot.SetShouldQuickBuild(toggle: bool) -> void",
+		signature: "CTFBot.SetShouldQuickBuild(toggle: bool) -> null",
 		description: "Sets if the bot should build instantly."
 	},
 	SetSquadFormationError: {
-		signature: "CTFBot.SetSquadFormationError(coefficient: float) -> void",
+		signature: "CTFBot.SetSquadFormationError(coefficient: float) -> null",
 		description: "Sets our formation error coefficient."
 	},
 	ShouldAutoJump: {
@@ -1697,24 +1697,24 @@ export const allMethods: Docs = {
 		description: "Returns if the bot should build instantly."
 	},
 	UpdateDelayedThreatNotices: {
-		signature: "CTFBot.UpdateDelayedThreatNotices() -> void"
+		signature: "CTFBot.UpdateDelayedThreatNotices() -> null"
 	},
 	/* --------------------------- *
 	 * CTFBaseBoss                 *
 	 * --------------------------- */
 	SetResolvePlayerCollisions: {
-		signature: "CTFBaseBoss.SetResolvePlayerCollisions(toggle: bool) -> void",
+		signature: "CTFBaseBoss.SetResolvePlayerCollisions(toggle: bool) -> null",
 		description: "Sets whether the entity should push away players intersecting its bounding box. On by default."
 	},
 	/* --------------------------- *
 	 * CTFNavArea                  *
 	 * --------------------------- */
 	AddIncomingConnection: {
-		signature: "CTFNavArea.AddIncomingConnection(area: handle, dir: ENavDirType) -> void",
+		signature: "CTFNavArea.AddIncomingConnection(area: handle, dir: ENavDirType) -> null",
 		description: "Add areas that connect TO this area by a ONE-WAY link.\n\nSee [ENavDirType](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ENavDirType)."
 	},
 	ClearAttributeTF: {
-		signature: "CTFNavArea.ClearAttributeTF(bits: FTFNavAttributeType) -> void",
+		signature: "CTFNavArea.ClearAttributeTF(bits: FTFNavAttributeType) -> null",
 		description: "Clear TF-specific area attribute bits.\n\nSee [FTFNavAttributeType](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#FTFNavAttributeType)."
 	},
 	ComputeClosestPointInPortal: {
@@ -1726,7 +1726,7 @@ export const allMethods: Docs = {
 		description: "Return direction from this area to the given point."
 	},
 	ConnectTo: {
-		signature: "CTFNavArea.ConnectTo(area: handle, dir: ENavDirType) -> void",
+		signature: "CTFNavArea.ConnectTo(area: handle, dir: ENavDirType) -> null",
 		description: "Connect this area to given area in given direction.\n\nSee [ENavDirType](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ENavDirType)."
 	},
 	Contains: {
@@ -1738,11 +1738,11 @@ export const allMethods: Docs = {
 		description: "Return true if given point is on or above this area, but no others."
 	},
 	DebugDrawFilled: {
-		signature: "CTFNavArea.DebugDrawFilled(r: int, g: int, b: int, a: int, duration: float, no_depth_test: bool, margin: float) -> void",
+		signature: "CTFNavArea.DebugDrawFilled(r: int, g: int, b: int, a: int, duration: float, no_depth_test: bool, margin: float) -> null",
 		description: "Draw area as a filled rectangle of the given color."
 	},
 	Disconnect: {
-		signature: "CTFNavArea.Disconnect(area: handle) -> void",
+		signature: "CTFNavArea.Disconnect(area: handle) -> null",
 		description: "Disconnect this area from given area."
 	},
 	FindRandomSpot: {
@@ -1754,7 +1754,7 @@ export const allMethods: Docs = {
 		description: "Return the n'th adjacent area in the given direction.\n\nSee [ENavDirType](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ENavDirType)."
 	},
 	GetAdjacentAreas: {
-		signature: "CTFNavArea.GetAdjacentAreas(dir: ENavDirType, result: table) -> void",
+		signature: "CTFNavArea.GetAdjacentAreas(dir: ENavDirType, result: table) -> null",
 		description: "Fills a passed in table with all adjacent areas in the given direction.\n\nSee [ENavDirType](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ENavDirType)."
 	},
 	GetAdjacentCount: {
@@ -1790,7 +1790,7 @@ export const allMethods: Docs = {
 		description: "Returns the elevator if in an elevator's path."
 	},
 	GetElevatorAreas: {
-		signature: "CTFNavArea.GetElevatorAreas(result: table) -> void",
+		signature: "CTFNavArea.GetElevatorAreas(result: table) -> null",
 		description: "Fills table with a collection of areas reachable via elevator from this area."
 	},
 	GetID: {
@@ -1798,7 +1798,7 @@ export const allMethods: Docs = {
 		description: "Get area ID."
 	},
 	GetIncomingConnections: {
-		signature: "CTFNavArea.GetIncomingConnections(dir: ENavDirType, result: table) -> void",
+		signature: "CTFNavArea.GetIncomingConnections(dir: ENavDirType, result: table) -> null",
 		description: "Fills a passed in table with areas connected TO this area by a ONE-WAY link (ie: we have no connection back to them).\n\nSee [ENavDirType](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ENavDirType)."
 	},
 	GetParent: {
@@ -1922,43 +1922,43 @@ export const allMethods: Docs = {
 		description: "Return true if area is visible from the given eyepoint."
 	},
 	MarkAsBlocked: {
-		signature: "CTFNavArea.MarkAsBlocked(team: ETFTeam) -> void",
+		signature: "CTFNavArea.MarkAsBlocked(team: ETFTeam) -> null",
 		description: "Mark this area as blocked for team.\n\nSee [ETFTeam](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ETFTeam)."
 	},
 	MarkAsDamaging: {
-		signature: "CTFNavArea.MarkAsDamaging(duration: float) -> void",
+		signature: "CTFNavArea.MarkAsDamaging(duration: float) -> null",
 		description: "Mark this area is damaging for the next `duration` seconds."
 	},
 	MarkObstacleToAvoid: {
-		signature: "CTFNavArea.MarkObstacleToAvoid(height: float) -> void",
+		signature: "CTFNavArea.MarkObstacleToAvoid(height: float) -> null",
 		description: "Marks the obstructed status of the nav area."
 	},
 	RemoveAttributes: {
-		signature: "CTFNavArea.RemoveAttributes(bits: FNavAttributeType) -> void",
+		signature: "CTFNavArea.RemoveAttributes(bits: FNavAttributeType) -> null",
 		description: "Removes area attribute bits.\n\nSee [FNavAttributeType](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#FNavAttributeType)."
 	},
 	RemoveOrthogonalConnections: {
-		signature: "CTFNavArea.RemoveOrthogonalConnections(dir: ENavDirType) -> void",
+		signature: "CTFNavArea.RemoveOrthogonalConnections(dir: ENavDirType) -> null",
 		description: "Removes all connections in directions to left and right of specified direction.\n\nSee [ENavDirType](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ENavDirType)."
 	},
 	SetAttributeTF: {
-		signature: "CTFNavArea.SetAttributeTF(bits: FTFNavAttributeType) -> void",
+		signature: "CTFNavArea.SetAttributeTF(bits: FTFNavAttributeType) -> null",
 		description: "Set TF-specific area attributes.\n\nSee [FTFNavAttributeType](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#FTFNavAttributeType)."
 	},
 	SetAttributes: {
-		signature: "CTFNavArea.SetAttributes(bits: FNavAttributeType) -> void",
+		signature: "CTFNavArea.SetAttributes(bits: FNavAttributeType) -> null",
 		description: "Set area attribute bits.\n\nSee [FNavAttributeType](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#FNavAttributeType)."
 	},
 	SetPlaceName: {
-		signature: "CTFNavArea.SetPlaceName(name: string) -> void",
+		signature: "CTFNavArea.SetPlaceName(name: string) -> null",
 		description: "Set place name. If you pass null, the place name will be set to nothing."
 	},
 	TFMark: {
-		signature: "CTFNavArea.TFMark() -> void",
+		signature: "CTFNavArea.TFMark() -> null",
 		description: "Mark this nav area with the current marking scope."
 	},
 	UnblockArea: {
-		signature: "CTFNavArea.UnblockArea() -> void",
+		signature: "CTFNavArea.UnblockArea() -> null",
 		description: "Unblocks this area."
 	},
 	/* --------------------------- *
@@ -2001,26 +2001,26 @@ export const allMethods: Docs = {
 		description: "Whether the handle belongs to a valid key."
 	}, */
 	ReleaseKeyValues: {
-		signature: "CScriptKeyValues.ReleaseKeyValues() -> void",
+		signature: "CScriptKeyValues.ReleaseKeyValues() -> null",
 		description: "Releases the contents of the instance."
 	},
 	/* --------------------------- *
 	 * CEnvEntityMaker             *
 	 * --------------------------- */
 	SpawnEntity: {
-		signature: "CEnvEntityMaker.SpawnEntity() -> void",
+		signature: "CEnvEntityMaker.SpawnEntity() -> null",
 		description: "Create an entity at the location of the maker."
 	},
 	SpawnEntityAtEntityOrigin: {
-		signature: "CEnvEntityMaker.SpawnEntityAtEntityOrigin(entity: handle) -> void",
+		signature: "CEnvEntityMaker.SpawnEntityAtEntityOrigin(entity: handle) -> null",
 		description: "Create an entity at the location of a specified entity instance."
 	},
 	SpawnEntityAtLocation: {
-		signature: "CEnvEntityMaker.SpawnEntityAtLocation(origin: Vector, orientation: Vector) -> void",
+		signature: "CEnvEntityMaker.SpawnEntityAtLocation(origin: Vector, orientation: Vector) -> null",
 		description: "Create an entity at a specified location and orientation, orientation is Euler angle in degrees (pitch, yaw, roll)."
 	},
 	SpawnEntityAtNamedEntityOrigin: {
-		signature: "CEnvEntityMaker.SpawnEntityAtNamedEntityOrigin(targetname: string) -> void",
+		signature: "CEnvEntityMaker.SpawnEntityAtNamedEntityOrigin(targetname: string) -> null",
 		description: "Create an entity at the location of a named entity. If multiple entities have the same name, only the one with the lowest entity index will be targeted."
 	},
 	/* --------------------------- *
@@ -2034,18 +2034,18 @@ export const allMethods: Docs = {
 	 * CPointScriptTemplate        *
 	 * --------------------------- */
 	AddTemplate: {
-		signature: "CPointScriptTemplate.AddTemplate(classname: string, keyvalues: table) -> void",
+		signature: "CPointScriptTemplate.AddTemplate(classname: string, keyvalues: table) -> null",
 		description: "Add an entity with the given keyvalues to the template spawner, similar to `SpawnEntityFromTable`. The number of templates allowed is unlimited."
 	},
 	SetGroupSpawnTables: {
-		signature: "CPointScriptTemplate.SetGroupSpawnTables(group: table, spawn: table) -> void",
+		signature: "CPointScriptTemplate.SetGroupSpawnTables(group: table, spawn: table) -> null",
 		description: "Unused. This only stores a reference to the two tables which is removed when the"
 	},
 	/* --------------------------- *
 	 * CSceneEntity                *
 	 * --------------------------- */
 	AddBroadcastTeamTarget: {
-		signature: "CSceneEntity.AddBroadcastTeamTarget(index: int) -> void",
+		signature: "CSceneEntity.AddBroadcastTeamTarget(index: int) -> null",
 		description: "Adds a team (by index) to the broadcast list."
 	},
 	EstimateLength: {
@@ -2069,7 +2069,7 @@ export const allMethods: Docs = {
 		description: "Given a dummy scene name and a vcd string, load the scene."
 	},
 	RemoveBroadcastTeamTarget: {
-		signature: "CSceneEntity.RemoveBroadcastTeamTarget(index: int) -> void",
+		signature: "CSceneEntity.RemoveBroadcastTeamTarget(index: int) -> null",
 		description: "Removes a team (by index) from the broadcast list."
 	},
 	/* --------------------------- *
@@ -2080,7 +2080,7 @@ export const allMethods: Docs = {
 		description: "Creates a CCallChainer object that'll collect functions that have a matching prefix in the given scope."
 	},
 	PostScriptExecute: {
-		signature: "CCallChainer.PostScriptExecute() -> void",
+		signature: "CCallChainer.PostScriptExecute() -> null",
 		description: "Search for all non-native functions with matching prefixes, then push them into the `chains` table."
 	},
 	Call: {
@@ -2095,7 +2095,7 @@ export const allMethods: Docs = {
 		description: "Creates a CSimpleCallChainer object that'll collect functions that have a matching prefix in the given scope, unless it seek for an exact name match."
 	}, /*
 	PostScriptExecute: {
-		signature: "CSimpleCallChainer.PostScriptExecute() -> void",
+		signature: "CSimpleCallChainer.PostScriptExecute() -> null",
 		description: "Begin searching for all non-native functions with matching prefixes, then push them into the `chain` array."
 	},
 	Call: {
@@ -2106,11 +2106,11 @@ export const allMethods: Docs = {
 	 * NextBotCombatCharacter      *
 	 * --------------------------- */
 	ClearImmobileStatus: {
-		signature: "NextBotCombatCharacter.ClearImmobileStatus() -> void",
+		signature: "NextBotCombatCharacter.ClearImmobileStatus() -> null",
 		description: "Clear immobile status."
 	},
 	FlagForUpdate: {
-		signature: "NextBotCombatCharacter.FlagForUpdate(toggle: bool) -> void",
+		signature: "NextBotCombatCharacter.FlagForUpdate(toggle: bool) -> null",
 		description: "Flag this bot for update (or not to update if `toggle` is false)."
 	},
 	GetBodyInterface: {
@@ -2173,18 +2173,18 @@ export const allMethods: Docs = {
 		description: "Returns the component update interval."
 	},
 	Reset: {
-		signature: "INextBotComponent/ILocomotion.Reset() -> void",
+		signature: "INextBotComponent/ILocomotion.Reset() -> null",
 		description: "Resets the internal update state"
 	},
 	/* --------------------------- *
 	 * ILocomotion                 *
 	 * --------------------------- */
 	Approach: {
-		signature: "ILocomotion.Approach(goal: Vector, goal_weight: float) -> void",
+		signature: "ILocomotion.Approach(goal: Vector, goal_weight: float) -> null",
 		description: "The primary locomotive method. Goal determines the destination position to move towards. goal_weight determines the priority of this path, you can set this to 1.0 generally speaking."
 	},
 	ClearStuckStatus: {
-		signature: "ILocomotion.ClearStuckStatus(reason: string) -> void",
+		signature: "ILocomotion.ClearStuckStatus(reason: string) -> null",
 		description: "Reset stuck status to un-stuck. Reason message is shown when debugging nextbots."
 	},
 	ClimbUpToLedge: {
@@ -2196,11 +2196,11 @@ export const allMethods: Docs = {
 		description: "Returns false if no time has elapsed."
 	}, */
 	DriveTo: {
-		signature: "ILocomotion.DriveTo(pos: Vector) -> void",
+		signature: "ILocomotion.DriveTo(pos: Vector) -> null",
 		description: "Move the bot to the precise given position immediately, updating internal state."
 	},
 	FaceTowards: {
-		signature: "ILocomotion.FaceTowards(target: Vector) -> void",
+		signature: "ILocomotion.FaceTowards(target: Vector) -> null",
 		description: "Rotate body to face towards target."
 	},
 	FractionPotentialGap: {
@@ -2352,43 +2352,43 @@ export const allMethods: Docs = {
 		description: "Return true if bot is stuck. If the locomotor cannot make progress, it becomes stuck and can only leave this stuck state by successfully movingand becoming un-stuck."
 	},
 	Jump: {
-		signature: "ILocomotion.Jump() -> void",
+		signature: "ILocomotion.Jump() -> null",
 		description: "Initiate a simple undirected jump in the air."
 	},
 	JumpAcrossGap: {
-		signature: "ILocomotion.JumpAcrossGap(goal_pos: Vector, goal_forward: Vector) -> void",
+		signature: "ILocomotion.JumpAcrossGap(goal_pos: Vector, goal_forward: Vector) -> null",
 		description: "Initiate a jump across an empty volume of space to far side."
 	},
 	OnLandOnGround: {
-		signature: "ILocomotion.OnLandOnGround(ground: handle) -> void",
+		signature: "ILocomotion.OnLandOnGround(ground: handle) -> null",
 		description: "Manually run the OnLandOnGround callback. Typically invoked when bot lands on the ground after being in the air."
 	},
 	OnLeaveGround: {
-		signature: "ILocomotion.OnLeaveGround(ground: handle) -> void",
+		signature: "ILocomotion.OnLeaveGround(ground: handle) -> null",
 		description: "Manually run the OnLeaveGround callback. Typically invoked when bot leaves ground for any reason."
 	}, /*
 	Reset: {
-		signature: "ILocomotion.Reset() -> void",
+		signature: "ILocomotion.Reset() -> null",
 		description: "Resets motion, stuck state etc."
 	}, */
 	Run: {
-		signature: "ILocomotion.Run() -> void",
+		signature: "ILocomotion.Run() -> null",
 		description: "Set desired movement speed to running."
 	},
 	SetDesiredSpeed: {
-		signature: "ILocomotion.SetDesiredSpeed(speed: float) -> void",
+		signature: "ILocomotion.SetDesiredSpeed(speed: float) -> null",
 		description: "Set desired speed for locomotor movement."
 	},
 	SetSpeedLimit: {
-		signature: "ILocomotion.SetSpeedLimit(limit: float) -> void",
+		signature: "ILocomotion.SetSpeedLimit(limit: float) -> null",
 		description: "Set maximum speed bot can reach, regardless of desired speed."
 	},
 	Stop: {
-		signature: "ILocomotion.Stop() -> void",
+		signature: "ILocomotion.Stop() -> null",
 		description: "Set desired movement speed to stopped."
 	},
 	Walk: {
-		signature: "ILocomotion.Walk() -> void",
+		signature: "ILocomotion.Walk() -> null",
 		description: "Set desired movement speed to walking"
 	},
 	/* --------------------------- *
@@ -2501,7 +2501,7 @@ export const allMethods: Docs = {
 		description: "Normalizes the quaternion."
 	},*/
 	SetPitchYawRoll: {
-		signature: "Quaternion.SetPitchYawRoll(pitch: float, yaw: float, roll: float) -> void",
+		signature: "Quaternion.SetPitchYawRoll(pitch: float, yaw: float, roll: float) -> null",
 		description: "Recomputes the quaternion from the supplied Euler angles."
 	},/*
 	ToKVString: {
@@ -2525,7 +2525,7 @@ export const allMethods: Docs = {
 		description: "Returns an string's/array's/table's length."
 	},
 	slice: {
-		signature: "string/array.slice(start_index: int, end_index: int = null) -> void",
+		signature: "string/array.slice(start_index: int, end_index: int = null) -> null",
 		description: "Returns a section of the string/array as new string/array. Copies from start to the end (not included). If start is negative the index is calculated as length + start, if end is negative the index is calculated as length + end. If end is omitted end is equal to the string/array length."
 	},
 	tolower: {
@@ -2540,23 +2540,23 @@ export const allMethods: Docs = {
 	 * Array                       *
 	 * --------------------------- */
 	append: {
-		signature: "array.append(item: any) -> void",
+		signature: "array.append(item: any) -> null",
 		description: "Adds an item to the end of an array."
 	},
 	apply: {
-		signature: "array.apply(func: function) -> void",
+		signature: "array.apply(func: function) -> null",
 		description: "Applies a function to all of an array's items."
 	},
 	clear: {
-		signature: "table/array.clear() -> void",
+		signature: "table/array.clear() -> null",
 		description: "Removes all of the items from an array/table."
 	},
 	extend: {
-		signature: "array.extend(other: array) -> void",
+		signature: "array.extend(other: array) -> null",
 		description: "Combines two arrays into one."
 	},
 	filter: {
-		signature: "array.filter(filter: function) -> void",
+		signature: "array.filter(filter: function) -> null",
 		description: "Applies a filter function to an array's items, storing the results in a new array."
 	}, /*
 	find: {
@@ -2564,7 +2564,7 @@ export const allMethods: Docs = {
 		description: "Finds an index of the value within an array. Returns null if not present."
 	}, */
 	insert: {
-		signature: "array.insert(index: int, item: any) -> void",
+		signature: "array.insert(index: int, item: any) -> null",
 		description: "Inserts an item into an array at the specified index."
 	}, /*
 	len: {
@@ -2580,7 +2580,7 @@ export const allMethods: Docs = {
 		description: "Returns and removes the value at the end of the array."
 	},
 	push: {
-		signature: "array.push(item: any) -> void",
+		signature: "array.push(item: any) -> null",
 		description: "Adds an item to the end of an array."
 	},
 	reduce: {
@@ -2592,19 +2592,19 @@ export const allMethods: Docs = {
 		description: "Returns and removes an array item at a specified index."
 	},
 	resize: {
-		signature: "array.resize(new_size: int, fill: any = null) -> void",
+		signature: "array.resize(new_size: int, fill: any = null) -> null",
 		description: "Increases or decreases the size of an array."
 	},
 	reverse: {
-		signature: "array.reverse() -> void",
+		signature: "array.reverse() -> null",
 		description: "Reverses the order of the elements in an array."
 	}, /*
 	slice: {
-		signature: "array.slice(start_index: int, end_index: int) -> void",
+		signature: "array.slice(start_index: int, end_index: int) -> null",
 		description: "Creates a new array from an array."
 	}, */
 	sort: {
-		signature: "array.sort(compare: function = null) -> void",
+		signature: "array.sort(compare: function = null) -> null",
 		description: "This method sorts the items within the target array into either a lowest-to-highest order or according to the results of an optional comparison function which may be passed to the method as a parameter. If the items are arrays, blobs, functions, objects and/or tables, they will be sorted by reference not value. The optional comparison function should take two parameters: two values which will be compared in some way. It should return the value -1 if the first value should be placed before the second, or 1 if it should follow the second value. Return 0 if the two values are equivalent."
 	},
 	top: {
@@ -2616,7 +2616,7 @@ export const allMethods: Docs = {
 	 * --------------------------- */
 	/*
 	clear: {
-		signature: "table.clear() -> void",
+		signature: "table.clear() -> null",
 		description: "Removes all of the items from a table."
 	}, */
 	getdelegate: {
@@ -2680,7 +2680,7 @@ export const allMethods: Docs = {
 		description: "Calls the function with an array of parameters, bypassing Squirrel error callbacks."
 	},
 	setroot: {
-		signature: "function.setroot(root: table) -> void",
+		signature: "function.setroot(root: table) -> null",
 		description: "Sets the root table of a closure"
 	},
 	getroot: {
@@ -2787,33 +2787,33 @@ export const allDeprecatedMethods: Docs = {
 		description: "`(→ GetAbsVelocity)`."
 	},
 	SetAngles: {
-		signature: "CBaseEntity.SetAngles(pitch: float, yaw: float, roll: float) -> void",
+		signature: "CBaseEntity.SetAngles(pitch: float, yaw: float, roll: float) -> null",
 		description: "`(→ SetAbsAngles)`.\n\nSet entity angles."
 	},
 	SetOrigin: {
-		signature: "CBaseEntity.SetOrigin(origin: Vector) -> void",
+		signature: "CBaseEntity.SetOrigin(origin: Vector) -> null",
 		description: "`(→ SetAbsOrigin)`."
 	},
 	SetVelocity: {
-		signature: "CBaseEntity.SetVelocity(velocity: Vector) -> void",
+		signature: "CBaseEntity.SetVelocity(velocity: Vector) -> null",
 		description: "`(→ SetAbsVelocity)`."
 	}
 }
 
 export const allFunctions: Docs = {
 	AddThinkToEnt: {
-		signature: "AddThinkToEnt(entity: handle, function_name: string) -> void",
+		signature: "AddThinkToEnt(entity: handle, function_name: string) -> null",
 		description: "Sets a function in the entity's script to rerun by itself constantly. Pass null as the function name to remove a think function."
 	},
 	AddToScriptHelp: {
 		signature: "AddToScriptHelp()"
 	},
 	Assert: {
-		signature: "Assert(value: bool, optional_message: string) -> void",
+		signature: "Assert(value: bool, optional_message: string) -> null",
 		description: "Test value and if not true, throws exception, optionally with message."
 	},
 	ClearGameEventCallbacks: {
-		signature: "ClearGameEventCallbacks() -> void",
+		signature: "ClearGameEventCallbacks() -> null",
 		description: "Empties the tables of game event callback functions."
 	},
 	CreateProp: {
@@ -2829,14 +2829,14 @@ export const allFunctions: Docs = {
 		description: "The current level of the `developer` console variable."
 	},
 	DispatchParticleEffect: {
-		signature: "DispatchParticleEffect(name: string, origin: Vector, direction: Vector) -> void",
+		signature: "DispatchParticleEffect(name: string, origin: Vector, direction: Vector) -> null",
 		description: "Dispatches a one-off particle system. To pass angles into this, use the `.Forward()` method on a QAngle."
 	},
 	Document: {
-		signature: "Document(symbol_or_table: unknown, item_if_symbol: unknown = null, description_if_symbol: string = null) -> void"
+		signature: "Document(symbol_or_table: unknown, item_if_symbol: unknown = null, description_if_symbol: string = null) -> null"
 	},
 	DoEntFire: {
-		signature: "DoEntFire(target: string, action: string, value: string, delay: float, activator: handle, caller: handle) -> void",
+		signature: "DoEntFire(target: string, action: string, value: string, delay: float, activator: handle, caller: handle) -> null",
 		description: "Generate an entity I/O event. The `caller` and `activator` argument takes a `CBaseEntity` script handle, and entities assigned can receive inputs with `target` set to *!self*, or *!activator* / *!caller*. Negative delays are clamped to 0."
 	},
 	DoIncludeScript: {
@@ -2848,31 +2848,31 @@ export const allFunctions: Docs = {
 		description: "Wrapper for DoIncludeScript."
 	},
 	EmitAmbientSoundOn: {
-		signature: "EmitAmbientSoundOn(sound_name: string, volume: float, soundlevel: int, pitch: int, entity: handle) -> void",
+		signature: "EmitAmbientSoundOn(sound_name: string, volume: float, soundlevel: int, pitch: int, entity: handle) -> null",
 		description: "Play named sound on an entity using configurations similar to [this page](https://developer.valvesoftware.com/wiki/ambient_generic]]. Soundlevel is in decibels, see [Soundscripts#SoundLevel](https://developer.valvesoftware.com/wiki/Soundscripts#SoundLevel) for real world equivalents."
 	},
 	StopAmbientSoundOn: {
-		signature: "StopAmbientSoundOn(sound_name: string, entity: handle) -> void",
+		signature: "StopAmbientSoundOn(sound_name: string, entity: handle) -> null",
 		description: "Stop named sound on an entity using configurations similar to [ambient_generic](https://developer.valvesoftware.com/wiki/ambient_generic)."
 	},
 	EmitSoundOn: {
-		signature: "EmitSoundOn(sound_script: string, entity: handle) -> void",
+		signature: "EmitSoundOn(sound_script: string, entity: handle) -> null",
 		description: "Play named sound on given entity. The sound must be precached first for it to play (using `PrecacheSound` or `PrecacheScriptSound`)."
 	},
 	StopSoundOn: {
-		signature: "StopSoundOn(sound_script: string, entity: handle) -> void",
+		signature: "StopSoundOn(sound_script: string, entity: handle) -> null",
 		description: "Stop named sound on an entity."
 	},
 	EmitSoundOnClient: {
-		signature: "EmitSoundOnClient(sound_script: string, player: handle) -> void",
+		signature: "EmitSoundOnClient(sound_script: string, player: handle) -> null",
 		description: "Play named sound only on the client for the specified player. The sound must be precached first for it to play (`PrecacheScriptSound`)."
 	},
 	EntFire: {
-		signature: "EntFire(target: string, action: string, value: string = \"\", delay: float = 0.0, activator: handle = null) -> void",
+		signature: "EntFire(target: string, action: string, value: string = \"\", delay: float = 0.0, activator: handle = null) -> null",
 		description: "Wrapper for DoEntFire() that sets `activator` to null, but has no `caller` param. Negative delays are clamped to 0."
 	},
 	EntFireByHandle: {
-		signature: "EntFireByHandle(entity: handle, action: string, value: string, delay: float, activator: handle, caller: handle) -> void",
+		signature: "EntFireByHandle(entity: handle, action: string, value: string, delay: float, activator: handle, caller: handle) -> null",
 		description: "Generate an entity I/O event. First parameter is an entity instance. Negative delays are clamped to 0."
 	},
 	EntIndexToHScript: {
@@ -2898,7 +2898,7 @@ export const allFunctions: Docs = {
 		description: "Fire a script hook to a listening callback function in script. Parameters are passed in a squirrel table."
 	},
 	FireScriptEvent: {
-		signature: "FireScriptEvent(event: string, params: table) -> void",
+		signature: "FireScriptEvent(event: string, params: table) -> null",
 		description: "Wrapper for `__RunEventCallbacks()`."
 	},
 	FrameTime: {
@@ -2960,7 +2960,7 @@ export const allFunctions: Docs = {
 		signature: "IsWeakref() -> bool"
 	},
 	LocalTime: {
-		signature: "LocalTime(result: table) -> void",
+		signature: "LocalTime(result: table) -> null",
 		description: "Fills out a table with the local time (second, minute, hour, day, month, year, dayofweek, dayofyear, daylightsavings). This mirrors the `tm` structure in C++, see the [https://cplusplus.com/reference/ctime/tm/ reference page] for more information."
 	},
 	MakeNamespace: {
@@ -2971,7 +2971,7 @@ export const allFunctions: Docs = {
 		description: "Get the current number of max clients set by the maxplayers command."
 	},
 	PickupObject: {
-		signature: "PickupObject(player: handle, entity: handle) -> void",
+		signature: "PickupObject(player: handle, entity: handle) -> null",
 		description: "Object from world is put into the \"Held\" slot of the player. Warning: it will smoothly interpolate from where it is to the players hand - which is a bit goofy if it is on other side of level."
 	},
 	PlayerInstanceFromIndex: {
@@ -2995,7 +2995,7 @@ export const allFunctions: Docs = {
 		description: "Precache a raw sound. Returns false if a null or empty sound name is passed in."
 	},
 	PrintHelp: {
-		signature: "PrintHelp() -> void",
+		signature: "PrintHelp() -> null",
 		description: "Equivalent to running `script_help` command."
 	},
 	RandomFloat: {
@@ -3007,14 +3007,14 @@ export const allFunctions: Docs = {
 		description: "Generate a random integer within a range, inclusive."
 	},
 	RegisterFunctionDocumentation: {
-		signature: "RegisterFunctionDocumentation(func: unknown, name: string, signature: string, description: string) -> void"
+		signature: "RegisterFunctionDocumentation(func: unknown, name: string, signature: string, description: string) -> null"
 	},
 	RegisterScriptGameEventListener: {
-		signature: "RegisterScriptGameEventListener(event_name: string) -> void",
+		signature: "RegisterScriptGameEventListener(event_name: string) -> null",
 		description: "Register as a listener for a game event from script. It's what `__CollectGameEventCallbacks()` uses to register event callbacks to the C++ code."
 	},
 	RegisterScriptHookListener: {
-		signature: "RegisterScriptHookListener(name: string) -> void",
+		signature: "RegisterScriptHookListener(name: string) -> null",
 		description: "Register as a listener for a script hook from script."
 	},
 	RetrieveNativeSignature: {
@@ -3029,11 +3029,11 @@ export const allFunctions: Docs = {
 		description: "Rotate the input Vector around an origin."
 	},
 	ScreenFade: {
-		signature: "ScreenFade(player: handle, red: int, green: int, blue: int, alpha: int, fade_time: float, fade_hold: float, flags: FFADE) -> void",
+		signature: "ScreenFade(player: handle, red: int, green: int, blue: int, alpha: int, fade_time: float, fade_hold: float, flags: FFADE) -> null",
 		description: "Start a customisable screenfade. If no player is specified, the fade will apply to all players.\n\nSee [FFADE](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#FFADE)"
 	},
 	ScreenShake: {
-		signature: "ScreenShake(center: Vector, amplitude: float, frequency: float, duration: float, radius: float, command: SHAKE_COMMAND, air_shake: bool) -> void",
+		signature: "ScreenShake(center: Vector, amplitude: float, frequency: float, duration: float, radius: float, command: SHAKE_COMMAND, air_shake: bool) -> null",
 		description: "Start a customisable screenshake. Set `command` to 0 to start a shake, or 1 to stop an existing shake. `air_shake` determines whether the airborne players should be affected by the shake as well.\n\nSee [SHAKE_COMMAND](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#SHAKE_COMMAND)"
 	},
 	ScriptHooksEnabled: {
@@ -3045,23 +3045,23 @@ export const allFunctions: Docs = {
 		description: "Sends a real game event to everything. Parameters are passed in a squirrel table."
 	},
 	SendToConsole: {
-		signature: "SendToConsole(command: string) -> void",
+		signature: "SendToConsole(command: string) -> null",
 		description: "Issues a command to the local client, as if they typed in the command in their console. Does nothing on dedicated servers."
 	},
 	SendToServerConsole: {
-		signature: "SendToServerConsole(command: string) -> void",
+		signature: "SendToServerConsole(command: string) -> null",
 		description: "Issues a command to the server, as if typed in the console."
 	},
 	SendToConsoleServer: {
-		signature: "SendToConsoleServer(command: string) -> void",
+		signature: "SendToConsoleServer(command: string) -> null",
 		description: "Copy of SendToServerConsole with another name for compat."
 	},
 	SetFakeClientConVarValue: {
-		signature: "SetFakeClientConVarValue(bot: handle, cvar: string, value: string) -> void",
+		signature: "SetFakeClientConVarValue(bot: handle, cvar: string, value: string) -> null",
 		description: "Sets a USERINFO client ConVar for a fakeclient."
 	},
 	SetSkyboxTexture: {
-		signature: "SetSkyboxTexture(texture: string) -> void",
+		signature: "SetSkyboxTexture(texture: string) -> null",
 		description: "Sets the current skybox texture. The path is relative to \"materials/skybox/\". Only the main name of a skybox texture is needed, for example \"sky_gravel_01\"."
 	},
 	SpawnEntityFromTable: {
@@ -3073,7 +3073,7 @@ export const allFunctions: Docs = {
 		description: "Hierarchically spawn an entity group from a set of spawn tables. This computes a spawn order for entities so that parenting is resolved correctly."
 	},
 	StringToFile: {
-		signature: "StringToFile(file: string, string: string) -> void",
+		signature: "StringToFile(file: string, string: string) -> null",
 		description: "Stores a string as a file, located in the game's *scriptdata* folder."
 	},
 	Time: {
@@ -3099,7 +3099,7 @@ export const allFunctions: Docs = {
 			"Optional contents bitmask to include or exclude common groups of geometry, such as fences, NPCs, playerclips, etc. Default mask is `MASK_VISIBLE_AND_NPCS`. See constants page for a list of [contents](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#FContents) and [common mask](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#MASK) types. By default this will trace against the bounding box of models only. Add `CONTENTS_HITBOX` to the mask to instead perform precise hitbox tests": false,
 			"ignore: handle": true,
 			"Optional entity to ignore when tracing. [worldspawn](https://developer.valvesoftware.com/wiki/worldspawn) cannot be ignored.": false,
-			"\n\n---\nOutput variables of the `params` table": false,
+			"\n\n---\nOutput variables of the `params` table:": false,
 			"pos: Vector — Point in world coordinates where the trace ended. Equal to end position if nothing was hit.": true,
 			"fraction: float — Fraction from the start to end where the trace ended. E.g. 0.0 is start, 1.0 is end.": true,
 			"hit: bool — Whether the trace hit something.": true,
@@ -3130,7 +3130,7 @@ export const allFunctions: Docs = {
 			"Optional contents bitmask to include or exclude common groups of geometry, such as fences, NPCs, playerclips, etc. Default mask is `MASK_VISIBLE_AND_NPCS`. See constants page for a list of [contents](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#FContents) and [common mask](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#MASK) types. `CONTENTS_HITBOX` is not supported.": false,
 			"ignore: handle": true,
 			"Optional entity to ignore when tracing. [worldspawn](https://developer.valvesoftware.com/wiki/worldspawn) cannot be ignored.": false,
-			"\n\n---\nOutput variables of the `params` table": false,
+			"\n\n---\nOutput variables of the `params` table:": false,
 			"pos: Vector — Point in world coordinates where the trace ended. Equal to end position if nothing was hit.": true,
 			"fraction: float — Fraction from the start to end where the trace ended. E.g. 0.0 is start, 1.0 is end.": true,
 			"hit: bool — Whether the trace hit something.": true,
@@ -3161,30 +3161,30 @@ export const allFunctions: Docs = {
 		description: "Creates a new scope with the name of value in the submitted table (includes unique params)."
 	},
 	VSquirrel_OnReleaseScope: {
-		signature: "VSquirrel_OnReleaseScope(created_scope: table) -> void",
+		signature: "VSquirrel_OnReleaseScope(created_scope: table) -> null",
 		description: "Removes a scope created via VSquirrel_OnCreateScope."
 	},
 	__CollectEventCallbacks: {
-		signature: "__CollectEventCallbacks(scope, prefix, global_table_name, reg_func) -> void",
+		signature: "__CollectEventCallbacks(scope, prefix, global_table_name, reg_func) -> null",
 		description: "Overloaded function. Its only used for this: `__CollectEventCallbacks(scope, \"OnGameEvent_\", \"GameEventCallbacks\", ::RegisterScriptGameEventListener)`."
 	},
 	__CollectGameEventCallbacks: {
-		signature: "__CollectGameEventCallbacks(scope: table) -> void",
+		signature: "__CollectGameEventCallbacks(scope: table) -> null",
 		description: "Wrapper that registers callbacks for both [OnGameEvent_*x* ↑](https://developer.valvesoftware.com/wiki/#Hooks) and `OnScriptEvent_` functions. Done using the `__CollectEventCallbacks` function."
 	},
 	__ReplaceClosures: {
-		signature: "__ReplaceClosures(script, scope) -> void"
+		signature: "__ReplaceClosures(script, scope) -> null"
 	},
 	__RunEventCallbacks: {
-		signature: "__RunEventCallbacks(event, params, prefix, global_table_name, warn_if_missing: bool) -> void",
+		signature: "__RunEventCallbacks(event, params, prefix, global_table_name, warn_if_missing: bool) -> null",
 		description: "Call all functions in the callback array for the given game event."
 	},
 	__RunGameEventCallbacks: {
-		signature: "__RunGameEventCallbacks(event, params) -> void",
+		signature: "__RunGameEventCallbacks(event, params) -> null",
 		description: "Wrapper for `__RunEventCallbacks()`."
 	},
 	__RunScriptHookCallbacks: {
-		signature: "__RunScriptHookCallbacks(event, param) -> void"
+		signature: "__RunScriptHookCallbacks(event, param) -> null"
 	},
 	AllowThirdPersonCamera: {
 		signature: "AllowThirdPersonCamera() -> bool"
@@ -3197,11 +3197,11 @@ export const allFunctions: Docs = {
 		description: "May a flag be captured?"
 	},
 	ForceEnableUpgrades: {
-		signature: "ForceEnableUpgrades(state: int) -> void",
+		signature: "ForceEnableUpgrades(state: int) -> null",
 		description: "Whether to force on MvM-styled upgrades on/off. 0 -> default, 1 -> force off, 2 -> force on."
 	},
 	ForceEscortPushLogic: {
-		signature: "ForceEscortPushLogic(state: int) -> void",
+		signature: "ForceEscortPushLogic(state: int) -> null",
 		description: "Forces payload pushing logic. 0 -> default, 1 -> force off, 2 -> force on."
 	},
 	GameModeUsesCurrency: {
@@ -3345,7 +3345,7 @@ export const allFunctions: Docs = {
 		signature: "PlayerReadyStatus_HaveMinPlayersToEnable() -> bool"
 	},
 	PlayerReadyStatus_ResetState: {
-		signature: "PlayerReadyStatus_ResetState() -> void"
+		signature: "PlayerReadyStatus_ResetState() -> null"
 	},
 	PlayersAreOnMatchSummaryStage: {
 		signature: "PlayersAreOnMatchSummaryStage() -> bool"
@@ -3355,93 +3355,93 @@ export const allFunctions: Docs = {
 		description: "Are points able to be captured?"
 	},
 	SetGravityMultiplier: {
-		signature: "SetGravityMultiplier(multiplier: float) -> void"
+		signature: "SetGravityMultiplier(multiplier: float) -> null"
 	},
 	SetMannVsMachineAlarmStatus: {
-		signature: "SetMannVsMachineAlarmStatus(status: bool) -> void"
+		signature: "SetMannVsMachineAlarmStatus(status: bool) -> null"
 	},
 	SetOvertimeAllowedForCTF: {
-		signature: "SetOvertimeAllowedForCTF(state: bool) -> void"
+		signature: "SetOvertimeAllowedForCTF(state: bool) -> null"
 	},
 	SetPlayersInHell: {
-		signature: "SetPlayersInHell(state: bool) -> void"
+		signature: "SetPlayersInHell(state: bool) -> null"
 	},
 	SetUsingSpells: {
-		signature: "SetUsingSpells(state: bool) -> void"
+		signature: "SetUsingSpells(state: bool) -> null"
 	},
 	UsePlayerReadyStatusMode: {
 		signature: "UsePlayerReadyStatusMode() -> bool"
 	},
 	ClientPrint: {
-		signature: "ClientPrint(player: CBasePlayer, destination: EHudNotify, message: string) -> void",
+		signature: "ClientPrint(player: CBasePlayer, destination: EHudNotify, message: string) -> null",
 		description: "Print a client message. If you pass null instead of a valid player, the message will be sent to all clients.\n\nSee [EHudNotify](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#EHudNotify)"
 	},
 	DebugDrawBox: {
-		signature: "DebugDrawBox(origin: Vector, min: Vector, max: Vector, r: int, g: int, b: int, alpha: int, duration: float) -> void",
+		signature: "DebugDrawBox(origin: Vector, min: Vector, max: Vector, r: int, g: int, b: int, alpha: int, duration: float) -> null",
 		description: "Draw a debug overlay box."
 	},
 	DebugDrawBoxAngles: {
-		signature: "DebugDrawBoxAngles(origin: Vector, min: Vector, max: Vector, direction: QAngle, rgb: Vector, alpha: int, duration: float) -> void",
+		signature: "DebugDrawBoxAngles(origin: Vector, min: Vector, max: Vector, direction: QAngle, rgb: Vector, alpha: int, duration: float) -> null",
 		description: "Draw a debug oriented box."
 	},
 	DebugDrawBoxDirection: {
-		signature: "DebugDrawBoxDirection(center: Vector, min: Vector, max: Vector, forward: Vector, rgb: Vector, alpha: float, duration: float) -> void",
+		signature: "DebugDrawBoxDirection(center: Vector, min: Vector, max: Vector, forward: Vector, rgb: Vector, alpha: float, duration: float) -> null",
 		description: "Draw a debug forward box."
 	},
 	DebugDrawCircle: {
-		signature: "DebugDrawCircle(center: Vector, rgb: Vector, alpha: float, radius: float, ztest: bool, duration: float) -> void",
+		signature: "DebugDrawCircle(center: Vector, rgb: Vector, alpha: float, radius: float, ztest: bool, duration: float) -> null",
 		description: "Draw a debug circle."
 	},
 	DebugDrawClear: {
-		signature: "DebugDrawClear() -> void",
+		signature: "DebugDrawClear() -> null",
 		description: "Try to clear all the debug overlay info."
 	},
 	DebugDrawLine: {
-		signature: "DebugDrawLine(start: Vector, end: Vector, red: int, green: int, blue: int, z_test: bool, time: float) -> void",
+		signature: "DebugDrawLine(start: Vector, end: Vector, red: int, green: int, blue: int, z_test: bool, time: float) -> null",
 		description: "Draw a debug overlay line."
 	},
 	DebugDrawLine_vCol: {
-		signature: "DebugDrawLine_vCol(start: Vector, end: Vector, rgb: Vector, ztest: bool, duration: float) -> void",
+		signature: "DebugDrawLine_vCol(start: Vector, end: Vector, rgb: Vector, ztest: bool, duration: float) -> null",
 		description: "Draw a debug line using color vec."
 	},
 	DebugDrawScreenTextLine: {
-		signature: "DebugDrawScreenTextLine(x: float, y: float, line_offset: int, text: string, r: int, g: int, b: int, a: int, duration: float) -> void",
+		signature: "DebugDrawScreenTextLine(x: float, y: float, line_offset: int, text: string, r: int, g: int, b: int, a: int, duration: float) -> null",
 		description: "Draw text with a line offset."
 	},
 	DebugDrawText: {
-		signature: "DebugDrawText(origin: Vector, text: string, use_view_check: bool, duration: float) -> void",
+		signature: "DebugDrawText(origin: Vector, text: string, use_view_check: bool, duration: float) -> null",
 		description: "Draw text on the screen, starting on the position of `origin`."
 	},
 	__DumpScope: {
-		signature: "__DumpScope(indentation: int, scope: table) -> void",
+		signature: "__DumpScope(indentation: int, scope: table) -> null",
 		description: "Dumps a scope's contents and expands all tables and arrays; this is what the `ent_script_dump` command uses."
 	},
 	DumpObject: {
-		signature: "DumpObject(object: handle) -> void",
+		signature: "DumpObject(object: handle) -> null",
 		description: "Dumps information about a class or instance."
 	},
 	Msg: {
-		signature: "Msg(message: string) -> void",
+		signature: "Msg(message: string) -> null",
 		description: "Prints message to console without any line feed after."
 	},
 	printf: {
-		signature: "printf(format: string, ...args: any) -> void",
+		signature: "printf(format: string, ...args: any) -> null",
 		description: "Prints message to console with C style formatting. The line feed is not included."
 	},
 	printl: {
-		signature: "printl(message: string) -> void",
+		signature: "printl(message: string) -> null",
 		description: "Prints message to console with a line feed after."
 	},
 	realPrint: {
-		signature: "realPrint(message: string) -> void",
+		signature: "realPrint(message: string) -> null",
 		description: "Identical to print. print seems to be a wrapper for this."
 	},
 	Say: {
-		signature: "Say(player: CBasePlayer, message: string, team_only: bool) -> void",
+		signature: "Say(player: CBasePlayer, message: string, team_only: bool) -> null",
 		description: "Calling this will have the specified player send the message to chat, either to team_only (true) or to everyone."
 	},
 	ShowMessage: {
-		signature: "ShowMessage(message: string) -> void",
+		signature: "ShowMessage(message: string) -> null",
 		description: "Displays a HUD message defined in `scripts/titles.txt` to all clients, similar to an [env_message](https://developer.valvesoftware.com/wiki/env_message) entity."
 	},
 	assert: {
@@ -3467,16 +3467,16 @@ export const allFunctions: Docs = {
 	compilestring: {
 		signature: "compilestring(string: string, buffer_name: string = null) -> any",
 		description: "Compiles a string containing a squirrel script into a function and returns it."
-	},
+	}, /*
 	dummy: {
-		signature: "dummy()"
-	},
+		signature: "dummy() -> instance"
+	}, */
 	enabledebuginfo: {
-		signature: "enabledebuginfo(enable: any) -> void",
+		signature: "enabledebuginfo(enable: any) -> null",
 		description: "Enable/disable the debug line information generation at compile time. enable != null enables . enable == null disables."
 	},
 	error: {
-		signature: "error(x: string) -> void",
+		signature: "error(x: string) -> null",
 		description: "Prints x in the standard error output ."
 	},
 	getconsttable: {
@@ -3508,11 +3508,11 @@ export const allFunctions: Docs = {
 		description: "Sets the const table of the VM which also returns the previous const table."
 	},
 	setdebughook: {
-		signature: "setdebughook(hook_func: function) -> void",
+		signature: "setdebughook(hook_func: function) -> null",
 		description: "Sets the debug hook."
 	},
 	seterrorhandler: {
-		signature: "seterrorhandler(error_handler: function) -> void",
+		signature: "seterrorhandler(error_handler: function) -> null",
 		description: "Sets the runtime error handler."
 	},
 	setroottable: {
@@ -3520,7 +3520,7 @@ export const allFunctions: Docs = {
 		description: "Sets the root table of the VM which also returns the previous root table."
 	},
 	suspend: {
-		signature: "suspend(ret: any) -> void",
+		signature: "suspend(ret: any) -> null",
 		description: "Suspends the coroutine that called this function."
 	},
 	swap2: {
@@ -3644,85 +3644,85 @@ export const allFunctions: Docs = {
 		description: "Removes whitespace at the beginning and end of the given string"
 	},
 	BeginScriptDebug: {
-		signature: "BeginScriptDebug() -> void"
+		signature: "BeginScriptDebug() -> null"
 	},
 	EndScriptDebug: {
-		signature: "EndScriptDebug() -> void"
+		signature: "EndScriptDebug() -> null"
 	},
 	ScriptDebugAddTextFilter: {
-		signature: "ScriptDebugAddTextFilter() -> void"
+		signature: "ScriptDebugAddTextFilter() -> null"
 	},
 	ScriptDebugAddTrace: {
-		signature: "ScriptDebugAddTrace() -> void"
+		signature: "ScriptDebugAddTrace() -> null"
 	},
 	ScriptDebugAddWatch: {
-		signature: "ScriptDebugAddWatch() -> void"
+		signature: "ScriptDebugAddWatch() -> null"
 	},
 	ScriptDebugAddWatches: {
-		signature: "ScriptDebugAddWatches() -> void"
+		signature: "ScriptDebugAddWatches() -> null"
 	},
 	ScriptDebugAddWatchPattern: {
-		signature: "ScriptDebugAddWatchPattern() -> void"
+		signature: "ScriptDebugAddWatchPattern() -> null"
 	},
 	ScriptDebugClearTraces: {
-		signature: "ScriptDebugClearTraces() -> void"
+		signature: "ScriptDebugClearTraces() -> null"
 	},
 	ScriptDebugClearWatches: {
-		signature: "ScriptDebugClearWatches() -> void"
+		signature: "ScriptDebugClearWatches() -> null"
 	},
 	ScriptDebugDefaultWatchColor: {
-		signature: "ScriptDebugDefaultWatchColor() -> void"
+		signature: "ScriptDebugDefaultWatchColor() -> null"
 	},
 	ScriptDebugDraw: {
-		signature: "ScriptDebugDraw() -> void"
+		signature: "ScriptDebugDraw() -> null"
 	},
 	ScriptDebugDrawWatches: {
-		signature: "ScriptDebugDrawWatches() -> void"
+		signature: "ScriptDebugDrawWatches() -> null"
 	},
 	ScriptDebugDumpKeys: {
-		signature: "ScriptDebugDumpKeys() -> void"
+		signature: "ScriptDebugDumpKeys() -> null"
 	},
 	ScriptDebugHook: {
-		signature: "ScriptDebugHook() -> void"
+		signature: "ScriptDebugHook() -> null"
 	},
 	ScriptDebugIterateKeys: {
-		signature: "ScriptDebugIterateKeys() -> void"
+		signature: "ScriptDebugIterateKeys() -> null"
 	},
 	ScriptDebugIterateKeysRecursive: {
-		signature: "ScriptDebugIterateKeysRecursive() -> void"
+		signature: "ScriptDebugIterateKeysRecursive() -> null"
 	},
 	ScriptDebugRemoveTextFilter: {
-		signature: "ScriptDebugRemoveTextFilter() -> void"
+		signature: "ScriptDebugRemoveTextFilter() -> null"
 	},
 	ScriptDebugRemoveTrace: {
-		signature: "ScriptDebugRemoveTrace() -> void"
+		signature: "ScriptDebugRemoveTrace() -> null"
 	},
 	ScriptDebugRemoveWatch: {
-		signature: "ScriptDebugRemoveWatch() -> void"
+		signature: "ScriptDebugRemoveWatch() -> null"
 	},
 	ScriptDebugRemoveWatches: {
-		signature: "ScriptDebugRemoveWatches() -> void"
+		signature: "ScriptDebugRemoveWatches() -> null"
 	},
 	ScriptDebugRemoveWatchPattern: {
-		signature: "ScriptDebugRemoveWatchPattern() -> void"
+		signature: "ScriptDebugRemoveWatchPattern() -> null"
 	},
 	ScriptDebugText: {
-		signature: "ScriptDebugText() -> void"
+		signature: "ScriptDebugText() -> null"
 	},
 	ScriptDebugTextDraw: {
-		signature: "ScriptDebugTextDraw() -> void"
+		signature: "ScriptDebugTextDraw() -> null"
 	},
 	ScriptDebugTextPrint: {
-		signature: "ScriptDebugTextPrint() -> void"
+		signature: "ScriptDebugTextPrint() -> null"
 	},
 	ScriptDebugTextTrace: {
-		signature: "ScriptDebugTextTrace() -> void"
+		signature: "ScriptDebugTextTrace() -> null"
 	},
 	ScriptDebugTraceAll: {
-		signature: "ScriptDebugTraceAll() -> void"
+		signature: "ScriptDebugTraceAll() -> null"
 	},
 	ScriptDebugWatches: {
-		signature: "ScriptDebugWatches() -> void"
+		signature: "ScriptDebugWatches() -> null"
 	},
 	__VScriptServerDebugHook: {
 		signature: "__VScriptServerDebugHook()"
@@ -3753,19 +3753,19 @@ export const allFunctions: Docs = {
 	 * Events
 	 */
 	Precache: {
-		signature: "Precache() -> void",
+		signature: "Precache() -> null",
 		description: "Entity function that is called after the script executes, but before the entity is initialized. Can be used to call precache functions for models and sounds on map load."
 	},
 	ConnectOutputs: {
-		signature: "ConnectOutputs(scope: table) -> void",
+		signature: "ConnectOutputs(scope: table) -> null",
 		description: "Global function called after an entity with an script assigned spawns (i.e. `vscripts` keyvalue is not blank). Unlike `OnPostSpawn`, this is called immediately and therefore on map respawn, some entities may not exist during this point."
 	},
 	OnPostSpawn: {
-		signature: "OnPostSpawn() -> void",
+		signature: "OnPostSpawn() -> null",
 		description: "Entity function called after the entity is spawned and initialized, at the end of the frame. When map entities are respawned, this effectively runs after all scripts, players etc have been loaded. This could be used to have an entity register itself with a master script, or adjusting the entity parameters in a programmatic way."
 	},
 	OnScriptHook_OnTakeDamage: {
-		signature: "OnScriptHook_OnTakeDamage(params: table) -> void",
+		signature: "OnScriptHook_OnTakeDamage(params: table) -> null",
 		description: {
 			"Called each time an entity takes damage. The script can modify the table entries not prefixed with const, and these will be sent back to the game code.": false,
 			"\n\n---\nVariables of the `params` table:": false,
@@ -3795,7 +3795,7 @@ export const allFunctions: Docs = {
 	},
 
 	OnGameEvent_achievement_earned: {
-		signature: "OnGameEvent_achievement_earned(params: table) -> void",
+		signature: "OnGameEvent_achievement_earned(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"player: int — entindex of the player": true,
@@ -3803,14 +3803,14 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_achievement_earned_local: {
-		signature: "OnGameEvent_achievement_earned_local(params: table) -> void",
+		signature: "OnGameEvent_achievement_earned_local(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"achievement: int": true
 		}
 	},
 	OnGameEvent_achievement_event: {
-		signature: "OnGameEvent_achievement_event(params: table) -> void",
+		signature: "OnGameEvent_achievement_event(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"achievement_name: string — non-localized name of achievement": true,
@@ -3819,7 +3819,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_achievement_increment: {
-		signature: "OnGameEvent_achievement_increment(params: table) -> void",
+		signature: "OnGameEvent_achievement_increment(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"achievement_id: int — ID of achievement that went up": true,
@@ -3828,14 +3828,14 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_air_dash: {
-		signature: "OnGameEvent_air_dash(params: table) -> void",
+		signature: "OnGameEvent_air_dash(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"player: int": true
 		}
 	},
 	OnGameEvent_ammo_pickup: {
-		signature: "OnGameEvent_ammo_pickup(params: table) -> void",
+		signature: "OnGameEvent_ammo_pickup(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"ammo_index: int": true,
@@ -3844,7 +3844,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_arena_match_maxstreak: {
-		signature: "OnGameEvent_arena_match_maxstreak(params: table) -> void",
+		signature: "OnGameEvent_arena_match_maxstreak(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"team: int": true,
@@ -3852,7 +3852,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_arena_player_notification: {
-		signature: "OnGameEvent_arena_player_notification(params: table) -> void",
+		signature: "OnGameEvent_arena_player_notification(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"player: int": true,
@@ -3860,11 +3860,11 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_arena_round_start: {
-		signature: "OnGameEvent_arena_round_start(params: table) -> void",
+		signature: "OnGameEvent_arena_round_start(params: table) -> null",
 		description: "called when round is active, players can move"
 	},
 	OnGameEvent_arena_win_panel: {
-		signature: "OnGameEvent_arena_win_panel(params: table) -> void",
+		signature: "OnGameEvent_arena_win_panel(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"panel_style: int — for client to determine layout": true,
@@ -3910,7 +3910,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_arrow_impact: {
-		signature: "OnGameEvent_arrow_impact(params: table) -> void",
+		signature: "OnGameEvent_arrow_impact(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"attachedEntity: int": true,
@@ -3927,14 +3927,14 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_base_player_teleported: {
-		signature: "OnGameEvent_base_player_teleported(params: table) -> void",
+		signature: "OnGameEvent_base_player_teleported(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"entindex: int": true
 		}
 	},
 	OnGameEvent_bonus_updated: {
-		signature: "OnGameEvent_bonus_updated(params: table) -> void",
+		signature: "OnGameEvent_bonus_updated(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"numadvanced: int": true,
@@ -3944,7 +3944,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_break_breakable: {
-		signature: "OnGameEvent_break_breakable(params: table) -> void",
+		signature: "OnGameEvent_break_breakable(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"entindex: int": true,
@@ -3953,7 +3953,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_break_prop: {
-		signature: "OnGameEvent_break_prop(params: table) -> void",
+		signature: "OnGameEvent_break_prop(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"entindex: int": true,
@@ -3961,10 +3961,10 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_browse_replays: {
-		signature: "OnGameEvent_browse_replays(params: table) -> void"
+		signature: "OnGameEvent_browse_replays(params: table) -> null"
 	},
 	OnGameEvent_building_healed: {
-		signature: "OnGameEvent_building_healed(params: table) -> void",
+		signature: "OnGameEvent_building_healed(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"building: int": true,
@@ -3973,7 +3973,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_building_info_changed: {
-		signature: "OnGameEvent_building_info_changed(params: table) -> void",
+		signature: "OnGameEvent_building_info_changed(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"building_type: int": true,
@@ -3982,17 +3982,17 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_cart_updated: {
-		signature: "OnGameEvent_cart_updated(params: table) -> void"
+		signature: "OnGameEvent_cart_updated(params: table) -> null"
 	},
 	OnGameEvent_christmas_gift_grab: {
-		signature: "OnGameEvent_christmas_gift_grab(params: table) -> void",
+		signature: "OnGameEvent_christmas_gift_grab(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"userid: int": true
 		}
 	},
 	OnGameEvent_cl_drawline: {
-		signature: "OnGameEvent_cl_drawline(params: table) -> void",
+		signature: "OnGameEvent_cl_drawline(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"player: int — index of the player": true,
@@ -4003,7 +4003,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_client_beginconnect: {
-		signature: "OnGameEvent_client_beginconnect(params: table) -> void",
+		signature: "OnGameEvent_client_beginconnect(params: table) -> null",
 		description: {
 			"client tries to connect to server": false,
 			"\n\n---\nVariables of the `params` table:": false,
@@ -4014,7 +4014,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_client_connected: {
-		signature: "OnGameEvent_client_connected(params: table) -> void",
+		signature: "OnGameEvent_client_connected(params: table) -> null",
 		description: {
 			"client has completed the challenge / handshake process and is in SIGNONSTATE_CONNECTED": false,
 			"\n\n---\nVariables of the `params` table:": false,
@@ -4024,7 +4024,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_client_disconnect: {
-		signature: "OnGameEvent_client_disconnect(params: table) -> void",
+		signature: "OnGameEvent_client_disconnect(params: table) -> null",
 		description: {
 			"client side disconnect message": false,
 			"\n\n---\nVariables of the `params` table:": false,
@@ -4032,7 +4032,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_client_fullconnect: {
-		signature: "OnGameEvent_client_fullconnect(params: table) -> void",
+		signature: "OnGameEvent_client_fullconnect(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"address: string — Name we used to connect to the server": true,
@@ -4041,7 +4041,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_competitive_stats_update: {
-		signature: "OnGameEvent_competitive_stats_update(params: table) -> void",
+		signature: "OnGameEvent_competitive_stats_update(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"index: int — entindex of the player": true,
@@ -4053,17 +4053,17 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_competitive_victory: {
-		signature: "OnGameEvent_competitive_victory(params: table) -> void"
+		signature: "OnGameEvent_competitive_victory(params: table) -> null"
 	},
 	OnGameEvent_conga_kill: {
-		signature: "OnGameEvent_conga_kill(params: table) -> void",
+		signature: "OnGameEvent_conga_kill(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"index: int — entindex of the player": true
 		}
 	},
 	OnGameEvent_controlpoint_endtouch: {
-		signature: "OnGameEvent_controlpoint_endtouch(params: table) -> void",
+		signature: "OnGameEvent_controlpoint_endtouch(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"player: int — entindex of the player": true,
@@ -4071,7 +4071,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_controlpoint_fake_capture: {
-		signature: "OnGameEvent_controlpoint_fake_capture(params: table) -> void",
+		signature: "OnGameEvent_controlpoint_fake_capture(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"player: int — entindex of the player": true,
@@ -4079,7 +4079,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_controlpoint_fake_capture_mult: {
-		signature: "OnGameEvent_controlpoint_fake_capture_mult(params: table) -> void",
+		signature: "OnGameEvent_controlpoint_fake_capture_mult(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"player: int — entindex of the player": true,
@@ -4087,17 +4087,17 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_controlpoint_initialized: {
-		signature: "OnGameEvent_controlpoint_initialized(params: table) -> void"
+		signature: "OnGameEvent_controlpoint_initialized(params: table) -> null"
 	},
 	OnGameEvent_controlpoint_pulse_element: {
-		signature: "OnGameEvent_controlpoint_pulse_element(params: table) -> void",
+		signature: "OnGameEvent_controlpoint_pulse_element(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"player: int — entindex of the player": true
 		}
 	},
 	OnGameEvent_controlpoint_starttouch: {
-		signature: "OnGameEvent_controlpoint_starttouch(params: table) -> void",
+		signature: "OnGameEvent_controlpoint_starttouch(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"player: int — entindex of the player": true,
@@ -4105,7 +4105,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_controlpoint_timer_updated: {
-		signature: "OnGameEvent_controlpoint_timer_updated(params: table) -> void",
+		signature: "OnGameEvent_controlpoint_timer_updated(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"index: int — index of the cap being updated": true,
@@ -4113,7 +4113,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_controlpoint_unlock_updated: {
-		signature: "OnGameEvent_controlpoint_unlock_updated(params: table) -> void",
+		signature: "OnGameEvent_controlpoint_unlock_updated(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"index: int — index of the cap being updated": true,
@@ -4121,42 +4121,42 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_controlpoint_updatecapping: {
-		signature: "OnGameEvent_controlpoint_updatecapping(params: table) -> void",
+		signature: "OnGameEvent_controlpoint_updatecapping(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"index: int — index of the cap being updated": true
 		}
 	},
 	OnGameEvent_controlpoint_updateimages: {
-		signature: "OnGameEvent_controlpoint_updateimages(params: table) -> void",
+		signature: "OnGameEvent_controlpoint_updateimages(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"index: int — index of the cap being updated": true
 		}
 	},
 	OnGameEvent_controlpoint_updatelayout: {
-		signature: "OnGameEvent_controlpoint_updatelayout(params: table) -> void",
+		signature: "OnGameEvent_controlpoint_updatelayout(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"index: int — index of the cap being updated": true
 		}
 	},
 	OnGameEvent_controlpoint_updateowner: {
-		signature: "OnGameEvent_controlpoint_updateowner(params: table) -> void",
+		signature: "OnGameEvent_controlpoint_updateowner(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"index: int — index of the cap being updated": true
 		}
 	},
 	OnGameEvent_cross_spectral_bridge: {
-		signature: "OnGameEvent_cross_spectral_bridge(params: table) -> void",
+		signature: "OnGameEvent_cross_spectral_bridge(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"player: int — userid of the player that crossed": true
 		}
 	},
 	OnGameEvent_crossbow_heal: {
-		signature: "OnGameEvent_crossbow_heal(params: table) -> void",
+		signature: "OnGameEvent_crossbow_heal(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"healer: int — userid of the Healer": true,
@@ -4165,7 +4165,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_ctf_flag_captured: {
-		signature: "OnGameEvent_ctf_flag_captured(params: table) -> void",
+		signature: "OnGameEvent_ctf_flag_captured(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"capping_team: int": true,
@@ -4173,7 +4173,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_damage_mitigated: {
-		signature: "OnGameEvent_damage_mitigated(params: table) -> void",
+		signature: "OnGameEvent_damage_mitigated(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"mitigator: int — userid of the player who provided the mitigation": true,
@@ -4183,7 +4183,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_damage_prevented: {
-		signature: "OnGameEvent_damage_prevented(params: table) -> void",
+		signature: "OnGameEvent_damage_prevented(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"preventor: int — Who prevented the damage": true,
@@ -4193,14 +4193,14 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_damage_resisted: {
-		signature: "OnGameEvent_damage_resisted(params: table) -> void",
+		signature: "OnGameEvent_damage_resisted(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"entindex: int": true
 		}
 	},
 	OnGameEvent_deadringer_cheat_death: {
-		signature: "OnGameEvent_deadringer_cheat_death(params: table) -> void",
+		signature: "OnGameEvent_deadringer_cheat_death(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"spy: int — userid of the Spy that cheat the death": true,
@@ -4208,14 +4208,14 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_demoman_det_stickies: {
-		signature: "OnGameEvent_demoman_det_stickies(params: table) -> void",
+		signature: "OnGameEvent_demoman_det_stickies(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"player: int — entindex of the detonating player": true
 		}
 	},
 	OnGameEvent_deploy_buff_banner: {
-		signature: "OnGameEvent_deploy_buff_banner(params: table) -> void",
+		signature: "OnGameEvent_deploy_buff_banner(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"buff_type: int — type of buff (skin index)": true,
@@ -4223,21 +4223,21 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_doomsday_rocket_open: {
-		signature: "OnGameEvent_doomsday_rocket_open(params: table) -> void",
+		signature: "OnGameEvent_doomsday_rocket_open(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"team: int — which team opened the rocket": true
 		}
 	},
 	OnGameEvent_duck_xp_level_up: {
-		signature: "OnGameEvent_duck_xp_level_up(params: table) -> void",
+		signature: "OnGameEvent_duck_xp_level_up(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"level: int — leveled up to what": true
 		}
 	},
 	OnGameEvent_duel_status: {
-		signature: "OnGameEvent_duel_status(params: table) -> void",
+		signature: "OnGameEvent_duel_status(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"killer: int": true,
@@ -4249,20 +4249,20 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_econ_inventory_connected: {
-		signature: "OnGameEvent_econ_inventory_connected(params: table) -> void"
+		signature: "OnGameEvent_econ_inventory_connected(params: table) -> null"
 	},
 	OnGameEvent_enter_vehicle: {
-		signature: "OnGameEvent_enter_vehicle(params: table) -> void",
+		signature: "OnGameEvent_enter_vehicle(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"vehicle: int — entindex of the vehicle": true
 		}
 	},
 	OnGameEvent_entered_performance_mode: {
-		signature: "OnGameEvent_entered_performance_mode(params: table) -> void"
+		signature: "OnGameEvent_entered_performance_mode(params: table) -> null"
 	},
 	OnGameEvent_entity_killed: {
-		signature: "OnGameEvent_entity_killed(params: table) -> void",
+		signature: "OnGameEvent_entity_killed(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"entindex_killed: int": true,
@@ -4272,7 +4272,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_environmental_death: {
-		signature: "OnGameEvent_environmental_death(params: table) -> void",
+		signature: "OnGameEvent_environmental_death(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"killer: int — index of the killer": true,
@@ -4280,21 +4280,21 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_escape_hell: {
-		signature: "OnGameEvent_escape_hell(params: table) -> void",
+		signature: "OnGameEvent_escape_hell(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"player: int — userid of the player that escaped": true
 		}
 	},
 	OnGameEvent_escaped_loot_island: {
-		signature: "OnGameEvent_escaped_loot_island(params: table) -> void",
+		signature: "OnGameEvent_escaped_loot_island(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"player: int — userid of the escaping player": true
 		}
 	},
 	OnGameEvent_escort_progress: {
-		signature: "OnGameEvent_escort_progress(params: table) -> void",
+		signature: "OnGameEvent_escort_progress(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"team: int — which team": true,
@@ -4303,7 +4303,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_escort_recede: {
-		signature: "OnGameEvent_escort_recede(params: table) -> void",
+		signature: "OnGameEvent_escort_recede(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"team: int — which team": true,
@@ -4311,7 +4311,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_escort_speed: {
-		signature: "OnGameEvent_escort_speed(params: table) -> void",
+		signature: "OnGameEvent_escort_speed(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"team: int — which team": true,
@@ -4320,7 +4320,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_eyeball_boss_escape_imminent: {
-		signature: "OnGameEvent_eyeball_boss_escape_imminent(params: table) -> void",
+		signature: "OnGameEvent_eyeball_boss_escape_imminent(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"level: int": true,
@@ -4328,21 +4328,21 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_eyeball_boss_escaped: {
-		signature: "OnGameEvent_eyeball_boss_escaped(params: table) -> void",
+		signature: "OnGameEvent_eyeball_boss_escaped(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"level: int": true
 		}
 	},
 	OnGameEvent_eyeball_boss_killed: {
-		signature: "OnGameEvent_eyeball_boss_killed(params: table) -> void",
+		signature: "OnGameEvent_eyeball_boss_killed(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"level: int": true
 		}
 	},
 	OnGameEvent_eyeball_boss_killer: {
-		signature: "OnGameEvent_eyeball_boss_killer(params: table) -> void",
+		signature: "OnGameEvent_eyeball_boss_killer(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"level: int": true,
@@ -4350,7 +4350,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_eyeball_boss_stunned: {
-		signature: "OnGameEvent_eyeball_boss_stunned(params: table) -> void",
+		signature: "OnGameEvent_eyeball_boss_stunned(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"level: int": true,
@@ -4358,14 +4358,14 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_eyeball_boss_summoned: {
-		signature: "OnGameEvent_eyeball_boss_summoned(params: table) -> void",
+		signature: "OnGameEvent_eyeball_boss_summoned(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"level: int": true
 		}
 	},
 	OnGameEvent_fish_notice: {
-		signature: "OnGameEvent_fish_notice(params: table) -> void",
+		signature: "OnGameEvent_fish_notice(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"userid: int — user ID who died": true,
@@ -4386,7 +4386,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_fish_notice__arm: {
-		signature: "OnGameEvent_fish_notice__arm(params: table) -> void",
+		signature: "OnGameEvent_fish_notice__arm(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"userid: int — user ID who died": true,
@@ -4407,10 +4407,10 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_flag_carried_in_detection_zone: {
-		signature: "OnGameEvent_flag_carried_in_detection_zone(params: table) -> void"
+		signature: "OnGameEvent_flag_carried_in_detection_zone(params: table) -> null"
 	},
 	OnGameEvent_flagstatus_update: {
-		signature: "OnGameEvent_flagstatus_update(params: table) -> void",
+		signature: "OnGameEvent_flagstatus_update(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"userid: int — user ID of the player who now has the flag": true,
@@ -4418,17 +4418,17 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_flare_ignite_npc: {
-		signature: "OnGameEvent_flare_ignite_npc(params: table) -> void",
+		signature: "OnGameEvent_flare_ignite_npc(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"entindex: int — entity ignited": true
 		}
 	},
 	OnGameEvent_freezecam_started: {
-		signature: "OnGameEvent_freezecam_started(params: table) -> void"
+		signature: "OnGameEvent_freezecam_started(params: table) -> null"
 	},
 	OnGameEvent_game_end: {
-		signature: "OnGameEvent_game_end(params: table) -> void",
+		signature: "OnGameEvent_game_end(params: table) -> null",
 		description: {
 			"a game ended": false,
 			"\n\n---\nVariables of the `params` table:": false,
@@ -4436,11 +4436,11 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_game_init: {
-		signature: "OnGameEvent_game_init(params: table) -> void",
+		signature: "OnGameEvent_game_init(params: table) -> null",
 		description: "sent when a new game is started"
 	},
 	OnGameEvent_game_message: {
-		signature: "OnGameEvent_game_message(params: table) -> void",
+		signature: "OnGameEvent_game_message(params: table) -> null",
 		description: {
 			"a message send by game logic to everyone": false,
 			"\n\n---\nVariables of the `params` table:": false,
@@ -4449,7 +4449,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_game_newmap: {
-		signature: "OnGameEvent_game_newmap(params: table) -> void",
+		signature: "OnGameEvent_game_newmap(params: table) -> null",
 		description: {
 			"send when new map is completely loaded": false,
 			"\n\n---\nVariables of the `params` table:": false,
@@ -4457,7 +4457,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_game_start: {
-		signature: "OnGameEvent_game_start(params: table) -> void",
+		signature: "OnGameEvent_game_start(params: table) -> null",
 		description: {
 			"a new game starts": false,
 			"\n\n---\nVariables of the `params` table:": false,
@@ -4468,25 +4468,25 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_gameui_activate: {
-		signature: "OnGameEvent_gameui_activate(params: table) -> void"
+		signature: "OnGameEvent_gameui_activate(params: table) -> null"
 	},
 	OnGameEvent_gameui_activated: {
-		signature: "OnGameEvent_gameui_activated(params: table) -> void"
+		signature: "OnGameEvent_gameui_activated(params: table) -> null"
 	},
 	OnGameEvent_gameui_hidden: {
-		signature: "OnGameEvent_gameui_hidden(params: table) -> void"
+		signature: "OnGameEvent_gameui_hidden(params: table) -> null"
 	},
 	OnGameEvent_gameui_hide: {
-		signature: "OnGameEvent_gameui_hide(params: table) -> void"
+		signature: "OnGameEvent_gameui_hide(params: table) -> null"
 	},
 	OnGameEvent_gc_lost_session: {
-		signature: "OnGameEvent_gc_lost_session(params: table) -> void"
+		signature: "OnGameEvent_gc_lost_session(params: table) -> null"
 	},
 	OnGameEvent_gc_new_session: {
-		signature: "OnGameEvent_gc_new_session(params: table) -> void"
+		signature: "OnGameEvent_gc_new_session(params: table) -> null"
 	},
 	OnGameEvent_halloween_boss_killed: {
-		signature: "OnGameEvent_halloween_boss_killed(params: table) -> void",
+		signature: "OnGameEvent_halloween_boss_killed(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"boss: int — 1=HHH 2=Monoculus 3=Merasmus": true,
@@ -4494,28 +4494,28 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_halloween_duck_collected: {
-		signature: "OnGameEvent_halloween_duck_collected(params: table) -> void",
+		signature: "OnGameEvent_halloween_duck_collected(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"collector: int — userid of the collecting player": true
 		}
 	},
 	OnGameEvent_halloween_pumpkin_grab: {
-		signature: "OnGameEvent_halloween_pumpkin_grab(params: table) -> void",
+		signature: "OnGameEvent_halloween_pumpkin_grab(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"userid: int": true
 		}
 	},
 	OnGameEvent_halloween_skeleton_killed: {
-		signature: "OnGameEvent_halloween_skeleton_killed(params: table) -> void",
+		signature: "OnGameEvent_halloween_skeleton_killed(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"player: int — userid of the player that killed the skeleton": true
 		}
 	},
 	OnGameEvent_halloween_soul_collected: {
-		signature: "OnGameEvent_halloween_soul_collected(params: table) -> void",
+		signature: "OnGameEvent_halloween_soul_collected(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"intended_target: int — userid of the intended target": true,
@@ -4524,20 +4524,20 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_helicopter_grenade_punt_miss: {
-		signature: "OnGameEvent_helicopter_grenade_punt_miss(params: table) -> void"
+		signature: "OnGameEvent_helicopter_grenade_punt_miss(params: table) -> null"
 	},
 	OnGameEvent_hide_annotation: {
-		signature: "OnGameEvent_hide_annotation(params: table) -> void",
+		signature: "OnGameEvent_hide_annotation(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"id: int": true
 		}
 	},
 	OnGameEvent_hide_freezepanel: {
-		signature: "OnGameEvent_hide_freezepanel(params: table) -> void"
+		signature: "OnGameEvent_hide_freezepanel(params: table) -> null"
 	},
 	OnGameEvent_hltv_changed_mode: {
-		signature: "OnGameEvent_hltv_changed_mode(params: table) -> void",
+		signature: "OnGameEvent_hltv_changed_mode(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"oldmode: int": true,
@@ -4546,7 +4546,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_hltv_changed_target: {
-		signature: "OnGameEvent_hltv_changed_target(params: table) -> void",
+		signature: "OnGameEvent_hltv_changed_target(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"mode: int": true,
@@ -4555,27 +4555,27 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_host_quit: {
-		signature: "OnGameEvent_host_quit(params: table) -> void"
+		signature: "OnGameEvent_host_quit(params: table) -> null"
 	},
 	OnGameEvent_intro_finish: {
-		signature: "OnGameEvent_intro_finish(params: table) -> void",
+		signature: "OnGameEvent_intro_finish(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"player: int — entindex of the player": true
 		}
 	},
 	OnGameEvent_intro_nextcamera: {
-		signature: "OnGameEvent_intro_nextcamera(params: table) -> void",
+		signature: "OnGameEvent_intro_nextcamera(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"player: int — entindex of the player": true
 		}
 	},
 	OnGameEvent_inventory_updated: {
-		signature: "OnGameEvent_inventory_updated(params: table) -> void"
+		signature: "OnGameEvent_inventory_updated(params: table) -> null"
 	},
 	OnGameEvent_item_found: {
-		signature: "OnGameEvent_item_found(params: table) -> void",
+		signature: "OnGameEvent_item_found(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"player: int — entindex of the player": true,
@@ -4588,7 +4588,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_item_pickup: {
-		signature: "OnGameEvent_item_pickup(params: table) -> void",
+		signature: "OnGameEvent_item_pickup(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"userid: int": true,
@@ -4596,10 +4596,10 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_item_schema_initialized: {
-		signature: "OnGameEvent_item_schema_initialized(params: table) -> void"
+		signature: "OnGameEvent_item_schema_initialized(params: table) -> null"
 	},
 	OnGameEvent_items_acknowledged: {
-		signature: "OnGameEvent_items_acknowledged(params: table) -> void",
+		signature: "OnGameEvent_items_acknowledged(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"blocker: int — entindex of the blocker": true,
@@ -4607,7 +4607,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_kill_in_hell: {
-		signature: "OnGameEvent_kill_in_hell(params: table) -> void",
+		signature: "OnGameEvent_kill_in_hell(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"killer: int — userid of the killer": true,
@@ -4615,14 +4615,14 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_kill_refills_meter: {
-		signature: "OnGameEvent_kill_refills_meter(params: table) -> void",
+		signature: "OnGameEvent_kill_refills_meter(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"index: int — entindex of the player": true
 		}
 	},
 	OnGameEvent_killed_capping_player: {
-		signature: "OnGameEvent_killed_capping_player(params: table) -> void",
+		signature: "OnGameEvent_killed_capping_player(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"cp: int — index of the point": true,
@@ -4632,27 +4632,27 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_landed: {
-		signature: "OnGameEvent_landed(params: table) -> void",
+		signature: "OnGameEvent_landed(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"player: int": true
 		}
 	},
 	OnGameEvent_leave_vehicle: {
-		signature: "OnGameEvent_leave_vehicle(params: table) -> void",
+		signature: "OnGameEvent_leave_vehicle(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"vehicle: int — entindex of the vehicle": true
 		}
 	},
 	OnGameEvent_lobby_updated: {
-		signature: "OnGameEvent_lobby_updated(params: table) -> void"
+		signature: "OnGameEvent_lobby_updated(params: table) -> null"
 	},
 	OnGameEvent_localplayer_becameobserver: {
-		signature: "OnGameEvent_localplayer_becameobserver(params: table) -> void"
+		signature: "OnGameEvent_localplayer_becameobserver(params: table) -> null"
 	},
 	OnGameEvent_localplayer_builtobject: {
-		signature: "OnGameEvent_localplayer_builtobject(params: table) -> void",
+		signature: "OnGameEvent_localplayer_builtobject(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"object: int — type of object built": true,
@@ -4661,48 +4661,48 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_localplayer_changeclass: {
-		signature: "OnGameEvent_localplayer_changeclass(params: table) -> void"
+		signature: "OnGameEvent_localplayer_changeclass(params: table) -> null"
 	},
 	OnGameEvent_localplayer_changedisguise: {
-		signature: "OnGameEvent_localplayer_changedisguise(params: table) -> void",
+		signature: "OnGameEvent_localplayer_changedisguise(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"disguised: bool": true
 		}
 	},
 	OnGameEvent_localplayer_changeteam: {
-		signature: "OnGameEvent_localplayer_changeteam(params: table) -> void"
+		signature: "OnGameEvent_localplayer_changeteam(params: table) -> null"
 	},
 	OnGameEvent_localplayer_chargeready: {
-		signature: "OnGameEvent_localplayer_chargeready(params: table) -> void",
+		signature: "OnGameEvent_localplayer_chargeready(params: table) -> null",
 		description: "local player has full medic charge"
 	},
 	OnGameEvent_localplayer_healed: {
-		signature: "OnGameEvent_localplayer_healed(params: table) -> void",
+		signature: "OnGameEvent_localplayer_healed(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"amount: int": true
 		}
 	},
 	OnGameEvent_localplayer_pickup_weapon: {
-		signature: "OnGameEvent_localplayer_pickup_weapon(params: table) -> void"
+		signature: "OnGameEvent_localplayer_pickup_weapon(params: table) -> null"
 	},
 	OnGameEvent_localplayer_respawn: {
-		signature: "OnGameEvent_localplayer_respawn(params: table) -> void"
+		signature: "OnGameEvent_localplayer_respawn(params: table) -> null"
 	},
 	OnGameEvent_localplayer_score_changed: {
-		signature: "OnGameEvent_localplayer_score_changed(params: table) -> void",
+		signature: "OnGameEvent_localplayer_score_changed(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"score: int": true
 		}
 	},
 	OnGameEvent_localplayer_winddown: {
-		signature: "OnGameEvent_localplayer_winddown(params: table) -> void",
+		signature: "OnGameEvent_localplayer_winddown(params: table) -> null",
 		description: "local player minigun winddown"
 	},
 	OnGameEvent_mainmenu_stabilized: {
-		signature: "OnGameEvent_mainmenu_stabilized(params: table) -> void",
+		signature: "OnGameEvent_mainmenu_stabilized(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"attacker: int": true,
@@ -4711,10 +4711,10 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_match_invites_updated: {
-		signature: "OnGameEvent_match_invites_updated(params: table) -> void"
+		signature: "OnGameEvent_match_invites_updated(params: table) -> null"
 	},
 	OnGameEvent_medic_death: {
-		signature: "OnGameEvent_medic_death(params: table) -> void",
+		signature: "OnGameEvent_medic_death(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"userid: int — user ID who died": true,
@@ -4724,7 +4724,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_medic_defended: {
-		signature: "OnGameEvent_medic_defended(params: table) -> void",
+		signature: "OnGameEvent_medic_defended(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"userid: int": true,
@@ -4732,7 +4732,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_medigun_shield_blocked_damage: {
-		signature: "OnGameEvent_medigun_shield_blocked_damage(params: table) -> void",
+		signature: "OnGameEvent_medigun_shield_blocked_damage(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"userid: int — user ID of the player using the shield": true,
@@ -4740,7 +4740,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_merasmus_escape_warning: {
-		signature: "OnGameEvent_merasmus_escape_warning(params: table) -> void",
+		signature: "OnGameEvent_merasmus_escape_warning(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"level: int": true,
@@ -4748,42 +4748,42 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_merasmus_escaped: {
-		signature: "OnGameEvent_merasmus_escaped(params: table) -> void",
+		signature: "OnGameEvent_merasmus_escaped(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"level: int": true
 		}
 	},
 	OnGameEvent_merasmus_killed: {
-		signature: "OnGameEvent_merasmus_killed(params: table) -> void",
+		signature: "OnGameEvent_merasmus_killed(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"level: int": true
 		}
 	},
 	OnGameEvent_merasmus_prop_found: {
-		signature: "OnGameEvent_merasmus_prop_found(params: table) -> void",
+		signature: "OnGameEvent_merasmus_prop_found(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"player: int — userid of the player that found the prop Merasmus was hiding in": true
 		}
 	},
 	OnGameEvent_merasmus_stunned: {
-		signature: "OnGameEvent_merasmus_stunned(params: table) -> void",
+		signature: "OnGameEvent_merasmus_stunned(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"player: int — userid of the stunning player": true
 		}
 	},
 	OnGameEvent_merasmus_summoned: {
-		signature: "OnGameEvent_merasmus_summoned(params: table) -> void",
+		signature: "OnGameEvent_merasmus_summoned(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"level: int": true
 		}
 	},
 	OnGameEvent_minigame_win: {
-		signature: "OnGameEvent_minigame_win(params: table) -> void",
+		signature: "OnGameEvent_minigame_win(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"team: int — which team won the minigame": true,
@@ -4791,7 +4791,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_minigame_won: {
-		signature: "OnGameEvent_minigame_won(params: table) -> void",
+		signature: "OnGameEvent_minigame_won(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"player: int — userid of the winning player": true,
@@ -4799,17 +4799,17 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_mvm_adv_wave_complete_no_gates: {
-		signature: "OnGameEvent_mvm_adv_wave_complete_no_gates(params: table) -> void",
+		signature: "OnGameEvent_mvm_adv_wave_complete_no_gates(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"index: int — wave index": true
 		}
 	},
 	OnGameEvent_mvm_adv_wave_killed_stun_radio: {
-		signature: "OnGameEvent_mvm_adv_wave_killed_stun_radio(params: table) -> void"
+		signature: "OnGameEvent_mvm_adv_wave_killed_stun_radio(params: table) -> null"
 	},
 	OnGameEvent_mvm_begin_wave: {
-		signature: "OnGameEvent_mvm_begin_wave(params: table) -> void",
+		signature: "OnGameEvent_mvm_begin_wave(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"wave_index: int": true,
@@ -4818,64 +4818,64 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_mvm_bomb_alarm_triggered: {
-		signature: "OnGameEvent_mvm_bomb_alarm_triggered(params: table) -> void"
+		signature: "OnGameEvent_mvm_bomb_alarm_triggered(params: table) -> null"
 	},
 	OnGameEvent_mvm_bomb_carrier_killed: {
-		signature: "OnGameEvent_mvm_bomb_carrier_killed(params: table) -> void",
+		signature: "OnGameEvent_mvm_bomb_carrier_killed(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"level: int — upgrade level of the carrier": true
 		}
 	},
 	OnGameEvent_mvm_bomb_deploy_reset_by_player: {
-		signature: "OnGameEvent_mvm_bomb_deploy_reset_by_player(params: table) -> void",
+		signature: "OnGameEvent_mvm_bomb_deploy_reset_by_player(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"player: int": true
 		}
 	},
 	OnGameEvent_mvm_bomb_reset_by_player: {
-		signature: "OnGameEvent_mvm_bomb_reset_by_player(params: table) -> void",
+		signature: "OnGameEvent_mvm_bomb_reset_by_player(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"player: int": true
 		}
 	},
 	OnGameEvent_mvm_creditbonus_all: {
-		signature: "OnGameEvent_mvm_creditbonus_all(params: table) -> void"
+		signature: "OnGameEvent_mvm_creditbonus_all(params: table) -> null"
 	},
 	OnGameEvent_mvm_creditbonus_all_advanced: {
-		signature: "OnGameEvent_mvm_creditbonus_all_advanced(params: table) -> void"
+		signature: "OnGameEvent_mvm_creditbonus_all_advanced(params: table) -> null"
 	},
 	OnGameEvent_mvm_creditbonus_wave: {
-		signature: "OnGameEvent_mvm_creditbonus_wave(params: table) -> void"
+		signature: "OnGameEvent_mvm_creditbonus_wave(params: table) -> null"
 	},
 	OnGameEvent_mvm_kill_robot_delivering_bomb: {
-		signature: "OnGameEvent_mvm_kill_robot_delivering_bomb(params: table) -> void",
+		signature: "OnGameEvent_mvm_kill_robot_delivering_bomb(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"player: int — entindex of the player": true
 		}
 	},
 	OnGameEvent_mvm_mannhattan_pit: {
-		signature: "OnGameEvent_mvm_mannhattan_pit(params: table) -> void"
+		signature: "OnGameEvent_mvm_mannhattan_pit(params: table) -> null"
 	},
 	OnGameEvent_mvm_medic_powerup_shared: {
-		signature: "OnGameEvent_mvm_medic_powerup_shared(params: table) -> void",
+		signature: "OnGameEvent_mvm_medic_powerup_shared(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"player: int — entindex of the player": true
 		}
 	},
 	OnGameEvent_mvm_mission_complete: {
-		signature: "OnGameEvent_mvm_mission_complete(params: table) -> void",
+		signature: "OnGameEvent_mvm_mission_complete(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"mission: string": true
 		}
 	},
 	OnGameEvent_mvm_mission_update: {
-		signature: "OnGameEvent_mvm_mission_update(params: table) -> void",
+		signature: "OnGameEvent_mvm_mission_update(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"class: int": true,
@@ -4883,7 +4883,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_mvm_pickup_currency: {
-		signature: "OnGameEvent_mvm_pickup_currency(params: table) -> void",
+		signature: "OnGameEvent_mvm_pickup_currency(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"player: int — entindex of the player": true,
@@ -4891,24 +4891,24 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_mvm_quick_sentry_upgrade: {
-		signature: "OnGameEvent_mvm_quick_sentry_upgrade(params: table) -> void",
+		signature: "OnGameEvent_mvm_quick_sentry_upgrade(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"player: int — entindex of the player": true
 		}
 	},
 	OnGameEvent_mvm_reset_stats: {
-		signature: "OnGameEvent_mvm_reset_stats(params: table) -> void"
+		signature: "OnGameEvent_mvm_reset_stats(params: table) -> null"
 	},
 	OnGameEvent_mvm_scout_marked_for_death: {
-		signature: "OnGameEvent_mvm_scout_marked_for_death(params: table) -> void",
+		signature: "OnGameEvent_mvm_scout_marked_for_death(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"player: int — entindex of the player": true
 		}
 	},
 	OnGameEvent_mvm_sentrybuster_detonate: {
-		signature: "OnGameEvent_mvm_sentrybuster_detonate(params: table) -> void",
+		signature: "OnGameEvent_mvm_sentrybuster_detonate(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"player: int — entindex of the target player": true,
@@ -4918,14 +4918,14 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_mvm_sentrybuster_killed: {
-		signature: "OnGameEvent_mvm_sentrybuster_killed(params: table) -> void",
+		signature: "OnGameEvent_mvm_sentrybuster_killed(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"sentry_buster: int — entindex": true
 		}
 	},
 	OnGameEvent_mvm_sniper_headshot_currency: {
-		signature: "OnGameEvent_mvm_sniper_headshot_currency(params: table) -> void",
+		signature: "OnGameEvent_mvm_sniper_headshot_currency(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"userid: int — user ID of the player": true,
@@ -4933,20 +4933,20 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_mvm_tank_destroyed_by_players: {
-		signature: "OnGameEvent_mvm_tank_destroyed_by_players(params: table) -> void"
+		signature: "OnGameEvent_mvm_tank_destroyed_by_players(params: table) -> null"
 	},
 	OnGameEvent_mvm_wave_complete: {
-		signature: "OnGameEvent_mvm_wave_complete(params: table) -> void",
+		signature: "OnGameEvent_mvm_wave_complete(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"advanced: bool — is this an advanced popfile": true
 		}
 	},
 	OnGameEvent_mvm_wave_failed: {
-		signature: "OnGameEvent_mvm_wave_failed(params: table) -> void"
+		signature: "OnGameEvent_mvm_wave_failed(params: table) -> null"
 	},
 	OnGameEvent_nav_blocked: {
-		signature: "OnGameEvent_nav_blocked(params: table) -> void",
+		signature: "OnGameEvent_nav_blocked(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"area: int": true,
@@ -4954,7 +4954,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_npc_hurt: {
-		signature: "OnGameEvent_npc_hurt(params: table) -> void",
+		signature: "OnGameEvent_npc_hurt(params: table) -> null",
 		description: {
 			"Fired when an Engineer building ([obj_sentrygun](https://developer.valvesoftware.com/wiki/obj_sentrygun), [obj_dispenser](https://developer.valvesoftware.com/wiki/obj_dispenser), [obj_teleporter](https://developer.valvesoftware.com/wiki/obj_teleporter)), [base_boss](https://developer.valvesoftware.com/wiki/base_boss), MvM tank ([tank_boss](https://developer.valvesoftware.com/wiki/tank_boss)) or Halloween enemy ([headless_hatman](https://developer.valvesoftware.com/wiki/headless_hatman), [eyeball_boss](https://developer.valvesoftware.com/wiki/eyeball_boss), [merasmus](https://developer.valvesoftware.com/wiki/merasmus), [tf_zombie](https://developer.valvesoftware.com/wiki/tf_zombie)) is damaged.": false,
 			"\n\n---\nVariables of the `params` table:": false,
@@ -4968,7 +4968,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_num_cappers_changed: {
-		signature: "OnGameEvent_num_cappers_changed(params: table) -> void",
+		signature: "OnGameEvent_num_cappers_changed(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"index: int — index of the trigger": true,
@@ -4976,7 +4976,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_object_deflected: {
-		signature: "OnGameEvent_object_deflected(params: table) -> void",
+		signature: "OnGameEvent_object_deflected(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"userid: int — player who deflected the object": true,
@@ -4986,7 +4986,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_object_destroyed: {
-		signature: "OnGameEvent_object_destroyed(params: table) -> void",
+		signature: "OnGameEvent_object_destroyed(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"userid: int — user ID who died": true,
@@ -5001,7 +5001,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_object_detonated: {
-		signature: "OnGameEvent_object_detonated(params: table) -> void",
+		signature: "OnGameEvent_object_detonated(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"userid: int — user ID of the object owner": true,
@@ -5010,7 +5010,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_object_removed: {
-		signature: "OnGameEvent_object_removed(params: table) -> void",
+		signature: "OnGameEvent_object_removed(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"userid: int — user ID of the object owner": true,
@@ -5019,24 +5019,24 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_overtime_nag: {
-		signature: "OnGameEvent_overtime_nag(params: table) -> void"
+		signature: "OnGameEvent_overtime_nag(params: table) -> null"
 	},
 	OnGameEvent_parachute_deploy: {
-		signature: "OnGameEvent_parachute_deploy(params: table) -> void",
+		signature: "OnGameEvent_parachute_deploy(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"index: int — entindex of the player": true
 		}
 	},
 	OnGameEvent_parachute_holster: {
-		signature: "OnGameEvent_parachute_holster(params: table) -> void",
+		signature: "OnGameEvent_parachute_holster(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"index: int — entindex of the player": true
 		}
 	},
 	OnGameEvent_party_chat: {
-		signature: "OnGameEvent_party_chat(params: table) -> void",
+		signature: "OnGameEvent_party_chat(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"steamid: string — steamID (64-bit value converted to string) of user who said or did the thing.  May be": true,
@@ -5045,40 +5045,40 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_party_criteria_changed: {
-		signature: "OnGameEvent_party_criteria_changed(params: table) -> void"
+		signature: "OnGameEvent_party_criteria_changed(params: table) -> null"
 	},
 	OnGameEvent_party_invites_changed: {
-		signature: "OnGameEvent_party_invites_changed(params: table) -> void"
+		signature: "OnGameEvent_party_invites_changed(params: table) -> null"
 	},
 	OnGameEvent_party_member_join: {
-		signature: "OnGameEvent_party_member_join(params: table) -> void",
+		signature: "OnGameEvent_party_member_join(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"steamid: string — steamID (64-bit value converted to string) of joined": true
 		}
 	},
 	OnGameEvent_party_member_leave: {
-		signature: "OnGameEvent_party_member_leave(params: table) -> void",
+		signature: "OnGameEvent_party_member_leave(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"steamid: string — steamID (64-bit value converted to string) of leaver": true
 		}
 	},
 	OnGameEvent_party_pref_changed: {
-		signature: "OnGameEvent_party_pref_changed(params: table) -> void"
+		signature: "OnGameEvent_party_pref_changed(params: table) -> null"
 	},
 	OnGameEvent_party_queue_state_changed: {
-		signature: "OnGameEvent_party_queue_state_changed(params: table) -> void",
+		signature: "OnGameEvent_party_queue_state_changed(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"matchgroup: int — ETFMatchGroup": true
 		}
 	},
 	OnGameEvent_party_updated: {
-		signature: "OnGameEvent_party_updated(params: table) -> void"
+		signature: "OnGameEvent_party_updated(params: table) -> null"
 	},
 	OnGameEvent_pass_ball_blocked: {
-		signature: "OnGameEvent_pass_ball_blocked(params: table) -> void",
+		signature: "OnGameEvent_pass_ball_blocked(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"owner: int": true,
@@ -5086,7 +5086,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_pass_ball_stolen: {
-		signature: "OnGameEvent_pass_ball_stolen(params: table) -> void",
+		signature: "OnGameEvent_pass_ball_stolen(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"victim: int": true,
@@ -5094,7 +5094,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_pass_free: {
-		signature: "OnGameEvent_pass_free(params: table) -> void",
+		signature: "OnGameEvent_pass_free(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"owner: int": true,
@@ -5102,7 +5102,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_pass_get: {
-		signature: "OnGameEvent_pass_get(params: table) -> void",
+		signature: "OnGameEvent_pass_get(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"owner: int": true,
@@ -5110,7 +5110,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_pass_pass_caught: {
-		signature: "OnGameEvent_pass_pass_caught(params: table) -> void",
+		signature: "OnGameEvent_pass_pass_caught(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"passer: int": true,
@@ -5120,7 +5120,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_pass_score: {
-		signature: "OnGameEvent_pass_score(params: table) -> void",
+		signature: "OnGameEvent_pass_score(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"scorer: int": true,
@@ -5129,7 +5129,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_path_track_passed: {
-		signature: "OnGameEvent_path_track_passed(params: table) -> void",
+		signature: "OnGameEvent_path_track_passed(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"index: int": true,
@@ -5137,7 +5137,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_payload_pushed: {
-		signature: "OnGameEvent_payload_pushed(params: table) -> void",
+		signature: "OnGameEvent_payload_pushed(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"pusher: int — userid of the player who pushed": true,
@@ -5145,21 +5145,21 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_physgun_pickup: {
-		signature: "OnGameEvent_physgun_pickup(params: table) -> void",
+		signature: "OnGameEvent_physgun_pickup(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"entindex: int — entity picked up": true
 		}
 	},
 	OnGameEvent_player_abandoned_match: {
-		signature: "OnGameEvent_player_abandoned_match(params: table) -> void",
+		signature: "OnGameEvent_player_abandoned_match(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"game_over: bool": true
 		}
 	},
 	OnGameEvent_player_account_changed: {
-		signature: "OnGameEvent_player_account_changed(params: table) -> void",
+		signature: "OnGameEvent_player_account_changed(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"old_value: int": true,
@@ -5167,21 +5167,21 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_player_activate: {
-		signature: "OnGameEvent_player_activate(params: table) -> void",
+		signature: "OnGameEvent_player_activate(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"userid: int — user ID on server": true
 		}
 	},
 	OnGameEvent_player_askedforball: {
-		signature: "OnGameEvent_player_askedforball(params: table) -> void",
+		signature: "OnGameEvent_player_askedforball(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"userid: int": true
 		}
 	},
 	OnGameEvent_player_bonuspoints: {
-		signature: "OnGameEvent_player_bonuspoints(params: table) -> void",
+		signature: "OnGameEvent_player_bonuspoints(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"points: int": true,
@@ -5190,7 +5190,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_player_buff: {
-		signature: "OnGameEvent_player_buff(params: table) -> void",
+		signature: "OnGameEvent_player_buff(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"userid: int — user ID of the player the buff is being applied to": true,
@@ -5199,7 +5199,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_player_builtobject: {
-		signature: "OnGameEvent_player_builtobject(params: table) -> void",
+		signature: "OnGameEvent_player_builtobject(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"userid: int — user ID of the builder": true,
@@ -5208,7 +5208,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_player_buyback: {
-		signature: "OnGameEvent_player_buyback(params: table) -> void",
+		signature: "OnGameEvent_player_buyback(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"player: int": true,
@@ -5216,14 +5216,14 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_player_calledformedic: {
-		signature: "OnGameEvent_player_calledformedic(params: table) -> void",
+		signature: "OnGameEvent_player_calledformedic(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"userid: int": true
 		}
 	},
 	OnGameEvent_player_carryobject: {
-		signature: "OnGameEvent_player_carryobject(params: table) -> void",
+		signature: "OnGameEvent_player_carryobject(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"userid: int — user ID of the builder": true,
@@ -5232,7 +5232,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_player_changeclass: {
-		signature: "OnGameEvent_player_changeclass(params: table) -> void",
+		signature: "OnGameEvent_player_changeclass(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"userid: int — user ID who changed class": true,
@@ -5240,7 +5240,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_player_changename: {
-		signature: "OnGameEvent_player_changename(params: table) -> void",
+		signature: "OnGameEvent_player_changename(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"userid: int — user ID on server": true,
@@ -5249,7 +5249,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_player_chargedeployed: {
-		signature: "OnGameEvent_player_chargedeployed(params: table) -> void",
+		signature: "OnGameEvent_player_chargedeployed(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"userid: int — user ID of medic who deployed charge": true,
@@ -5257,7 +5257,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_player_chat: {
-		signature: "OnGameEvent_player_chat(params: table) -> void",
+		signature: "OnGameEvent_player_chat(params: table) -> null",
 		description: {
 			"a public player chat": false,
 			"\n\n---\nVariables of the `params` table:": false,
@@ -5267,7 +5267,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_player_class: {
-		signature: "OnGameEvent_player_class(params: table) -> void",
+		signature: "OnGameEvent_player_class(params: table) -> null",
 		description: {
 			"a player changed his class": false,
 			"\n\n---\nVariables of the `params` table:": false,
@@ -5276,7 +5276,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_player_connect: {
-		signature: "OnGameEvent_player_connect(params: table) -> void",
+		signature: "OnGameEvent_player_connect(params: table) -> null",
 		description: {
 			"A new client has connected. This does NOT fire between level changes as the player is already connected. Use `player_spawn` instead if you need to catch every player entity that is created.": false,
 			"\n\n---\nVariables of the `params` table:": false,
@@ -5289,7 +5289,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_player_connect_client: {
-		signature: "OnGameEvent_player_connect_client(params: table) -> void",
+		signature: "OnGameEvent_player_connect_client(params: table) -> null",
 		description: {
 			"a new client connected": false,
 			"\n\n---\nVariables of the `params` table:": false,
@@ -5301,21 +5301,21 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_player_currency_changed: {
-		signature: "OnGameEvent_player_currency_changed(params: table) -> void",
+		signature: "OnGameEvent_player_currency_changed(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"currency: int": true
 		}
 	},
 	OnGameEvent_player_damage_dodged: {
-		signature: "OnGameEvent_player_damage_dodged(params: table) -> void",
+		signature: "OnGameEvent_player_damage_dodged(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"damage: int": true
 		}
 	},
 	OnGameEvent_player_damaged: {
-		signature: "OnGameEvent_player_damaged(params: table) -> void",
+		signature: "OnGameEvent_player_damaged(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"amount: int": true,
@@ -5323,7 +5323,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_player_death: {
-		signature: "OnGameEvent_player_death(params: table) -> void",
+		signature: "OnGameEvent_player_death(params: table) -> null",
 		description: {
 			"Fired when a player dies. This shows up in the kill feed.": false,
 			"\n\n---\nVariables of the `params` table:": false,
@@ -5363,14 +5363,14 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_player_destroyed_pipebomb: {
-		signature: "OnGameEvent_player_destroyed_pipebomb(params: table) -> void",
+		signature: "OnGameEvent_player_destroyed_pipebomb(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"userid: int": true
 		}
 	},
 	OnGameEvent_player_directhit_stun: {
-		signature: "OnGameEvent_player_directhit_stun(params: table) -> void",
+		signature: "OnGameEvent_player_directhit_stun(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"attacker: int — entindex of the attacker": true,
@@ -5378,7 +5378,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_player_disconnect: {
-		signature: "OnGameEvent_player_disconnect(params: table) -> void",
+		signature: "OnGameEvent_player_disconnect(params: table) -> null",
 		description: {
 			"A client has disconnected. The player handle and script scope still exists when this event fires, as it persists for a frame after disconnect.": false,
 			"\n\n---\nVariables of the `params` table:": false,
@@ -5390,7 +5390,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_player_domination: {
-		signature: "OnGameEvent_player_domination(params: table) -> void",
+		signature: "OnGameEvent_player_domination(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"dominator: int — userID of who gained domination": true,
@@ -5399,7 +5399,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_player_dropobject: {
-		signature: "OnGameEvent_player_dropobject(params: table) -> void",
+		signature: "OnGameEvent_player_dropobject(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"userid: int — user ID of the builder": true,
@@ -5408,7 +5408,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_player_escort_score: {
-		signature: "OnGameEvent_player_escort_score(params: table) -> void",
+		signature: "OnGameEvent_player_escort_score(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"player: int": true,
@@ -5416,7 +5416,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_player_extinguished: {
-		signature: "OnGameEvent_player_extinguished(params: table) -> void",
+		signature: "OnGameEvent_player_extinguished(params: table) -> null",
 		description: {
 			"sent when a burning player is extinguished by a medic": false,
 			"\n\n---\nVariables of the `params` table:": false,
@@ -5426,7 +5426,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_player_healed: {
-		signature: "OnGameEvent_player_healed(params: table) -> void",
+		signature: "OnGameEvent_player_healed(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"patient: int": true,
@@ -5435,14 +5435,14 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_player_healedbymedic: {
-		signature: "OnGameEvent_player_healedbymedic(params: table) -> void",
+		signature: "OnGameEvent_player_healedbymedic(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"medic: int": true
 		}
 	},
 	OnGameEvent_player_healedmediccall: {
-		signature: "OnGameEvent_player_healedmediccall(params: table) -> void",
+		signature: "OnGameEvent_player_healedmediccall(params: table) -> null",
 		description: {
 			"local player heals someone who called for medic.": false,
 			"\n\n---\nVariables of the `params` table:": false,
@@ -5450,7 +5450,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_player_healonhit: {
-		signature: "OnGameEvent_player_healonhit(params: table) -> void",
+		signature: "OnGameEvent_player_healonhit(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"amount: int": true,
@@ -5459,21 +5459,21 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_player_highfive_cancel: {
-		signature: "OnGameEvent_player_highfive_cancel(params: table) -> void",
+		signature: "OnGameEvent_player_highfive_cancel(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"entindex: int": true
 		}
 	},
 	OnGameEvent_player_highfive_start: {
-		signature: "OnGameEvent_player_highfive_start(params: table) -> void",
+		signature: "OnGameEvent_player_highfive_start(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"entindex: int": true
 		}
 	},
 	OnGameEvent_player_highfive_success: {
-		signature: "OnGameEvent_player_highfive_success(params: table) -> void",
+		signature: "OnGameEvent_player_highfive_success(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"initiator_entindex: int": true,
@@ -5481,14 +5481,14 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_player_hintmessage: {
-		signature: "OnGameEvent_player_hintmessage(params: table) -> void",
+		signature: "OnGameEvent_player_hintmessage(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"hintmessage: string — localizable string of a hint": true
 		}
 	},
 	OnGameEvent_player_hurt: {
-		signature: "OnGameEvent_player_hurt(params: table) -> void",
+		signature: "OnGameEvent_player_hurt(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"userid: int": true,
@@ -5506,7 +5506,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_player_ignited: {
-		signature: "OnGameEvent_player_ignited(params: table) -> void",
+		signature: "OnGameEvent_player_ignited(params: table) -> null",
 		description: {
 			"sent when a player is ignited, only to the two players involved": false,
 			"\n\n---\nVariables of the `params` table:": false,
@@ -5516,7 +5516,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_player_ignited_inv: {
-		signature: "OnGameEvent_player_ignited_inv(params: table) -> void",
+		signature: "OnGameEvent_player_ignited_inv(params: table) -> null",
 		description: {
 			"sent when a player is ignited by a pyro who is being invulned, only to the medic who's doing the invulning": false,
 			"\n\n---\nVariables of the `params` table:": false,
@@ -5526,7 +5526,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_player_info: {
-		signature: "OnGameEvent_player_info(params: table) -> void",
+		signature: "OnGameEvent_player_info(params: table) -> null",
 		description: {
 			"a player changed his name": false,
 			"\n\n---\nVariables of the `params` table:": false,
@@ -5538,14 +5538,14 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_player_initial_spawn: {
-		signature: "OnGameEvent_player_initial_spawn(params: table) -> void",
+		signature: "OnGameEvent_player_initial_spawn(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"index: int — entindex of the player": true
 		}
 	},
 	OnGameEvent_player_invulned: {
-		signature: "OnGameEvent_player_invulned(params: table) -> void",
+		signature: "OnGameEvent_player_invulned(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"userid: int": true,
@@ -5553,7 +5553,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_player_jarated: {
-		signature: "OnGameEvent_player_jarated(params: table) -> void",
+		signature: "OnGameEvent_player_jarated(params: table) -> null",
 		description: {
 			"sent when a player is jarated, only to the two players involved": false,
 			"\n\n---\nVariables of the `params` table:": false,
@@ -5562,7 +5562,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_player_jarated_fade: {
-		signature: "OnGameEvent_player_jarated_fade(params: table) -> void",
+		signature: "OnGameEvent_player_jarated_fade(params: table) -> null",
 		description: {
 			"sent when a player is jarated, only to the two players involved": false,
 			"\n\n---\nVariables of the `params` table:": false,
@@ -5571,7 +5571,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_player_killed_achievement_zone: {
-		signature: "OnGameEvent_player_killed_achievement_zone(params: table) -> void",
+		signature: "OnGameEvent_player_killed_achievement_zone(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"attacker: int — entindex of the attacker": true,
@@ -5580,24 +5580,24 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_player_mvp: {
-		signature: "OnGameEvent_player_mvp(params: table) -> void",
+		signature: "OnGameEvent_player_mvp(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"player: int": true
 		}
 	},
 	OnGameEvent_player_pinned: {
-		signature: "OnGameEvent_player_pinned(params: table) -> void",
+		signature: "OnGameEvent_player_pinned(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"pinned: int": true
 		}
 	},
 	OnGameEvent_player_regenerate: {
-		signature: "OnGameEvent_player_regenerate(params: table) -> void"
+		signature: "OnGameEvent_player_regenerate(params: table) -> null"
 	},
 	OnGameEvent_player_rocketpack_pushed: {
-		signature: "OnGameEvent_player_rocketpack_pushed(params: table) -> void",
+		signature: "OnGameEvent_player_rocketpack_pushed(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"pusher: int — userID of who pushed": true,
@@ -5605,7 +5605,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_player_sapped_object: {
-		signature: "OnGameEvent_player_sapped_object(params: table) -> void",
+		signature: "OnGameEvent_player_sapped_object(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"userid: int — user ID of the spy": true,
@@ -5615,7 +5615,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_player_say: {
-		signature: "OnGameEvent_player_say(params: table) -> void",
+		signature: "OnGameEvent_player_say(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"userid: int — user ID on server": true,
@@ -5623,7 +5623,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_player_score: {
-		signature: "OnGameEvent_player_score(params: table) -> void",
+		signature: "OnGameEvent_player_score(params: table) -> null",
 		description: {
 			"players scores changed": false,
 			"\n\n---\nVariables of the `params` table:": false,
@@ -5634,7 +5634,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_player_score_changed: {
-		signature: "OnGameEvent_player_score_changed(params: table) -> void",
+		signature: "OnGameEvent_player_score_changed(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"player: int": true,
@@ -5642,7 +5642,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_player_shield_blocked: {
-		signature: "OnGameEvent_player_shield_blocked(params: table) -> void",
+		signature: "OnGameEvent_player_shield_blocked(params: table) -> null",
 		description: {
 			"sent when a player is jarated, only to the two players involved": false,
 			"\n\n---\nVariables of the `params` table:": false,
@@ -5651,7 +5651,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_player_shoot: {
-		signature: "OnGameEvent_player_shoot(params: table) -> void",
+		signature: "OnGameEvent_player_shoot(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"userid: int — user ID on server": true,
@@ -5660,7 +5660,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_player_spawn: {
-		signature: "OnGameEvent_player_spawn(params: table) -> void",
+		signature: "OnGameEvent_player_spawn(params: table) -> null",
 		description: {
 			"This event will be sent once when the player entity is created, i.e. they joined the server or they are loading in after a map change. In this case, `team` is equal to 0 (unassigned). Each time afterwards, the event will only be fired when the player spawns alive on red or blue team. This is also fired once when [SourceTV](https://developer.valvesoftware.com/wiki/SourceTV) is loaded in.": false,
 			"\n\n---\nVariables of the `params` table:": false,
@@ -5670,14 +5670,14 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_player_stats_updated: {
-		signature: "OnGameEvent_player_stats_updated(params: table) -> void",
+		signature: "OnGameEvent_player_stats_updated(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"forceupload: bool": true
 		}
 	},
 	OnGameEvent_player_stealsandvich: {
-		signature: "OnGameEvent_player_stealsandvich(params: table) -> void",
+		signature: "OnGameEvent_player_stealsandvich(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"owner: int": true,
@@ -5685,7 +5685,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_player_stunned: {
-		signature: "OnGameEvent_player_stunned(params: table) -> void",
+		signature: "OnGameEvent_player_stunned(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"stunner: int": true,
@@ -5695,7 +5695,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_player_team: {
-		signature: "OnGameEvent_player_team(params: table) -> void",
+		signature: "OnGameEvent_player_team(params: table) -> null",
 		description: {
 			"Fired when player joins a team.": false,
 			"\n\n---\nVariables of the `params` table:": false,
@@ -5709,7 +5709,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_player_teleported: {
-		signature: "OnGameEvent_player_teleported(params: table) -> void",
+		signature: "OnGameEvent_player_teleported(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"userid: int — userid of the player": true,
@@ -5718,17 +5718,17 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_player_turned_to_ghost: {
-		signature: "OnGameEvent_player_turned_to_ghost(params: table) -> void",
+		signature: "OnGameEvent_player_turned_to_ghost(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"userid: int — user ID of the player who changed to a ghost": true
 		}
 	},
 	OnGameEvent_player_upgraded: {
-		signature: "OnGameEvent_player_upgraded(params: table) -> void"
+		signature: "OnGameEvent_player_upgraded(params: table) -> null"
 	},
 	OnGameEvent_player_upgradedobject: {
-		signature: "OnGameEvent_player_upgradedobject(params: table) -> void",
+		signature: "OnGameEvent_player_upgradedobject(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"userid: int — user ID of the builder": true,
@@ -5738,7 +5738,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_player_use: {
-		signature: "OnGameEvent_player_use(params: table) -> void",
+		signature: "OnGameEvent_player_use(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"userid: int — user ID on server": true,
@@ -5746,7 +5746,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_player_used_powerup_bottle: {
-		signature: "OnGameEvent_player_used_powerup_bottle(params: table) -> void",
+		signature: "OnGameEvent_player_used_powerup_bottle(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"player: int": true,
@@ -5755,10 +5755,10 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_playing_commentary: {
-		signature: "OnGameEvent_playing_commentary(params: table) -> void"
+		signature: "OnGameEvent_playing_commentary(params: table) -> null"
 	},
 	OnGameEvent_post_inventory_application: {
-		signature: "OnGameEvent_post_inventory_application(params: table) -> void",
+		signature: "OnGameEvent_post_inventory_application(params: table) -> null",
 		description: {
 			"Fired when the player has items resupplied, i.e. when the player spawns or touches resupply ([func_regenerate](https://developer.valvesoftware.com/wiki/func_regenerate)).": false,
 			"\n\n---\nVariables of the `params` table:": false,
@@ -5766,7 +5766,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_projectile_direct_hit: {
-		signature: "OnGameEvent_projectile_direct_hit(params: table) -> void",
+		signature: "OnGameEvent_projectile_direct_hit(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"attacker: int — index of the player who shot the projectile": true,
@@ -5775,7 +5775,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_projectile_removed: {
-		signature: "OnGameEvent_projectile_removed(params: table) -> void",
+		signature: "OnGameEvent_projectile_removed(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"attacker: int": true,
@@ -5785,13 +5785,13 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_pumpkin_lord_killed: {
-		signature: "OnGameEvent_pumpkin_lord_killed(params: table) -> void"
+		signature: "OnGameEvent_pumpkin_lord_killed(params: table) -> null"
 	},
 	OnGameEvent_pumpkin_lord_summoned: {
-		signature: "OnGameEvent_pumpkin_lord_summoned(params: table) -> void"
+		signature: "OnGameEvent_pumpkin_lord_summoned(params: table) -> null"
 	},
 	OnGameEvent_pve_win_panel: {
-		signature: "OnGameEvent_pve_win_panel(params: table) -> void",
+		signature: "OnGameEvent_pve_win_panel(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"panel_style: int — for client to determine layout": true,
@@ -5800,7 +5800,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_quest_map_data_changed: {
-		signature: "OnGameEvent_quest_map_data_changed(params: table) -> void",
+		signature: "OnGameEvent_quest_map_data_changed(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"igniter: int — entindex of the igniter": true,
@@ -5809,7 +5809,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_quest_objective_completed: {
-		signature: "OnGameEvent_quest_objective_completed(params: table) -> void",
+		signature: "OnGameEvent_quest_objective_completed(params: table) -> null",
 		description: {
 			"For prediction": false,
 			"\n\n---\nVariables of the `params` table:": false,
@@ -5820,7 +5820,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_quest_progress: {
-		signature: "OnGameEvent_quest_progress(params: table) -> void",
+		signature: "OnGameEvent_quest_progress(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"owner: int": true,
@@ -5831,7 +5831,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_quest_request: {
-		signature: "OnGameEvent_quest_request(params: table) -> void",
+		signature: "OnGameEvent_quest_request(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"request: int": true,
@@ -5839,7 +5839,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_quest_response: {
-		signature: "OnGameEvent_quest_response(params: table) -> void",
+		signature: "OnGameEvent_quest_response(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"request: int": true,
@@ -5848,30 +5848,30 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_quest_turn_in_state: {
-		signature: "OnGameEvent_quest_turn_in_state(params: table) -> void",
+		signature: "OnGameEvent_quest_turn_in_state(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"state: int — Maps to EQuestTurnInState": true
 		}
 	},
 	OnGameEvent_questlog_opened: {
-		signature: "OnGameEvent_questlog_opened(params: table) -> void"
+		signature: "OnGameEvent_questlog_opened(params: table) -> null"
 	},
 	OnGameEvent_ragdoll_dissolved: {
-		signature: "OnGameEvent_ragdoll_dissolved(params: table) -> void",
+		signature: "OnGameEvent_ragdoll_dissolved(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"entindex: int": true
 		}
 	},
 	OnGameEvent_raid_spawn_mob: {
-		signature: "OnGameEvent_raid_spawn_mob(params: table) -> void"
+		signature: "OnGameEvent_raid_spawn_mob(params: table) -> null"
 	},
 	OnGameEvent_raid_spawn_squad: {
-		signature: "OnGameEvent_raid_spawn_squad(params: table) -> void"
+		signature: "OnGameEvent_raid_spawn_squad(params: table) -> null"
 	},
 	OnGameEvent_rd_player_score_points: {
-		signature: "OnGameEvent_rd_player_score_points(params: table) -> void",
+		signature: "OnGameEvent_rd_player_score_points(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"player: int": true,
@@ -5880,7 +5880,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_rd_robot_impact: {
-		signature: "OnGameEvent_rd_robot_impact(params: table) -> void",
+		signature: "OnGameEvent_rd_robot_impact(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"entindex: int": true,
@@ -5890,7 +5890,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_rd_robot_killed: {
-		signature: "OnGameEvent_rd_robot_killed(params: table) -> void",
+		signature: "OnGameEvent_rd_robot_killed(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"userid: int — user ID who died": true,
@@ -5905,10 +5905,10 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_rd_rules_state_changed: {
-		signature: "OnGameEvent_rd_rules_state_changed(params: table) -> void"
+		signature: "OnGameEvent_rd_rules_state_changed(params: table) -> null"
 	},
 	OnGameEvent_rd_team_points_changed: {
-		signature: "OnGameEvent_rd_team_points_changed(params: table) -> void",
+		signature: "OnGameEvent_rd_team_points_changed(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"points: int": true,
@@ -5917,13 +5917,13 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_recalculate_holidays: {
-		signature: "OnGameEvent_recalculate_holidays(params: table) -> void"
+		signature: "OnGameEvent_recalculate_holidays(params: table) -> null"
 	},
 	OnGameEvent_recalculate_truce: {
-		signature: "OnGameEvent_recalculate_truce(params: table) -> void"
+		signature: "OnGameEvent_recalculate_truce(params: table) -> null"
 	},
 	OnGameEvent_rematch_failed_to_create: {
-		signature: "OnGameEvent_rematch_failed_to_create(params: table) -> void",
+		signature: "OnGameEvent_rematch_failed_to_create(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"map_index: int — what they voted for": true,
@@ -5931,30 +5931,30 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_remove_nemesis_relationships: {
-		signature: "OnGameEvent_remove_nemesis_relationships(params: table) -> void",
+		signature: "OnGameEvent_remove_nemesis_relationships(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"player: int — entindex of the player who should reset": true
 		}
 	},
 	OnGameEvent_replay_endrecord: {
-		signature: "OnGameEvent_replay_endrecord(params: table) -> void"
+		signature: "OnGameEvent_replay_endrecord(params: table) -> null"
 	},
 	OnGameEvent_replay_replaysavailable: {
-		signature: "OnGameEvent_replay_replaysavailable(params: table) -> void"
+		signature: "OnGameEvent_replay_replaysavailable(params: table) -> null"
 	},
 	OnGameEvent_replay_saved: {
-		signature: "OnGameEvent_replay_saved(params: table) -> void"
+		signature: "OnGameEvent_replay_saved(params: table) -> null"
 	},
 	OnGameEvent_replay_servererror: {
-		signature: "OnGameEvent_replay_servererror(params: table) -> void",
+		signature: "OnGameEvent_replay_servererror(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"error: string": true
 		}
 	},
 	OnGameEvent_replay_sessioninfo: {
-		signature: "OnGameEvent_replay_sessioninfo(params: table) -> void",
+		signature: "OnGameEvent_replay_sessioninfo(params: table) -> null",
 		description: {
 			"Sent when the server begins recording, or when a client first connects - only sent once per recording session": false,
 			"\n\n---\nVariables of the `params` table:": false,
@@ -5965,11 +5965,11 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_replay_startrecord: {
-		signature: "OnGameEvent_replay_startrecord(params: table) -> void",
+		signature: "OnGameEvent_replay_startrecord(params: table) -> null",
 		description: "Sent when the server begins recording - only used to display UI"
 	},
 	OnGameEvent_replay_youtube_stats: {
-		signature: "OnGameEvent_replay_youtube_stats(params: table) -> void",
+		signature: "OnGameEvent_replay_youtube_stats(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"views: int": true,
@@ -5978,7 +5978,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_respawn_ghost: {
-		signature: "OnGameEvent_respawn_ghost(params: table) -> void",
+		signature: "OnGameEvent_respawn_ghost(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"reviver: int — userid of the reviving player": true,
@@ -5986,21 +5986,21 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_restart_timer_time: {
-		signature: "OnGameEvent_restart_timer_time(params: table) -> void",
+		signature: "OnGameEvent_restart_timer_time(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"time: int — How much time is left": true
 		}
 	},
 	OnGameEvent_revive_player_complete: {
-		signature: "OnGameEvent_revive_player_complete(params: table) -> void",
+		signature: "OnGameEvent_revive_player_complete(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"entindex: int — entindex of the medic": true
 		}
 	},
 	OnGameEvent_revive_player_notify: {
-		signature: "OnGameEvent_revive_player_notify(params: table) -> void",
+		signature: "OnGameEvent_revive_player_notify(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"entindex: int": true,
@@ -6008,14 +6008,14 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_revive_player_stopped: {
-		signature: "OnGameEvent_revive_player_stopped(params: table) -> void",
+		signature: "OnGameEvent_revive_player_stopped(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"entindex: int": true
 		}
 	},
 	OnGameEvent_rocket_jump: {
-		signature: "OnGameEvent_rocket_jump(params: table) -> void",
+		signature: "OnGameEvent_rocket_jump(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"userid: int": true,
@@ -6023,21 +6023,21 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_rocket_jump_landed: {
-		signature: "OnGameEvent_rocket_jump_landed(params: table) -> void",
+		signature: "OnGameEvent_rocket_jump_landed(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"userid: int": true
 		}
 	},
 	OnGameEvent_rocketpack_landed: {
-		signature: "OnGameEvent_rocketpack_landed(params: table) -> void",
+		signature: "OnGameEvent_rocketpack_landed(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"userid: int": true
 		}
 	},
 	OnGameEvent_rocketpack_launch: {
-		signature: "OnGameEvent_rocketpack_launch(params: table) -> void",
+		signature: "OnGameEvent_rocketpack_launch(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"userid: int": true,
@@ -6045,7 +6045,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_round_end: {
-		signature: "OnGameEvent_round_end(params: table) -> void",
+		signature: "OnGameEvent_round_end(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"winner: int — winner team/user i": true,
@@ -6054,7 +6054,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_round_start: {
-		signature: "OnGameEvent_round_start(params: table) -> void",
+		signature: "OnGameEvent_round_start(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"timelimit: int — round time limit in seconds": true,
@@ -6063,7 +6063,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_rps_taunt_event: {
-		signature: "OnGameEvent_rps_taunt_event(params: table) -> void",
+		signature: "OnGameEvent_rps_taunt_event(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"winner: int — entindex of the winning player": true,
@@ -6073,18 +6073,18 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_schema_updated: {
-		signature: "OnGameEvent_schema_updated(params: table) -> void"
+		signature: "OnGameEvent_schema_updated(params: table) -> null"
 	},
 	OnGameEvent_scorestats_accumulated_reset: {
-		signature: "OnGameEvent_scorestats_accumulated_reset(params: table) -> void",
+		signature: "OnGameEvent_scorestats_accumulated_reset(params: table) -> null",
 		description: "Fired when round resets due to `mp_restartgame`."
 	},
 	OnGameEvent_scorestats_accumulated_update: {
-		signature: "OnGameEvent_scorestats_accumulated_update(params: table) -> void",
+		signature: "OnGameEvent_scorestats_accumulated_update(params: table) -> null",
 		description: "Fired right before map entities are cleaned up for a round restart. \n\nThis event is not fired in Mann Vs Machine mode. For MvM, use `recalculate_holidays` and check if `GetRoundState() == 3` is true, which indicates a mission reset.\n\n"
 	},
 	OnGameEvent_scout_grand_slam: {
-		signature: "OnGameEvent_scout_grand_slam(params: table) -> void",
+		signature: "OnGameEvent_scout_grand_slam(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"scout_id: int": true,
@@ -6092,7 +6092,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_scout_slamdoll_landed: {
-		signature: "OnGameEvent_scout_slamdoll_landed(params: table) -> void",
+		signature: "OnGameEvent_scout_slamdoll_landed(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"target_index: int": true,
@@ -6102,14 +6102,14 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_sentry_on_go_active: {
-		signature: "OnGameEvent_sentry_on_go_active(params: table) -> void",
+		signature: "OnGameEvent_sentry_on_go_active(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"index: int": true
 		}
 	},
 	OnGameEvent_server_addban: {
-		signature: "OnGameEvent_server_addban(params: table) -> void",
+		signature: "OnGameEvent_server_addban(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"name: string — player name": true,
@@ -6122,14 +6122,14 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_server_changelevel_failed: {
-		signature: "OnGameEvent_server_changelevel_failed(params: table) -> void",
+		signature: "OnGameEvent_server_changelevel_failed(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"levelname: string — The level name that failed changelevel": true
 		}
 	},
 	OnGameEvent_server_cvar: {
-		signature: "OnGameEvent_server_cvar(params: table) -> void",
+		signature: "OnGameEvent_server_cvar(params: table) -> null",
 		description: {
 			"a server console var has changed": false,
 			"\n\n---\nVariables of the `params` table:": false,
@@ -6138,7 +6138,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_server_message: {
-		signature: "OnGameEvent_server_message(params: table) -> void",
+		signature: "OnGameEvent_server_message(params: table) -> null",
 		description: {
 			"a generic server message": false,
 			"\n\n---\nVariables of the `params` table:": false,
@@ -6146,7 +6146,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_server_removeban: {
-		signature: "OnGameEvent_server_removeban(params: table) -> void",
+		signature: "OnGameEvent_server_removeban(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"networkid: string — player network (i.e steam) id": true,
@@ -6155,7 +6155,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_server_shutdown: {
-		signature: "OnGameEvent_server_shutdown(params: table) -> void",
+		signature: "OnGameEvent_server_shutdown(params: table) -> null",
 		description: {
 			"server shut down": false,
 			"\n\n---\nVariables of the `params` table:": false,
@@ -6163,7 +6163,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_server_spawn: {
-		signature: "OnGameEvent_server_spawn(params: table) -> void",
+		signature: "OnGameEvent_server_spawn(params: table) -> null",
 		description: {
 			"send once a server starts": false,
 			"\n\n---\nVariables of the `params` table:": false,
@@ -6180,7 +6180,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_show_annotation: {
-		signature: "OnGameEvent_show_annotation(params: table) -> void",
+		signature: "OnGameEvent_show_annotation(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"worldPosX: float": true,
@@ -6200,52 +6200,52 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_show_class_layout: {
-		signature: "OnGameEvent_show_class_layout(params: table) -> void",
+		signature: "OnGameEvent_show_class_layout(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"show: bool": true
 		}
 	},
 	OnGameEvent_show_freezepanel: {
-		signature: "OnGameEvent_show_freezepanel(params: table) -> void",
+		signature: "OnGameEvent_show_freezepanel(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"killer: int — entindex of the killer entity": true
 		}
 	},
 	OnGameEvent_show_match_summary: {
-		signature: "OnGameEvent_show_match_summary(params: table) -> void",
+		signature: "OnGameEvent_show_match_summary(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"success: bool": true
 		}
 	},
 	OnGameEvent_show_vs_panel: {
-		signature: "OnGameEvent_show_vs_panel(params: table) -> void",
+		signature: "OnGameEvent_show_vs_panel(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"show: bool": true
 		}
 	},
 	OnGameEvent_single_player_death: {
-		signature: "OnGameEvent_single_player_death(params: table) -> void"
+		signature: "OnGameEvent_single_player_death(params: table) -> null"
 	},
 	OnGameEvent_skeleton_killed_quest: {
-		signature: "OnGameEvent_skeleton_killed_quest(params: table) -> void",
+		signature: "OnGameEvent_skeleton_killed_quest(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"player: int — userid of the player that killed the skeleton": true
 		}
 	},
 	OnGameEvent_skeleton_king_killed_quest: {
-		signature: "OnGameEvent_skeleton_king_killed_quest(params: table) -> void",
+		signature: "OnGameEvent_skeleton_king_killed_quest(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"player: int — userid of the player that killed the skeleton": true
 		}
 	},
 	OnGameEvent_slap_notice: {
-		signature: "OnGameEvent_slap_notice(params: table) -> void",
+		signature: "OnGameEvent_slap_notice(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"userid: int — user ID who died": true,
@@ -6266,23 +6266,23 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_spec_target_updated: {
-		signature: "OnGameEvent_spec_target_updated(params: table) -> void"
+		signature: "OnGameEvent_spec_target_updated(params: table) -> null"
 	},
 	OnGameEvent_special_score: {
-		signature: "OnGameEvent_special_score(params: table) -> void",
+		signature: "OnGameEvent_special_score(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"player: int — index of the scorer": true
 		}
 	},
 	OnGameEvent_spy_pda_reset: {
-		signature: "OnGameEvent_spy_pda_reset(params: table) -> void"
+		signature: "OnGameEvent_spy_pda_reset(params: table) -> null"
 	},
 	OnGameEvent_stats_resetround: {
-		signature: "OnGameEvent_stats_resetround(params: table) -> void"
+		signature: "OnGameEvent_stats_resetround(params: table) -> null"
 	},
 	OnGameEvent_sticky_jump: {
-		signature: "OnGameEvent_sticky_jump(params: table) -> void",
+		signature: "OnGameEvent_sticky_jump(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"userid: int": true,
@@ -6290,24 +6290,24 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_sticky_jump_landed: {
-		signature: "OnGameEvent_sticky_jump_landed(params: table) -> void",
+		signature: "OnGameEvent_sticky_jump_landed(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"userid: int": true
 		}
 	},
 	OnGameEvent_store_pricesheet_updated: {
-		signature: "OnGameEvent_store_pricesheet_updated(params: table) -> void"
+		signature: "OnGameEvent_store_pricesheet_updated(params: table) -> null"
 	},
 	OnGameEvent_tagged_player_as_it: {
-		signature: "OnGameEvent_tagged_player_as_it(params: table) -> void",
+		signature: "OnGameEvent_tagged_player_as_it(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"player: int — userid of the tagging player": true
 		}
 	},
 	OnGameEvent_take_armor: {
-		signature: "OnGameEvent_take_armor(params: table) -> void",
+		signature: "OnGameEvent_take_armor(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"amount: int": true,
@@ -6315,7 +6315,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_take_health: {
-		signature: "OnGameEvent_take_health(params: table) -> void",
+		signature: "OnGameEvent_take_health(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"amount: int": true,
@@ -6323,7 +6323,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_team_info: {
-		signature: "OnGameEvent_team_info(params: table) -> void",
+		signature: "OnGameEvent_team_info(params: table) -> null",
 		description: {
 			"info about team": false,
 			"\n\n---\nVariables of the `params` table:": false,
@@ -6332,7 +6332,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_team_leader_killed: {
-		signature: "OnGameEvent_team_leader_killed(params: table) -> void",
+		signature: "OnGameEvent_team_leader_killed(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"killer: int — index of the killer": true,
@@ -6340,7 +6340,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_team_score: {
-		signature: "OnGameEvent_team_score(params: table) -> void",
+		signature: "OnGameEvent_team_score(params: table) -> null",
 		description: {
 			"team score changed": false,
 			"\n\n---\nVariables of the `params` table:": false,
@@ -6349,14 +6349,14 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_teamplay_alert: {
-		signature: "OnGameEvent_teamplay_alert(params: table) -> void",
+		signature: "OnGameEvent_teamplay_alert(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"alert_type: int — which alert type is this (scramble, etc)?": true
 		}
 	},
 	OnGameEvent_teamplay_broadcast_audio: {
-		signature: "OnGameEvent_teamplay_broadcast_audio(params: table) -> void",
+		signature: "OnGameEvent_teamplay_broadcast_audio(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"team: int — which team should hear the broadcast. 0 will make everyone hear it.": true,
@@ -6366,7 +6366,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_teamplay_capture_blocked: {
-		signature: "OnGameEvent_teamplay_capture_blocked(params: table) -> void",
+		signature: "OnGameEvent_teamplay_capture_blocked(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"cp: int — index of the point that was blocked": true,
@@ -6376,7 +6376,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_teamplay_capture_broken: {
-		signature: "OnGameEvent_teamplay_capture_broken(params: table) -> void",
+		signature: "OnGameEvent_teamplay_capture_broken(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"cp: int": true,
@@ -6385,7 +6385,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_teamplay_flag_event: {
-		signature: "OnGameEvent_teamplay_flag_event(params: table) -> void",
+		signature: "OnGameEvent_teamplay_flag_event(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"player: int — player this event involves": true,
@@ -6396,27 +6396,27 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_teamplay_game_over: {
-		signature: "OnGameEvent_teamplay_game_over(params: table) -> void",
+		signature: "OnGameEvent_teamplay_game_over(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"reason: string — why the game is over ( timelimit, winlimit )": true
 		}
 	},
 	OnGameEvent_teamplay_map_time_remaining: {
-		signature: "OnGameEvent_teamplay_map_time_remaining(params: table) -> void",
+		signature: "OnGameEvent_teamplay_map_time_remaining(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"seconds: int": true
 		}
 	},
 	OnGameEvent_teamplay_overtime_begin: {
-		signature: "OnGameEvent_teamplay_overtime_begin(params: table) -> void"
+		signature: "OnGameEvent_teamplay_overtime_begin(params: table) -> null"
 	},
 	OnGameEvent_teamplay_overtime_end: {
-		signature: "OnGameEvent_teamplay_overtime_end(params: table) -> void"
+		signature: "OnGameEvent_teamplay_overtime_end(params: table) -> null"
 	},
 	OnGameEvent_teamplay_point_captured: {
-		signature: "OnGameEvent_teamplay_point_captured(params: table) -> void",
+		signature: "OnGameEvent_teamplay_point_captured(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"cp: int — index of the point that was captured": true,
@@ -6426,7 +6426,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_teamplay_point_locked: {
-		signature: "OnGameEvent_teamplay_point_locked(params: table) -> void",
+		signature: "OnGameEvent_teamplay_point_locked(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"cp: int — index of the point being captured": true,
@@ -6435,7 +6435,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_teamplay_point_startcapture: {
-		signature: "OnGameEvent_teamplay_point_startcapture(params: table) -> void",
+		signature: "OnGameEvent_teamplay_point_startcapture(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"cp: int — index of the point being captured": true,
@@ -6447,7 +6447,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_teamplay_point_unlocked: {
-		signature: "OnGameEvent_teamplay_point_unlocked(params: table) -> void",
+		signature: "OnGameEvent_teamplay_point_unlocked(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"cp: int — index of the point being captured": true,
@@ -6456,45 +6456,45 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_teamplay_pre_round_time_left: {
-		signature: "OnGameEvent_teamplay_pre_round_time_left(params: table) -> void",
+		signature: "OnGameEvent_teamplay_pre_round_time_left(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"time: int": true
 		}
 	},
 	OnGameEvent_teamplay_ready_restart: {
-		signature: "OnGameEvent_teamplay_ready_restart(params: table) -> void"
+		signature: "OnGameEvent_teamplay_ready_restart(params: table) -> null"
 	},
 	OnGameEvent_teamplay_restart_round: {
-		signature: "OnGameEvent_teamplay_restart_round(params: table) -> void"
+		signature: "OnGameEvent_teamplay_restart_round(params: table) -> null"
 	},
 	OnGameEvent_teamplay_round_active: {
-		signature: "OnGameEvent_teamplay_round_active(params: table) -> void",
+		signature: "OnGameEvent_teamplay_round_active(params: table) -> null",
 		description: "called when round is active, players can move"
 	},
 	OnGameEvent_teamplay_round_restart_seconds: {
-		signature: "OnGameEvent_teamplay_round_restart_seconds(params: table) -> void",
+		signature: "OnGameEvent_teamplay_round_restart_seconds(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"seconds: int": true
 		}
 	},
 	OnGameEvent_teamplay_round_selected: {
-		signature: "OnGameEvent_teamplay_round_selected(params: table) -> void",
+		signature: "OnGameEvent_teamplay_round_selected(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"round: string — name of the round selected": true
 		}
 	},
 	OnGameEvent_teamplay_round_stalemate: {
-		signature: "OnGameEvent_teamplay_round_stalemate(params: table) -> void",
+		signature: "OnGameEvent_teamplay_round_stalemate(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"reason: int — why the stalemate is occuring": true
 		}
 	},
 	OnGameEvent_teamplay_round_start: {
-		signature: "OnGameEvent_teamplay_round_start(params: table) -> void",
+		signature: "OnGameEvent_teamplay_round_start(params: table) -> null",
 		description: {
 			"round restart": false,
 			"\n\n---\nVariables of the `params` table:": false,
@@ -6502,7 +6502,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_teamplay_round_win: {
-		signature: "OnGameEvent_teamplay_round_win(params: table) -> void",
+		signature: "OnGameEvent_teamplay_round_win(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"team: int — which team won the round": true,
@@ -6515,23 +6515,23 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_teamplay_setup_finished: {
-		signature: "OnGameEvent_teamplay_setup_finished(params: table) -> void"
+		signature: "OnGameEvent_teamplay_setup_finished(params: table) -> null"
 	},
 	OnGameEvent_teamplay_suddendeath_begin: {
-		signature: "OnGameEvent_teamplay_suddendeath_begin(params: table) -> void"
+		signature: "OnGameEvent_teamplay_suddendeath_begin(params: table) -> null"
 	},
 	OnGameEvent_teamplay_suddendeath_end: {
-		signature: "OnGameEvent_teamplay_suddendeath_end(params: table) -> void"
+		signature: "OnGameEvent_teamplay_suddendeath_end(params: table) -> null"
 	},
 	OnGameEvent_teamplay_team_ready: {
-		signature: "OnGameEvent_teamplay_team_ready(params: table) -> void",
+		signature: "OnGameEvent_teamplay_team_ready(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"team: int — which team is ready": true
 		}
 	},
 	OnGameEvent_teamplay_teambalanced_player: {
-		signature: "OnGameEvent_teamplay_teambalanced_player(params: table) -> void",
+		signature: "OnGameEvent_teamplay_teambalanced_player(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"player: int — entindex of the player": true,
@@ -6539,14 +6539,14 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_teamplay_timer_flash: {
-		signature: "OnGameEvent_teamplay_timer_flash(params: table) -> void",
+		signature: "OnGameEvent_teamplay_timer_flash(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"time_remaining: int — how many seconds until the round ends": true
 		}
 	},
 	OnGameEvent_teamplay_timer_time_added: {
-		signature: "OnGameEvent_teamplay_timer_time_added(params: table) -> void",
+		signature: "OnGameEvent_teamplay_timer_time_added(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"timer: int — entindex of the timer": true,
@@ -6554,19 +6554,19 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_teamplay_update_timer: {
-		signature: "OnGameEvent_teamplay_update_timer(params: table) -> void"
+		signature: "OnGameEvent_teamplay_update_timer(params: table) -> null"
 	},
 	OnGameEvent_teamplay_waiting_abouttoend: {
-		signature: "OnGameEvent_teamplay_waiting_abouttoend(params: table) -> void"
+		signature: "OnGameEvent_teamplay_waiting_abouttoend(params: table) -> null"
 	},
 	OnGameEvent_teamplay_waiting_begins: {
-		signature: "OnGameEvent_teamplay_waiting_begins(params: table) -> void"
+		signature: "OnGameEvent_teamplay_waiting_begins(params: table) -> null"
 	},
 	OnGameEvent_teamplay_waiting_ends: {
-		signature: "OnGameEvent_teamplay_waiting_ends(params: table) -> void"
+		signature: "OnGameEvent_teamplay_waiting_ends(params: table) -> null"
 	},
 	OnGameEvent_teamplay_win_panel: {
-		signature: "OnGameEvent_teamplay_win_panel(params: table) -> void",
+		signature: "OnGameEvent_teamplay_win_panel(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"panel_style: int — for client to determine layout": true,
@@ -6592,24 +6592,24 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_teams_changed: {
-		signature: "OnGameEvent_teams_changed(params: table) -> void"
+		signature: "OnGameEvent_teams_changed(params: table) -> null"
 	},
 	OnGameEvent_tf_game_over: {
-		signature: "OnGameEvent_tf_game_over(params: table) -> void",
+		signature: "OnGameEvent_tf_game_over(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"reason: string — why the game is over ( timelimit, winlimit )": true
 		}
 	},
 	OnGameEvent_tf_map_time_remaining: {
-		signature: "OnGameEvent_tf_map_time_remaining(params: table) -> void",
+		signature: "OnGameEvent_tf_map_time_remaining(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"seconds: int": true
 		}
 	},
 	OnGameEvent_throwable_hit: {
-		signature: "OnGameEvent_throwable_hit(params: table) -> void",
+		signature: "OnGameEvent_throwable_hit(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"userid: int — user ID who died": true,
@@ -6631,10 +6631,10 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_tournament_enablecountdown: {
-		signature: "OnGameEvent_tournament_enablecountdown(params: table) -> void"
+		signature: "OnGameEvent_tournament_enablecountdown(params: table) -> null"
 	},
 	OnGameEvent_tournament_stateupdate: {
-		signature: "OnGameEvent_tournament_stateupdate(params: table) -> void",
+		signature: "OnGameEvent_tournament_stateupdate(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"userid: int — user ID on server": true,
@@ -6644,7 +6644,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_training_complete: {
-		signature: "OnGameEvent_training_complete(params: table) -> void",
+		signature: "OnGameEvent_training_complete(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"next_map: string — next map (if any)": true,
@@ -6653,7 +6653,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_update_status_item: {
-		signature: "OnGameEvent_update_status_item(params: table) -> void",
+		signature: "OnGameEvent_update_status_item(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"index: int": true,
@@ -6661,18 +6661,18 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_upgrades_file_changed: {
-		signature: "OnGameEvent_upgrades_file_changed(params: table) -> void",
+		signature: "OnGameEvent_upgrades_file_changed(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"path: string": true
 		}
 	},
 	OnGameEvent_user_data_downloaded: {
-		signature: "OnGameEvent_user_data_downloaded(params: table) -> void",
+		signature: "OnGameEvent_user_data_downloaded(params: table) -> null",
 		description: "fired when achievements/stats are downloaded from Steam or XBox Live"
 	},
 	OnGameEvent_vote_cast: {
-		signature: "OnGameEvent_vote_cast(params: table) -> void",
+		signature: "OnGameEvent_vote_cast(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"vote_option: int — which option the player voted on": true,
@@ -6682,7 +6682,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_vote_changed: {
-		signature: "OnGameEvent_vote_changed(params: table) -> void",
+		signature: "OnGameEvent_vote_changed(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"vote_option1: int": true,
@@ -6695,10 +6695,10 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_vote_ended: {
-		signature: "OnGameEvent_vote_ended(params: table) -> void"
+		signature: "OnGameEvent_vote_ended(params: table) -> null"
 	},
 	OnGameEvent_vote_failed: {
-		signature: "OnGameEvent_vote_failed(params: table) -> void",
+		signature: "OnGameEvent_vote_failed(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"team: int": true,
@@ -6706,7 +6706,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_vote_maps_changed: {
-		signature: "OnGameEvent_vote_maps_changed(params: table) -> void",
+		signature: "OnGameEvent_vote_maps_changed(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"type: int": true,
@@ -6717,7 +6717,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_vote_options: {
-		signature: "OnGameEvent_vote_options(params: table) -> void",
+		signature: "OnGameEvent_vote_options(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"count: int — Number of options — up to MAX_VOTE_OPTIONS": true,
@@ -6730,7 +6730,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_vote_passed: {
-		signature: "OnGameEvent_vote_passed(params: table) -> void",
+		signature: "OnGameEvent_vote_passed(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"details: string": true,
@@ -6740,7 +6740,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_vote_started: {
-		signature: "OnGameEvent_vote_started(params: table) -> void",
+		signature: "OnGameEvent_vote_started(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"issue: string": true,
@@ -6751,7 +6751,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_weapon_equipped: {
-		signature: "OnGameEvent_weapon_equipped(params: table) -> void",
+		signature: "OnGameEvent_weapon_equipped(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"class: string": true,
@@ -6759,7 +6759,7 @@ export const allFunctions: Docs = {
 		}
 	},
 	OnGameEvent_winlimit_changed: {
-		signature: "OnGameEvent_winlimit_changed(params: table) -> void",
+		signature: "OnGameEvent_winlimit_changed(params: table) -> null",
 		description: {
 			"Variables of the `params` table:": false,
 			"delay: float": true
@@ -6807,7 +6807,7 @@ export const instancesMethods: InstancesDocs = {
 			description: "Checks if the convar is allowed to be used and is in cfg/vscript_convar_allowlist.txt. Please be nice with this and use it for *compatibility* if you need check support and NOT to force server owners to allow hostname to be set... or else this will simply lie and return true in future. ;-) You have been warned!"
 		},
 		SetValue: {
-			signature: "Convars.SetValue(name: string, value: any) -> void",
+			signature: "Convars.SetValue(name: string, value: any) -> null",
 			description: "Sets the value of the convar. The convar must be in cfg/vscript_convar_allowlist.txt to be set. Convars marked as cheat-only can be set even if *sv_cheats* is off. Convars marked as dev-only (i.e. not visible in console) can also be set. Supported types are bool, int, float, string. The original value of the convar is saved and is reset on map change, in other words convar changes will not persist across maps."
 		}
 	},
@@ -6817,7 +6817,7 @@ export const instancesMethods: InstancesDocs = {
 			description: "Creates an entity by classname."
 		},
 		DispatchSpawn: {
-			signature: "CEntities.DispatchSpawn(entity: handle) -> void",
+			signature: "CEntities.DispatchSpawn(entity: handle) -> null",
 			description: "Dispatches spawn of an entity! Use this on entities created via `CreateByClassname` to actually spawn them into the world."
 		},
 		FindByClassname: {
@@ -6867,7 +6867,7 @@ export const instancesMethods: InstancesDocs = {
 	},
 	EntityOutputs: {
 		AddOutput: {
-			signature: "CScriptEntityOutputs.AddOutput(entity: handle, output_name: string, targetname: string, input_name: string, parameter: string, delay: float, times_to_fire: int) -> void",
+			signature: "CScriptEntityOutputs.AddOutput(entity: handle, output_name: string, targetname: string, input_name: string, parameter: string, delay: float, times_to_fire: int) -> null",
 			description: "Adds a new output to the entity."
 		},
 		GetNumElements: {
@@ -6875,7 +6875,7 @@ export const instancesMethods: InstancesDocs = {
 			description: "Returns the number of array elements."
 		},
 		GetOutputTable: {
-			signature: "CScriptEntityOutputs.GetOutputTable(entity: handle, output_name: string, table, array_element: int) -> void",
+			signature: "CScriptEntityOutputs.GetOutputTable(entity: handle, output_name: string, table, array_element: int) -> null",
 			description: "Fills the passed table with output information."
 		},
 		HasAction: {
@@ -6887,7 +6887,7 @@ export const instancesMethods: InstancesDocs = {
 			description: "Returns true if the output exists."
 		},
 		RemoveOutput: {
-			signature: "CScriptEntityOutputs.RemoveOutput(entity: handle, output_name: string, targetname: string, input_name: string, parameter: string) -> void",
+			signature: "CScriptEntityOutputs.RemoveOutput(entity: handle, output_name: string, targetname: string, input_name: string, parameter: string) -> null",
 			description: "Removes an output from the entity."
 		}
 	},
@@ -6898,11 +6898,11 @@ export const instancesMethods: InstancesDocs = {
 			description: "Get nav area from ray."
 		},
 		GetAllAreas: {
-			signature: "CNavMesh.GetAllAreas(result: table) -> void",
+			signature: "CNavMesh.GetAllAreas(result: table) -> null",
 			description: "Fills a passed in table of all nav areas."
 		},
 		GetAreasWithAttributes: {
-			signature: "CNavMesh.GetAreasWithAttributes(bits: FNavAttributeType, result: table) -> void",
+			signature: "CNavMesh.GetAreasWithAttributes(bits: FNavAttributeType, result: table) -> null",
 			description: "Fills a passed in table of all nav areas that have the specified attributes.\n\nSee [FNavAttributeType](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#FNavAttributeType)."
 		},
 		GetNavArea: {
@@ -6922,11 +6922,11 @@ export const instancesMethods: InstancesDocs = {
 			description: "Fills the table with areas from a path. Returns whether a path was found. If `end_area` is NULL, will compute a path as close as possible to `goal_pos`.\n\nSee [ETFTeam](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ETFTeam)."
 		},
 		GetNavAreasInRadius: {
-			signature: "CNavMesh.GetNavAreasInRadius(origin: Vector, radius: float, result: table) -> void",
+			signature: "CNavMesh.GetNavAreasInRadius(origin: Vector, radius: float, result: table) -> null",
 			description: "Fills a passed in table of nav areas within radius."
 		},
 		GetNavAreasOverlappingEntityExtent: {
-			signature: "CNavMesh.GetNavAreasOverlappingEntityExtent(entity: handle, result: table) -> void",
+			signature: "CNavMesh.GetNavAreasOverlappingEntityExtent(entity: handle, result: table) -> null",
 			description: "Fills passed in table with areas overlapping entity's extent."
 		},
 		GetNearestNavArea: {
@@ -6934,7 +6934,7 @@ export const instancesMethods: InstancesDocs = {
 			description: "Given a position in the world, return the nav area that is closest to or below that height."
 		},
 		GetObstructingEntities: {
-			signature: "CNavMesh.GetObstructingEntities(result: table) -> void",
+			signature: "CNavMesh.GetObstructingEntities(result: table) -> null",
 			description: "Fills a passed in table of all obstructing entities."
 		},
 		NavAreaBuildPath: {
@@ -6946,11 +6946,11 @@ export const instancesMethods: InstancesDocs = {
 			description: "Compute distance between two areas. Return -1 if can't reach `end_area` from `start_area`."
 		},
 		RegisterAvoidanceObstacle: {
-			signature: "CNavMesh.RegisterAvoidanceObstacle(entity: handle) -> void",
+			signature: "CNavMesh.RegisterAvoidanceObstacle(entity: handle) -> null",
 			description: "Registers avoidance obstacle."
 		},
 		UnregisterAvoidanceObstacle: {
-			signature: "CNavMesh.UnregisterAvoidanceObstacle(entity: handle) -> void",
+			signature: "CNavMesh.UnregisterAvoidanceObstacle(entity: handle) -> null",
 			description: "Unregisters avoidance obstacle."
 		}
 	},
@@ -7016,7 +7016,7 @@ export const instancesMethods: InstancesDocs = {
 			description: "Reads a 3D vector-valued netprop from an array."
 		},
 		GetTable: {
-			signature: "CNetPropManager.GetTable(entity: handle, prop_type: int, result: table) -> void",
+			signature: "CNetPropManager.GetTable(entity: handle, prop_type: int, result: table) -> null",
 			description: "Fills in a passed table with all props of a specified type for the provided entity (set prop_type to 0 for SendTable or 1 for DataMap)."
 		},
 		HasProp: {
@@ -7024,51 +7024,51 @@ export const instancesMethods: InstancesDocs = {
 			description: "Checks if a netprop exists."
 		},
 		SetPropBool: {
-			signature: "CNetPropManager.SetPropBool(entity: handle, property_name: string, value: bool) -> void",
+			signature: "CNetPropManager.SetPropBool(entity: handle, property_name: string, value: bool) -> null",
 			description: "Sets a netprop to the specified boolean."
 		},
 		SetPropBoolArray: {
-			signature: "CNetPropManager.SetPropBoolArray(entity: handle, property_name: string, value: bool, array_element: int) -> void",
+			signature: "CNetPropManager.SetPropBoolArray(entity: handle, property_name: string, value: bool, array_element: int) -> null",
 			description: "Sets a netprop from an array to the specified boolean."
 		},
 		SetPropEntity: {
-			signature: "CNetPropManager.SetPropEntity(entity: handle, property_name: string, value: handle) -> void",
+			signature: "CNetPropManager.SetPropEntity(entity: handle, property_name: string, value: handle) -> null",
 			description: "Sets an EHANDLE-valued netprop (21 bit integer) to reference the specified entity."
 		},
 		SetPropEntityArray: {
-			signature: "CNetPropManager.SetPropEntityArray(entity: handle, property_name: string, value: handle, array_element: int) -> void",
+			signature: "CNetPropManager.SetPropEntityArray(entity: handle, property_name: string, value: handle, array_element: int) -> null",
 			description: "Sets an EHANDLE-valued netprop (21 bit integer) from an array to reference the specified entity."
 		},
 		SetPropFloat: {
-			signature: "CNetPropManager.SetPropFloat(entity: handle, property_name: string, value: float) -> void",
+			signature: "CNetPropManager.SetPropFloat(entity: handle, property_name: string, value: float) -> null",
 			description: "Sets a netprop to the specified float."
 		},
 		SetPropFloatArray: {
-			signature: "CNetPropManager.SetPropFloatArray(entity: handle, property_name: string, value: float, array_element: int) -> void",
+			signature: "CNetPropManager.SetPropFloatArray(entity: handle, property_name: string, value: float, array_element: int) -> null",
 			description: "Sets a netprop from an array to the specified float."
 		},
 		SetPropInt: {
-			signature: "CNetPropManager.SetPropInt(entity: handle, property_name: string, value: int) -> void",
+			signature: "CNetPropManager.SetPropInt(entity: handle, property_name: string, value: int) -> null",
 			description: "Sets a netprop to the specified integer."
 		},
 		SetPropIntArray: {
-			signature: "CNetPropManager.SetPropIntArray(entity: handle, property_name: string, value: int, array_element: int) -> void",
+			signature: "CNetPropManager.SetPropIntArray(entity: handle, property_name: string, value: int, array_element: int) -> null",
 			description: "Sets a netprop from an array to the specified integer."
 		},
 		SetPropString: {
-			signature: "CNetPropManager.SetPropString(entity: handle, property_name: string, value: string) -> void",
+			signature: "CNetPropManager.SetPropString(entity: handle, property_name: string, value: string) -> null",
 			description: "Sets a netprop to the specified string."
 		},
 		SetPropStringArray: {
-			signature: "CNetPropManager.SetPropStringArray(entity: handle, property_name: string, value: string, array_element: int) -> void",
+			signature: "CNetPropManager.SetPropStringArray(entity: handle, property_name: string, value: string, array_element: int) -> null",
 			description: "Sets a netprop from an array to the specified string."
 		},
 		SetPropVector: {
-			signature: "CNetPropManager.SetPropVector(entity: handle, property_name: string, value: Vector) -> void",
+			signature: "CNetPropManager.SetPropVector(entity: handle, property_name: string, value: Vector) -> null",
 			description: "Sets a netprop to the specified vector."
 		},
 		SetPropVectorArray: {
-			signature: "CNetPropManager.SetPropVectorArray(entity: handle, property_name: string, value: Vector, array_element: int) -> void",
+			signature: "CNetPropManager.SetPropVectorArray(entity: handle, property_name: string, value: Vector, array_element: int) -> null",
 			description: "Sets a netprop from an array to the specified vector."
 		}
 	},
