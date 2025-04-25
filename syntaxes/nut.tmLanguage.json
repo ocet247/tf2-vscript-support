@@ -6,9 +6,6 @@
 			"include": "#comments"
 		},
 		{
-			"include": "#code_inputs"
-		},
-		{
 			"include": "#strings"
 		},
 		{
@@ -19,10 +16,10 @@
 		"code-blocks": {
 			"patterns": [
 				{
-					"include": "#control_keywords"
+					"include": "#control-keywords"
 				},
 				{
-					"include": "#other_keywords"
+					"include": "#other-keywords"
 				},
 				{
 					"include": "#modifiers"
@@ -124,7 +121,7 @@
 				}
 			]
 		},
-		"runscriptcode-input": {
+		"inputs": {
 			"patterns": [
 				{
 					"begin": "(?i)(?<=\\x1brunscriptcode\\x1b)(?!\\x1b)",
@@ -132,9 +129,6 @@
 					"patterns": [
 						{
 							"include": "#comments"
-						},
-						{
-							"include": "#code_inputs"
 						},
 						{
 							"include": "#strings-runscriptcode"
@@ -153,9 +147,6 @@
 					"patterns": [
 						{
 							"include": "#comments"
-						},
-						{
-							"include": "#code_inputs"
 						},
 						{
 							"include": "#strings-runscriptcode"
@@ -208,9 +199,6 @@
 					"patterns": [
 						{
 							"include": "#comments"
-						},
-						{
-							"include": "#code_inputs"
 						},
 						{
 							"include": "#strings-compilestring"
@@ -269,9 +257,6 @@
 							"include": "#comments"
 						},
 						{
-							"include": "#code_inputs"
-						},
-						{
 							"include": "#strings-runscriptcode"
 						},
 						{
@@ -300,7 +285,7 @@
 							"include": "#string-escape-sequences"
 						},
 						{
-							"include": "#runscriptcode-input"
+							"include": "#inputs"
 						}
 					]
 				}
@@ -324,9 +309,6 @@
 					"patterns": [
 						{
 							"include": "#comments"
-						},
-						{
-							"include": "#code_inputs"
 						},
 						{
 							"include": "#strings-compilestring"
@@ -385,9 +367,6 @@
 							"include": "#comments"
 						},
 						{
-							"include": "#code_inputs"
-						},
-						{
 							"include": "#strings-runscriptcode"
 						},
 						{
@@ -438,9 +417,6 @@
 					"patterns": [
 						{
 							"include": "#comments"
-						},
-						{
-							"include": "#code_inputs"
 						},
 						{
 							"include": "#strings-compilestring"
@@ -499,9 +475,6 @@
 							"include": "#comments"
 						},
 						{
-							"include": "#code_inputs"
-						},
-						{
 							"include": "#strings-runscriptcode"
 						},
 						{
@@ -534,7 +507,7 @@
 				}
 			]
 		},
-		"control_keywords": {
+		"control-keywords": {
 			"patterns": [
 				{
 					"name": "keyword.control.loop.nut",
@@ -558,7 +531,7 @@
 				}
 			]
 		},
-		"other_keywords": {
+		"other-keywords": {
 			"patterns": [
 				{
 					"name": "keyword.other.in.nut",
@@ -701,7 +674,6 @@
 					}
 				},
 				{
-					
 					"name": "invalid.illegal.char",
 					"match": "(\\'\\'|\\'[^']{2,}\\')"
 				}
