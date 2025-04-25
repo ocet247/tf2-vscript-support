@@ -26,13 +26,17 @@ If you try to complete a constant / global instance method like `SetPropInt` wit
 
 ### Signature Help Providing
 
+#### Warning ####
+
+For this to properly work it requires you to always put commas as separations between parameters. Shadowing the name of a built-in method or function can lead to the program finding the built-in method instead of your own.
+
 ![](https://raw.githubusercontent.com/ocet247/tf2-vscript-support/main/images/signature.gif)
 
 ### Diagnostics Providing
 
 Provides basic diagnostics in 2 ways:
 * Compiles your script and takes the squirrel compiler error message
-* Checks for the number of provided arguments to the global functions / methods
+* Checks for the number of provided arguments to the global functions / methods (See the warning above in the signature help providing, but in this case it's even more crucial to not break these requirements as the extension will find errors which are not even there)
 
 ![](https://raw.githubusercontent.com/ocet247/tf2-vscript-support/main/images/diagnostic.gif)
 

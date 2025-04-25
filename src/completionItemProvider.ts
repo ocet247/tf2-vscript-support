@@ -28,13 +28,15 @@ export default class TF2VScriptCompletionProvider implements CompletionItemProvi
 					return Promise.resolve(items);
 				}
 
-				// If we have not found this instance name in our saved completions
+				// If we have not found this instance name in our saved completions then we assume it has every other method
 				this.addFunctionItem(items, vscriptGlobals.allMethods, CompletionItemKind.Method);
 				return Promise.resolve(items);
 			}
 			// No name but a dot means that we're searching for a shortcut
-			// If the last symbol was paranthesis it means that we have a method call which could return an entity
-			if (iterator.back() != CharCode.RIGHT_ROUND) {
+			// If the last symbol was closing paranthesis it means that we have a method call which could return an entity
+			// Or we've possibly done table accessing with []
+			const lastChar = iterator.back();
+			if (lastChar != CharCode.RIGHT_ROUND && lastChar != CharCode.RIGHT_SQUARE) {
 				for (const [instance, docs] of Object.entries(vscriptGlobals.instancesMethods)) {
 					this.addFunctionItem(items, docs, CompletionItemKind.Method, dotRange, instance + ".");
 				}

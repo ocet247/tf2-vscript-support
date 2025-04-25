@@ -117,7 +117,6 @@ export class BackwardIterator {
 	}
 
 	public findMethodDoc(name: string, multiline: boolean = true): vscriptGlobals.Doc | undefined {
-		// Return 1 step back since we could've looked at the dot when canceling the identity reading
 		if (!this.hasDot(multiline)) {
 			let entry =
 				vscriptGlobals.safeLookup(vscriptGlobals.allFunctions, name) ||
@@ -232,18 +231,19 @@ export class CharCode {
 
 	public static readonly EQUALS = '='.charCodeAt(0);
 	
-	public static isAlphaNumeric(ch: number): boolean {
-		return ch === CharCode.UNDERSCORE ||        //  _
-			ch >= CharCode.a && ch <= CharCode.z || // a-z
-			ch >= CharCode.A && ch <= CharCode.Z || // A-Z
-			ch >= CharCode.N0 && ch <= CharCode.N9; // 0-9
+	public static isAlphaNumeric(char: number): boolean {
+		return char === CharCode.UNDERSCORE ||          //  _
+			char >= CharCode.a && char <= CharCode.z || // a-z
+			char >= CharCode.A && char <= CharCode.Z || // A-Z
+			char >= CharCode.N0 && char <= CharCode.N9; // 0-9
 	}
 
-	public static isWhitespace(ch: number): boolean {
-		return ch === CharCode.WHITESPACE || ch === CharCode.TAB || ch === CharCode.LINE_FEED || ch === CharCode.CARRIAGE_RETURN;
+	public static isWhitespace(char: number): boolean {
+		return char === CharCode.WHITESPACE || char === CharCode.TAB ||
+			char === CharCode.LINE_FEED || char === CharCode.CARRIAGE_RETURN;
 	}
 
-	public static isIndentation(ch: number): boolean {
-		return ch === CharCode.WHITESPACE || ch === CharCode.TAB;
+	public static isIndentation(char: number): boolean {
+		return char === CharCode.WHITESPACE || char === CharCode.TAB;
 	}
 }

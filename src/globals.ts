@@ -276,7 +276,7 @@ export const allMethods: Docs = {
 		description: "Retrieve the unique identifier used to refer to the entity within the scripting system."
 	},
 	GetScriptScope: {
-		signature: "CBaseEntity.GetScriptScope() -> handle",
+		signature: "CBaseEntity.GetScriptScope() -> table",
 		description: "Retrieve the script-side data associated with an entity."
 	},
 	GetScriptThinkFunc: {
@@ -3485,7 +3485,7 @@ export const allFunctions: Docs = {
 		description: "Reverse byte order of the four bytes."
 	},
 	type: {
-		signature: "type(var)",
+		signature: "type(var) -> string",
 		description: "Returns var._typeof(), i.e. the type of the given parameter as a string"
 	},
 	abs: {
