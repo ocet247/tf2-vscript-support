@@ -124,7 +124,7 @@ export default class TF2VScriptDiagnosticsProvider {
 			const range = new Range(startPos, endPos);
 
 			if (name in vscriptGlobals.allDeprecatedFunctions || name in vscriptGlobals.allDeprecatedMethods) {
-				const diagnostic = new Diagnostic(range, `'${signature}' is deprecated.`, DiagnosticSeverity.Information);
+				const diagnostic = new Diagnostic(range, `'${signature}' is deprecated.`, DiagnosticSeverity.Hint);
 				diagnostic.tags = [DiagnosticTag.Deprecated];
 				diagnostics.push(diagnostic);
 			}
