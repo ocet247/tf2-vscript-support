@@ -7,7 +7,7 @@
     "type": "git",
     "url": "https://github.com/ocet247/tf2-vscript-support"
   },
-  "version": "1.1.4",
+  "version": "1.2.0",
   "engines": {
     "vscode": "^1.99.0"
   },
@@ -46,7 +46,7 @@
         "scopeName": "documentation.injection.nut",
         "path": "./syntaxes/nutDoc.injection.tmLanguage.json",
         "injectTo": [
-            "source.nut"
+          "source.nut"
         ]
       },
       {
