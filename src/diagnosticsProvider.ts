@@ -3,7 +3,6 @@ import * as cp from 'child_process';
 import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
-import * as vscriptGlobals from './globals';
 import { ForwardIterator, CharCode, BackwardIterator } from './textProcessing';
 
 export default class TF2VScriptDiagnosticsProvider {
@@ -106,7 +105,7 @@ export default class TF2VScriptDiagnosticsProvider {
 	private runParse(document: TextDocument, text: string): Diagnostic[] {
 		const diagnostics: Diagnostic[] = [];
 
-		const regex = /([_A-Za-z]\w*)\s*\(/gs
+		const regex = /([_A-Za-z]\w*)(\s*\()?/gs
 		let match: RegExpExecArray | null;
 		while ((match = regex.exec(text))) {
 			const name = match[1];
@@ -129,6 +128,10 @@ export default class TF2VScriptDiagnosticsProvider {
 				const diagnostic = new Diagnostic(range, `'${signature}' is deprecated.`, DiagnosticSeverity.Hint);
 				diagnostic.tags = [DiagnosticTag.Deprecated];
 				diagnostics.push(diagnostic);
+			}
+
+			if (!match[2]) {
+				continue;
 			}
 
 
