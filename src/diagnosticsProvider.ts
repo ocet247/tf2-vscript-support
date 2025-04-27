@@ -111,11 +111,13 @@ export default class TF2VScriptDiagnosticsProvider {
 		while ((match = regex.exec(text))) {
 			const name = match[1];
 			const iterator = new BackwardIterator(text.slice(0, match.index));
-			const doc = iterator.findMethodDoc(name);
+			const entry = iterator.findMethodDoc(name);
 
-			if (!doc) {
+			if (!entry) {
 				continue;
 			}
+
+			const { doc, isDeprecated } = entry;
 
 			const signature = doc.signature;
 
@@ -123,7 +125,7 @@ export default class TF2VScriptDiagnosticsProvider {
 			const endPos = startPos.translate(0, match[1].length);
 			const range = new Range(startPos, endPos);
 
-			if (name in vscriptGlobals.allDeprecatedFunctions || name in vscriptGlobals.allDeprecatedMethods) {
+			if (isDeprecated) {
 				const diagnostic = new Diagnostic(range, `'${signature}' is deprecated.`, DiagnosticSeverity.Hint);
 				diagnostic.tags = [DiagnosticTag.Deprecated];
 				diagnostics.push(diagnostic);

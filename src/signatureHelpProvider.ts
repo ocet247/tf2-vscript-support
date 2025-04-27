@@ -20,10 +20,12 @@ export default class TF2VScriptSignatureHelpProvider implements SignatureHelpPro
 		// Return 1 step back since we could've looked at the dot when canceling the identity reading
 		iterator.back();
 
-		const doc = iterator.findMethodDoc(name);
-		if (!doc) {
+		const entry = iterator.findMethodDoc(name);
+		if (!entry) {
 			return null;
 		}
+
+		const { doc, isDeprecated } = entry;
 
 		const { signatureInformation, isVariadic } = this.getSignatureInformation(doc);
 		

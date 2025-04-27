@@ -116,20 +116,33 @@ export class BackwardIterator {
 		return name;
 	}
 
-	public findMethodDoc(name: string, multiline: boolean = true): vscriptGlobals.Doc | undefined {
+	public findMethodDoc(name: string, multiline: boolean = true): { doc: vscriptGlobals.Doc, isDeprecated: boolean } | undefined {
+		let doc;
 		if (!this.hasDot(multiline)) {
-			let entry =
-				vscriptGlobals.safeLookup(vscriptGlobals.allFunctions, name) ||
-				vscriptGlobals.safeLookup(vscriptGlobals.allDeprecatedFunctions, name);
+			doc = vscriptGlobals.safeLookup(vscriptGlobals.allFunctions, name);
 			
-			if (entry) {
-				return entry;
+			if (doc) {
+				return {
+					doc,
+					isDeprecated: false
+				};
+			}
+
+			doc = vscriptGlobals.safeLookup(vscriptGlobals.allDeprecatedFunctions, name);
+			if (doc) {
+				return {
+					doc,
+					isDeprecated: true
+				};
 			}
 
 			for (const instance of Object.values(vscriptGlobals.instancesMethods)) {
-				entry = vscriptGlobals.safeLookup(instance, name);
-				if (entry) {
-					return entry;
+				doc = vscriptGlobals.safeLookup(instance, name);
+				if (doc) {
+					return {
+						doc,
+						isDeprecated: false
+					};
 				}
 			}
 
@@ -139,12 +152,35 @@ export class BackwardIterator {
 		if (instanceName) {
 			const entry = vscriptGlobals.safeLookup(vscriptGlobals.instancesMethods, instanceName);
 			if (entry) {
-				return vscriptGlobals.safeLookup(entry, name);
+				doc = vscriptGlobals.safeLookup(entry, name);
+				if (!doc) {
+					return undefined;
+				}
+
+				return {
+					doc,
+					isDeprecated: false
+				};
 			}
 		}
 
-		return vscriptGlobals.safeLookup(vscriptGlobals.allMethods, name) ||
-			vscriptGlobals.safeLookup(vscriptGlobals.allDeprecatedMethods, name);
+		doc = vscriptGlobals.safeLookup(vscriptGlobals.allMethods, name);
+		if (doc) {
+			return {
+				doc,
+				isDeprecated: false
+			};
+		}
+
+		doc = vscriptGlobals.safeLookup(vscriptGlobals.allDeprecatedMethods, name);
+		if (!doc) {
+			return undefined;
+		}
+
+		return {
+			doc,
+			isDeprecated: true
+		};
 	}
 
 
@@ -202,22 +238,47 @@ export class CharCode {
 	private constructor() {} // Prevent initialisation
 
 
-	public static readonly UNDERSCORE = '_'.charCodeAt(0);
+	// Alphabetic Characters
 	public static readonly a = 'a'.charCodeAt(0);
 	public static readonly z = 'z'.charCodeAt(0);
 	public static readonly A = 'A'.charCodeAt(0);
 	public static readonly Z = 'Z'.charCodeAt(0);
+	public static readonly x = 'x'.charCodeAt(0);
+	public static readonly X = 'X'.charCodeAt(0);
+	public static readonly f = 'f'.charCodeAt(0);
+	public static readonly F = 'F'.charCodeAt(0);
+	public static readonly UNDERSCORE = '_'.charCodeAt(0);
+
+	// Numeric Characters
 	public static readonly N0 = '0'.charCodeAt(0);
+	public static readonly N7 = '7'.charCodeAt(0);
 	public static readonly N9 = '9'.charCodeAt(0);
 
+	// Special Characters
 	public static readonly DOT = '.'.charCodeAt(0);
 	public static readonly COMMA = ','.charCodeAt(0);
+	public static readonly EQUALS = '='.charCodeAt(0);
+	public static readonly ASTERISK = '*'.charCodeAt(0);
+	public static readonly MINUS = '-'.charCodeAt(0);
+	public static readonly PLUS = '+'.charCodeAt(0);
+	public static readonly EXCLAMATION = '!'.charCodeAt(0);
+	public static readonly RAVLYK = '@'.charCodeAt(0);
+	public static readonly GREATER = '>'.charCodeAt(0);
+	public static readonly LESS = '<'.charCodeAt(0);
+	public static readonly HASH = '#'.charCodeAt(0);
+	public static readonly SLASH = '/'.charCodeAt(0);
+	public static readonly AMPERSAND = '&'.charCodeAt(0);
+	public static readonly PIPE = '|'.charCodeAt(0);
+	public static readonly COLON = ':'.charCodeAt(0);
+	public static readonly PERCENT = '%'.charCodeAt(0);
 
+	// Punctuation and Whitespace
 	public static readonly TAB = '\t'.charCodeAt(0);
 	public static readonly WHITESPACE = ' '.charCodeAt(0);
 	public static readonly LINE_FEED = '\n'.charCodeAt(0);
 	public static readonly CARRIAGE_RETURN = '\r'.charCodeAt(0);
 
+	// Brackets and Parentheses
 	public static readonly LEFT_SQUARE = '['.charCodeAt(0);
 	public static readonly RIGHT_SQUARE = ']'.charCodeAt(0);
 	public static readonly LEFT_CURLY = '{'.charCodeAt(0);
@@ -225,17 +286,34 @@ export class CharCode {
 	public static readonly LEFT_ROUND = '('.charCodeAt(0);
 	public static readonly RIGHT_ROUND = ')'.charCodeAt(0);
 
+	// Quotes
 	public static readonly QUOTE = '\''.charCodeAt(0);
 	public static readonly DOUBLE_QUOTE = '"'.charCodeAt(0);
 	public static readonly BACKTICK = '`'.charCodeAt(0);
 
-	public static readonly EQUALS = '='.charCodeAt(0);
 	
-	public static isAlphaNumeric(char: number): boolean {
+	public static isAlphabetic(char: number): boolean {
 		return char === CharCode.UNDERSCORE ||          //  _
 			char >= CharCode.a && char <= CharCode.z || // a-z
-			char >= CharCode.A && char <= CharCode.Z || // A-Z
-			char >= CharCode.N0 && char <= CharCode.N9; // 0-9
+			char >= CharCode.A && char <= CharCode.Z;   // A-Z
+	}
+
+	public static isNumeric(char: number): boolean {
+		return char >= CharCode.N0 && char <= CharCode.N9;
+	}
+
+	public static isOctal(char: number): boolean {
+		return char >= CharCode.N0 && char <= CharCode.N7;
+	}
+
+	public static isHexadecimal(char: number): boolean {
+		return CharCode.isNumeric(char) ||
+			char >= CharCode.a && char <= CharCode.f ||
+			char >= CharCode.A && char <= CharCode.F;
+	}
+
+	public static isAlphaNumeric(char: number): boolean {
+		return CharCode.isAlphabetic(char) || CharCode.isNumeric(char);
 	}
 
 	public static isWhitespace(char: number): boolean {
