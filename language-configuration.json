@@ -1,32 +1,90 @@
 {
-    "comments": {
-        // symbol used for single line comment. Remove this entry if your language does not support line comments
-        "lineComment": "//",
-        // symbols used for start and end a block comment. Remove this entry if your language does not support block comments
-        "blockComment": [ "/*", "*/" ]
+  "comments": {
+    "lineComment": "#",
+    "lineComment": "//",
+    "blockComment": ["/*", "*/"]
+  },
+  "brackets": [
+    ["{", "}"],
+    ["[", "]"],
+    ["(", ")"]
+  ],
+  "autoClosingPairs": [
+    { "open": "{",   "close": "}" },
+    { "open": "[",   "close": "]" },
+    { "open": "(",   "close": ")" },
+    { "open": "'",   "close": "'",   "notIn": ["string"] },
+    { "open": "\"",  "close": "\"",  "notIn": ["string"] },
+    { "open": "`",   "close": "`",   "notIn": ["string"] },
+    { "open": "/**", "close": " */", "notIn": ["string"] }
+  ],
+  "autoCloseBefore": ";:.,=}])> \n\t",
+  "surroundingPairs": [
+    ["{", "}"],
+    ["[", "]"],
+    ["(", ")"],
+    ["\"", "\""],
+    ["'", "'"],
+    ["`", "`"]
+  ],
+  "onEnterRules": [
+    // e.g. /** | */
+    {
+      "beforeText": {
+        "pattern": "^\\s*/\\*\\*(?!/)([^\\*]|\\*(?!/))*$"
+      },
+      "afterText": {
+        "pattern": "^\\s*\\*/$"
+      },
+      "action": {
+        "indent": "indentOutdent",
+        "appendText": " * "
+      }
     },
-    // symbols used as brackets
-    "brackets": [
-        ["{", "}"],
-        ["[", "]"],
-        ["(", ")"]
-    ],
-    // symbols that are auto closed when typing
-    "autoClosingPairs": [
-        ["{", "}"],
-        ["[", "]"],
-        ["(", ")"],
-        ["\"", "\""],
-        ["'", "'"],
-        ["`", "`"]
-    ],
-    // symbols that can be used to surround a selection
-    "surroundingPairs": [
-        ["{", "}"],
-        ["[", "]"],
-        ["(", ")"],
-        ["\"", "\""],
-        ["'", "'"],
-        ["`", "`"]
-    ]
+    // e.g. /** ...|
+    {
+      "beforeText": "^\\s*/\\*\\*(?!/)(.*)$",
+      "previousLineText": {
+        "pattern": "(?=^(\\s*(/\\*\\*|\\*)).*)(?=(?!(\\s*\\*/)))"
+      },
+      "action": {
+        "indent": "none",
+        "appendText": " * "
+      }
+    },
+    // e.g.  * ...|
+    {
+      "beforeText": "^\\s*\\*(?!/)(.*)$",
+      "previousLineText": {
+        "pattern": "(?=^(\\s*(/\\*\\*|\\*)).*)(?=(?!(\\s*\\*/)))"
+      },
+      "action": {
+        "indent": "none",
+        "appendText": "* "
+      }
+    },
+    // e.g.  */|
+    {
+      "beforeText": {
+        "pattern": "^(\\t| {2})* \\*/\\s*$"
+      },
+      "action": {
+        "indent": "none",
+        "removeText": 1
+      }
+    },
+    // Add // when pressing enter from inside line comment
+    {
+      "beforeText": {
+        "pattern": "(?<!\\\\)(?<!\\w:)//.*"
+      },
+      "afterText": {
+        "pattern": "^(?!\\s*$).+"
+      },
+      "action": {
+        "indent": "none",
+        "appendText": "// "
+      }
+    }
+  ]
 }

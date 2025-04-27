@@ -846,7 +846,7 @@
 			"patterns": [
 				{
 					"name": "keyword.operator.newslot.nut",
-					"match": "\b<-\b"
+					"match": "<-"
 				},
 				{
 					"name": "keyword.operator.logical.nut",
@@ -881,8 +881,12 @@
 		"punctuation": {
 			"patterns": [
 				{
-					"match": "\b\\.\\.\\.\b",
+					"match": "\\.\\.\\.",
 					"name": "punctuation.ellipsis.nut"
+				},
+				{
+					"match": "\\.\\.",
+					"name": "invalid.illegal.operator.nut"
 				},
 				{
 					"match": ",",

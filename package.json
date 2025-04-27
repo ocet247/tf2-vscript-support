@@ -43,6 +43,13 @@
         "path": "./syntaxes/nut.tmLanguage.json"
       },
       {
+        "scopeName": "documentation.injection.nut",
+        "path": "./syntaxes/nutDoc.injection.tmLanguage.json",
+        "injectTo": [
+            "source.nut"
+        ]
+      },
+      {
         "language": "nutDoc",
         "scopeName": "source.nutdoc",
         "path": "./syntaxes/nutDoc.tmLanguage.json"
