@@ -30,12 +30,8 @@
   "onEnterRules": [
     // e.g. /** | */
     {
-      "beforeText": {
-        "pattern": "^\\s*/\\*\\*(?!/)([^\\*]|\\*(?!/))*$"
-      },
-      "afterText": {
-        "pattern": "^\\s*\\*/$"
-      },
+      "beforeText": "^\\s*/\\*\\*(?!/)([^\\*]|\\*(?!/))*$",
+      "afterText": "^\\s*\\*/$",
       "action": {
         "indent": "indentOutdent",
         "appendText": " * "
@@ -44,30 +40,23 @@
     // e.g. /** ...|
     {
       "beforeText": "^\\s*/\\*\\*(?!/)(.*)$",
-      "previousLineText": {
-        "pattern": "(?=^(\\s*(/\\*\\*|\\*)).*)(?=(?!(\\s*\\*/)))"
-      },
       "action": {
         "indent": "none",
         "appendText": " * "
       }
     },
     // e.g.  * ...|
-    {
-      "beforeText": "^\\s*\\*(?!/)(.*)$",
-      "previousLineText": {
-        "pattern": "(?=^(\\s*(/\\*\\*|\\*)).*)(?=(?!(\\s*\\*/)))"
-      },
-      "action": {
-        "indent": "none",
-        "appendText": "* "
-      }
-    },
+		{
+			"beforeText": "^\\s*\\*(([^\\*]|\\*(?!/))*)?$",
+			"previousLineText": "(?=^(\\s*(/\\*\\*|\\*)).*)(?=(?!(\\s*\\*/)))",
+			"action": {
+				"indent": "none",
+				"appendText": "* "
+			}
+		},
     // e.g.  */|
     {
-      "beforeText": {
-        "pattern": "^(\\t| {2})* \\*/\\s*$"
-      },
+      "beforeText": "^(\\t| {2})* \\*/\\s*$",
       "action": {
         "indent": "none",
         "removeText": 1
@@ -75,9 +64,7 @@
     },
     {
 			// e.g.  *-----*/|
-			"beforeText": {
-				"pattern": "^(\\t|[ ])*[ ]\\*[^/]*\\*/\\s*$"
-			},
+			"beforeText": "^(\\t| {2})* \\*[^/]*\\*/\\s*$",
 			"action": {
 				"indent": "none",
 				"removeText": 1
@@ -85,12 +72,8 @@
 		},
     // Add // when pressing enter from inside line comment
     {
-      "beforeText": {
-        "pattern": "(?<!\\\\)(?<!\\w:)//.*"
-      },
-      "afterText": {
-        "pattern": "^(?!\\s*$).+"
-      },
+      "beforeText": "(?<!\\\\)(?<!\\w:)//.*",
+      "afterText": "^(?!\\s*$).+",
       "action": {
         "indent": "none",
         "appendText": "// "
