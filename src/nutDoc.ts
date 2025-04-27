@@ -119,9 +119,7 @@ export default class NutDocCompletionItemProvider implements CompletionItemProvi
 		if (!this.isInDoc(iterator)) {
 			return Promise.resolve([]);
 		}
-		/**
-		 *
-		 */
+
 		let completionItems = [];
 
 		for (const [name, entry] of Object.entries(elements)) {

@@ -44,5 +44,6 @@ Provides basic diagnostics in 2 ways:
 
 * (S)quirrel for some parts of the syntax and initial inspiration <https://github.com/mepsoid/vscode-s-quirrel>
 * Valve Development Community for TF2 Vscript Documentation <https://developer.valvesoftware.com/wiki/VScript>
-* JSDoc highlighting https://github.com/galloween/jsdoc-highlight-code
-* JavaScript language configuration for vscode https://github.com/microsoft/vscode/blob/main/extensions/javascript/javascript-language-configuration.json
+* JSDoc highlighting <https://github.com/galloween/jsdoc-highlight-code>
+* JavaScript language configuration for Visual Studio Code <https://github.com/microsoft/vscode/blob/main/extensions/javascript/javascript-language-configuration.json>
+* JSDoc completion items <https://github.com/HookyQR/VSCodeJSDocTagComplete>
