@@ -1,4 +1,4 @@
-import { DiagnosticCollection, TextDocument, workspace, Diagnostic, Position, Range, DiagnosticSeverity, languages, window, Disposable } from 'vscode';
+import { DiagnosticCollection, TextDocument, workspace, Diagnostic, Position, Range, DiagnosticSeverity, languages, window, Disposable, DiagnosticTag } from 'vscode';
 import * as cp from 'child_process';
 import * as fs from 'fs';
 import * as os from 'os';
@@ -112,40 +112,48 @@ export default class TF2VScriptDiagnosticsProvider {
 			const name = match[1];
 			const iterator = new BackwardIterator(text.slice(0, match.index));
 			const doc = iterator.findMethodDoc(name);
-			if (doc) {
-				const signature = doc.signature;
 
-				const { paramCount, defaultParamCount } = this.getParamCount(signature);
-				// The slices are probably expensive, needs to be remade with iterator instead.
-				const usedParamCount = this.getUsedParamCount(text.slice(match.index + match[0].length));
+			if (!doc) {
+				continue;
+			}
 
-				let message;
-				if (defaultParamCount === -1) {
-					const requiredParamCount = paramCount - 1;
-					if (usedParamCount >= requiredParamCount) {
-						continue;
-					}
+			const signature = doc.signature;
 
-					message = `Expected at least ${requiredParamCount} arguments, but got ${usedParamCount}.`;
-				} else {
-					const requiredParamCount = paramCount - defaultParamCount;
-					if (usedParamCount <= paramCount && usedParamCount >= requiredParamCount) {
-						continue;
-					}
-	
-					message = requiredParamCount === paramCount ?
-						`Expected ${paramCount} arguments, but got ${usedParamCount}.` :
-						`Expected ${requiredParamCount}-${paramCount} arguments, but got ${usedParamCount}.`;
+			const startPos = document.positionAt(match.index);
+			const endPos = startPos.translate(0, match[1].length);
+			const range = new Range(startPos, endPos);
+
+			if (name in vscriptGlobals.allDeprecatedFunctions || name in vscriptGlobals.allDeprecatedMethods) {
+				const diagnostic = new Diagnostic(range, `'${signature}' is deprecated.`, DiagnosticSeverity.Information);
+				diagnostic.tags = [DiagnosticTag.Deprecated];
+				diagnostics.push(diagnostic);
+			}
+
+
+			const { paramCount, defaultParamCount } = this.getParamCount(signature);
+			// The slices are probably expensive since they create a new long strings, needs to be remade with iterator instead.
+			const usedParamCount = this.getUsedParamCount(text.slice(match.index + match[0].length));
+
+			let message;
+			if (defaultParamCount === -1) {
+				const requiredParamCount = paramCount - 1;
+				if (usedParamCount >= requiredParamCount) {
+					continue;
 				}
 
-				const startPos = document.positionAt(match.index);
-				const endPos = startPos.translate(0, match[1].length);
-				const range = new Range(startPos, endPos);
-				
-				diagnostics.push(new Diagnostic(range, message, DiagnosticSeverity.Error));
+				message = `Expected at least ${requiredParamCount} arguments, but got ${usedParamCount}.`;
+			} else {
+				const requiredParamCount = paramCount - defaultParamCount;
+				if (usedParamCount <= paramCount && usedParamCount >= requiredParamCount) {
+					continue;
+				}
 
-
+				message = requiredParamCount === paramCount ?
+					`Expected ${paramCount} arguments, but got ${usedParamCount}.` :
+					`Expected ${requiredParamCount}-${paramCount} arguments, but got ${usedParamCount}.`;
 			}
+
+			diagnostics.push(new Diagnostic(range, message, DiagnosticSeverity.Error));
 		}
 
 		return diagnostics;
@@ -180,6 +188,8 @@ export default class TF2VScriptDiagnosticsProvider {
 				defaultParamCount: -1
 			}
 		}
+
+		
 
 		let defaultParamCount = 0;
 		while (iterator.hasNext()) {
