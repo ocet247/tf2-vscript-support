@@ -232,7 +232,6 @@ export async function NutBlockCommentEnterHandler() {
 			}
 	
 			await editor.edit(editBuilder => {
-				
 				editBuilder.insert(position, `\n${indent}\n${indent} */`);
 			});
 	
@@ -269,8 +268,9 @@ export async function NutBlockCommentEnterHandler() {
 		await editor.edit(editBuilder => {
 			editBuilder.insert(position, `\n${indent}* `);
 		});
-	} 
-
+	} else {
+		await commands.executeCommand('type', { text: '\n' });
+	}
 }
 
 interface DocSnippets {
