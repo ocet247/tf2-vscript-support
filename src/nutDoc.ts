@@ -224,32 +224,34 @@ export async function NutBlockCommentEnterHandler() {
 	
 	const trimmed = line.trimEnd();
 	if (!commentState.inDoc) {
-		if (trimmed.endsWith('/*')) {
-			const forwardIterator = new ForwardIterator(ForwardIterator.textFromPosition(document, position));
-			if (isCommentClosed(forwardIterator)) {
-				await commands.executeCommand('type', { text: '\n' });
-				return;
-			}
-	
-			await editor.edit(editBuilder => {
-				editBuilder.insert(position, `\n${indent}\n${indent} */`);
-			});
-	
-			const newPosition = new Position(position.line + 1, indent.length);
-			editor.selection = new Selection(newPosition, newPosition);
+		const forwardIterator = new ForwardIterator(ForwardIterator.textFromPosition(document, position));
+		if (isCommentClosed(forwardIterator)) {
+			await commands.executeCommand('type', { text: '\n' });
 			return;
 		}
 
-		await commands.executeCommand('type', { text: '\n' });
+		await editor.edit(editBuilder => {
+			editBuilder.insert(position, `\n${indent}\n${indent} */`);
+		});
+
+		const newPosition = new Position(position.line + 1, indent.length);
+		editor.selection = new Selection(newPosition, newPosition);
 		return;
 	}
 	
-	if (trimmed.endsWith('/**')) {
 		const forwardIterator = new ForwardIterator(ForwardIterator.textFromPosition(document, position));
 		if (isCommentClosed(forwardIterator)) {
-			await editor.edit(editBuilder => {
-				editBuilder.insert(position, `\n${indent} * `);
-			});
+			if (foundAsterisk) {
+				await editor.edit(editBuilder => {
+					editBuilder.insert(position, `\n${indent}* `);
+				});
+			} else if (line.lastIndexOf("/**") != -1) {
+				await editor.edit(editBuilder => {
+					editBuilder.insert(position, `\n${indent} * `);
+				});
+			} else {
+				await commands.executeCommand('type', { text: '\n' });
+			}
 			return;
 		}
 
@@ -262,15 +264,6 @@ export async function NutBlockCommentEnterHandler() {
 		editor.selection = new Selection(newPosition, newPosition);
 		
 		return;
-	}
-
-	if (foundAsterisk) {
-		await editor.edit(editBuilder => {
-			editBuilder.insert(position, `\n${indent}* `);
-		});
-	} else {
-		await commands.executeCommand('type', { text: '\n' });
-	}
 }
 
 interface DocSnippets {
