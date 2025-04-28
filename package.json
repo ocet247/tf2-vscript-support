@@ -72,9 +72,9 @@
     },
     "keybindings": [
       {
-        "command": "extension.handleDocCommentEnter",
+        "command": "nut.handleBlockCommentEnter",
         "key": "enter",
-        "when": "editorTextFocus && eeditorLangId == nut"
+        "when": "editorTextFocus && editorLangId == nut"
       }
     ]
   },

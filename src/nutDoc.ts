@@ -1,16 +1,18 @@
 import { CancellationToken, commands, CompletionContext, CompletionItem, CompletionItemKind, CompletionItemProvider, MarkdownString, Position, Selection, SnippetString, TextDocument, window } from "vscode";
 import { BackwardIterator, CharCode, ForwardIterator } from "./textProcessing";
 
-function isInDoc(iterator: BackwardIterator): boolean {
+function isInBlockComment(iterator: BackwardIterator): { inComment: boolean, inDoc: boolean } {
 	// If the last thing we've found was /** and after that there were no more /* until we've hit the */ or the end of the file
 	// it means that we're inside the doc. We cannot return immediately after finding /* or /** since it has an edgecase
 	// of having /* or /** inside a block comment
-	/*    /** /** 
+	/*    /** /**
 	 * /* etc
 	 */
-	let lastCommentIsDoc = false;
+	let inComment = false;
+	let inDoc = false;
 	// if we have /* inside a line comment
-	let lastLineCommentIsDoc = false;
+	let lastInComment = false;
+	let lastInDoc = false;
 	while (iterator.hasNext()) {
 		let char = iterator.next();
 		switch (char) {
@@ -22,51 +24,70 @@ function isInDoc(iterator: BackwardIterator): boolean {
 			}
 			continue;
 		case CharCode.LINE_FEED:
-			lastLineCommentIsDoc = lastCommentIsDoc;
+			lastInComment = inComment;
+			lastInDoc = inDoc;
 			continue;
 		case CharCode.SLASH:
 			if (!iterator.hasNext()) {
-				return false;
+				return {
+					inComment: false,
+					inDoc: false
+				};
 			}
 			char = iterator.next();
 			if (char === CharCode.ASTERISK) {
 				// Found */
-				return lastCommentIsDoc;
+				return {
+					inComment,
+					inDoc
+				};
 			}
 			if (char === CharCode.SLASH) {
 				// Found //
-				lastCommentIsDoc = lastLineCommentIsDoc;
+				inComment = lastInComment;
+				inDoc = lastInDoc;
 			}
 			continue;
 		case CharCode.ASTERISK:
 			if (!iterator.hasNext()) {
-				return false;
+				return {
+					inComment: false,
+					inDoc: false
+				};
 			}
 			char = iterator.next();
 
 			if (char !== CharCode.ASTERISK) {
 				if (char === CharCode.SLASH) {
-					lastCommentIsDoc = false;
+					inComment = true;
+					inDoc = false;
 				}
 				continue;
 			}
 
 			if (!iterator.hasNext()) {
-				return false;
+				return {
+					inComment,
+					inDoc
+				};
 			}
 
 			char = iterator.next();
 			if (char === CharCode.SLASH) {
-				lastCommentIsDoc = true;
+				inComment = true;
+				inDoc = true;
 			}
 			continue;
 		}
 	}
 
-	return lastCommentIsDoc;
+	return {
+		inComment,
+		inDoc
+	}
 }
 
-function hasClosing(iterator: ForwardIterator) {
+function isCommentClosed(iterator: ForwardIterator) {
 	while (iterator.hasNext()) {
 		let char = iterator.next();
 		if (char === CharCode.SLASH) {
@@ -142,7 +163,7 @@ export class NutDocCompletionItemProvider implements CompletionItemProvider {
 			return Promise.resolve([]);
 		}
 
-		if (!isInDoc(iterator)) {
+		if (!isInBlockComment(iterator).inDoc) {
 			return Promise.resolve([]);
 		}
 
@@ -168,7 +189,7 @@ export class NutDocCompletionItemProvider implements CompletionItemProvider {
 	}
 }
 
-export async function NutDocEnterHandler() {
+export async function NutBlockCommentEnterHandler() {
 	const editor = window.activeTextEditor;
 	if (!editor) {
 		return;
@@ -178,7 +199,7 @@ export async function NutDocEnterHandler() {
 	const document = editor.document;
 	const position = editor.selection.active;
 	const line = document.lineAt(position.line).text;
-
+	
 	let indent = '';
 	let foundAsterisk = false;
 	for (let i = 0; i < line.length; i++) {
@@ -187,15 +208,46 @@ export async function NutDocEnterHandler() {
 			indent += char;
 			continue;
 		}
-		if (char === '*') {
+		if (char === '*' && position.character > i) {
 			foundAsterisk = true;
 		}
 		break;
 	}
 
-	if (line.trimEnd().endsWith('/**')) {
+	const backwardIterator = new BackwardIterator(BackwardIterator.textFromPosition(document, position));
+	const commentState = isInBlockComment(backwardIterator);
+
+	if (!commentState.inComment) {
+		await commands.executeCommand('type', { text: '\n' });
+		return;
+	}
+	
+	const trimmed = line.trimEnd();
+	if (!commentState.inDoc) {
+		if (trimmed.endsWith('/*')) {
+			const forwardIterator = new ForwardIterator(ForwardIterator.textFromPosition(document, position));
+			if (isCommentClosed(forwardIterator)) {
+				await commands.executeCommand('type', { text: '\n' });
+				return;
+			}
+	
+			await editor.edit(editBuilder => {
+				
+				editBuilder.insert(position, `\n${indent}\n${indent} */`);
+			});
+	
+			const newPosition = new Position(position.line + 1, indent.length);
+			editor.selection = new Selection(newPosition, newPosition);
+			return;
+		}
+
+		await commands.executeCommand('type', { text: '\n' });
+		return;
+	}
+	
+	if (trimmed.endsWith('/**')) {
 		const forwardIterator = new ForwardIterator(ForwardIterator.textFromPosition(document, position));
-		if (hasClosing(forwardIterator)) {
+		if (isCommentClosed(forwardIterator)) {
 			await editor.edit(editBuilder => {
 				editBuilder.insert(position, `\n${indent} * `);
 			});
@@ -211,18 +263,14 @@ export async function NutDocEnterHandler() {
 		editor.selection = new Selection(newPosition, newPosition);
 		
 		return;
-	} else if (foundAsterisk) {
-		const backwardIterator = new BackwardIterator(BackwardIterator.textFromPosition(document, position));
-		if (isInDoc(backwardIterator)) {
-			await editor.edit(editBuilder => {
-				editBuilder.insert(position, `\n${indent}* `);
-			});
-			return;
-		}
+	}
+
+	if (foundAsterisk) {
+		await editor.edit(editBuilder => {
+			editBuilder.insert(position, `\n${indent}* `);
+		});
 	} 
-	
-	// Otherwise insert a normal newline
-	await commands.executeCommand('type', { text: '\n' });
+
 }
 
 interface DocSnippets {
