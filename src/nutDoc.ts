@@ -1,8 +1,99 @@
-import { CancellationToken, CompletionContext, CompletionItem, CompletionItemKind, CompletionItemProvider, MarkdownString, Position, SnippetString, TextDocument } from "vscode";
-import { BackwardIterator, CharCode } from "./textProcessing";
+import { CancellationToken, commands, CompletionContext, CompletionItem, CompletionItemKind, CompletionItemProvider, MarkdownString, Position, Selection, SnippetString, TextDocument, window } from "vscode";
+import { BackwardIterator, CharCode, ForwardIterator } from "./textProcessing";
 
+function isInDoc(iterator: BackwardIterator): boolean {
+	// If the last thing we've found was /** and after that there were no more /* until we've hit the */ or the end of the file
+	// it means that we're inside the doc. We cannot return immediately after finding /* or /** since it has an edgecase
+	// of having /* or /** inside a block comment
+	/*    /** /** 
+	 * /* etc
+	 */
+	let lastCommentIsDoc = false;
+	// if we have /* inside a line comment
+	let lastLineCommentIsDoc = false;
+	while (iterator.hasNext()) {
+		let char = iterator.next();
+		switch (char) {
+		case CharCode.QUOTE:
+		case CharCode.DOUBLE_QUOTE:
+		case CharCode.BACKTICK:
+			while (iterator.hasNext() && char !== iterator.next()) {
+				// find the closing quote or double quote
+			}
+			continue;
+		case CharCode.LINE_FEED:
+			lastLineCommentIsDoc = lastCommentIsDoc;
+			continue;
+		case CharCode.SLASH:
+			if (!iterator.hasNext()) {
+				return false;
+			}
+			char = iterator.next();
+			if (char === CharCode.ASTERISK) {
+				// Found */
+				return lastCommentIsDoc;
+			}
+			if (char === CharCode.SLASH) {
+				// Found //
+				lastCommentIsDoc = lastLineCommentIsDoc;
+			}
+			continue;
+		case CharCode.ASTERISK:
+			if (!iterator.hasNext()) {
+				return false;
+			}
+			char = iterator.next();
 
-export default class NutDocCompletionItemProvider implements CompletionItemProvider {
+			if (char !== CharCode.ASTERISK) {
+				if (char === CharCode.SLASH) {
+					lastCommentIsDoc = false;
+				}
+				continue;
+			}
+
+			if (!iterator.hasNext()) {
+				return false;
+			}
+
+			char = iterator.next();
+			if (char === CharCode.SLASH) {
+				lastCommentIsDoc = true;
+			}
+			continue;
+		}
+	}
+
+	return lastCommentIsDoc;
+}
+
+function hasClosing(iterator: ForwardIterator) {
+	while (iterator.hasNext()) {
+		let char = iterator.next();
+		if (char === CharCode.SLASH) {
+			if (!iterator.hasNext()) {
+				return false;
+			}
+			char = iterator.next();
+			if (char === CharCode.ASTERISK) {
+				// found /*
+				return false;
+			}
+		} else if (char === CharCode.ASTERISK) {
+			if (!iterator.hasNext()) {
+				return false;
+			}
+			char = iterator.next();
+			if (char === CharCode.SLASH) {
+				// found */
+				return true;
+			}
+		}
+		
+	}
+	return false;
+}
+
+export class NutDocCompletionItemProvider implements CompletionItemProvider {
 	private hasAsterisk(iterator: BackwardIterator): boolean {
 		while (iterator.hasNext()) {
 			const char = iterator.next();
@@ -37,76 +128,11 @@ export default class NutDocCompletionItemProvider implements CompletionItemProvi
 				if (!CharCode.isIndentation(char)) {
 					return char === CharCode.LINE_FEED;
 				}
-			} 
+			}
 
 			break;
 		}
 		return false;
-	}
-
-	public isInDoc(iterator: BackwardIterator): boolean {
-		// If the last thing we've found was /** and after that there were no more /* until we've hit the */ or the end of the file
-		// it means that we're inside the doc. We cannot return immediately after finding /* or /** since it has an edgecase
-		// of having /* or /** inside a block comment
-		/*    /** /** 
-		 * /* etc
-		 */
-		let lastCommentIsDoc = false;
-		// if we have /* inside a line comment
-		let lastLineCommentIsDoc = false;
-		while (iterator.hasNext()) {
-			let char = iterator.next();
-			switch (char) {
-			case CharCode.QUOTE:
-			case CharCode.DOUBLE_QUOTE:
-			case CharCode.BACKTICK:
-				while (iterator.hasNext() && char !== iterator.next()) {
-					// find the closing quote or double quote
-				}
-				continue;
-			case CharCode.LINE_FEED:
-				lastLineCommentIsDoc = lastCommentIsDoc;
-				continue;
-			case CharCode.SLASH:
-				if (!iterator.hasNext()) {
-					return false;
-				}
-				char = iterator.next();
-				if (char === CharCode.ASTERISK) {
-					// Found */
-					return lastCommentIsDoc;
-				}
-				if (char === CharCode.SLASH) {
-					// Found //
-					lastCommentIsDoc = lastLineCommentIsDoc;
-				}
-				continue;
-			case CharCode.ASTERISK:
-				if (!iterator.hasNext()) {
-					return false;
-				}
-				char = iterator.next();
-
-				if (char !== CharCode.ASTERISK) {
-					if (char === CharCode.SLASH) {
-						lastCommentIsDoc = false;
-					}
-					continue;
-				}
-
-				if (!iterator.hasNext()) {
-					return false;
-				}
-
-				char = iterator.next();
-				if (char === CharCode.SLASH) {
-					lastCommentIsDoc = true;
-				}
-				continue;
-			}
-		}
-
-		return lastCommentIsDoc;
 	}
 
 	public provideCompletionItems(document: TextDocument, position: Position, _token: CancellationToken, _context: CompletionContext): Promise<CompletionItem[]> {
@@ -116,7 +142,7 @@ export default class NutDocCompletionItemProvider implements CompletionItemProvi
 			return Promise.resolve([]);
 		}
 
-		if (!this.isInDoc(iterator)) {
+		if (!isInDoc(iterator)) {
 			return Promise.resolve([]);
 		}
 
@@ -142,6 +168,63 @@ export default class NutDocCompletionItemProvider implements CompletionItemProvi
 	}
 }
 
+export async function NutDocEnterHandler() {
+	const editor = window.activeTextEditor;
+	if (!editor) {
+		return;
+	}
+
+	
+	const document = editor.document;
+	const position = editor.selection.active;
+	const line = document.lineAt(position.line).text;
+
+	let indent = '';
+	let foundAsterisk = false;
+	for (let i = 0; i < line.length; i++) {
+		const char = line[i];
+		if (char === ' ' || char === '\t') {
+			indent += char;
+			continue;
+		}
+		if (char === '*') {
+			foundAsterisk = true;
+		}
+		break;
+	}
+
+	if (line.trimEnd().endsWith('/**')) {
+		const forwardIterator = new ForwardIterator(ForwardIterator.textFromPosition(document, position));
+		if (hasClosing(forwardIterator)) {
+			await editor.edit(editBuilder => {
+				editBuilder.insert(position, `\n${indent} * `);
+			});
+			return;
+		}
+
+		await editor.edit(editBuilder => {
+			editBuilder.insert(position, `\n${indent} * \n${indent} */`);
+		});
+
+		// Move cursor to the line with the '* '
+		const newPosition = new Position(position.line + 1, 3 + indent.length);
+		editor.selection = new Selection(newPosition, newPosition);
+		
+		return;
+	} else if (foundAsterisk) {
+		const backwardIterator = new BackwardIterator(BackwardIterator.textFromPosition(document, position));
+		if (isInDoc(backwardIterator)) {
+			await editor.edit(editBuilder => {
+				editBuilder.insert(position, `\n${indent}* `);
+			});
+			return;
+		}
+	} 
+	
+	// Otherwise insert a normal newline
+	await commands.executeCommand('type', { text: '\n' });
+}
+
 interface DocSnippets {
 	[name: string]: {
 		desc: string,
@@ -158,7 +241,7 @@ let elements: DocSnippets = {
 	access: {
 		desc: "Specify the access level of this member (private, public, or protected).",
 		detail: "<private|protected|public>",
-        snippet: "${1|private,protected,public|}"
+		snippet: "${1|private,protected,public|}"
 	},
 	alias: {
 		desc: "Treat a member as if it had a different name.",

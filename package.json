@@ -69,7 +69,14 @@
           "description": "Enable or disable signature help for TF2 VScript."
         }
       }
+    },
+    "keybindings": [
+    {
+      "command": "extension.handleDocCommentEnter",
+      "key": "enter",
+      "when": "editorTextFocus && eeditorLangId == nut"
     }
+  ]
   },
   "main": "./out/extension.js",
   "activationEvents": [
