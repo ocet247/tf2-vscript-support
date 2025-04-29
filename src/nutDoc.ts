@@ -239,22 +239,31 @@ export async function NutBlockCommentEnterHandler() {
 		return;
 	}
 	
-		const forwardIterator = new ForwardIterator(ForwardIterator.textFromPosition(document, position));
-		if (isCommentClosed(forwardIterator)) {
-			if (foundAsterisk) {
-				await editor.edit(editBuilder => {
-					editBuilder.insert(position, `\n${indent}* `);
-				});
-			} else if (line.lastIndexOf("/**") != -1) {
-				await editor.edit(editBuilder => {
-					editBuilder.insert(position, `\n${indent} * `);
-				});
-			} else {
-				await commands.executeCommand('type', { text: '\n' });
-			}
-			return;
+	const forwardIterator = new ForwardIterator(ForwardIterator.textFromPosition(document, position));
+	if (isCommentClosed(forwardIterator)) {
+		if (foundAsterisk) {
+			await editor.edit(editBuilder => {
+				editBuilder.insert(position, `\n${indent}* `);
+			});
+		} else if (line.lastIndexOf("/**") != -1) {
+			await editor.edit(editBuilder => {
+				editBuilder.insert(position, `\n${indent} * `);
+			});
+		} else {
+			await commands.executeCommand('type', { text: '\n' });
 		}
+		return;
+	}
 
+	if (foundAsterisk) {
+		await editor.edit(editBuilder => {
+			editBuilder.insert(position, `\n${indent}* \n${indent}*/`);
+		});
+
+		// Move cursor to the line with the '* '
+		const newPosition = new Position(position.line + 1, 2 + indent.length);
+		editor.selection = new Selection(newPosition, newPosition);
+	} else {
 		await editor.edit(editBuilder => {
 			editBuilder.insert(position, `\n${indent} * \n${indent} */`);
 		});
@@ -262,8 +271,7 @@ export async function NutBlockCommentEnterHandler() {
 		// Move cursor to the line with the '* '
 		const newPosition = new Position(position.line + 1, 3 + indent.length);
 		editor.selection = new Selection(newPosition, newPosition);
-		
-		return;
+	}
 }
 
 interface DocSnippets {
