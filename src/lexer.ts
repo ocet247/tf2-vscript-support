@@ -1,16 +1,45 @@
+import { Position, Range } from 'vscode';
 import { CharCode } from './textProcessing';
 
-const enum TokenKind {
-    IDENTIFIER,
+export enum TokenKind {
+	EOF = 0,
+
+	LEFT_ROUND = 40,    // (
+	RIGHT_ROUND = 41,   // )
+	LEFT_CURLY = 123,   // {
+	RIGHT_CURLY = 125,  // }
+	LEFT_BRACKET = 91,  // [
+	RIGHT_BRACKET = 93, // ]
+	SEMICOLON = 59,     // ;
+	COMMA = 44,         // ,
+	QUESTION = 63,      // ?
+	CARET = 94,         // ^
+	TILDE = 126,        // ~
+	DOT = 46,           // .
+	COLON = 58,         // :
+	PLUS = 43,          // +
+	MINUS = 45,         // -
+	MULTIPLY = 42,      // *
+	DIVIDE = 47,        // /
+	MODULO = 37,        // %
+	BIT_AND = 38,       // &
+	BIT_OR = 124,       // |
+	LESS = 60,          // <
+	GREATER = 62,       // >
+	ASSIGN = 61,        // =
+	EXCLAMATION = 33,   // !
+	AT = 64,            // @
+
+    IDENTIFIER = 258,
     STRING_LITERAL,
     INTEGER,
     FLOAT,
     BASE,
     DELETE,
-    EQ,
-    NE,
-    LE,
-    GE,
+    EQUALS,
+    NOT_EQUALS,
+    LESS_EQUALS,
+    GREATER_EQUALS,
     SWITCH,
     ARROW,
     AND,
@@ -24,32 +53,31 @@ const enum TokenKind {
     NULL,
     FOREACH,
     IN,
-    NEWSLOT,
-    MODULO,
+    NEW_SLOT,
     LOCAL,
     CLONE,
     FUNCTION,
     RETURN,
     TYPEOF,
-    UMINUS,
-    PLUSEQ,
-    MINUSEQ,
+    UNARY_MINUS,
+    PLUS_ASSIGN,
+    MINUS_ASSIGN,
     CONTINUE,
     YIELD,
     TRY,
     CATCH,
     THROW,
-    SHIFTL,
-    SHIFTR,
+    SHIFT_LEFT,
+    SHIFT_RIGHT,
     RESUME,
     DOUBLE_COLON,
     CASE,
     DEFAULT,
     THIS,
-    PLUSPLUS,
-    MINUSMINUS,
-    THREEWAYSCMP,
-    USHIFTR,
+    PLUS_PLUS,
+    MINUS_MINUS,
+    THREE_WAY_CMP,
+    UNSIGNED_SHIFT_RIGHT,
     CLASS,
     EXTENDS,
     CONSTRUCTOR,
@@ -57,43 +85,54 @@ const enum TokenKind {
     VARPARAMS,
     __LINE__,
     __FILE__,
-    TRUE_,
+    TRUE,
     FALSE,
-    MULEQ,
-    DIVEQ,
-    MODEQ,
+    MULTIPLY_ASSIGN,
+    DIVIDE_ASSIGN,
+    MODULO_ASSIGN,
     ATTR_OPEN,
     ATTR_CLOSE,
     STATIC,
     ENUM,
     CONST,
 	RAWCALL,
-	DIVIDE,
-	MUTLIPLY,
-	ASSIGN,
-	LESS,
-	GREATER,
-	EXCLAMATION,
-	RAVLYK,
-	DOT,
-	BIT_AND,
-	BIT_OR,
-	COLON,
 	ASTERISK,
-	MINUS,
-	PLUS,
+	LINE_COMMENT,
+	BLOCK_COMMENT,
 };
 
-class Token {
-	public readonly kind: TokenKind
-	public readonly value: string
-	constructor(kind: TokenKind, value: string) {
+export class Token {
+	public readonly kind: TokenKind;
+	public readonly value: string;
+	public readonly range: Range;
+
+	public static singleCharToken(kind: TokenKind, pos: Position) {
+		return new Token(
+			kind,
+			String.fromCharCode(kind),
+			new Range(pos, pos)
+		);
+	}
+
+	constructor(kind: TokenKind, value: string, range: Range) {
 		this.kind = kind;
 		this.value = value;
+		this.range = range;
+	}
+
+	public log() {
+		const kindName = TokenKind[this.kind] || `UNKNOWN(${this.kind})`;
+		const valueDisplay = this.kind === TokenKind.STRING_LITERAL 
+			? `"${this.value}"` 
+			: `'${this.value}'`;
+		
+		console.log(`${kindName.padEnd(20)} ${valueDisplay.padEnd(15)} ` +
+			`[${this.range.start.line}:${this.range.start.character}-` +
+			`${this.range.end.line}:${this.range.end.character}]`);
 	}
 }
 
-class Tokeniser {
+export class Lexer {
 	public readonly text: string
 	
 	public line: number;
@@ -103,309 +142,837 @@ class Tokeniser {
 
 	public current: number;
 
+	public currentPos: Position;
+	public previousPos: Position;
+
+	public readEOF: boolean;
+
+	private readonly keywords: Map<string, TokenKind> = new Map([
+		['while', TokenKind.WHILE],
+		['do', TokenKind.DO],
+		['if', TokenKind.IF],
+		['else', TokenKind.ELSE],
+		['break', TokenKind.BREAK],
+		['continue', TokenKind.CONTINUE],
+		['return', TokenKind.RETURN],
+		['null', TokenKind.NULL],
+		['function', TokenKind.FUNCTION],
+		['local', TokenKind.LOCAL],
+		['for', TokenKind.FOR],
+		['foreach', TokenKind.FOREACH],
+		['in', TokenKind.IN],
+		['typeof', TokenKind.TYPEOF],
+		['base', TokenKind.BASE],
+		['delete', TokenKind.DELETE],
+		['try', TokenKind.TRY],
+		['catch', TokenKind.CATCH],
+		['throw', TokenKind.THROW],
+		['clone', TokenKind.CLONE],
+		['yield', TokenKind.YIELD],
+		['resume', TokenKind.RESUME],
+		['switch', TokenKind.SWITCH],
+		['case', TokenKind.CASE],
+		['default', TokenKind.DEFAULT],
+		['this', TokenKind.THIS],
+		['class', TokenKind.CLASS],
+		['extends', TokenKind.EXTENDS],
+		['constructor', TokenKind.CONSTRUCTOR],
+		['instanceof', TokenKind.INSTANCEOF],
+		['true', TokenKind.TRUE],
+		['false', TokenKind.FALSE],
+		['static', TokenKind.STATIC],
+		['enum', TokenKind.ENUM],
+		['const', TokenKind.CONST],
+		['__LINE__', TokenKind.__LINE__],
+		['__FILE__', TokenKind.__FILE__],
+		['rawcall', TokenKind.RAWCALL]
+    ]);
+
 	constructor(text: string) {
 		this.text = text;
 		this.line = 0;
 		this.column = 0;
 		this.cursor = 0;
 		this.current = -1;
+
+		this.currentPos = new Position(0, 0);
+		this.previousPos = new Position(0, 0);
+
+		this.readEOF = false;
+
+		
+		this.next();
 	}
 
 	public next() {
+		if (this.readEOF) {
+			return;
+		}
+
 		this.current = this.text.charCodeAt(this.cursor);
 		this.cursor++;
-		this.column++;
-	}
+		this.previousPos = this.currentPos;
+		this.currentPos = new Position(this.line, this.column);
 
-	public hasNext(): boolean {
-		return !Number.isNaN(this.current);
+		if (Number.isNaN(this.current)) {
+			this.readEOF = true;
+			this.current = -1;
+
+			return;
+		}
+
+		if (this.current === CharCode.LINE_FEED) {
+			this.line++;
+			this.column = 0;
+		} else {
+			this.column++;
+		}
+		
 	}
 
 	public lex(): Token[] {
 		const tokens: Token[] = [];
-		while (this.hasNext()) {
+		while (!this.readEOF) {
 			switch (this.current) {
 			case CharCode.WHITESPACE:
 			case CharCode.CARRIAGE_RETURN:
 			case CharCode.TAB:
+			case CharCode.LINE_FEED: {
 				this.next();
 				continue;
-			case CharCode.LINE_FEED:
-				this.line++;
-				this.column = 0;
-				this.next();
-				continue;
-			case CharCode.HASH:
+			}
+			case CharCode.HASH: {
+				const start = this.cursor - 1;
+				const startPos = this.currentPos;
 				this.lexLineComment();
+				const end = this.cursor - 1;
+				const endPos = this.previousPos;
+
+				tokens.push(new Token(
+					TokenKind.LINE_COMMENT,
+					this.text.slice(start, end),
+					new Range(startPos, endPos))
+				);
+
 				continue;
-			case CharCode.SLASH:
+			}
+			case CharCode.SLASH: {
+				const startPos = this.currentPos;
+				
+				const start = this.cursor - 1;
 				this.next();
 				switch (this.current) {
-				case CharCode.ASTERISK:
+				case CharCode.ASTERISK: {
 					this.lexBlockComment();
+					const end = this.cursor - 1;
+					const endPos = this.previousPos;
+
+					tokens.push(new Token(
+						TokenKind.BLOCK_COMMENT,
+						this.text.slice(start, end),
+						new Range(startPos, endPos))
+					);
+
 					continue;
-				case CharCode.SLASH:
+				}
+				case CharCode.SLASH: {
 					this.lexLineComment();
-					continue;
-				case CharCode.EQUALS:
-					this.next();
-					tokens.push(new Token(TokenKind.DIVEQ, '/='));
+					const end = this.cursor - 1;
+					const endPos = this.previousPos;
+	
+					tokens.push(new Token(
+						TokenKind.LINE_COMMENT,
+						this.text.slice(start, end),
+						new Range(startPos, endPos))
+					);
+
 					continue;
 				}
-				tokens.push(new Token(TokenKind.DIVIDE, '/'));
+				case CharCode.EQUALS: {
+					const endPos = this.currentPos;
+	
+					tokens.push(new Token(
+						TokenKind.DIVIDE_ASSIGN,
+						'/=',
+						new Range(startPos, endPos))
+					);
+
+					this.next();
+					continue;
+				}
+				}
+
+
+				tokens.push(Token.singleCharToken(TokenKind.DIVIDE, startPos));
+
 				continue;
-			case CharCode.EQUALS:
+			}
+			case CharCode.EQUALS: {
+				const startPos = this.currentPos;
+
 				this.next();
 				if (this.current === CharCode.EQUALS) {
+					const endPos = this.currentPos;
+					tokens.push(new Token(
+						TokenKind.EQUALS,
+						'==',
+						new Range(startPos, endPos))
+					);
+
 					this.next();
-					tokens.push(new Token(TokenKind.EQ, '=='));
 					continue;
 				}
-				tokens.push(new Token(TokenKind.ASSIGN, '='));
+
+				tokens.push(Token.singleCharToken(TokenKind.ASSIGN, startPos));
+
 				continue;
-			case CharCode.LESS:
+			}
+			case CharCode.LESS: {
+				const startPos = this.currentPos;
+
 				this.next();
 				switch (this.current) {
-				case CharCode.EQUALS:
+				case CharCode.EQUALS: {
 					this.next();
 					if (this.current === CharCode.GREATER) {
+						const endPos = this.currentPos;
+						tokens.push(new Token(
+							TokenKind.THREE_WAY_CMP,
+							'<=>',
+							new Range(startPos, endPos))
+						);
+
 						this.next();
-						tokens.push(new Token(TokenKind.THREEWAYSCMP, '<=>'));
 						continue;
 					}
-					tokens.push(new Token(TokenKind.LE, '<='));
-					continue;
-				case CharCode.MINUS:	
-					this.next();
-					tokens.push(new Token(TokenKind.NEWSLOT, '<-'));
-					continue;
-				case CharCode.LESS:	
-					this.next();
-					tokens.push(new Token(TokenKind.SHIFTL, '<<'));
+
+					const endPos = this.previousPos;
+					tokens.push(new Token(
+						TokenKind.LESS_EQUALS,
+						'<=',
+						new Range(startPos, endPos))
+					);
+					
 					continue;
 				}
-				tokens.push(new Token(TokenKind.LESS, '<'));
+				case CharCode.MINUS: {
+					const endPos = this.currentPos;
+					tokens.push(new Token(
+						TokenKind.NEW_SLOT,
+						'<-',
+						new Range(startPos, endPos))
+					);
+
+					this.next();
+					continue;
+				}
+				case CharCode.LESS: {
+					const endPos = this.currentPos;
+					tokens.push(new Token(
+						TokenKind.SHIFT_LEFT,
+						'<<',
+						new Range(startPos, endPos))
+					);
+
+					this.next();
+					continue;
+				}
+				}
+
+				tokens.push(Token.singleCharToken(TokenKind.LESS, startPos));
+
 				continue;
-			case CharCode.GREATER:
+			}
+			case CharCode.GREATER: {
+				const startPos = this.currentPos;
+
 				this.next();
 				switch (this.current) {
-				case CharCode.EQUALS:
+				case CharCode.EQUALS: {
+					const endPos = this.currentPos;
+					tokens.push(new Token(
+						TokenKind.GREATER_EQUALS,
+						'>=',
+						new Range(startPos, endPos))
+					);
+
 					this.next();
-					tokens.push(new Token(TokenKind.GE, '>='));
-					continue;
-				case CharCode.GREATER:
-					this.next();
-					if (this.current === CharCode.GREATER) {
-						this.next();
-						tokens.push(new Token(TokenKind.USHIFTR, '>>>'));
-						continue;
-					}
-					tokens.push(new Token(TokenKind.SHIFTR, '>>'));
 					continue;
 				}
-				tokens.push(new Token(TokenKind.GREATER, '>'));
+				case CharCode.GREATER: {
+					this.next();
+					if (this.current === CharCode.GREATER) {
+						const endPos = this.currentPos;
+						tokens.push(new Token(
+							TokenKind.UNSIGNED_SHIFT_RIGHT,
+							'>>>',
+							new Range(startPos, endPos))
+						);
+
+						this.next();
+						continue;
+					}
+					const endPos = this.previousPos;
+					tokens.push(new Token(
+						TokenKind.SHIFT_RIGHT,
+						'>>',
+						new Range(startPos, endPos))
+					);
+
+					this.next();
+					continue;
+				}
+				}
+
+				tokens.push(Token.singleCharToken(TokenKind.GREATER, startPos));
+
 				continue;
-			case CharCode.EXCLAMATION:
+			}
+			case CharCode.EXCLAMATION: {
+				const startPos = this.currentPos;
+
 				this.next();
 				if (this.current === CharCode.EQUALS) {
+					const endPos = this.currentPos;
+					tokens.push(new Token(
+						TokenKind.NOT_EQUALS,
+						'!=',
+						new Range(startPos, endPos)
+					));
+
 					this.next();
-					tokens.push(new Token(TokenKind.NE, '!='));
 					continue;
 				}
-				tokens.push(new Token(TokenKind.EXCLAMATION, '!'));
+
+				tokens.push(Token.singleCharToken(TokenKind.EXCLAMATION, startPos));
+
 				continue;
-			case CharCode.RAVLYK:
+			}
+			case CharCode.RAVLYK: {
+				const startPos = this.currentPos;
+
 				this.next();
 				if (this.current === CharCode.DOUBLE_QUOTE) {
-					const string = this.readString(true);
-					tokens.push(new Token(TokenKind.STRING_LITERAL, string));
+					const { kind, value } = this.lexString(true);
+					const endPos = this.currentPos;
+
+					tokens.push(new Token(
+						kind,
+						value,
+						new Range(startPos, endPos)
+					));
+
 					continue;
 				}
-				tokens.push(new Token(TokenKind.RAVLYK, '@'));
+
+				tokens.push(Token.singleCharToken(TokenKind.AT, startPos));
+
 				continue;
+			}
 			case CharCode.DOUBLE_QUOTE:
-			case CharCode.QUOTE:
-				const string = this.readString(false);
-				tokens.push(new Token(TokenKind.STRING_LITERAL, string));
+			case CharCode.QUOTE: {
+				const startPos = this.currentPos;
+				const { kind, value } = this.lexString(true);
+				const endPos = this.currentPos;
+
+				tokens.push(new Token(
+					kind,
+					value,
+					new Range(startPos, endPos)
+				));
+
 				continue;
-			case CharCode.DOT:
+			}
+			case CharCode.LEFT_CURLY:
+			case CharCode.RIGHT_CURLY:
+			case CharCode.LEFT_ROUND:
+			case CharCode.RIGHT_ROUND:
+			case CharCode.LEFT_SQUARE:
+			case CharCode.RIGHT_SQUARE:
+			case CharCode.SEMICOLON:
+			case CharCode.COMMA:
+			case CharCode.QUESTION:
+			case CharCode.CARET:
+			case CharCode.TILDE: {
+				const pos = this.currentPos;
+				tokens.push(Token.singleCharToken(this.current, pos));
+
+				this.next();
+				continue;
+			}
+			case CharCode.DOT: {
+				const startPos = this.currentPos;
+
 				this.next();
 				if (this.current === CharCode.DOT) {
 					this.next();
 					if (this.current === CharCode.DOT) {
+						const endPos = this.currentPos;
+						tokens.push(new Token(
+							TokenKind.VARPARAMS,
+							'...',
+							new Range(startPos, endPos)
+						));
+
 						this.next();
-						tokens.push(new Token(TokenKind.VARPARAMS, '...'));
 						continue;
 					}
 					// invalid token '..'
 					continue;
 				}
-				tokens.push(new Token(TokenKind.DOT, '.'));
+
+				tokens.push(Token.singleCharToken(TokenKind.DOT, startPos));
+
 				continue;
-			case CharCode.AMPERSAND:
+			}
+			case CharCode.AMPERSAND: {
+				const startPos = this.currentPos;
+				
 				this.next();
 				if (this.current === CharCode.AMPERSAND) {
+					const endPos = this.currentPos;
+					tokens.push(new Token(
+						TokenKind.AND,
+						'&&',
+						new Range(startPos, endPos)
+					));
+
 					this.next();
-					tokens.push(new Token(TokenKind.AND, '&&'));
 					continue;
 				}
-				tokens.push(new Token(TokenKind.BIT_AND, '&'));
-			case CharCode.PIPE:
+
+				tokens.push(Token.singleCharToken(TokenKind.BIT_AND, startPos));
+
+				continue;
+			}
+			case CharCode.PIPE: {
+				const startPos = this.currentPos;
+
 				this.next();
 				if (this.current === CharCode.PIPE) {
+					const endPos = this.currentPos;
+					tokens.push(new Token(
+						TokenKind.OR,
+						'||',
+						new Range(startPos, endPos)
+					));
+
 					this.next();
-					tokens.push(new Token(TokenKind.OR, '||'));
 					continue;
 				}
-				tokens.push(new Token(TokenKind.BIT_OR, '|'));
-			case CharCode.COLON:
+
+				tokens.push(Token.singleCharToken(TokenKind.BIT_OR, startPos));
+
+				continue;
+			}
+			case CharCode.COLON: {
+				const startPos = this.currentPos;
+
 				this.next();
 				if (this.current === CharCode.COLON) {
+					const endPos = this.currentPos;
+					tokens.push(new Token(
+						TokenKind.DOUBLE_COLON,
+						'::',
+						new Range(startPos, endPos)
+					));
+
 					this.next();
-					tokens.push(new Token(TokenKind.DOUBLE_COLON, '::'));
 					continue;
 				}
-				tokens.push(new Token(TokenKind.DOUBLE_COLON, ':'));
+
+				tokens.push(Token.singleCharToken(TokenKind.COLON, startPos));
+
 				continue;
-			case CharCode.ASTERISK:
+			}
+			case CharCode.ASTERISK: {
+				const startPos = this.currentPos;
+
 				this.next();
 				if (this.current === CharCode.EQUALS) {
+					const endPos = this.currentPos;
+					tokens.push(new Token(
+						TokenKind.MULTIPLY_ASSIGN,
+						'*=',
+						new Range(startPos, endPos)
+					));
+
 					this.next();
-					tokens.push(new Token(TokenKind.MULEQ, '*='));
 					continue;
 				}
-				tokens.push(new Token(TokenKind.ASTERISK, '*'));
-			case CharCode.PERCENT:
+
+				tokens.push(Token.singleCharToken(TokenKind.MULTIPLY, startPos));
+
+
+				continue;
+			}
+			case CharCode.PERCENT: {
+				const startPos = this.currentPos;
+
 				this.next();
 				if (this.current === CharCode.EQUALS) {
+					const endPos = this.currentPos;
+					tokens.push(new Token(
+						TokenKind.MODULO_ASSIGN,
+						'%=',
+						new Range(startPos, endPos)
+					));
+
 					this.next();
-					tokens.push(new Token(TokenKind.MODEQ, '*='));
 					continue;
 				}
-				tokens.push(new Token(TokenKind.MODULO, '%'));
-			case CharCode.MINUS:
+
+				tokens.push(Token.singleCharToken(TokenKind.MODULO, startPos));
+
+				continue;
+			}
+			case CharCode.MINUS: {
+				const startPos = this.currentPos;
+
 				this.next();
 				switch (this.current) {
-				case CharCode.EQUALS:
+				case CharCode.EQUALS: {
+					const endPos = this.currentPos;
+					tokens.push(new Token(
+						TokenKind.MINUS_ASSIGN,
+						'-=',
+						new Range(startPos, endPos)
+					));
+
 					this.next();
-					tokens.push(new Token(TokenKind.MINUSEQ, '-='));
-					continue;
-				case CharCode.MINUS:
-					this.next();
-					tokens.push(new Token(TokenKind.MINUSMINUS, '--'));
 					continue;
 				}
-				tokens.push(new Token(TokenKind.MINUS, '-'));
-			case CharCode.PLUS:
+				case CharCode.MINUS: {
+					const endPos = this.currentPos;
+					tokens.push(new Token(
+						TokenKind.MINUS_MINUS,
+						'--',
+						new Range(startPos, endPos)
+					));
+
+					this.next();
+					continue;
+				}
+				}
+
+				tokens.push(Token.singleCharToken(TokenKind.MINUS, startPos));
+
+				continue;
+			}
+			case CharCode.PLUS: {
+				const startPos = this.currentPos;
+
 				this.next();
 				switch (this.current) {
-				case CharCode.EQUALS:
+				case CharCode.EQUALS: {
+					const endPos = this.currentPos;
+					tokens.push(new Token(
+						TokenKind.PLUS_ASSIGN,
+						'+=',
+						new Range(startPos, endPos)
+					));
+
 					this.next();
-					tokens.push(new Token(TokenKind.PLUSEQ, '+='));
-					continue;
-				case CharCode.PLUS:
-					this.next();
-					tokens.push(new Token(TokenKind.PLUSPLUS, '++'));
 					continue;
 				}
-				tokens.push(new Token(TokenKind.PLUS, '+'));
+				case CharCode.PLUS: {
+					const endPos = this.currentPos;
+					tokens.push(new Token(
+						TokenKind.PLUS_PLUS,
+						'++',
+						new Range(startPos, endPos)
+					));
+
+					this.next();
+					continue;
+				}
+				}
+
+				tokens.push(Token.singleCharToken(TokenKind.PLUS, startPos));
+
+				continue;
+			}
 			default: 
 				if (CharCode.isAlphabetic(this.current)) {
-					const value = this.readIdentifier();
-					tokens.push(new Token(TokenKind.IDENTIFIER, value));
-				} else if (CharCode.isNumeric(this.current)) {
-					const { kind, value } = this.readNumber();
-					tokens.push(new Token(kind, value));
+					const start = this.cursor - 1;
+					const startPos = this.currentPos;
+					this.lexIdentifier();
+					const end = this.cursor - 1;
+					const endPos = this.previousPos;
+					
+					const value = this.text.slice(start, end);
+
+					tokens.push(new Token(
+						this.keywords.get(value) ?? TokenKind.IDENTIFIER,
+						value,
+						new Range(startPos, endPos)
+					));
+
+					continue;
 				}
+				
+				if (CharCode.isNumeric(this.current)) {
+					const startPos = this.currentPos;
+					const { kind, value } = this.lexNumber();
+					const endPos = this.previousPos;
+
+					tokens.push(new Token(
+						kind,
+						value,
+						new Range(startPos, endPos)
+					));
+
+					continue;
+				}
+
+				if (CharCode.isControl(this.current)) {
+					// unexpected character(control)
+				}
+
+				this.next();
+				continue;
 			}
 		}
+
+		tokens.push(new Token(
+			TokenKind.EOF,
+			'',
+			new Range(this.currentPos, this.currentPos)
+		));
+
 		return tokens;
 	}
 	public lexLineComment() {
 		do {
 			this.next();
 			// Find the end of the line
-		} while (this.current !== CharCode.LINE_FEED && this.hasNext());
+			if (this.current === CharCode.LINE_FEED) {
+				break;
+			}
+		} while (!this.readEOF);
 	}
 
 	public lexBlockComment() {
-		while (this.hasNext()) {
+		do {
 			this.next();
-			switch (this.current) {
-			case CharCode.ASTERISK:
+			if (this.current === CharCode.ASTERISK) {
 				this.next();
-				if (this.current == CharCode.SLASH) {
+				if (this.current === CharCode.SLASH) {
 					this.next();
 					return;
 				}
-				continue;
-			case CharCode.LINE_FEED:
-				this.line++;
-				this.column = 0;
 			}
-		}
+		} while (!this.readEOF);
 
 		// otherwise */ expected
 	}
 
-	public readString(multiline: boolean): string {
+	public lexString(multiline: boolean): { kind: TokenKind, value: string } {
 		const opening = this.current;
-		let previous1: number = -1;
-		let previous2: number = -1;
+		let value = "";
 		do {
-			previous2 = previous1;
-			previous1 = this.current;
 			this.next();
-			if (this.current === opening && (previous1 !== CharCode.SLASH || previous2 === CharCode.SLASH)) {
+			switch (this.current) {
+			case CharCode.LINE_FEED:
+				if (!multiline) {
+					// error: multiline in a constant
+				}
+				value += '\n';
+
+				continue;
+			case CharCode.BACKSLASH:
+				if (multiline) {
+					value += '\\';
+					continue;
+				}
+
 				this.next();
-				return "";
+				switch (this.current) {
+				case CharCode.x:
+					value += this.processHexEscape(2);
+					continue;
+				case CharCode.u:
+					value += this.processHexEscape(4);
+					continue;
+				case CharCode.U:
+					value += this.processHexEscape(8);
+					continue;
+				case CharCode.t:
+					value += '\t';
+					continue;
+				case CharCode.a:
+					value += '\a';
+					continue;
+				case CharCode.b:
+					value += '\b';
+					continue;
+				case CharCode.n:
+					value += '\n';
+					continue;
+				case CharCode.r:
+					value += '\r';
+					continue;
+				case CharCode.v:
+					value += '\v';
+					continue;
+				case CharCode.f:
+					value += '\f';
+					continue;
+				case CharCode.N0:
+					value += '\0';
+					continue;
+				case CharCode.BACKSLASH:
+					value += '\r';
+					continue;
+				case CharCode.QUOTE:
+					value += '\'';
+				case CharCode.DOUBLE_QUOTE:
+					value += '\"';
+					continue;
+				default:
+				// Unrecognised escape char
+				}
+			case opening:
+				this.next();
+				if (opening === CharCode.QUOTE) {
+					if (value.length === 0) {
+						// Empty constant
+					} else if (value.length > 1) {
+						// Constant too long
+					}
+
+					return {
+						kind: TokenKind.INTEGER,
+						value: value.charCodeAt(0).toString()
+					};
+				}
+				
+				return {
+					kind: TokenKind.STRING_LITERAL,
+					value: value
+				};
+			default:
+				value += String.fromCharCode(this.current);
 			}
-		} while (this.hasNext());
-
-		return "";
-		// Unfinished string
+		} while (!this.readEOF);
+		// error : unfinished string
+		return {
+			kind: TokenKind.STRING_LITERAL,
+			value: value
+		}
 	}
 
-	public readIdentifier(): string {
-		return "";
+	private processHexEscape(maxDigits: number): string {
+		this.next();
+		if (!CharCode.isHexadecimal(this.current)) {
+			// Hexadecimal expected;
+			return "";
+		}
+		let number = this.current;
+		for (let i = 1; i < maxDigits; i++) {
+			this.next();
+			if (!CharCode.isHexadecimal(this.current)) {
+				return String.fromCharCode(number);
+			}
+			number += this.current;
+		}
+		return String.fromCharCode(number);
 	}
 
-	public readNumber(): { kind: TokenKind, value: string } {
+	public lexIdentifier() {
+		do {
+			this.next();
+		} while (!this.readEOF && CharCode.isAlphaNumeric(this.current));
+	}
+
+	public lexNumber(): { kind: TokenKind, value: string } {
 		const first = this.current;
-		let value = String.fromCharCode(first);
 
+		let start = this.cursor - 1;
 		this.next();
 		if (first === CharCode.N0) {
 			if (CharCode.isOctal(this.current)) {
-				do {
-					value += String.fromCharCode(this.current);
-					this.next();
-				} while (CharCode.isOctal(this.current));
-
-				if (CharCode.isNumeric(this.current)) {
-					// invalid
-				}
-
+				const value = this.lexOctal();
 				return {
 					kind: TokenKind.INTEGER,
 					value: value,
 				}
 			} else if (this.current === CharCode.x || this.current === CharCode.X) {
-				do {
-					value += String.fromCharCode(this.current);
-					this.next();
-				} while (CharCode.isHexadecimal(this.current));
-
+				const value = this.lexHexadecimal();
 				return {
 					kind: TokenKind.INTEGER,
 					value: value,
 				}
+			} else if (CharCode.isNumeric(this.current)) {
+				// Cut the 0 at the start;
+				start++;
 			}
 		}
-		return {
-			kind: TokenKind.INTEGER,
-			value: value
+
+		let kind = TokenKind.INTEGER;
+		while (!this.readEOF) {
+			if (this.current === CharCode.DOT) {
+				kind = TokenKind.FLOAT;
+			} else if (this.current === CharCode.e || this.current === CharCode.E) {
+				kind = TokenKind.FLOAT;
+
+				this.next();
+				if (this.current === CharCode.MINUS || this.current === CharCode.PLUS) {
+					this.next();
+				}
+
+				if (!CharCode.isNumeric(this.current)) {
+					// Error: exponent expected
+					break;
+				}
+			} else if (!CharCode.isNumeric(this.current)) {	
+				break;
+			}
+
+			this.next();
 		}
 
+		const end = this.cursor - 1;
+		return {
+			kind: kind,
+			value: this.text.slice(start, end)
+		}
+	}
+
+	
+	public lexOctal(): string {
+		let result = this.current - CharCode.N0;
+		do {
+			this.next();
+			if (!CharCode.isOctal(this.current)) {
+				if (CharCode.isNumeric(this.current)) {
+					// invalid octal number
+				}
+				break;
+			}
+
+			result = result * 8 + this.current - CharCode.N0;
+		} while (!this.readEOF);
+
+		return result.toString();
+	}
+
+	public lexHexadecimal(): string {
+		let result = 0;
+		do {
+			this.next();
+			if (!CharCode.isHexadecimal(this.current)) {
+				break;
+			}
+
+			if (CharCode.isNumeric(this.current)) {
+				result = result * 16 + (this.current - CharCode.N0);
+			} else {
+				const upper = CharCode.toUpper(this.current);
+				result = result * 16 + (upper - CharCode.A + 10);
+			}
+		} while (!this.readEOF);
+
+		return result.toString();
 	}
 }
