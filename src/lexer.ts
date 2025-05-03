@@ -27,7 +27,7 @@ export enum TokenKind {
 	GREATER = 62,       // >
 	ASSIGN = 61,        // =
 	EXCLAMATION = 33,   // !
-	LAMBDA = 64,            // @
+	LAMBDA = 64,        // @
 
     IDENTIFIER = 258,
 	STRING,

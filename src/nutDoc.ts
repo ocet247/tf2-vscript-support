@@ -240,9 +240,9 @@ export async function NutBlockCommentEnterHandler(event: TextDocumentChangeEvent
 		if (isCommentClosed(forwardIterator)) {
 			return;
 		}
-
+		
 		await editor.edit(editBuilder => {
-			editBuilder.insert(position, `\n${indent}\n${indent} */`);
+			editBuilder.insert(position.translate(1), `${indent}\n${indent} */`);
 		});
 
 		const newPosition = new Position(position.line + 1, indent.length);
@@ -262,7 +262,7 @@ export async function NutBlockCommentEnterHandler(event: TextDocumentChangeEvent
 
 	if (foundAsterisk) {
 		await editor.edit(editBuilder => {
-			editBuilder.insert(position, `\n${indent}* \n${indent}*/`);
+			editBuilder.insert(position.translate(1), `* \n${indent}*/`);
 		});
 
 		// Move cursor to the line with the '* '
@@ -270,7 +270,7 @@ export async function NutBlockCommentEnterHandler(event: TextDocumentChangeEvent
 		editor.selection = new Selection(newPosition, newPosition);
 	} else {
 		await editor.edit(editBuilder => {
-			editBuilder.insert(position, `\n${indent} * \n${indent} */`);
+			editBuilder.insert(position.translate(1), ` * \n${indent} */`);
 		});
 
 		// Move cursor to the line with the '* '
