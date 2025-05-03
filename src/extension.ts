@@ -22,7 +22,7 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(vscode.languages.registerHoverProvider('nut', new TF2VScriptHoverProvider()));
 	context.subscriptions.push(vscode.languages.registerCompletionItemProvider('nut', new TF2VScriptCompletionProvider(), '.'));
 	context.subscriptions.push(vscode.languages.registerCompletionItemProvider('nut', new NutDocCompletionItemProvider(), '@'));
-	context.subscriptions.push(vscode.commands.registerCommand('nut.handleBlockCommentEnter', NutBlockCommentEnterHandler));
+	context.subscriptions.push(vscode.workspace.onDidChangeTextDocument(event => NutBlockCommentEnterHandler(event)));
 }
 
 export function deactivate() { }

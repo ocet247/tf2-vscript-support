@@ -69,14 +69,7 @@
           "description": "Enable or disable signature help for TF2 VScript."
         }
       }
-    },
-    "keybindings": [
-      {
-        "command": "nut.handleBlockCommentEnter",
-        "key": "enter",
-        "when": "editorTextFocus && editorLangId == nut"
-      }
-    ]
+    }
   },
   "main": "./out/extension.js",
   "activationEvents": [

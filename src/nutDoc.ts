@@ -1,4 +1,4 @@
-import { CancellationToken, commands, CompletionContext, CompletionItem, CompletionItemKind, CompletionItemProvider, MarkdownString, Position, Selection, SnippetString, TextDocument, window } from "vscode";
+import { CancellationToken, commands, CompletionContext, CompletionItem, CompletionItemKind, CompletionItemProvider, MarkdownString, Position, Selection, SnippetString, TextDocument, TextDocumentChangeEvent, window } from "vscode";
 import { BackwardIterator, CharCode, ForwardIterator } from "./textProcessing";
 
 function isInBlockComment(iterator: BackwardIterator): { inComment: boolean, inDoc: boolean } {
@@ -189,13 +189,27 @@ export class NutDocCompletionItemProvider implements CompletionItemProvider {
 	}
 }
 
-export async function NutBlockCommentEnterHandler() {
+function IsNewLine(event: TextDocumentChangeEvent) {
+	for (const change of event.contentChanges) {
+		if (change.text[0]          === '\n' ||
+			change.text.slice(0, 2) === '\r\n')
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+export async function NutBlockCommentEnterHandler(event: TextDocumentChangeEvent) {
 	const editor = window.activeTextEditor;
 	if (!editor) {
 		return;
 	}
 
-	
+	if (!IsNewLine(event)) {
+		return;
+	}
+
 	const document = editor.document;
 	const position = editor.selection.active;
 	const line = document.lineAt(position.line).text;
@@ -218,15 +232,12 @@ export async function NutBlockCommentEnterHandler() {
 	const commentState = isInBlockComment(backwardIterator);
 
 	if (!commentState.inComment) {
-		await commands.executeCommand('type', { text: '\n' });
 		return;
 	}
 	
-	const trimmed = line.trimEnd();
 	if (!commentState.inDoc) {
 		const forwardIterator = new ForwardIterator(ForwardIterator.textFromPosition(document, position));
 		if (isCommentClosed(forwardIterator)) {
-			await commands.executeCommand('type', { text: '\n' });
 			return;
 		}
 
@@ -242,15 +253,9 @@ export async function NutBlockCommentEnterHandler() {
 	const forwardIterator = new ForwardIterator(ForwardIterator.textFromPosition(document, position));
 	if (isCommentClosed(forwardIterator)) {
 		if (foundAsterisk) {
-			await editor.edit(editBuilder => {
-				editBuilder.insert(position, `\n${indent}* `);
-			});
+			await commands.executeCommand('type', { text: '* ' });
 		} else if (line.lastIndexOf("/**") != -1) {
-			await editor.edit(editBuilder => {
-				editBuilder.insert(position, `\n${indent} * `);
-			});
-		} else {
-			await commands.executeCommand('type', { text: '\n' });
+			await commands.executeCommand('type', { text: ' * ' });
 		}
 		return;
 	}
