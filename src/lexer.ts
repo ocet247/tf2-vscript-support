@@ -1,4 +1,3 @@
-import { Position, Range } from 'vscode';
 import { CharCode } from './textProcessing';
 
 export enum TokenKind {
@@ -28,10 +27,11 @@ export enum TokenKind {
 	GREATER = 62,       // >
 	ASSIGN = 61,        // =
 	EXCLAMATION = 33,   // !
-	AT = 64,            // @
+	LAMBDA = 64,            // @
 
     IDENTIFIER = 258,
-    STRING_LITERAL,
+	STRING,
+	VERBATIM_STRING,
     INTEGER,
     FLOAT,
     BASE,
@@ -104,48 +104,49 @@ export enum TokenKind {
 export class Token {
 	public readonly kind: TokenKind;
 	public readonly value: string;
-	public readonly range: Range;
+	public readonly start: number;
+	public readonly end: number;
 
-	public static singleCharToken(kind: TokenKind, pos: Position) {
+	public static singleCharToken(kind: TokenKind, start: number) {
 		return new Token(
 			kind,
 			String.fromCharCode(kind),
-			new Range(pos, pos)
+			start,
+			start + 1
 		);
 	}
 
-	constructor(kind: TokenKind, value: string, range: Range) {
+	constructor(kind: TokenKind, value: string, start: number, end: number) {
 		this.kind = kind;
 		this.value = value;
-		this.range = range;
+		this.start = start;
+		this.end = end;
 	}
 
 	public log() {
 		const kindName = TokenKind[this.kind] || `UNKNOWN(${this.kind})`;
-		const valueDisplay = this.kind === TokenKind.STRING_LITERAL 
+		const valueDisplay = this.kind === TokenKind.STRING 
 			? `"${this.value}"` 
 			: `'${this.value}'`;
 		
-		console.log(`${kindName.padEnd(20)} ${valueDisplay.padEnd(15)} ` +
-			`[${this.range.start.line}:${this.range.start.character}-` +
-			`${this.range.end.line}:${this.range.end.character}]`);
+		console.log(`${kindName.padEnd(20)} ${valueDisplay.padEnd(15)} [${this.start}-${this.end}]`);
 	}
 }
 
 export class Lexer {
-	public readonly text: string
+	private readonly text: string;
+	private readonly tokens: Token[];
+	private readonly errors: string[];
 	
-	public line: number;
-	public column: number;
 	// 0 based offset
-	public cursor: number;
+	private cursor: number;
 
-	public current: number;
+	private line: number;
+	private column: number;
 
-	public currentPos: Position;
-	public previousPos: Position;
+	private current: number;
 
-	public readEOF: boolean;
+	private readEOF: boolean;
 
 	private readonly keywords: Map<string, TokenKind> = new Map([
 		['while', TokenKind.WHILE],
@@ -190,36 +191,35 @@ export class Lexer {
 
 	constructor(text: string) {
 		this.text = text;
+		this.tokens = [];
+		this.errors = [];
+
 		this.line = 0;
 		this.column = 0;
 		this.cursor = 0;
 		this.current = -1;
 
-		this.currentPos = new Position(0, 0);
-		this.previousPos = new Position(0, 0);
-
 		this.readEOF = false;
 
-		
 		this.next();
+		this.lex();
 	}
 
-	public next() {
+	public getTokens(): Token[] {
+		return this.tokens;
+	}
+
+	public getErrors(): string[] {
+		return this.errors;
+	}
+
+	private next() {
 		if (this.readEOF) {
 			return;
 		}
 
 		this.current = this.text.charCodeAt(this.cursor);
 		this.cursor++;
-		this.previousPos = this.currentPos;
-		this.currentPos = new Position(this.line, this.column);
-
-		if (Number.isNaN(this.current)) {
-			this.readEOF = true;
-			this.current = -1;
-
-			return;
-		}
 
 		if (this.current === CharCode.LINE_FEED) {
 			this.line++;
@@ -227,12 +227,16 @@ export class Lexer {
 		} else {
 			this.column++;
 		}
-		
+
+		if (Number.isNaN(this.current)) {
+			this.readEOF = true;
+			this.current = -1;
+		}
 	}
 
-	public lex(): Token[] {
-		const tokens: Token[] = [];
+	private lex() {
 		while (!this.readEOF) {
+			const start = this.cursor - 1;
 			switch (this.current) {
 			case CharCode.WHITESPACE:
 			case CharCode.CARRIAGE_RETURN:
@@ -242,159 +246,147 @@ export class Lexer {
 				continue;
 			}
 			case CharCode.HASH: {
-				const start = this.cursor - 1;
-				const startPos = this.currentPos;
 				this.lexLineComment();
 				const end = this.cursor - 1;
-				const endPos = this.previousPos;
 
-				tokens.push(new Token(
+				this.tokens.push(new Token(
 					TokenKind.LINE_COMMENT,
 					this.text.slice(start, end),
-					new Range(startPos, endPos))
-				);
+					start,
+					end
+				));
 
 				continue;
 			}
 			case CharCode.SLASH: {
-				const startPos = this.currentPos;
-				
-				const start = this.cursor - 1;
 				this.next();
 				switch (this.current) {
 				case CharCode.ASTERISK: {
 					this.lexBlockComment();
 					const end = this.cursor - 1;
-					const endPos = this.previousPos;
 
-					tokens.push(new Token(
+					this.tokens.push(new Token(
 						TokenKind.BLOCK_COMMENT,
 						this.text.slice(start, end),
-						new Range(startPos, endPos))
-					);
+						start,
+						end
+					));
 
 					continue;
 				}
 				case CharCode.SLASH: {
 					this.lexLineComment();
 					const end = this.cursor - 1;
-					const endPos = this.previousPos;
 	
-					tokens.push(new Token(
+					this.tokens.push(new Token(
 						TokenKind.LINE_COMMENT,
 						this.text.slice(start, end),
-						new Range(startPos, endPos))
-					);
+						start,
+						end
+					));
 
 					continue;
 				}
 				case CharCode.EQUALS: {
-					const endPos = this.currentPos;
-	
-					tokens.push(new Token(
+					this.tokens.push(new Token(
 						TokenKind.DIVIDE_ASSIGN,
 						'/=',
-						new Range(startPos, endPos))
-					);
+						start,
+						start + 2
+					));
 
 					this.next();
 					continue;
 				}
 				}
 
-
-				tokens.push(Token.singleCharToken(TokenKind.DIVIDE, startPos));
+				
+				this.tokens.push(Token.singleCharToken(TokenKind.DIVIDE, start));
 
 				continue;
 			}
 			case CharCode.EQUALS: {
-				const startPos = this.currentPos;
-
 				this.next();
 				if (this.current === CharCode.EQUALS) {
-					const endPos = this.currentPos;
-					tokens.push(new Token(
+					this.tokens.push(new Token(
 						TokenKind.EQUALS,
 						'==',
-						new Range(startPos, endPos))
-					);
+						start,
+						start + 2
+					));
 
 					this.next();
 					continue;
 				}
 
-				tokens.push(Token.singleCharToken(TokenKind.ASSIGN, startPos));
+				this.tokens.push(Token.singleCharToken(TokenKind.ASSIGN, start));
 
 				continue;
 			}
 			case CharCode.LESS: {
-				const startPos = this.currentPos;
-
 				this.next();
 				switch (this.current) {
 				case CharCode.EQUALS: {
 					this.next();
 					if (this.current === CharCode.GREATER) {
-						const endPos = this.currentPos;
-						tokens.push(new Token(
+						this.tokens.push(new Token(
 							TokenKind.THREE_WAY_CMP,
 							'<=>',
-							new Range(startPos, endPos))
-						);
+							start,
+							start + 3
+						));
 
 						this.next();
 						continue;
 					}
 
-					const endPos = this.previousPos;
-					tokens.push(new Token(
+					this.tokens.push(new Token(
 						TokenKind.LESS_EQUALS,
 						'<=',
-						new Range(startPos, endPos))
-					);
+						start,
+						start + 2
+					));
 					
 					continue;
 				}
 				case CharCode.MINUS: {
-					const endPos = this.currentPos;
-					tokens.push(new Token(
+					this.tokens.push(new Token(
 						TokenKind.NEW_SLOT,
 						'<-',
-						new Range(startPos, endPos))
-					);
+						start,
+						start + 2
+					));
 
 					this.next();
 					continue;
 				}
 				case CharCode.LESS: {
-					const endPos = this.currentPos;
-					tokens.push(new Token(
+					this.tokens.push(new Token(
 						TokenKind.SHIFT_LEFT,
 						'<<',
-						new Range(startPos, endPos))
-					);
+						start,
+						start + 2
+					));
 
 					this.next();
 					continue;
 				}
 				}
 
-				tokens.push(Token.singleCharToken(TokenKind.LESS, startPos));
+				this.tokens.push(Token.singleCharToken(TokenKind.LESS, start));
 
 				continue;
 			}
 			case CharCode.GREATER: {
-				const startPos = this.currentPos;
-
 				this.next();
 				switch (this.current) {
 				case CharCode.EQUALS: {
-					const endPos = this.currentPos;
-					tokens.push(new Token(
+					this.tokens.push(new Token(
 						TokenKind.GREATER_EQUALS,
 						'>=',
-						new Range(startPos, endPos))
-					);
+						start,
+						start + 2
+					));
 
 					this.next();
 					continue;
@@ -402,83 +394,79 @@ export class Lexer {
 				case CharCode.GREATER: {
 					this.next();
 					if (this.current === CharCode.GREATER) {
-						const endPos = this.currentPos;
-						tokens.push(new Token(
+						this.tokens.push(new Token(
 							TokenKind.UNSIGNED_SHIFT_RIGHT,
 							'>>>',
-							new Range(startPos, endPos))
-						);
+							start,
+							start + 3
+						));
 
 						this.next();
 						continue;
 					}
-					const endPos = this.previousPos;
-					tokens.push(new Token(
+					this.tokens.push(new Token(
 						TokenKind.SHIFT_RIGHT,
 						'>>',
-						new Range(startPos, endPos))
-					);
+						start,
+						start + 2
+					));
 
 					this.next();
 					continue;
 				}
 				}
 
-				tokens.push(Token.singleCharToken(TokenKind.GREATER, startPos));
+				this.tokens.push(Token.singleCharToken(TokenKind.GREATER, start));
 
 				continue;
 			}
 			case CharCode.EXCLAMATION: {
-				const startPos = this.currentPos;
-
 				this.next();
 				if (this.current === CharCode.EQUALS) {
-					const endPos = this.currentPos;
-					tokens.push(new Token(
+					this.tokens.push(new Token(
 						TokenKind.NOT_EQUALS,
 						'!=',
-						new Range(startPos, endPos)
+						start,
+						start + 2
 					));
 
 					this.next();
 					continue;
 				}
 
-				tokens.push(Token.singleCharToken(TokenKind.EXCLAMATION, startPos));
+				this.tokens.push(Token.singleCharToken(TokenKind.EXCLAMATION, start));
 
 				continue;
 			}
 			case CharCode.RAVLYK: {
-				const startPos = this.currentPos;
-
 				this.next();
 				if (this.current === CharCode.DOUBLE_QUOTE) {
-					const { kind, value } = this.lexString(true);
-					const endPos = this.currentPos;
+					this.lexVerbatimString();
+					const end = this.cursor - 1;
 
-					tokens.push(new Token(
-						kind,
-						value,
-						new Range(startPos, endPos)
+					this.tokens.push(new Token(
+						TokenKind.VERBATIM_STRING,
+						this.text.slice(start, end),
+						start,
+						end
 					));
 
 					continue;
 				}
 
-				tokens.push(Token.singleCharToken(TokenKind.AT, startPos));
+				this.tokens.push(Token.singleCharToken(TokenKind.LAMBDA, start));
 
 				continue;
 			}
-			case CharCode.DOUBLE_QUOTE:
-			case CharCode.QUOTE: {
-				const startPos = this.currentPos;
-				const { kind, value } = this.lexString(true);
-				const endPos = this.currentPos;
-
-				tokens.push(new Token(
+			case CharCode.QUOTE:
+			case CharCode.DOUBLE_QUOTE: {
+				const { kind, value } = this.lexString();
+				const end = this.cursor - 1;
+				this.tokens.push(new Token(
 					kind,
 					value,
-					new Range(startPos, endPos)
+					start,
+					end
 				));
 
 				continue;
@@ -494,24 +482,21 @@ export class Lexer {
 			case CharCode.QUESTION:
 			case CharCode.CARET:
 			case CharCode.TILDE: {
-				const pos = this.currentPos;
-				tokens.push(Token.singleCharToken(this.current, pos));
+				this.tokens.push(Token.singleCharToken(this.current, start));
 
 				this.next();
 				continue;
 			}
 			case CharCode.DOT: {
-				const startPos = this.currentPos;
-
 				this.next();
 				if (this.current === CharCode.DOT) {
 					this.next();
 					if (this.current === CharCode.DOT) {
-						const endPos = this.currentPos;
-						tokens.push(new Token(
+						this.tokens.push(new Token(
 							TokenKind.VARPARAMS,
 							'...',
-							new Range(startPos, endPos)
+							start,
+							start + 3
 						));
 
 						this.next();
@@ -521,133 +506,121 @@ export class Lexer {
 					continue;
 				}
 
-				tokens.push(Token.singleCharToken(TokenKind.DOT, startPos));
+				this.tokens.push(Token.singleCharToken(TokenKind.DOT, start));
 
 				continue;
 			}
 			case CharCode.AMPERSAND: {
-				const startPos = this.currentPos;
-				
 				this.next();
 				if (this.current === CharCode.AMPERSAND) {
-					const endPos = this.currentPos;
-					tokens.push(new Token(
+					this.tokens.push(new Token(
 						TokenKind.AND,
 						'&&',
-						new Range(startPos, endPos)
+						start,
+						start + 2
 					));
 
 					this.next();
 					continue;
 				}
 
-				tokens.push(Token.singleCharToken(TokenKind.BIT_AND, startPos));
+				this.tokens.push(Token.singleCharToken(TokenKind.BIT_AND, start));
 
 				continue;
 			}
 			case CharCode.PIPE: {
-				const startPos = this.currentPos;
-
 				this.next();
 				if (this.current === CharCode.PIPE) {
-					const endPos = this.currentPos;
-					tokens.push(new Token(
+					this.tokens.push(new Token(
 						TokenKind.OR,
 						'||',
-						new Range(startPos, endPos)
+						start,
+						start + 2
 					));
 
 					this.next();
 					continue;
 				}
 
-				tokens.push(Token.singleCharToken(TokenKind.BIT_OR, startPos));
+				this.tokens.push(Token.singleCharToken(TokenKind.BIT_OR, start));
 
 				continue;
 			}
 			case CharCode.COLON: {
-				const startPos = this.currentPos;
-
 				this.next();
 				if (this.current === CharCode.COLON) {
-					const endPos = this.currentPos;
-					tokens.push(new Token(
+					this.tokens.push(new Token(
 						TokenKind.DOUBLE_COLON,
 						'::',
-						new Range(startPos, endPos)
+						start,
+						start + 2
 					));
 
 					this.next();
 					continue;
 				}
 
-				tokens.push(Token.singleCharToken(TokenKind.COLON, startPos));
+				this.tokens.push(Token.singleCharToken(TokenKind.COLON, start));
 
 				continue;
 			}
 			case CharCode.ASTERISK: {
-				const startPos = this.currentPos;
-
 				this.next();
 				if (this.current === CharCode.EQUALS) {
-					const endPos = this.currentPos;
-					tokens.push(new Token(
+					this.tokens.push(new Token(
 						TokenKind.MULTIPLY_ASSIGN,
 						'*=',
-						new Range(startPos, endPos)
+						start,
+						start + 2
 					));
 
 					this.next();
 					continue;
 				}
 
-				tokens.push(Token.singleCharToken(TokenKind.MULTIPLY, startPos));
+				this.tokens.push(Token.singleCharToken(TokenKind.MULTIPLY, start));
 
 
 				continue;
 			}
 			case CharCode.PERCENT: {
-				const startPos = this.currentPos;
-
 				this.next();
 				if (this.current === CharCode.EQUALS) {
-					const endPos = this.currentPos;
-					tokens.push(new Token(
+					this.tokens.push(new Token(
 						TokenKind.MODULO_ASSIGN,
 						'%=',
-						new Range(startPos, endPos)
+						start,
+						start + 2
 					));
 
 					this.next();
 					continue;
 				}
 
-				tokens.push(Token.singleCharToken(TokenKind.MODULO, startPos));
+				this.tokens.push(Token.singleCharToken(TokenKind.MODULO, start));
 
 				continue;
 			}
 			case CharCode.MINUS: {
-				const startPos = this.currentPos;
-
 				this.next();
 				switch (this.current) {
 				case CharCode.EQUALS: {
-					const endPos = this.currentPos;
-					tokens.push(new Token(
+					this.tokens.push(new Token(
 						TokenKind.MINUS_ASSIGN,
 						'-=',
-						new Range(startPos, endPos)
+						start,
+						start + 2
 					));
 
 					this.next();
 					continue;
 				}
 				case CharCode.MINUS: {
-					const endPos = this.currentPos;
-					tokens.push(new Token(
+					this.tokens.push(new Token(
 						TokenKind.MINUS_MINUS,
 						'--',
-						new Range(startPos, endPos)
+						start,
+						start + 2
 					));
 
 					this.next();
@@ -655,32 +628,30 @@ export class Lexer {
 				}
 				}
 
-				tokens.push(Token.singleCharToken(TokenKind.MINUS, startPos));
+				this.tokens.push(Token.singleCharToken(TokenKind.MINUS, start));
 
 				continue;
 			}
 			case CharCode.PLUS: {
-				const startPos = this.currentPos;
-
 				this.next();
 				switch (this.current) {
 				case CharCode.EQUALS: {
-					const endPos = this.currentPos;
-					tokens.push(new Token(
+					this.tokens.push(new Token(
 						TokenKind.PLUS_ASSIGN,
 						'+=',
-						new Range(startPos, endPos)
+						start,
+						start + 2
 					));
 
 					this.next();
 					continue;
 				}
 				case CharCode.PLUS: {
-					const endPos = this.currentPos;
-					tokens.push(new Token(
+					this.tokens.push(new Token(
 						TokenKind.PLUS_PLUS,
 						'++',
-						new Range(startPos, endPos)
+						start,
+						start + 2
 					));
 
 					this.next();
@@ -688,38 +659,36 @@ export class Lexer {
 				}
 				}
 
-				tokens.push(Token.singleCharToken(TokenKind.PLUS, startPos));
+				this.tokens.push(Token.singleCharToken(TokenKind.PLUS, start));
 
 				continue;
 			}
 			default: 
 				if (CharCode.isAlphabetic(this.current)) {
-					const start = this.cursor - 1;
-					const startPos = this.currentPos;
 					this.lexIdentifier();
 					const end = this.cursor - 1;
-					const endPos = this.previousPos;
 					
 					const value = this.text.slice(start, end);
 
-					tokens.push(new Token(
+					this.tokens.push(new Token(
 						this.keywords.get(value) ?? TokenKind.IDENTIFIER,
 						value,
-						new Range(startPos, endPos)
+						start,
+						end
 					));
 
 					continue;
 				}
 				
 				if (CharCode.isNumeric(this.current)) {
-					const startPos = this.currentPos;
 					const { kind, value } = this.lexNumber();
-					const endPos = this.previousPos;
+					const end = this.cursor - 1;
 
-					tokens.push(new Token(
+					this.tokens.push(new Token(
 						kind,
 						value,
-						new Range(startPos, endPos)
+						start,
+						end
 					));
 
 					continue;
@@ -734,15 +703,17 @@ export class Lexer {
 			}
 		}
 
-		tokens.push(new Token(
+		this.tokens.push(new Token(
 			TokenKind.EOF,
 			'',
-			new Range(this.currentPos, this.currentPos)
+			this.cursor,
+			this.cursor
 		));
 
-		return tokens;
+		return this.tokens;
 	}
-	public lexLineComment() {
+
+	private lexLineComment() {
 		do {
 			this.next();
 			// Find the end of the line
@@ -752,7 +723,7 @@ export class Lexer {
 		} while (!this.readEOF);
 	}
 
-	public lexBlockComment() {
+	private lexBlockComment() {
 		do {
 			this.next();
 			if (this.current === CharCode.ASTERISK) {
@@ -767,25 +738,29 @@ export class Lexer {
 		// otherwise */ expected
 	}
 
-	public lexString(multiline: boolean): { kind: TokenKind, value: string } {
+	private lexVerbatimString() {
 		const opening = this.current;
+		do {
+			this.next();
+			if (this.current === opening) {
+				this.next();
+				return;
+			}
+		} while (!this.readEOF);
+	}
+
+	private lexString(): { kind: TokenKind, value: string } {
+		const opening = this.current;
+		const kind = opening === CharCode.QUOTE ? TokenKind.INTEGER : TokenKind.STRING;
+
 		let value = "";
 		do {
 			this.next();
 			switch (this.current) {
 			case CharCode.LINE_FEED:
-				if (!multiline) {
-					// error: multiline in a constant
-				}
-				value += '\n';
-
+				// error: multiline in a constant
 				continue;
 			case CharCode.BACKSLASH:
-				if (multiline) {
-					value += '\\';
-					continue;
-				}
-
 				this.next();
 				switch (this.current) {
 				case CharCode.x:
@@ -842,23 +817,22 @@ export class Lexer {
 					}
 
 					return {
-						kind: TokenKind.INTEGER,
+						kind,
 						value: value.charCodeAt(0).toString()
-					};
+					}
 				}
 				
 				return {
-					kind: TokenKind.STRING_LITERAL,
-					value: value
-				};
+					kind,
+					value
+				}
 			default:
 				value += String.fromCharCode(this.current);
 			}
 		} while (!this.readEOF);
 		// error : unfinished string
 		return {
-			kind: TokenKind.STRING_LITERAL,
-			value: value
+			kind, value
 		}
 	}
 
@@ -879,13 +853,13 @@ export class Lexer {
 		return String.fromCharCode(number);
 	}
 
-	public lexIdentifier() {
+	private lexIdentifier() {
 		do {
 			this.next();
 		} while (!this.readEOF && CharCode.isAlphaNumeric(this.current));
 	}
 
-	public lexNumber(): { kind: TokenKind, value: string } {
+	private lexNumber(): { kind: TokenKind, value: string } {
 		const first = this.current;
 
 		let start = this.cursor - 1;
@@ -940,7 +914,7 @@ export class Lexer {
 	}
 
 	
-	public lexOctal(): string {
+	private lexOctal(): string {
 		let result = this.current - CharCode.N0;
 		do {
 			this.next();
@@ -957,7 +931,7 @@ export class Lexer {
 		return result.toString();
 	}
 
-	public lexHexadecimal(): string {
+	private lexHexadecimal(): string {
 		let result = 0;
 		do {
 			this.next();
@@ -974,5 +948,24 @@ export class Lexer {
 		} while (!this.readEOF);
 
 		return result.toString();
+	}
+
+	public getTokenAtPosition(offset: number): Token | null {
+		let left = 0;
+		let right = this.tokens.length - 1;
+
+		while (left <= right) {
+			const mid = Math.floor((left + right) / 2);
+			const token = this.tokens[mid];
+			if (offset < token.start) {
+				right = mid - 1;
+			} else if (offset >= token.end) {
+				left = mid + 1;
+			} else {
+				return token; // found
+			}
+		}
+
+		return null; 
 	}
 }

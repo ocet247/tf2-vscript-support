@@ -4,6 +4,7 @@ import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
 import { ForwardIterator, CharCode, BackwardIterator } from './textProcessing';
+import { Lexer } from './lexer';
 
 export default class TF2VScriptDiagnosticsProvider {
 	private readonly diagnosticCollection: DiagnosticCollection;
@@ -53,6 +54,7 @@ export default class TF2VScriptDiagnosticsProvider {
 		}
 	}
 	// It works on my machine
+	// The compiler will be obsolete once the parser is done
 	/*
 	private getOperatingSystem() {
 		if (os.type() === "Linux") {
@@ -71,6 +73,15 @@ export default class TF2VScriptDiagnosticsProvider {
 		const compilerDiagnostics = await this.runCompiler(text);
 		const parseDiagnostics = this.runParse(document, text);
 		this.diagnosticCollection.set(document.uri, [...compilerDiagnostics, ...parseDiagnostics]);
+
+		/*
+		// First, tokenize the source code with your lexer
+		const lexer = new Lexer(text);
+		for (const token of lexer.getTokens()) {
+			token.log();
+		}
+
+		console.log(lexer.getTokenAtPosition(1)) */
 	}
 
 	private runCompiler(text: string): Promise<Diagnostic[]> {
