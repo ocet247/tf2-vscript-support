@@ -99,6 +99,7 @@ export enum TokenKind {
 	ASTERISK,
 	LINE_COMMENT,
 	BLOCK_COMMENT,
+	DOC
 };
 
 export class Token {
@@ -262,11 +263,11 @@ export class Lexer {
 				this.next();
 				switch (this.current) {
 				case CharCode.ASTERISK: {
-					this.lexBlockComment();
+					const kind = this.lexBlockComment();
 					const end = this.cursor - 1;
 
 					this.tokens.push(new Token(
-						TokenKind.BLOCK_COMMENT,
+						kind,
 						this.text.slice(start, end),
 						start,
 						end
@@ -723,19 +724,30 @@ export class Lexer {
 		} while (!this.readEOF);
 	}
 
-	private lexBlockComment() {
-		do {
+	private lexBlockComment(): TokenKind {
+		let kind = TokenKind.BLOCK_COMMENT;
+		this.next();
+		if (this.current === CharCode.ASTERISK) {
 			this.next();
+			if (this.current === CharCode.SLASH) {
+				this.next();
+				return TokenKind.BLOCK_COMMENT;
+			}
+			kind = TokenKind.DOC;
+		}
+		while (!this.readEOF) {
 			if (this.current === CharCode.ASTERISK) {
 				this.next();
 				if (this.current === CharCode.SLASH) {
 					this.next();
-					return;
+					return kind;
 				}
 			}
-		} while (!this.readEOF);
+			this.next();
+		}
 
 		// otherwise */ expected
+		return kind;
 	}
 
 	private lexVerbatimString() {
