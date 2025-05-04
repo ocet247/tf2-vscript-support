@@ -15,7 +15,8 @@
     { "open": "(", "close": ")" },
     { "open": "'", "close": "'", "notIn": ["string"] },
     { "open": "\"", "close": "\"", "notIn": ["string"] },
-    { "open": "`", "close": "`", "notIn": ["string"] }
+    { "open": "`", "close": "`", "notIn": ["string"] },
+    { "open": "</", "close": " />", "notIn": ["string", "comment"]}
   ],
   "autoCloseBefore": ";:.,=}])> \n\t",
   "surroundingPairs": [
@@ -50,6 +51,15 @@
       "action": {
         "indent": "none",
         "appendText": "// "
+      }
+    },
+    {
+      // Same for 
+      "beforeText": "(?<!\\\\)(?<!\\w:)#.*",
+      "afterText": "^(?!\\s*$).+",
+      "action": {
+        "indent": "none",
+        "appendText": "# "
       }
     }
   ]
