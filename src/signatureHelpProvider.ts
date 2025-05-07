@@ -1,10 +1,16 @@
-import { SignatureHelpProvider, SignatureHelp, SignatureInformation, CancellationToken, TextDocument, Position, Range, ParameterInformation } from 'vscode';
+import { SignatureHelpProvider, SignatureHelp, SignatureInformation, CancellationToken, TextDocument, Position, Range, ParameterInformation, workspace } from 'vscode';
 import * as vscriptGlobals from './globals';
 import { BackwardIterator, CharCode } from './textProcessing';
+import CurrentDocument from './documentState';
 
 
 export default class TF2VScriptSignatureHelpProvider implements SignatureHelpProvider {
 	public provideSignatureHelp(document: TextDocument, position: Position, _token: CancellationToken): Promise<SignatureHelp> | null {
+		const token = CurrentDocument.getLexer().getTokenAtPosition(document.offsetAt(position) - 1);
+		if (token && token.isComment()) {
+			return null;
+		}
+		
 		const iterator = new BackwardIterator(BackwardIterator.textFromPosition(document, position));
 
 		const paramCount = this.readParamCount(iterator);
@@ -13,9 +19,12 @@ export default class TF2VScriptSignatureHelpProvider implements SignatureHelpPro
 		}
 
 		const name = iterator.readIdentity();
+		
+		console.log(name);
 		if (!name) {
 			return null;
 		}
+
 
 		// Return 1 step back since we could've looked at the dot when canceling the identity reading
 		iterator.back();
@@ -41,7 +50,7 @@ export default class TF2VScriptSignatureHelpProvider implements SignatureHelpPro
 		let paramCount = 0;
 
 		while (iterator.hasNext()) {
-			const char = iterator.next();
+			let char = iterator.next();
 			switch (char) {
 			case CharCode.RIGHT_ROUND:
 			case CharCode.RIGHT_CURLY:
@@ -68,8 +77,32 @@ export default class TF2VScriptSignatureHelpProvider implements SignatureHelpPro
 			case CharCode.DOUBLE_QUOTE:
 			case CharCode.QUOTE:
 			case CharCode.BACKTICK:
-				while (iterator.hasNext() && char !== iterator.next()) {
-					// find the closing quote or double quote
+				const opening = char;		
+				// find the closing quote
+				while (iterator.hasNext()) {
+					char = iterator.next();
+					if (char === opening) {
+						if (!iterator.hasNext()) {
+							break;
+						}
+
+						char = iterator.next();
+						// Ignore escape chars
+						if (char === CharCode.BACKSLASH) {
+							if (!iterator.hasNext()) {
+								break;
+							}
+							
+							char = iterator.next();
+							if (char === CharCode.BACKSLASH) {
+								break;
+							}
+
+							continue;
+						}
+
+						break;
+					}
 				}
 				break;
 			case CharCode.COMMA:

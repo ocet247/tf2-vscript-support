@@ -1,3 +1,4 @@
+import { Diagnostic, Position, Range } from 'vscode';
 import { CharCode } from './textProcessing';
 
 export enum TokenKind {
@@ -102,6 +103,7 @@ export enum TokenKind {
 	DOC
 };
 
+
 export class Token {
 	public readonly kind: TokenKind;
 	public readonly value: string;
@@ -132,12 +134,18 @@ export class Token {
 		
 		console.log(`${kindName.padEnd(20)} ${valueDisplay.padEnd(15)} [${this.start}-${this.end}]`);
 	}
+
+	public isComment() {
+		return this.kind === TokenKind.LINE_COMMENT ||
+			this.kind === TokenKind.BLOCK_COMMENT ||
+			this.kind === TokenKind.DOC;
+	}
 }
 
 export class Lexer {
 	private readonly text: string;
 	private readonly tokens: Token[];
-	private readonly errors: string[];
+	private readonly diagnostics: Diagnostic[];
 	
 	// 0 based offset
 	private cursor: number;
@@ -193,7 +201,7 @@ export class Lexer {
 	constructor(text: string) {
 		this.text = text;
 		this.tokens = [];
-		this.errors = [];
+		this.diagnostics = [];
 
 		this.line = 0;
 		this.column = 0;
@@ -210,8 +218,8 @@ export class Lexer {
 		return this.tokens;
 	}
 
-	public getErrors(): string[] {
-		return this.errors;
+	public getDiagnostics(): Diagnostic[] {
+		return this.diagnostics;
 	}
 
 	private next() {
@@ -503,8 +511,11 @@ export class Lexer {
 						this.next();
 						continue;
 					}
-					// invalid token '..'
-					continue;
+					
+					this.diagnostics.push(new Diagnostic(
+						new Range(new Position(this.line, start), new Position(this.line, start + 2)),
+						"Invalid token '..'.",
+					));
 				}
 
 				this.tokens.push(Token.singleCharToken(TokenKind.DOT, start));
@@ -696,7 +707,10 @@ export class Lexer {
 				}
 
 				if (CharCode.isControl(this.current)) {
-					// unexpected character(control)
+					this.diagnostics.push(new Diagnostic(
+						new Range(new Position(this.line, this.cursor - 1), new Position(this.line, this.cursor)),
+						"Unexpected character (control)."
+					))
 				}
 
 				this.next();
@@ -745,8 +759,13 @@ export class Lexer {
 			}
 			this.next();
 		}
+		
 
-		// otherwise */ expected
+		this.diagnostics.push(new Diagnostic(
+			new Range(new Position(this.line, this.cursor), new Position(this.line, this.cursor + 1)),
+			"'*/' expected.",
+		));
+
 		return kind;
 	}
 
@@ -764,69 +783,109 @@ export class Lexer {
 	private lexString(): { kind: TokenKind, value: string } {
 		const opening = this.current;
 		const kind = opening === CharCode.QUOTE ? TokenKind.INTEGER : TokenKind.STRING;
-
 		let value = "";
-		do {
-			this.next();
+		this.next();
+		while (!this.readEOF) {
+			const startPos = new Position(this.line, this.column);
 			switch (this.current) {
 			case CharCode.LINE_FEED:
-				// error: multiline in a constant
+				this.diagnostics.push(new Diagnostic(
+					new Range(startPos, startPos),
+					"Multiline in a constant."
+				));
 				continue;
 			case CharCode.BACKSLASH:
 				this.next();
 				switch (this.current) {
 				case CharCode.x:
 					value += this.processHexEscape(2);
+
 					continue;
 				case CharCode.u:
 					value += this.processHexEscape(4);
+
 					continue;
 				case CharCode.U:
 					value += this.processHexEscape(8);
+
 					continue;
 				case CharCode.t:
 					value += '\t';
+
+					this.next();
 					continue;
 				case CharCode.a:
 					value += '\a';
+
+					this.next();
 					continue;
 				case CharCode.b:
 					value += '\b';
+
+					this.next();
 					continue;
 				case CharCode.n:
 					value += '\n';
+
+					this.next();
 					continue;
 				case CharCode.r:
 					value += '\r';
+
+					this.next();
 					continue;
 				case CharCode.v:
 					value += '\v';
+
+					this.next();
 					continue;
 				case CharCode.f:
 					value += '\f';
+
+					this.next();
 					continue;
 				case CharCode.N0:
 					value += '\0';
+
+					this.next();
 					continue;
 				case CharCode.BACKSLASH:
 					value += '\r';
+
+					this.next();
 					continue;
 				case CharCode.QUOTE:
 					value += '\'';
+
+					this.next();
+					continue;
 				case CharCode.DOUBLE_QUOTE:
 					value += '\"';
+
+					this.next();
 					continue;
 				default:
-				// Unrecognised escape char
+					this.diagnostics.push(new Diagnostic(
+						new Range(new Position(this.line, this.column - 2), new Position(this.line, this.column)),
+						"Unrecognised escape character."
+					));
+
+					this.next();
 				}
 			case opening:
 				this.next();
 				if (opening === CharCode.QUOTE) {
 					if (value.length === 0) {
-						// Empty constant
+						this.diagnostics.push(new Diagnostic(
+							new Range(new Position(this.line, this.column - 3), new Position(this.line, this.column - 1)),
+							"Empty constant."
+						));
 					} else if (value.length > 1) {
-						// Constant too long
-					}
+						this.diagnostics.push(new Diagnostic(
+							new Range(new Position(this.line, this.column - 3 - value.length), new Position(this.line, this.column - 1)),
+							"Constant is too long."
+						));
+					} 
 
 					return {
 						kind,
@@ -840,18 +899,29 @@ export class Lexer {
 				}
 			default:
 				value += String.fromCharCode(this.current);
+
+				this.next();
 			}
-		} while (!this.readEOF);
-		// error : unfinished string
+		}
+
+		this.diagnostics.push(new Diagnostic(
+			new Range(new Position(this.line, this.column - 1), new Position(this.line, this.column - 1)),
+			"Unterminated string literal."
+		));
+
 		return {
-			kind, value
+			kind,
+			value
 		}
 	}
 
 	private processHexEscape(maxDigits: number): string {
 		this.next();
 		if (!CharCode.isHexadecimal(this.current)) {
-			// Hexadecimal expected;
+			this.diagnostics.push(new Diagnostic(
+				new Range(new Position(this.line, this.column - 3), new Position(this.line, this.column)),
+				"Hexadecimal number expected."
+			));
 			return "";
 		}
 		let number = this.current;
@@ -903,12 +973,17 @@ export class Lexer {
 				kind = TokenKind.FLOAT;
 
 				this.next();
+				let offset = 2;
 				if (this.current === CharCode.MINUS || this.current === CharCode.PLUS) {
 					this.next();
+					offset++;
 				}
 
 				if (!CharCode.isNumeric(this.current)) {
-					// Error: exponent expected
+					this.diagnostics.push(new Diagnostic(
+						new Range(new Position(this.line, this.column - offset), new Position(this.line, this.column - 1)),
+						"Exponent expected."
+					));
 					break;
 				}
 			} else if (!CharCode.isNumeric(this.current)) {	
@@ -927,14 +1002,22 @@ export class Lexer {
 
 	
 	private lexOctal(): string {
+		const startPos = new Position(this.line, this.column - 2);
 		let result = this.current - CharCode.N0;
 		do {
 			this.next();
 			if (!CharCode.isOctal(this.current)) {
 				if (CharCode.isNumeric(this.current)) {
-					// invalid octal number
+					do {
+						this.next();
+					} while (CharCode.isNumeric(this.current) && !this.readEOF);
+
+					this.diagnostics.push(new Diagnostic(
+						new Range(startPos, new Position(this.line, this.column - 1)),
+						"Invalid octal number."
+					));
 				}
-				break;
+				break; 
 			}
 
 			result = result * 8 + this.current - CharCode.N0;
@@ -944,10 +1027,22 @@ export class Lexer {
 	}
 
 	private lexHexadecimal(): string {
+		const startPos = new Position(this.line, this.cursor - 2);
 		let result = 0;
 		do {
 			this.next();
 			if (!CharCode.isHexadecimal(this.current)) {
+				if (CharCode.isAlphaNumeric(this.current)) {
+					do {
+						this.next();
+					} while (CharCode.isAlphaNumeric(this.current) && !this.readEOF);
+
+					this.diagnostics.push(new Diagnostic(
+						new Range(startPos, new Position(this.line, this.cursor - 1)),
+						"Invalid hexadecimal number."
+					));
+				}
+
 				break;
 			}
 
@@ -974,7 +1069,7 @@ export class Lexer {
 			} else if (offset >= token.end) {
 				left = mid + 1;
 			} else {
-				return token; // found
+				return token;
 			}
 		}
 

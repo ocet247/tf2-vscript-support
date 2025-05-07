@@ -33,6 +33,10 @@
 			"name": "variable.language"
 		},
 		{
+			"match": "(?<=(?:->|:)\\s*)\\w+",
+			"name": "entity.name.type.class.nut"
+		},
+		{
 			"match": "\\b-?\\d+(\\.)\\d*(?:[eE][+-]?\\d+)?\\b",
 			"captures": {
 				"0": {

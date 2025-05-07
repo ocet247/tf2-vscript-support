@@ -1,40 +1,28 @@
-import { Disposable, TextDocument, workspace } from "vscode";
-import { Lexer } from "./lexer";
+import { Disposable, TextDocument, window, workspace } from "vscode";
+import { Lexer, Token } from "./lexer";
 
 export default class CurrentDocument {
-	private static lexer: Lexer | undefined;
-	private static parser: undefined;
-	private static timeOut: NodeJS.Timeout | undefined;
+	private static lexer: Lexer = this.startupLexer();
 
-	public static getLexer(): Lexer | undefined {
-		return CurrentDocument.lexer;
-	}
+	public static disposables: Disposable[] = [
+		workspace.onDidOpenTextDocument(document => this.runLexer(document)),
+		workspace.onDidChangeTextDocument(event => this.runLexer(event.document))
+	];
 
-	private static disposables: Disposable[] = [
-		workspace.onDidOpenTextDocument(document => this.changeDocument(document)),
-		workspace.onDidChangeTextDocument(event => this.queueAnalysis(event.document))
-	]
-
-	private static changeDocument(document: TextDocument): void {
-		if (document.languageId === 'nut') {
-			// Set it to undefined so we cannot clear timeout for the previously opened file from the current file
-			this.timeOut = undefined;
-
-			// Immediately lint the newly active file
-			this.runAnalysis(document);
+	private static startupLexer(): Lexer {
+		const editor = window.activeTextEditor;
+		if (!editor) {
+			return new Lexer('');
 		}
+
+		return new Lexer(editor.document.getText());
 	}
 
-	private static queueAnalysis(document: TextDocument): void {
-		if (document.languageId === 'nut') {
-			clearTimeout(this.timeOut);
-			this.timeOut = setTimeout(() => {
-				this.runAnalysis(document);
-			}, 200)
-		}
+	public static getLexer(): Lexer {
+		return this.lexer;
 	}
 
-	private static runAnalysis(document: TextDocument): void {
+	private static async runLexer(document: TextDocument): Promise<void> {
 		const text = document.getText();
 		this.lexer = new Lexer(text);
 	}

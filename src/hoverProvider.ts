@@ -1,9 +1,13 @@
 import { HoverProvider, Hover, MarkdownString, TextDocument, CancellationToken, Position } from 'vscode';
-import * as vscriptGlobals from './globals';
 import { BackwardIterator } from './textProcessing';
+import CurrentDocument from './documentState';
 
 export default class TF2VScriptHoverProvider implements HoverProvider {
 	public provideHover(document: TextDocument, position: Position, _token: CancellationToken): Hover | undefined {
+		const token = CurrentDocument.getLexer().getTokenAtPosition(document.offsetAt(position) - 1);
+		if (token && token.isComment()) {
+			return undefined;
+		}
 
 		const range = document.getWordRangeAtPosition(position);
 		if (!range) {

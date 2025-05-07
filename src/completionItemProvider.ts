@@ -1,9 +1,16 @@
-import { CompletionItemProvider, CompletionItem, CompletionItemKind, CancellationToken, TextEdit, TextDocument, Position, MarkdownString, SnippetString, CompletionContext, Range, CompletionItemTag } from 'vscode';
+import { CompletionItemProvider, CompletionItem, CompletionItemKind, CancellationToken, TextEdit, TextDocument, Position, MarkdownString, SnippetString, CompletionContext, Range, CompletionItemTag, CompletionList, ProviderResult } from 'vscode';
 import * as vscriptGlobals from './globals'
 import { BackwardIterator, CharCode } from './textProcessing';
+import CurrentDocument from './documentState';
+import { TokenKind } from './lexer';
 
-export default class TF2VScriptCompletionProvider implements CompletionItemProvider {
+export class TF2VScriptCompletionProvider implements CompletionItemProvider {
 	public provideCompletionItems(document: TextDocument, position: Position, _token: CancellationToken, _context: CompletionContext): Promise<CompletionItem[]> {
+		const token = CurrentDocument.getLexer().getTokenAtPosition(document.offsetAt(position) - 1);
+		if (token && token.isComment()) {
+			return Promise.resolve([]);
+		}
+		
 		const items: CompletionItem[] = [];
 		const iterator = new BackwardIterator(BackwardIterator.textFromPosition(document, position));
 
@@ -160,5 +167,34 @@ export default class TF2VScriptCompletionProvider implements CompletionItemProvi
 		}
 
 		return null;
+	}
+}
+
+export class DocCompletionProvider implements CompletionItemProvider {
+	public provideCompletionItems(document: TextDocument, position: Position, _token: CancellationToken, _context: CompletionContext): ProviderResult<CompletionItem[] | CompletionList<CompletionItem>> {
+		const token = CurrentDocument.getLexer().getTokenAtPosition(document.offsetAt(position) - 1);
+		if (!token || token.kind !== TokenKind.DOC) {
+			return Promise.resolve([]);
+		}
+
+		const completionItems = [];
+
+		for (const [name, entry] of Object.entries(vscriptGlobals.docSnippets)) {
+			const item = new CompletionItem(name, CompletionItemKind.Snippet);
+
+			item.documentation = new MarkdownString(entry.desc);
+			if (entry.detail) {
+				item.detail = entry.detail;
+			}
+
+			if (entry.snippet) {
+				item.insertText = new SnippetString(`${name} ${entry.snippet}`);
+			} else {
+				item.insertText = name; // fallback: just insert the name
+			}
+			completionItems.push(item);
+		}
+
+		return Promise.resolve(completionItems);
 	}
 }

@@ -5,6 +5,7 @@ import * as os from 'os';
 import * as path from 'path';
 import { ForwardIterator, CharCode, BackwardIterator } from './textProcessing';
 import { Lexer } from './lexer';
+import CurrentDocument from './documentState';
 
 export default class TF2VScriptDiagnosticsProvider {
 	private readonly diagnosticCollection: DiagnosticCollection;
@@ -24,8 +25,7 @@ export default class TF2VScriptDiagnosticsProvider {
 		this.disposables = [
 			this.diagnosticCollection,
 			workspace.onDidOpenTextDocument(document => this.changeDocument(document)),
-			workspace.onDidChangeTextDocument(event => this.queueDiagnostics(event.document)),
-			workspace.onDidCloseTextDocument(document => this.diagnosticCollection.delete(document.uri))
+			workspace.onDidChangeTextDocument(event => this.queueDiagnostics(event.document))
 		];
 		
 		// Lint current file on startup
@@ -70,9 +70,10 @@ export default class TF2VScriptDiagnosticsProvider {
 
 	private async runDiagnostics(document: TextDocument): Promise<void> {
 		const text = document.getText();
-		const compilerDiagnostics = await this.runCompiler(text);
-		const parseDiagnostics = this.runParse(document, text);
-		this.diagnosticCollection.set(document.uri, [...compilerDiagnostics, ...parseDiagnostics]);
+		
+		const compilerDiagnostics: Diagnostic[] = [];  //await this.runCompiler(text);
+		const parseDiagnostics: Diagnostic[] = [];  // this.runParse(document, text);
+		this.diagnosticCollection.set(document.uri, [...compilerDiagnostics, ...parseDiagnostics, ...CurrentDocument.getLexer().getDiagnostics()]);
 
 		/*
 		// First, tokenize the source code with your lexer
@@ -96,6 +97,7 @@ export default class TF2VScriptDiagnosticsProvider {
 				let match: RegExpExecArray | null;
 	
 				while ((match = regex.exec(stderr))) {
+				
 					const line = Number(match[1]) - 1;
 					const column = Number(match[2]) - 1;
 					const message = match[3];
@@ -119,6 +121,11 @@ export default class TF2VScriptDiagnosticsProvider {
 		const regex = /([_A-Za-z]\w*)(\s*\()?/gs
 		let match: RegExpExecArray | null;
 		while ((match = regex.exec(text))) {
+			const token = CurrentDocument.getLexer().getTokenAtPosition(match.index);
+			if (token && token.isComment()) {
+				continue;
+			}
+
 			const name = match[1];
 			const iterator = new BackwardIterator(text.slice(0, match.index));
 			const entry = iterator.findMethodDoc(name);
@@ -229,7 +236,7 @@ export default class TF2VScriptDiagnosticsProvider {
 		let depth = 1;
 		let foundParam = false;
 		while (iterator.hasNext()) {
-			const char = iterator.next();
+			let char = iterator.next();
 			switch (char) {
 			case CharCode.RIGHT_ROUND:
 			case CharCode.RIGHT_CURLY:
@@ -247,8 +254,23 @@ export default class TF2VScriptDiagnosticsProvider {
 			case CharCode.DOUBLE_QUOTE:
 			case CharCode.QUOTE:
 			case CharCode.BACKTICK:
-				while (iterator.hasNext() && char !== iterator.next()) {
-					// find the closing quote or double quote
+				const opening = char;		
+				// find the closing quote
+				while (iterator.hasNext()) {
+					char = iterator.next();
+					
+					// Ignore escape chars
+					if (char === CharCode.BACKSLASH) {
+						if (!iterator.hasNext()) {
+							break;
+						}
+
+						iterator.next();
+					}
+
+					if (char === opening) {
+						break;
+					}
 				}
 				break;
 			case CharCode.COMMA:
