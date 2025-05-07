@@ -4,24 +4,25 @@ import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
 import { ForwardIterator, CharCode, BackwardIterator } from './textProcessing';
-import { Lexer } from './lexer';
 import CurrentDocument from './documentState';
 
 export default class TF2VScriptDiagnosticsProvider {
 	private readonly diagnosticCollection: DiagnosticCollection;
-
+	/*
 	private readonly tempFilePath: string;
 	private readonly command: string;
-
+	*/
 	private readonly disposables: Disposable[];
-	
+
 	private timeOut: NodeJS.Timeout | undefined;
 
 	constructor() {
-		this.diagnosticCollection = languages.createDiagnosticCollection("squirrel-compiler");
+		
+		this.diagnosticCollection = languages.createDiagnosticCollection("TF2VScriptCollection");
+		/*
 		this.tempFilePath = path.join(os.tmpdir(), "tf2_vscript_lint_cache");
 		this.command = `"${path.join(__dirname, "..", "compilers", "sq-compiler_3.2_Windows_x86.exe")}" "${this.tempFilePath}"`;
-
+		*/
 		this.disposables = [
 			this.diagnosticCollection,
 			workspace.onDidOpenTextDocument(document => this.changeDocument(document)),
@@ -68,23 +69,14 @@ export default class TF2VScriptDiagnosticsProvider {
 		}
 	}*/
 
-	private async runDiagnostics(document: TextDocument): Promise<void> {
+	private runDiagnostics(document: TextDocument): void {
 		const text = document.getText();
 		
-		const compilerDiagnostics: Diagnostic[] = [];  //await this.runCompiler(text);
-		const parseDiagnostics: Diagnostic[] = [];  // this.runParse(document, text);
-		this.diagnosticCollection.set(document.uri, [...compilerDiagnostics, ...parseDiagnostics, ...CurrentDocument.getLexer().getDiagnostics()]);
-
-		/*
-		// First, tokenize the source code with your lexer
-		const lexer = new Lexer(text);
-		for (const token of lexer.getTokens()) {
-			token.log();
-		}
-
-		console.log(lexer.getTokenAtPosition(1)) */
+		const parseDiagnostics: Diagnostic[] = this.runParse(document, text);
+		this.diagnosticCollection.set(document.uri, [...parseDiagnostics, ...CurrentDocument.getLexer().getDiagnostics()]);
 	}
 
+	/*
 	private runCompiler(text: string): Promise<Diagnostic[]> {
 		return new Promise((resolve) => {
 			const diagnostics: Diagnostic[] = [];
@@ -113,7 +105,7 @@ export default class TF2VScriptDiagnosticsProvider {
 				resolve(diagnostics);
 			});
 		});
-	}
+	}*/
 
 	private runParse(document: TextDocument, text: string): Diagnostic[] {
 		const diagnostics: Diagnostic[] = [];

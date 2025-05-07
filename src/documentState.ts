@@ -1,5 +1,5 @@
 import { Disposable, TextDocument, window, workspace } from "vscode";
-import { Lexer, Token } from "./lexer";
+import { Lexer } from "./lexer";
 
 export default class CurrentDocument {
 	private static lexer: Lexer = this.startupLexer();
@@ -22,7 +22,11 @@ export default class CurrentDocument {
 		return this.lexer;
 	}
 
-	private static async runLexer(document: TextDocument): Promise<void> {
+	private static runLexer(document: TextDocument): void {
+		if (document.languageId !== 'nut') {
+			return;
+		}
+
 		const text = document.getText();
 		this.lexer = new Lexer(text);
 	}
