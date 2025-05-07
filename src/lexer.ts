@@ -793,6 +793,8 @@ export class Lexer {
 					new Range(startPos, startPos),
 					"Multiline in a constant."
 				));
+
+				this.next();
 				continue;
 			case CharCode.BACKSLASH:
 				this.next();

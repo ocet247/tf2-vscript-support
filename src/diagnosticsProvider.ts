@@ -1,8 +1,10 @@
 import { DiagnosticCollection, TextDocument, workspace, Diagnostic, Position, Range, DiagnosticSeverity, languages, window, Disposable, DiagnosticTag } from 'vscode';
+/*
 import * as cp from 'child_process';
 import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
+*/
 import { ForwardIterator, CharCode, BackwardIterator } from './textProcessing';
 import CurrentDocument from './documentState';
 
