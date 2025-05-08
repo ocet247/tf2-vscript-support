@@ -1,13 +1,13 @@
 import { Position, Range, Selection, TextDocumentChangeEvent, window } from "vscode";
 import { CharCode, ForwardIterator } from "./textProcessing";
 import CurrentDocument from "./documentState";
-import { Lexer, TokenKind } from "./lexer";
+import { Lexer, TokenKind, Token } from "./lexer";
 
 
-function isCommentClosed(lexer: Lexer): boolean {
+function isCommentClosed(lexer: Lexer, token: Token): boolean {
 	const diagnostics = lexer.getDiagnostics();
 	if (diagnostics.length === 0) {
-		return true;
+		return token.value.indexOf('/*', 2) === -1;
 	}
 
 	return diagnostics[diagnostics.length - 1].message !== "'*/' expected.";
@@ -70,7 +70,7 @@ export default async function TF2VScriptEnterHandler(event: TextDocumentChangeEv
 	}
 
 	if (token.kind === TokenKind.BLOCK_COMMENT) {
-		if (!isCommentClosed(lexer)) {
+		if (!isCommentClosed(lexer, token)) {
 			await editor.edit(editBuilder => {
 				editBuilder.insert(newlinePos, `\r\n${indent} */`);
 			});
@@ -83,7 +83,7 @@ export default async function TF2VScriptEnterHandler(event: TextDocumentChangeEv
 	}
 
 	if (token.kind === TokenKind.DOC) {
-		if (!isCommentClosed(lexer)) {
+		if (!isCommentClosed(lexer, token)) {
 			await editor.edit(editBuilder => {
 				editBuilder.insert(newlinePos, ` * \r\n${indent} */`);
 			});
