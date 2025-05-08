@@ -1565,13 +1565,13 @@ export const allMethods: Docs = {
 		description: "Makes us leave the current squad (if any)."
 	},
 	PressAltFireButton: {
-		signature: "CTFBot.PressAltFireButton(duration: float) -> null"
+		signature: "CTFBot.PressAltFireButton(duration: float = -1) -> null"
 	},
 	PressFireButton: {
-		signature: "CTFBot.PressFireButton(duration: float) -> null"
+		signature: "CTFBot.PressFireButton(duration: float = -1) -> null"
 	},
 	PressSpecialFireButton: {
-		signature: "CTFBot.PressSpecialFireButton(duration: float) -> null"
+		signature: "CTFBot.PressSpecialFireButton(duration: float = -1) -> null"
 	},
 	RemoveBotAttribute: {
 		signature: "CTFBot.RemoveBotAttribute(attribute: FTFBotAttributeType) -> null",
@@ -2533,7 +2533,7 @@ export const allMethods: Docs = {
 		description: "Adds an item to the end of an array."
 	},
 	reduce: {
-		signature: "array.reduce(func: function) -> any",
+		signature: "array.reduce(func: function, initializer: any = null) -> any",
 		description: "This method applies the supplied function to all of the items in the target array, starting with the first two. The function returns a single value which is then combined with the next (third) item in the array — and so on until all of the items have been combined into a single value which the method returns."
 	},
 	remove: {
@@ -3695,7 +3695,7 @@ export const allFunctions: Docs = {
 
 	
 	array: {
-		signature: "array(length: int, fill: any = null) -> int",
+		signature: "array(length: int, fill: any = null) -> array",
 		description: "Returns a new array of the given length where each element is set to `fill`."
 	},
 	/*
@@ -9056,11 +9056,11 @@ export const enumMembers: InstancesDocs = {
 		},
 		Epsilon: {
 			signature: "Epsilon: float",
-			description: "Value: `1`.19209e-07"
+			description: "Value: `1.19209e-07`"
 		},
 		GoldenRatio: {
 			signature: "GoldenRatio: float",
-			description: "Value: `1`.61803"
+			description: "Value: `1.61803`"
 		},
 		One: {
 			signature: "One: int",
@@ -9068,23 +9068,23 @@ export const enumMembers: InstancesDocs = {
 		},
 		Sqrt2: {
 			signature: "Sqrt2: float",
-			description: "Value: `1`.41421"
+			description: "Value: `1.41421`"
 		},
 		Sqrt3: {
 			signature: "Sqrt3: float",
-			description: "Value: `1`.73205"
+			description: "Value: `1.73205`"
 		},
 		E: {
 			signature: "E: float",
-			description: "Value: `2`.71828"
+			description: "Value: `2.71828`"
 		},
 		Pi: {
 			signature: "Pi: float",
-			description: "Value: `3`.14159"
+			description: "Value: `3.14159`"
 		},
 		Tau: {
 			signature: "Tau: int",
-			description: "Value: `6`.28319"
+			description: "Value: `6.28319`"
 		}
 	},
 	Server: {

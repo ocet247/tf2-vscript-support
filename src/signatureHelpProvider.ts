@@ -24,7 +24,6 @@ export default class TF2VScriptSignatureHelpProvider implements SignatureHelpPro
 
 		const name = iterator.readIdentity();
 		
-		console.log(name);
 		if (!name) {
 			return null;
 		}

@@ -30,72 +30,72 @@ export enum TokenKind {
 	EXCLAMATION = 33,   // !
 	LAMBDA = 64,        // @
 
-    IDENTIFIER = 258,
+	IDENTIFIER = 258,
 	STRING,
 	VERBATIM_STRING,
-    INTEGER,
-    FLOAT,
-    BASE,
-    DELETE,
-    EQUALS,
-    NOT_EQUALS,
-    LESS_EQUALS,
-    GREATER_EQUALS,
-    SWITCH,
-    ARROW,
-    AND,
-    OR,
-    IF,
-    ELSE,
-    WHILE,
-    BREAK,
-    FOR,
-    DO,
-    NULL,
-    FOREACH,
-    IN,
-    NEW_SLOT,
-    LOCAL,
-    CLONE,
-    FUNCTION,
-    RETURN,
-    TYPEOF,
-    UNARY_MINUS,
-    PLUS_ASSIGN,
-    MINUS_ASSIGN,
-    CONTINUE,
-    YIELD,
-    TRY,
-    CATCH,
-    THROW,
-    SHIFT_LEFT,
-    SHIFT_RIGHT,
-    RESUME,
-    DOUBLE_COLON,
-    CASE,
-    DEFAULT,
-    THIS,
-    PLUS_PLUS,
-    MINUS_MINUS,
-    THREE_WAY_CMP,
-    UNSIGNED_SHIFT_RIGHT,
-    CLASS,
-    EXTENDS,
-    CONSTRUCTOR,
-    INSTANCEOF,
-    VARPARAMS,
-    __LINE__,
-    __FILE__,
-    TRUE,
-    FALSE,
-    MULTIPLY_ASSIGN,
-    DIVIDE_ASSIGN,
-    MODULO_ASSIGN,
-    ATTR_OPEN,
-    ATTR_CLOSE,
-    STATIC,
-    ENUM,
-    CONST,
+	INTEGER,
+	FLOAT,
+	BASE,
+	DELETE,
+	EQUALS,
+	NOT_EQUALS,
+	LESS_EQUALS,
+	GREATER_EQUALS,
+	SWITCH,
+	ARROW,
+	AND,
+	OR,
+	IF,
+	ELSE,
+	WHILE,
+	BREAK,
+	FOR,
+	DO,
+	NULL,
+	FOREACH,
+	IN,
+	NEW_SLOT,
+	LOCAL,
+	CLONE,
+	FUNCTION,
+	RETURN,
+	TYPEOF,
+	UNARY_MINUS,
+	PLUS_ASSIGN,
+	MINUS_ASSIGN,
+	CONTINUE,
+	YIELD,
+	TRY,
+	CATCH,
+	THROW,
+	SHIFT_LEFT,
+	SHIFT_RIGHT,
+	RESUME,
+	DOUBLE_COLON,
+	CASE,
+	DEFAULT,
+	THIS,
+	PLUS_PLUS,
+	MINUS_MINUS,
+	THREE_WAY_CMP,
+	UNSIGNED_SHIFT_RIGHT,
+	CLASS,
+	EXTENDS,
+	CONSTRUCTOR,
+	INSTANCEOF,
+	VARPARAMS,
+	__LINE__,
+	__FILE__,
+	TRUE,
+	FALSE,
+	MULTIPLY_ASSIGN,
+	DIVIDE_ASSIGN,
+	MODULO_ASSIGN,
+	ATTR_OPEN,
+	ATTR_CLOSE,
+	STATIC,
+	ENUM,
+	CONST,
 	RAWCALL,
 	ASTERISK,
 	LINE_COMMENT,
@@ -128,10 +128,10 @@ export class Token {
 
 	public log() {
 		const kindName = TokenKind[this.kind] || `UNKNOWN(${this.kind})`;
-		const valueDisplay = this.kind === TokenKind.STRING 
-			? `"${this.value}"` 
+		const valueDisplay = this.kind === TokenKind.STRING
+			? `"${this.value}"`
 			: `'${this.value}'`;
-		
+
 		console.log(`${kindName.padEnd(20)} ${valueDisplay.padEnd(15)} [${this.start}-${this.end}]`);
 	}
 
@@ -146,7 +146,7 @@ export class Lexer {
 	private readonly text: string;
 	private readonly tokens: Token[];
 	private readonly diagnostics: Diagnostic[];
-	
+
 	// 0 based offset
 	private cursor: number;
 
@@ -196,7 +196,7 @@ export class Lexer {
 		['__LINE__', TokenKind.__LINE__],
 		['__FILE__', TokenKind.__FILE__],
 		['rawcall', TokenKind.RAWCALL]
-    ]);
+	]);
 
 	constructor(text: string) {
 		this.text = text;
@@ -229,13 +229,7 @@ export class Lexer {
 
 		this.current = this.text.charCodeAt(this.cursor);
 		this.cursor++;
-
-		if (this.current === CharCode.LINE_FEED) {
-			this.line++;
-			this.column = 0;
-		} else {
-			this.column++;
-		}
+		this.column++;
 
 		if (Number.isNaN(this.current)) {
 			this.readEOF = true;
@@ -249,8 +243,14 @@ export class Lexer {
 			switch (this.current) {
 			case CharCode.WHITESPACE:
 			case CharCode.CARRIAGE_RETURN:
-			case CharCode.TAB:
+			case CharCode.TAB: {
+				this.next();
+				continue;
+			}
 			case CharCode.LINE_FEED: {
+				this.line++;
+				this.column = 0;
+
 				this.next();
 				continue;
 			}
@@ -286,7 +286,7 @@ export class Lexer {
 				case CharCode.SLASH: {
 					this.lexLineComment();
 					const end = this.cursor - 1;
-	
+
 					this.tokens.push(new Token(
 						TokenKind.LINE_COMMENT,
 						this.text.slice(start, end),
@@ -309,7 +309,7 @@ export class Lexer {
 				}
 				}
 
-				
+
 				this.tokens.push(Token.singleCharToken(TokenKind.DIVIDE, start));
 
 				continue;
@@ -355,7 +355,7 @@ export class Lexer {
 						start,
 						start + 2
 					));
-					
+
 					continue;
 				}
 				case CharCode.MINUS: {
@@ -511,7 +511,7 @@ export class Lexer {
 						this.next();
 						continue;
 					}
-					
+
 					this.diagnostics.push(new Diagnostic(
 						new Range(new Position(this.line, start), new Position(this.line, start + 2)),
 						"Invalid token '..'.",
@@ -675,11 +675,11 @@ export class Lexer {
 
 				continue;
 			}
-			default: 
+			default:
 				if (CharCode.isAlphabetic(this.current)) {
 					this.lexIdentifier();
 					const end = this.cursor - 1;
-					
+
 					const value = this.text.slice(start, end);
 
 					this.tokens.push(new Token(
@@ -691,7 +691,7 @@ export class Lexer {
 
 					continue;
 				}
-				
+
 				if (CharCode.isNumeric(this.current)) {
 					const { kind, value } = this.lexNumber();
 					const end = this.cursor - 1;
@@ -750,7 +750,10 @@ export class Lexer {
 			kind = TokenKind.DOC;
 		}
 		while (!this.readEOF) {
-			if (this.current === CharCode.ASTERISK) {
+			if (this.current === CharCode.LINE_FEED) {
+				this.line++;
+				this.column = 0;
+			} else if (this.current === CharCode.ASTERISK) {
 				this.next();
 				if (this.current === CharCode.SLASH) {
 					this.next();
@@ -760,7 +763,7 @@ export class Lexer {
 			}
 			this.next();
 		}
-		
+
 
 		this.diagnostics.push(new Diagnostic(
 			new Range(new Position(this.line, this.cursor), new Position(this.line, this.cursor + 1)),
@@ -774,7 +777,10 @@ export class Lexer {
 		const opening = this.current;
 		do {
 			this.next();
-			if (this.current === opening) {
+			if (this.current === CharCode.LINE_FEED) {
+				this.line++;
+				this.column = 0;
+			} else if (this.current === opening) {
 				this.next();
 				return;
 			}
@@ -785,15 +791,19 @@ export class Lexer {
 		const opening = this.current;
 		const kind = opening === CharCode.QUOTE ? TokenKind.INTEGER : TokenKind.STRING;
 		let value = "";
+		
+		const startPos = new Position(this.line, this.column - 1);
 		this.next();
 		while (!this.readEOF) {
-			const startPos = new Position(this.line, this.column);
 			switch (this.current) {
 			case CharCode.LINE_FEED:
 				this.diagnostics.push(new Diagnostic(
-					new Range(startPos, startPos),
+					new Range(new Position(this.line, this.column), new Position(this.line, this.column)),
 					"Multiline in a constant."
 				));
+
+				this.line++;
+				this.column = 0;
 
 				this.next();
 				continue;
@@ -880,22 +890,22 @@ export class Lexer {
 				if (opening === CharCode.QUOTE) {
 					if (value.length === 0) {
 						this.diagnostics.push(new Diagnostic(
-							new Range(new Position(this.line, this.column - 3), new Position(this.line, this.column - 1)),
+							new Range(startPos, new Position(this.line, this.column - 1)),
 							"Empty constant."
 						));
 					} else if (value.length > 1) {
 						this.diagnostics.push(new Diagnostic(
-							new Range(new Position(this.line, this.column - 3 - value.length), new Position(this.line, this.column - 1)),
+							new Range(startPos, new Position(this.line, this.column - 1)),
 							"Constant is too long."
 						));
-					} 
+					}
 
 					return {
 						kind,
 						value: value.charCodeAt(0).toString()
 					}
 				}
-				
+
 				return {
 					kind,
 					value
@@ -1001,17 +1011,17 @@ export class Lexer {
 								break;
 							}
 							break;
-						} while (!this.readEOF);	
+						} while (!this.readEOF);
 					}
-					
+
 					this.diagnostics.push(new Diagnostic(
 						new Range(startPos, new Position(this.line, this.column - 1)),
 						"Exponent expected."
 					));
-					
+
 					break;
 				}
-			} else if (!CharCode.isNumeric(this.current)) {	
+			} else if (!CharCode.isNumeric(this.current)) {
 				break;
 			}
 
@@ -1025,7 +1035,7 @@ export class Lexer {
 		}
 	}
 
-	
+
 	private lexOctal(): string {
 		const startPos = new Position(this.line, this.column - 2);
 		let result = this.current - CharCode.N0;
@@ -1042,7 +1052,7 @@ export class Lexer {
 						"Invalid octal number."
 					));
 				}
-				break; 
+				break;
 			}
 
 			result = result * 8 + this.current - CharCode.N0;
@@ -1098,6 +1108,6 @@ export class Lexer {
 			}
 		}
 
-		return null; 
+		return null;
 	}
 }

@@ -37,6 +37,5 @@ export default class CurrentDocument {
 
 		const text = document.getText();
 		this.lexer = new Lexer(text);
-		console.log(JSON.stringify(this.lexer.getTokens()));
 	}
 }

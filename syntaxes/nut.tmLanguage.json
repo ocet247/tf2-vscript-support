@@ -170,6 +170,27 @@
 					]
 				},
 				{
+					"begin": "(?i)(?<=:runscriptcode:)(?!:)",
+					"end": "(?=\"|:)",
+					"patterns": [
+						{
+							"include": "#comments"
+						},
+						{
+							"include": "#strings-runscriptcode"
+						},
+						{
+							"include": "#string-escape-sequences"
+						},
+						{
+							"include": "#format-specifiers"
+						},
+						{
+							"include": "#code-blocks"
+						}
+					]
+				},
+				{
 					"match": "(?i)(?<=\\x1bcallscriptfunction\\x1b)([_A-Za-z]\\w*?)(?=\"|\\x1b)",
 					"name": "entity.name.function"
 				},
@@ -878,6 +899,14 @@
 					"match": "(?<![_A-Za-z])null\\b"
 				},
 				{
+					"name": "constant.numeric.integer.octal.nut",
+					"match": "0[0-7]+(?!\\d)"
+				},
+				{
+					"name": "invalid.illegal.integer.octal.nut",
+					"match": "0[0-7]+[0-9]+"
+				},
+				{
 					"name": "constant.numeric.float.nut",
 					"match": "\\d+([eE][+-]?|\\.)(\\d|[eE][+-]?|\\.)*(?![\\deE\\.])",
 					"captures": {
@@ -898,14 +927,6 @@
 				{
 					"name": "constant.numeric.integer.decimal.nut",
 					"match": "0[89][0-9]*\\b"
-				},
-				{
-					"name": "constant.numeric.integer.octal.nut",
-					"match": "0[0-7]+(?!\\d)\\b"
-				},
-				{
-					"name": "invalid.illegal.integer.octal.nut",
-					"match": "0[0-9]+\\b"
 				},
 				{
 					"name": "constant.numeric.integer.hexadecimal.nut",
