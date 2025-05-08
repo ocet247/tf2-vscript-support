@@ -6,6 +6,10 @@ import { TokenKind } from './lexer';
 
 export class TF2VScriptCompletionProvider implements CompletionItemProvider {
 	public provideCompletionItems(document: TextDocument, position: Position, _token: CancellationToken, _context: CompletionContext): Promise<CompletionItem[]> {
+		if (!CurrentDocument.isInNut()) {
+			return Promise.resolve([]);
+		}
+		
 		const token = CurrentDocument.getLexer().getTokenAtPosition(document.offsetAt(position) - 1);
 		if (token && token.isComment()) {
 			return Promise.resolve([]);

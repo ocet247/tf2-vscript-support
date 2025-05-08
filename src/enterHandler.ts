@@ -33,11 +33,15 @@ function getIndentData(event: TextDocumentChangeEvent): { offset: number, indent
 }
 
 export default async function TF2VScriptEnterHandler(event: TextDocumentChangeEvent) {
+	if (!CurrentDocument.isInNut()) {
+		return;
+	}
+
 	const editor = window.activeTextEditor;
 	if (!editor) {
 		return;
 	}
-
+	
 	const indentData = getIndentData(event);
 	if (!indentData) {
 		return;

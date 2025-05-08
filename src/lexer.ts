@@ -721,8 +721,8 @@ export class Lexer {
 		this.tokens.push(new Token(
 			TokenKind.EOF,
 			'',
-			this.cursor,
-			this.cursor
+			this.cursor - 1,
+			this.cursor - 1
 		));
 
 		return this.tokens;
@@ -934,6 +934,8 @@ export class Lexer {
 			}
 			number += this.current;
 		}
+
+		this.next();
 		return String.fromCharCode(number);
 	}
 
@@ -968,6 +970,8 @@ export class Lexer {
 		}
 
 		let kind = TokenKind.INTEGER;
+		const startPos = new Position(this.line, this.column - 2);
+
 		while (!this.readEOF) {
 			if (this.current === CharCode.DOT) {
 				kind = TokenKind.FLOAT;
@@ -982,10 +986,28 @@ export class Lexer {
 				}
 
 				if (!CharCode.isNumeric(this.current)) {
+					if (this.current === CharCode.DOT) {
+						do {
+							this.next();
+							if (CharCode.isNumeric(this.current) || this.current === CharCode.DOT) {
+								continue;
+							}
+							if (this.current === CharCode.e || this.current === CharCode.E) {
+								this.next();
+								if (this.current === CharCode.MINUS || this.current === CharCode.PLUS) {
+									continue;
+								}
+								break;
+							}
+							break;
+						} while (!this.readEOF);	
+					}
+					
 					this.diagnostics.push(new Diagnostic(
-						new Range(new Position(this.line, this.column - offset), new Position(this.line, this.column - 1)),
+						new Range(startPos, new Position(this.line, this.column - 1)),
 						"Exponent expected."
 					));
+					
 					break;
 				}
 			} else if (!CharCode.isNumeric(this.current)) {	
@@ -1029,7 +1051,7 @@ export class Lexer {
 	}
 
 	private lexHexadecimal(): string {
-		const startPos = new Position(this.line, this.cursor - 2);
+		const startPos = new Position(this.line, this.column - 2);
 		let result = 0;
 		do {
 			this.next();
@@ -1040,7 +1062,7 @@ export class Lexer {
 					} while (CharCode.isAlphaNumeric(this.current) && !this.readEOF);
 
 					this.diagnostics.push(new Diagnostic(
-						new Range(startPos, new Position(this.line, this.cursor - 1)),
+						new Range(startPos, new Position(this.line, this.column - 1)),
 						"Invalid hexadecimal number."
 					));
 				}

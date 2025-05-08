@@ -108,16 +108,20 @@
 					"match": "\\\\[0tabnrvf\"`\\\\]"
 				},
 				{
+					"name": "invalid.illegal.escape.nut",
+					"match": "\\\\."
+				}
+			]
+		},
+		"format-specifiers": {
+			"patterns": [
+				{
 					"name": "constant.character.escape.nut",
 					"match": "%[-+0# ]?\\d*(\\.\\d+)?[A-Za-z]"
 				},
 				{
 					"name": "constant.character.escape.nut",
 					"match": "%%"
-				},
-				{
-					"name": "invalid.illegal.escape.nut",
-					"match": "\\\\."
 				}
 			]
 		},
@@ -137,6 +141,9 @@
 							"include": "#string-escape-sequences"
 						},
 						{
+							"include": "#format-specifiers"
+						},
+						{
 							"include": "#code-blocks"
 						}
 					]
@@ -153,6 +160,9 @@
 						},
 						{
 							"include": "#string-escape-sequences"
+						},
+						{
+							"include": "#format-specifiers"
 						},
 						{
 							"include": "#code-blocks"
@@ -184,7 +194,7 @@
 		"strings": {
 			"patterns": [
 				{
-					"begin": "(?<=compilestring\\s*\\(\\s*(?:format\\s*\\(\\s*)?)@?\"",
+					"begin": "(?<=compilestring\\s*\\(\\s*(?:format\\s*\\(\\s*)?)(\")",
 					"beginCaptures": {
 						"0": {
 							"name": "punctuation.definition.string.begin.nut string.quoted.double"
@@ -205,6 +215,37 @@
 						},
 						{
 							"include": "#string-escape-sequences"
+						},
+						{
+							"include": "#format-specifiers"
+						},
+						{
+							"include": "#code-blocks"
+						}
+					]
+				},
+				{
+					"begin": "(?<=compilestring\\s*\\(\\s*(?:format\\s*\\(\\s*)?)@\"",
+					"beginCaptures": {
+						"0": {
+							"name": "punctuation.definition.string.begin.nut string.quoted.double"
+						}
+					},
+					"end": "\"",
+					"endCaptures": {
+						"0": {
+							"name": "punctuation.definition.string.end.nut string.quoted.double"
+						}
+					},
+					"patterns": [
+						{
+							"include": "#comments"
+						},
+						{
+							"include": "#strings-compilestring"
+						},
+						{
+							"include": "#format-specifiers"
 						},
 						{
 							"include": "#code-blocks"
@@ -240,7 +281,7 @@
 					}
 				},
 				{
-					"begin": "(?i)(?<=\"runscriptcode\"\\s*,?\\s*(?:format\\s*\\(\\s*)?)@?\"",
+					"begin": "(?i)(?<=\"runscriptcode\"\\s*,?\\s*(?:format\\s*\\(\\s*)?)\"",
 					"beginCaptures": {
 						"0": {
 							"name": "punctuation.definition.string.begin.nut string.quoted.double"
@@ -263,12 +304,43 @@
 							"include": "#string-escape-sequences"
 						},
 						{
+							"include": "#format-specifiers"
+						},
+						{
 							"include": "#code-blocks"
 						}
 					]
 				},
 				{
-					"begin": "@?\"",
+					"begin": "(?i)(?<=\"runscriptcode\"\\s*,?\\s*(?:format\\s*\\(\\s*)?)@\"",
+					"beginCaptures": {
+						"0": {
+							"name": "punctuation.definition.string.begin.nut string.quoted.double"
+						}
+					},
+					"end": "\"",
+					"endCaptures": {
+						"0": {
+							"name": "punctuation.definition.string.begin.nut string.quoted.double"
+						}
+					},
+					"patterns": [
+						{
+							"include": "#comments"
+						},
+						{
+							"include": "#strings-runscriptcode"
+						},
+						{
+							"include": "#format-specifiers"
+						},
+						{
+							"include": "#code-blocks"
+						}
+					]
+				},
+				{
+					"begin": "\"",
 					"beginCaptures": {
 						"0": {
 							"name": "punctuation.definition.string.begin.nut string.quoted.double"
@@ -285,6 +357,31 @@
 							"include": "#string-escape-sequences"
 						},
 						{
+							"include": "#format-specifiers"
+						},
+						{
+							"include": "#inputs"
+						}
+					]
+				},
+				{
+					"begin": "@\"",
+					"beginCaptures": {
+						"0": {
+							"name": "punctuation.definition.string.begin.nut string.quoted.double"
+						}
+					},
+					"end": "\"",
+					"endCaptures": {
+						"0": {
+							"name": "punctuation.definition.string.end.nut string.quoted.double"
+						}
+					},
+					"patterns": [
+						{
+							"include": "#format-specifiers"
+						},
+						{
 							"include": "#inputs"
 						}
 					]
@@ -294,7 +391,7 @@
 		"strings-compilestring": {
 			"patterns": [
 				{
-					"begin": "(?<=compilestring\\s*\\(\\s*(?:format\\s*\\(\\s*)?)@?\\\\\"",
+					"begin": "(?<=compilestring\\s*\\(\\s*(?:format\\s*\\(\\s*)?)\\\\\"",
 					"beginCaptures": {
 						"0": {
 							"name": "punctuation.definition.string.begin.nut string.quoted.double"
@@ -315,6 +412,37 @@
 						},
 						{
 							"include": "#string-escape-sequences"
+						},
+						{
+							"include": "#format-specifiers"
+						},
+						{
+							"include": "#code-blocks"
+						}
+					]
+				},
+				{
+					"begin": "(?<=compilestring\\s*\\(\\s*(?:format\\s*\\(\\s*)?)@\\\\\"",
+					"beginCaptures": {
+						"0": {
+							"name": "punctuation.definition.string.begin.nut string.quoted.double"
+						}
+					},
+					"end": "\\\\\"",
+					"endCaptures": {
+						"0": {
+							"name": "punctuation.definition.string.end.nut string.quoted.double"
+						}
+					},
+					"patterns": [
+						{
+							"include": "#comments"
+						},
+						{
+							"include": "#strings-compilestring"
+						},
+						{
+							"include": "#format-specifiers"
 						},
 						{
 							"include": "#code-blocks"
@@ -350,7 +478,7 @@
 					}
 				},
 				{
-					"begin": "(?i)(?<=\\\\\"runscriptcode\\\\\"\\s*,?\\s*(?:format\\s*\\(\\s*)?)@?\\\\\"",
+					"begin": "(?i)(?<=\\\\\"runscriptcode\\\\\"\\s*,?\\s*(?:format\\s*\\(\\s*)?)\\\\\"",
 					"beginCaptures": {
 						"0": {
 							"name": "punctuation.definition.string.begin.nut string.quoted.double"
@@ -373,13 +501,44 @@
 							"include": "#string-escape-sequences"
 						},
 						{
+							"include": "#format-specifiers"
+						},
+						{
+							"include": "#code-blocks"
+						}
+					]
+				},
+				{
+					"begin": "(?i)(?<=\\\\\"runscriptcode\\\\\"\\s*,?\\s*(?:format\\s*\\(\\s*)?)@\\\\\"",
+					"beginCaptures": {
+						"0": {
+							"name": "punctuation.definition.string.begin.nut string.quoted.double"
+						}
+					},
+					"end": "\\\\\"",
+					"endCaptures": {
+						"0": {
+							"name": "punctuation.definition.string.begin.nut string.quoted.double"
+						}
+					},
+					"patterns": [
+						{
+							"include": "#comments"
+						},
+						{
+							"include": "#strings-runscriptcode"
+						},
+						{
+							"include": "#format-specifiers"
+						},
+						{
 							"include": "#code-blocks"
 						}
 					]
 				},
 				{
 					"name": "string.quoted.double.nut",
-					"begin": "@?\\\\\"",
+					"begin": "\\\\\"",
 					"beginCaptures": {
 						"0": {
 							"name": "punctuation.definition.string.begin.nut"
@@ -394,6 +553,29 @@
 					"patterns": [
 						{
 							"include": "#string-escape-sequences"
+						},
+						{
+							"include": "#format-specifiers"
+						}
+					]
+				},
+				{
+					"name": "string.quoted.double.nut",
+					"begin": "@\\\\\"",
+					"beginCaptures": {
+						"0": {
+							"name": "punctuation.definition.string.begin.nut"
+						}
+					},
+					"end": "\\\\\"",
+					"endCaptures": {
+						"0": {
+							"name": "punctuation.definition.string.end.nut"
+						}
+					},
+					"patterns": [
+						{
+							"include": "#format-specifiers"
 						}
 					]
 				}
@@ -402,7 +584,7 @@
 		"strings-runscriptcode": {
 			"patterns": [
 				{
-					"begin": "(?<=compilestring\\s*\\(\\s*(?:format\\s*\\(\\s*)?)@?`",
+					"begin": "(?<=compilestring\\s*\\(\\s*(?:format\\s*\\(\\s*)?)`",
 					"beginCaptures": {
 						"0": {
 							"name": "punctuation.definition.string.begin.nut string.quoted.double"
@@ -423,6 +605,37 @@
 						},
 						{
 							"include": "#string-escape-sequences"
+						},
+						{
+							"include": "#format-specifiers"
+						},
+						{
+							"include": "#code-blocks"
+						}
+					]
+				},
+				{
+					"begin": "(?<=compilestring\\s*\\(\\s*(?:format\\s*\\(\\s*)?)@`",
+					"beginCaptures": {
+						"0": {
+							"name": "punctuation.definition.string.begin.nut string.quoted.double"
+						}
+					},
+					"end": "`",
+					"endCaptures": {
+						"0": {
+							"name": "punctuation.definition.string.end.nut string.quoted.double"
+						}
+					},
+					"patterns": [
+						{
+							"include": "#comments"
+						},
+						{
+							"include": "#strings-compilestring"
+						},
+						{
+							"include": "#format-specifiers"
 						},
 						{
 							"include": "#code-blocks"
@@ -458,7 +671,7 @@
 					}
 				},
 				{
-					"begin": "(?i)(?<=`runscriptcode`\\s*,?\\s*(?:format\\s*\\(\\s*)?)@?`",
+					"begin": "(?i)(?<=`runscriptcode`\\s*,?\\s*(?:format\\s*\\(\\s*)?)`",
 					"beginCaptures": {
 						"0": {
 							"name": "punctuation.definition.string.begin.nut string.quoted.double"
@@ -481,13 +694,44 @@
 							"include": "#string-escape-sequences"
 						},
 						{
+							"include": "#format-specifiers"
+						},
+						{
+							"include": "#code-blocks"
+						}
+					]
+				},
+				{
+					"begin": "(?i)(?<=`runscriptcode`\\s*,?\\s*(?:format\\s*\\(\\s*)?)@`",
+					"beginCaptures": {
+						"0": {
+							"name": "punctuation.definition.string.begin.nut string.quoted.double"
+						}
+					},
+					"end": "`",
+					"endCaptures": {
+						"0": {
+							"name": "punctuation.definition.string.end.nut string.quoted.double"
+						}
+					},
+					"patterns": [
+						{
+							"include": "#comments"
+						},
+						{
+							"include": "#strings-runscriptcode"
+						},
+						{
+							"include": "#format-specifiers"
+						},
+						{
 							"include": "#code-blocks"
 						}
 					]
 				},
 				{
 					"name": "string.quoted.double.nut",
-					"begin": "@?`",
+					"begin": "`",
 					"beginCaptures": {
 						"0": {
 							"name": "punctuation.definition.string.begin.nut"
@@ -502,6 +746,29 @@
 					"patterns": [
 						{
 							"include": "#string-escape-sequences"
+						},
+						{
+							"include": "#format-specifiers"
+						}
+					]
+				},
+				{
+					"name": "string.quoted.double.nut",
+					"begin": "@`",
+					"beginCaptures": {
+						"0": {
+							"name": "punctuation.definition.string.begin.nut"
+						}
+					},
+					"end": "`",
+					"endCaptures": {
+						"0": {
+							"name": "punctuation.definition.string.end.nut"
+						}
+					},
+					"patterns": [
+						{
+							"include": "#format-specifiers"
 						}
 					]
 				}
@@ -511,23 +778,23 @@
 			"patterns": [
 				{
 					"name": "keyword.control.loop.nut",
-					"match": "\\b(for|foreach|while|break|continue|do)\\b"
+					"match": "(?<![_A-Za-z])(for|foreach|while|break|continue|do)\\b"
 				},
 				{
 					"name": "keyword.control.conditional.nut",
-					"match": "\\b(else if|else|if)\\b"
+					"match": "(?<![_A-Za-z])(else if|else|if)\\b"
 				},
 				{
 					"name": "keyword.control.switch.nut",
-					"match": "\\b(case|default|switch)\\b"
+					"match": "(?<![_A-Za-z])(case|default|switch)\\b"
 				},
 				{
 					"name": "keyword.control.trycatch.nut",
-					"match": "\\b(try|catch)\\b"
+					"match": "(?<![_A-Za-z])(try|catch)\\b"
 				},
 				{
 					"name": "keyword.control.flow.nut",
-					"match": "\\b(return|throw|yield|resume)\\b"
+					"match": "(?<![_A-Za-z])(return|throw|yield|resume)\\b"
 				}
 			]
 		},
@@ -535,10 +802,10 @@
 			"patterns": [
 				{
 					"name": "keyword.other.in.nut",
-					"match": "\\bin\\b"
+					"match": "(?<![_A-Za-z])in\\b"
 				},
 				{
-					"match": "\\b(instanceof)(?:\\s+|\\s*(::)\\s*)([_A-Za-z]\\w*)\\b",
+					"match": "(?<![_A-Za-z])(instanceof)(?:\\s+|\\s*(::)\\s*)([_A-Za-z]\\w*)\\b",
 					"captures": {
 						"1": {
 							"name": "keyword.operator.expression.instanceof.nut"
@@ -553,30 +820,30 @@
 				},
 				{
 					"name": "keyword.operator.expression.typeof.nut",
-					"match": "\\btypeof\\b"
+					"match": "(?<![_A-Za-z])typeof\\b"
 				},
 				{
 					"name": "keyword.operator.expression.delete.nut",
-					"match": "\\bdelete\\b"
+					"match": "(?<![_A-Za-z])delete\\b"
 				},
 				{
 					"name": "keyword.operator.expression.clone.nut",
-					"match": "\\bclone\\b"
+					"match": "(?<![_A-Za-z])clone\\b"
 				},
 				{
 					"name": "variable.language.this.nut",
-					"match": "\\bthis\\b"
+					"match": "(?<![_A-Za-z])this\\b"
 				},
 				{
 					"name": "variable.language.base.nut",
-					"match": "\\bbase\\b"
+					"match": "(?<![_A-Za-z])base\\b"
 				}
 			]
 		},
 		"modifiers": {
 			"patterns": [
 				{
-					"match": "\\b(const)\\s+([_A-Za-z]\\w*)\\b",
+					"match": "(?<![_A-Za-z])(const)\\s+([_A-Za-z]\\w*)\\b",
 					"captures": {
 						"1": {
 							"name": "storage.modifier.nut"
@@ -588,7 +855,7 @@
 				},
 				{
 					"name": "storage.modifier.nut",
-					"match": "\\b(local|static)\\b"
+					"match": "(?<![_A-Za-z])(local|static)\\b"
 				},
 				{
 					"name": "storage.modifier.global.nut",
@@ -600,59 +867,67 @@
 			"patterns": [
 				{
 					"name": "constant.language.boolean.true.nut",
-					"match": "\\btrue\\b"
+					"match": "(?<![_A-Za-z])true\\b"
 				},
 				{
 					"name": "constant.language.boolean.false.nut",
-					"match": "\\bfalse\\b"
+					"match": "(?<![_A-Za-z])false\\b"
 				},
 				{
 					"name": "constant.language.null.nut",
-					"match": "\\bnull\\b"
+					"match": "(?<![_A-Za-z])null\\b"
 				},
 				{
-					"name": "invalid.illegal.float.nut",
-					"match": "\\b-?\\d+\\.?\\d*[eE][+-]?(?=[^-+\\d])"
-				},
-				{
-					"match": "\\b-?\\d+(\\.)\\d*(?:[eE][+-]?\\d+)?\\b",
+					"name": "constant.numeric.float.nut",
+					"match": "\\d+([eE][+-]?|\\.)(\\d|[eE][+-]?|\\.)*(?![\\deE\\.])",
 					"captures": {
 						"0": {
-							"name": "constant.numeric.float.nut"
-						},
-						"1": {
-							"name": "meta.delimiter.decimal.period.nut"
+							"patterns": [
+								{
+									"match": "[eE][+-](?!\\d)",
+									"name": "invalid.illegal.float.nut"
+								},
+								{
+									"match": "[eE](?![+-]?\\d)",
+									"name": "invalid.illegal.float.nut"
+								}
+							]
 						}
 					}
 				},
 				{
-					"name": "constant.numeric.float.nut",
-					"match": "\\b-?\\d+[eE][+-]?\\d+\\b"
-				},
-				{
 					"name": "constant.numeric.integer.decimal.nut",
-					"match": "\\b-?(0|[1-9][0-9]*)\\b"
-				},
-				{
-					"name": "constant.numeric.integer.decimal.nut",
-					"match": "\\b-?0[89][0-9]*\\b"
+					"match": "0[89][0-9]*\\b"
 				},
 				{
 					"name": "constant.numeric.integer.octal.nut",
-					"match": "\\b-?0[0-7]+\\b"
+					"match": "0[0-7]+(?!\\d)\\b"
 				},
 				{
 					"name": "invalid.illegal.integer.octal.nut",
-					"match": "\\b-?0[0-9]+\\b"
+					"match": "0[0-9]+\\b"
 				},
 				{
 					"name": "constant.numeric.integer.hexadecimal.nut",
-					"match": "\\b-?0(x|X)[\\h]*\\b"
-					
+					"match": "0[xX][\\h]*\\b"
 				},
 				{
-					"name": "invalid.illegal.integer.hexadecimal.nut",
-					"match": "\\b-?0(x|X)[\\w]+\\b"
+					"name": "constant.numeric.integer.hexadecimal.nut",
+					"match": "0[xX]([\\w]+)\\b",
+					"captures": {
+						"1": {
+							"patterns": [
+								{
+									"match": "[_G-Zg-z]",
+									"name": "invalid.illegal.integer.hexadecimal.nut"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "constant.numeric.integer.decimal.nut",
+					"match": "(0|[1-9][0-9]*)"
 				},
 				{
 					"name": "string.quoted.single",
@@ -683,7 +958,7 @@
 		"class-declarations": {
 			"patterns": [
 				{
-					"match": "\\b(class)(?:\\s+|\\s*(::)\\s*)((?:[_A-Za-z]\\w*\\.)*)([_A-Za-z]\\w*)(?:\\s+(extends)\\s+((?:[_A-Za-z]\\w*\\.)*)([_A-Za-z]\\w*))?\\b",
+					"match": "(?<![_A-Za-z])(class)(?:\\s+|\\s*(::)\\s*)((?:[_A-Za-z]\\w*\\.)*)([_A-Za-z]\\w*)(?:\\s+(extends)\\s+((?:[_A-Za-z]\\w*\\.)*)([_A-Za-z]\\w*))?\\b",
 					"captures": {
 						"1": {
 							"name": "storage.type.class.nut"
@@ -727,7 +1002,7 @@
 					}
 				},
 				{
-					"match": "\\b([_A-Za-z]\\w*)\\s*(?:=|<-)\\s*(class)(?:\\s+(extends)\\s+((?:[_A-Za-z]\\w*\\.)*)([_A-Za-z]\\w*))?\\b",
+					"match": "(?<![_A-Za-z])([_A-Za-z]\\w*)\\s*(?:=|<-)\\s*(class)(?:\\s+(extends)\\s+((?:[_A-Za-z]\\w*\\.)*)([_A-Za-z]\\w*))?\\b",
 					"captures": {
 						"0": {
 							"name": "meta.class.nut"
@@ -759,11 +1034,11 @@
 					}
 				},
 				{
-					"match": "\\b(string|Vector|QAngle|Vector2D|Vector4D|Quaternion|Convars|Entities|EntityOutputs|NavMesh|NetProps|PlayerVoiceListener|CBaseEntity|CBaseAnimating|CBaseCombatWeapon|CBaseFlex|CBaseCombatCharacter|CBasePlayer|CBaseMultiplayerPlayer|CEconEntity|CTFPlayer|CTFBot|CTFBaseBoss|CEntities|CTFNavArea|CNavMesh|CNetPropManager|CScriptEntityOutputs|CScriptKeyValues|CPlayerVoiceListener|CEnvEntityMaker|CPointTemplate|CFuncTrackTrain|CPointScriptTemplate|CSceneEntity|CCallChainer|CSimpleCallChainer|NextBotCombatCharacter|INextBotComponent|ILocomotion|LateBinder|regexp)\\b(?!\\s*(?:=|<-))",
+					"match": "(?<![_A-Za-z])(string|Vector|QAngle|Vector2D|Vector4D|Quaternion|Convars|Entities|EntityOutputs|NavMesh|NetProps|PlayerVoiceListener|CBaseEntity|CBaseAnimating|CBaseCombatWeapon|CBaseFlex|CBaseCombatCharacter|CBasePlayer|CBaseMultiplayerPlayer|CEconEntity|CTFPlayer|CTFBot|CTFBaseBoss|CEntities|CTFNavArea|CNavMesh|CNetPropManager|CScriptEntityOutputs|CScriptKeyValues|CPlayerVoiceListener|CEnvEntityMaker|CPointTemplate|CFuncTrackTrain|CPointScriptTemplate|CSceneEntity|CCallChainer|CSimpleCallChainer|NextBotCombatCharacter|INextBotComponent|ILocomotion|LateBinder|regexp)\\b(?!\\s*(?:=|<-))",
 					"name": "entity.name.type.class.nut"
 				},
 				{
-					"match": "\\b(enum)\\s+([_A-Za-z]\\w*)\\b",
+					"match": "(?<![_A-Za-z])(enum)\\s+([_A-Za-z]\\w*)\\b",
 					"captures": {
 						"0": {
 							"name": "meta.enum.nut"
@@ -777,7 +1052,7 @@
 					}
 				},
 				{
-					"match": "\\b(Constants|EBotType|ECollisionGroup|ECritType|EHitGroup|EHoliday|EHudNotify|EMoveCollide|EMoveType|ENavCornerType|ENavDirType|ENavRelativeDirType|ENavTraverseType|ERenderFx|ERenderMode|ERoundState|EScriptRecipientFilter|ESolidType|ESpectatorMode|EStopwatchState|ETFBotDifficultyType|ETFClass|ETFCond|ETFDmgCustom|ETFTeam|Math|Server|FButtons|FContents|FDmgType|FEntityEffects|FEntityEFlags|FHideHUD|FNavAttributeType|FPlayer|FSolid|FSurf|FTaunts|FTFBotAttributeType|FTFNavAttributeType)",
+					"match": "(?<![_A-Za-z])(Constants|EBotType|ECollisionGroup|ECritType|EHitGroup|EHoliday|EHudNotify|EMoveCollide|EMoveType|ENavCornerType|ENavDirType|ENavRelativeDirType|ENavTraverseType|ERenderFx|ERenderMode|ERoundState|EScriptRecipientFilter|ESolidType|ESpectatorMode|EStopwatchState|ETFBotDifficultyType|ETFClass|ETFCond|ETFDmgCustom|ETFTeam|Math|Server|FButtons|FContents|FDmgType|FEntityEffects|FEntityEFlags|FHideHUD|FNavAttributeType|FPlayer|FSolid|FSurf|FTaunts|FTFBotAttributeType|FTFNavAttributeType)",
 					"name": "entity.name.type.enum.nut"
 				}
 			]
@@ -810,15 +1085,15 @@
 				},
 				{
 					"name": "entity.name.function.nut",
-					"match": "\\b[_A-Za-z]\\w*\\b(?=\\s*(=|<-)\\s*(function\\b|@\\s*\\())"
+					"match": "(?<![_A-Za-z])[_A-Za-z]\\w*\\b(?=\\s*(=|<-)\\s*(function\\b|@\\s*\\())"
 				},
 				{
 					"name": "entity.name.function.nut",
-					"match": "\\b[_A-Za-z][\\w]*\\b(?=\\s*\\()"
+					"match": "(?<![_A-Za-z])[_A-Za-z][\\w]*\\b(?=\\s*\\()"
 				},
 				{
 					"name": "entity.name.function.nut",
-					"match": "\\b[_A-Za-z][\\w]*(?=\\.(bindenv|call|pcall|acall|pacall))"
+					"match": "(?<![_A-Za-z])[_A-Za-z][\\w]*(?=\\.(bindenv|call|pcall|acall|pacall))"
 				}
 			]
 		},
@@ -905,15 +1180,15 @@
 		"identifiers": {
 			"patterns": [
 				{
-					"match": "\\b[_A-Z][_A-Z0-9]*\\b",
+					"match": "(?<![_A-Za-z])[_A-Z][_A-Z0-9]*\\b",
 					"name": "variable.other.constant.nut"
 				},
 				{
-					"match": "\\b(_charsize_|_floatsize_|_intsize_|_version_|_versionnumber_|self|__vrefs|__vname|activator|caller|kRenderFxNone|kRenderFxPulseSlow|kRenderFxPulseFast|kRenderFxPulseSlowWide|kRenderFxPulseFastWide|kRenderFxFadeSlow|kRenderFxFadeFast|kRenderFxSolidSlow|kRenderFxSolidFast|kRenderFxStrobeSlow|kRenderFxStrobeFast|kRenderFxStrobeFaster|kRenderFxFlickerSlow|kRenderFxFlickerFast|kRenderFxNoDissipation|kRenderFxDistort|kRenderFxHologram|kRenderFxExplode|kRenderFxGlowShell|kRenderFxClampMinScale|kRenderFxEnvRain|kRenderFxEnvSnow|kRenderFxSpotlight|kRenderFxRagdoll|kRenderFxPulseFastWider|kRenderFxMax|kRenderNormal|kRenderTransColor|kRenderTransTexture|kRenderGlow|kRenderTransAlpha|kRenderTransAdd|kRenderEnvironmental|kRenderTransAddFrameBlend|kRenderTransAlphaAdd|kRenderWorldGlow|kRenderNone|kRenderModeCount|Zero|Epsilon|GoldenRatio|One|Sqrt2|Sqrt3|E|Pi|Tau|ConstantNamingConvention)\\b",
+					"match": "(?<![_A-Za-z])(_charsize_|_floatsize_|_intsize_|_version_|_versionnumber_|self|__vrefs|__vname|activator|caller|kRenderFxNone|kRenderFxPulseSlow|kRenderFxPulseFast|kRenderFxPulseSlowWide|kRenderFxPulseFastWide|kRenderFxFadeSlow|kRenderFxFadeFast|kRenderFxSolidSlow|kRenderFxSolidFast|kRenderFxStrobeSlow|kRenderFxStrobeFast|kRenderFxStrobeFaster|kRenderFxFlickerSlow|kRenderFxFlickerFast|kRenderFxNoDissipation|kRenderFxDistort|kRenderFxHologram|kRenderFxExplode|kRenderFxGlowShell|kRenderFxClampMinScale|kRenderFxEnvRain|kRenderFxEnvSnow|kRenderFxSpotlight|kRenderFxRagdoll|kRenderFxPulseFastWider|kRenderFxMax|kRenderNormal|kRenderTransColor|kRenderTransTexture|kRenderGlow|kRenderTransAlpha|kRenderTransAdd|kRenderEnvironmental|kRenderTransAddFrameBlend|kRenderTransAlphaAdd|kRenderWorldGlow|kRenderNone|kRenderModeCount|Zero|Epsilon|GoldenRatio|One|Sqrt2|Sqrt3|E|Pi|Tau|ConstantNamingConvention)\\b",
 					"name": "variable.other.constant.nut"
 				},
 				{
-					"match": "\\b[_A-Za-z][\\w]*\\b",
+					"match": "(?<![_A-Za-z])[_A-Za-z][\\w]*\\b",
 					"name": "variable.other.nut"
 				}
 			]

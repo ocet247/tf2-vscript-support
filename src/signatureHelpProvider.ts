@@ -6,6 +6,10 @@ import CurrentDocument from './documentState';
 
 export default class TF2VScriptSignatureHelpProvider implements SignatureHelpProvider {
 	public provideSignatureHelp(document: TextDocument, position: Position, _token: CancellationToken): Promise<SignatureHelp> | null {
+		if (!CurrentDocument.isInNut()) {
+			return null;
+		}
+		
 		const token = CurrentDocument.getLexer().getTokenAtPosition(document.offsetAt(position) - 1);
 		if (token && token.isComment()) {
 			return null;

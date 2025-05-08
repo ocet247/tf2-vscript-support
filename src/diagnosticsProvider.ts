@@ -19,7 +19,6 @@ export default class TF2VScriptDiagnosticsProvider {
 	private timeOut: NodeJS.Timeout | undefined;
 
 	constructor() {
-		
 		this.diagnosticCollection = languages.createDiagnosticCollection("TF2VScriptCollection");
 		/*
 		this.tempFilePath = path.join(os.tmpdir(), "tf2_vscript_lint_cache");

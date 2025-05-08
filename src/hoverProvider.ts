@@ -4,6 +4,10 @@ import CurrentDocument from './documentState';
 
 export default class TF2VScriptHoverProvider implements HoverProvider {
 	public provideHover(document: TextDocument, position: Position, _token: CancellationToken): Hover | undefined {
+		if (!CurrentDocument.isInNut()) {
+			return undefined;
+		}
+		
 		const token = CurrentDocument.getLexer().getTokenAtPosition(document.offsetAt(position) - 1);
 		if (token && token.isComment()) {
 			return undefined;
