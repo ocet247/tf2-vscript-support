@@ -18,7 +18,7 @@
     { "open": "`", "close": "`", "notIn": ["comment"] },
     { "open": "</", "close": " />", "notIn": ["string", "comment"] }
   ],
-  "autoCloseBefore": ";:.,=}])> \n\t",
+  "autoCloseBefore": ";:.,=}])> \n\t\"`",
   "surroundingPairs": [
     ["{", "}"],
     ["[", "]"],

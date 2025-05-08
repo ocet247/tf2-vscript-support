@@ -756,6 +756,7 @@ export class Lexer {
 					this.next();
 					return kind;
 				}
+				continue;
 			}
 			this.next();
 		}
