@@ -1,0 +1,1 @@
+These are used to automate most of the work, they do not provide a completely valid outputs, human-made verification was required for culprits like links afterward.

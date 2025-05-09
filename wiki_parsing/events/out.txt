@@ -2280,7 +2280,7 @@
 	},
 	OnGameEvent_scorestats_accumulated_update: {
 		signature: "OnGameEvent_scorestats_accumulated_update(params: table) -> void",
-		description: "Fired right before map entities are cleaned up for a round restart. \n\nThis event is not fired in Mann Vs Machine mode. For MvM, use `recalculate_holidays` and check if `GetRoundState() == 3` is true, which indicates a mission reset.\n\n"
+		description: "Fired right before map entities are cleaned up for a round restart.\n\nThis event is not fired in Mann Vs Machine mode. For MvM, use `recalculate_holidays` and check if `GetRoundState() == 3` is true, which indicates a mission reset.\n\n"
 	},
 	OnGameEvent_scout_grand_slam: {
 		signature: "OnGameEvent_scout_grand_slam(params: table) -> void",

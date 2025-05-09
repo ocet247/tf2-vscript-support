@@ -1,65 +1,3 @@
-import re
-
-def remove_braces(text):
-    result = []
-    stack = []
-    i = 0
-
-    while i < len(text):
-        if text[i:i+2] == '{{':
-            stack.append(i)
-            i += 2
-        elif text[i:i+2] == '}}' and stack:
-            start = stack.pop()
-            if not stack:
-                # Only remove outermost {{ ... }}
-                result = result[:start]
-            i += 2
-        else:
-            if not stack:
-                result.append(text[i])
-            i += 1
-
-    return ''.join(result)
-
-def extract_events_info(text):
-    text = remove_braces(text)
-    text = re.sub(r"<code>(.*?)</code>", r"`\1`", text, re.DOTALL)
-    text = re.sub(r"<.*?>", "", text)
-    text = text.replace('"', '\\"')
-    constants_file = open('events.txt', 'w', encoding='utf-8')
-    for match in re.findall(r"==\s*(\w+?)\s*==\n(.*?)(?===\s*(\w+?)\s*==|$)", text, re.DOTALL):
-        function_name = "OnGameEvent_" + match[0]
-        print(function_name + '|', end='')
-        constants_file.write(f'\t{function_name}: {{\n\t\tsignature: "{function_name}(params: table) -> void"')
-        lines = match[1].split('*')
-        has_description = False
-        description = re.sub(r"^[ \s]*(.*?)\s*$", r'\1', lines[0], re.DOTALL).replace('\n', '\\n')
-
-        for field in lines[1:]:
-            field = re.sub(r"^\s*(.*?)\s*$", r'\1', field, re.DOTALL)
-
-            if field != '':
-                field = re.sub(r"(long|short|byte)", "int", field)
-                field = re.sub(r"^(\w*)\s*\((.*?)\)", r"\1: \2", field)
-                field = re.sub(r"(?<=\s)-(?=\s)", "—", field)
-                if not has_description:
-                    constants_file.write(',\n\t\tdescription: {')
-                    if description != '':
-                        constants_file.write(f'\n\t\t\t"{description}": false,\n\t\t\t"\\n\\n---\\nVariables of the `params` table:": false')
-                    else:
-                        constants_file.write('\n\t\t\t"Variables of the `params` table:": false')
-                    has_description = True
-                constants_file.write(f',\n\t\t\t"{field}": true')
-        if has_description:
-            constants_file.write("\n\t\t}")
-        elif description != '':
-            constants_file.write(f',\n\t\tdescription: "{description}"')
-        constants_file.write("\n\t},\n")
-
-
-if __name__ == '__main__':
-    extract_events_info("""
 == achievement_earned ==
 * <b>player</b> <small>(byte)</small> - entindex of the player
 * <b>achievement</b> <small>(short)</small> - achievement ID
@@ -1104,7 +1042,7 @@ sent when a player is jarated, only to the two players involved
 * <b>mode</b> <small>(byte)</small> - weapon mode
 
 == player_spawn ==
-This event will be sent once when the player entity is created, i.e. they joined the server or they are loading in after a map change. In this case, <code>team</code> is equal to 0 (unassigned). Each time afterwards, the event will only be fired when the player spawns alive on red or blue team. This is also fired once when [[SourceTV]] is loaded in. 
+This event will be sent once when the player entity is created, i.e. they joined the server or they are loading in after a map change. In this case, <code>team</code> is equal to 0 (unassigned). Each time afterwards, the event will only be fired when the player spawns alive on red or blue team. This is also fired once when [[SourceTV]] is loaded in.
 
 * <b>userid</b> <small>(short)</small> - user ID who spawned
 * <b>team</b> <small>(short)</small> - team they spawned on
@@ -1341,7 +1279,7 @@ Sent when the server begins recording - only used to display UI
 Fired when round resets due to <code>mp_restartgame</code>.
 
 == scorestats_accumulated_update ==
-Fired right before map entities are cleaned up for a round restart. 
+Fired right before map entities are cleaned up for a round restart.
 
 This event is not fired in Mann Vs Machine mode. For MvM, use <code>recalculate_holidays</code> and check if <code>GetRoundState() == 3</code> is true, which indicates a mission reset.
 
@@ -1744,6 +1682,3 @@ fired when achievements/stats are downloaded from Steam or XBox Live
 
 == winlimit_changed ==
 * <b>delay</b> <small>(float)</small>
-
-
-    """)
