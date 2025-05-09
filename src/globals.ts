@@ -2656,11 +2656,11 @@ export const allMethods: Docs = {
 		description: "Sets the attribute of the specified member and returns the previous attribute value. if the parameter member is null the function sets the class level attributes."
 	},
 	newmember: {
-		signature: "class.newmember(key: any, value: any, attrs: table, static: bool",
+		signature: "class.newmember(key: any, value: any, attrs: table = null, static: bool = false) -> null",
 		description: "Sets/adds the slot `key` with the value `val` and attributes `attrs` and if present invokes the _newmember metamethod. If `static` is true the slot will be added as static. If the slot does not exists - it will be created."
 	},
 	rawnewmember: {
-		signature: "class.rawnewmember(key: any, value: any, attrs: table, static: bool",
+		signature: "class.rawnewmember(key: any, value: any, attrs: table = null, static: bool = false) -> null",
 		description: "Sets/adds the slot `key` with the value `val` and attributes `attrs`. If `static` is true the slot will be added as static. If the slot does not exists - it will be created."
 	},
 	
@@ -3394,7 +3394,7 @@ export const allFunctions: Docs = {
 		description: "Displays a HUD message defined in `scripts/titles.txt` to all clients, similar to an [env_message](https://developer.valvesoftware.com/wiki/env_message) entity."
 	},
 	assert: {
-		signature: "assert(exp: bool) -> bool",
+		signature: "assert(exp: bool, message: string = null) -> bool",
 		description: "Throws an assertion error if the given expression evaluates to `false` (i.e. the values <tt>0, 0.0, null</tt> and <tt>false</tt>)."
 	},
 	callee: {
