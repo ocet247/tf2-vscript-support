@@ -171,7 +171,7 @@
 				},
 				{
 					"begin": "(?i)(?<=:runscriptcode:)(?!:)",
-					"end": "(?=\"|:)",
+					"end": "(?=\"|:|,|\\x1b)",
 					"patterns": [
 						{
 							"include": "#comments"
@@ -191,7 +191,7 @@
 					]
 				},
 				{
-					"match": "(?i)(?<=\\x1bcallscriptfunction\\x1b)([_A-Za-z]\\w*?)(?=\"|\\x1b)",
+					"match": "(?i)(?<=\\x1bcallscriptfunction\\x1b)([_A-Za-z]\\w*)(?=\"|\\x1b)",
 					"name": "entity.name.function"
 				},
 				{
@@ -199,11 +199,19 @@
 					"name": "invalid.illegal.input"
 				},
 				{
-					"match": "(?i)(?<=,callscriptfunction,)([_A-Za-z]\\w*?)(?=\"|,)",
+					"match": "(?i)(?<=,callscriptfunction,)([_A-Za-z]\\w*)(?=\"|,)",
 					"name": "entity.name.function"
 				},
 				{
 					"match": "(?i)(?<=,callscriptfunction,)([^,]+)(?=\"|,)",
+					"name": "invalid.illegal.input"
+				},
+				{
+					"match": "(?i)(?<=:callscriptfunction:)([_A-Za-z]\\w*)(?=[\":,\\x1b])",
+					"name": "entity.name.function"
+				},
+				{
+					"match": "(?i)(?<=:callscriptfunction:)([^:]+)(?=[\":,\\x1b])",
 					"name": "invalid.illegal.input"
 				},
 				{
