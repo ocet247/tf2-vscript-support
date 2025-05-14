@@ -64,6 +64,28 @@ export default class TF2VScriptCodeActionProvider implements CodeActionProvider 
 						break;
 					}
 				}
+				break;
+			case CharCode.COMMA:
+				if (depth !== 1) {
+					continue;
+				}
+
+				const insertEndPos = document.positionAt(offset + iterator.getCursor() - 1);
+				const insertText = document.getText(new Range(deleteStartPos, insertEndPos)).trim();
+				
+				while (iterator.hasNext()) {
+					if (!CharCode.isWhitespace(iterator.next())) {
+						break;
+					}
+				}
+
+				const deleteEndPos = document.positionAt(offset + iterator.getCursor() - 1);
+				const deleteRange = new Range(deleteStartPos, deleteEndPos);
+
+				return {
+					deleteRange,
+					insertText
+				}
 			}
 		}
 
