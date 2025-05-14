@@ -11,3 +11,5 @@ src/**
 .gitignore
 wikiparsing/**
 images/*.gif
+.openvsxignore
+.vscodeignore
