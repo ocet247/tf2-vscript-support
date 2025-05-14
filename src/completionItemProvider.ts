@@ -115,11 +115,6 @@ export class TF2VScriptCompletionProvider implements CompletionItemProvider {
 					};
 				}
 
-				item.command = {
-					title: 'Trigger Signature Help',
-					command: 'editor.action.triggerParameterHints'
-				};
-
 				items.push(item);
 			}
 			return;
