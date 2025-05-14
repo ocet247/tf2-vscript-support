@@ -1143,15 +1143,7 @@
 			]
 		},
 		"operators": {
-			"patterns": [	
-				{
-					"name": "keyword.operator.comparison.nut",
-					"match": "(==|!=|<=|>=|<=>|<|>)"
-				},
-				{
-					"name": "keyword.operator.assignment.nut",
-					"match": "(<-\\+=|-=|\\*=|/=|%=|=)"
-				},
+			"patterns": [
 				{
 					"name": "keyword.operator.logical.nut",
 					"match": "(!|&&|\\|\\|)"
@@ -1159,6 +1151,14 @@
 				{
 					"name": "keyword.operator.bitwise.nut",
 					"match": "(~|&|\\||\\^|>>>|<<|>>)"
+				},
+				{
+					"name": "keyword.operator.comparison.nut",
+					"match": "(<=>|==|!=|<=|>=|<|>)"
+				},
+				{
+					"name": "keyword.operator.assignment.nut",
+					"match": "(<-|\\+=|-=|\\*=|/=|%=|=)"
 				},
 				{
 					"name": "keyword.operator.increment.nut",
