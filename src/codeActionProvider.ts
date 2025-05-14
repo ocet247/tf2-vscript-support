@@ -12,8 +12,12 @@ export default class TF2VScriptCodeActionProvider implements CodeActionProvider 
 			if (!iterator.hasNext()) {
 				return;
 			}
-			if (iterator.next() === CharCode.LEFT_ROUND) {
+			const char = iterator.next();
+			
+			if (char === CharCode.LEFT_ROUND) {
 				break;
+			} else if (!CharCode.isWhitespace(char)) {
+				return;
 			}
 		}
 		const deleteStartPos = document.positionAt(offset + iterator.getCursor());
