@@ -14,7 +14,7 @@ export class TF2VScriptCompletionProvider implements CompletionItemProvider {
 		if (token && token.isComment()) {
 			return Promise.resolve([]);
 		}
-		
+
 		const items: CompletionItem[] = [];
 		const iterator = new BackwardIterator(BackwardIterator.textFromPosition(document, position));
 
@@ -22,7 +22,7 @@ export class TF2VScriptCompletionProvider implements CompletionItemProvider {
 		if (dotRange) {
 			const name = iterator.readIdentity(false);
 			if (name) {
-				const methods = vscriptGlobals.instancesMethods[name];
+				const methods = vscriptGlobals.instancesMethods.get(name);
 				if (methods) {
 					this.addItems(items, methods, CompletionItemKind.Method);
 					return Promise.resolve(items);
@@ -33,7 +33,7 @@ export class TF2VScriptCompletionProvider implements CompletionItemProvider {
 					return Promise.resolve(items);
 				}
 
-				const variables = vscriptGlobals.enumMembers[name];
+				const variables = vscriptGlobals.enumMembers.get(name);
 				if (variables) {
 					this.addItems(items, variables, CompletionItemKind.EnumMember);
 					return Promise.resolve(items);
@@ -50,10 +50,10 @@ export class TF2VScriptCompletionProvider implements CompletionItemProvider {
 			// Or we've possibly done table/class accessing with []
 			const lastChar = iterator.back();
 			if (lastChar != CharCode.RIGHT_ROUND && lastChar != CharCode.RIGHT_SQUARE) {
-				for (const [instance, docs] of Object.entries(vscriptGlobals.instancesMethods)) {
+				for (const [instance, docs] of vscriptGlobals.instancesMethods) {
 					this.addShortcutItems(items, docs, CompletionItemKind.Method, dotRange, instance + ".");
 				}
-				for (const [instance, docs] of Object.entries(vscriptGlobals.enumMembers)) {
+				for (const [instance, docs] of vscriptGlobals.enumMembers) {
 					this.addShortcutItems(items, docs, CompletionItemKind.EnumMember, dotRange, `Constants.${instance}.`);
 				}
 				
@@ -76,11 +76,11 @@ export class TF2VScriptCompletionProvider implements CompletionItemProvider {
 
 		// It's possible to rescope your methods so that they appear as global functions
 		// In this case we always stick to show available methods which are bound to instances
-		for (const docs of Object.values(vscriptGlobals.instancesMethods)) {
+		for (const docs of vscriptGlobals.instancesMethods.values()) {
 			this.addItems(items, docs, CompletionItemKind.Method);
 		}
 
-		for (const docs of Object.values(vscriptGlobals.enumMembers)) {
+		for (const docs of vscriptGlobals.enumMembers.values()) {
 			this.addItems(items, docs, CompletionItemKind.EnumMember);
 		}
 
@@ -93,7 +93,7 @@ export class TF2VScriptCompletionProvider implements CompletionItemProvider {
 	}
 
 	private addItems(items: CompletionItem[], docs: vscriptGlobals.Docs, itemKind: CompletionItemKind) {
-		for (const [funcName, info] of Object.entries(docs)) {
+		for (const [funcName, info] of docs) {
 			const item = new CompletionItem(funcName, itemKind);
 
 			item.detail = info.signature;
@@ -107,7 +107,7 @@ export class TF2VScriptCompletionProvider implements CompletionItemProvider {
 	}
 
 	private addDeprecatedItems(items: CompletionItem[], docs: vscriptGlobals.Docs, itemKind: CompletionItemKind) {
-		for (const [funcName, info] of Object.entries(docs)) {
+		for (const [funcName, info] of docs) {
 			const item = new CompletionItem(funcName, itemKind);
 
 			item.detail = info.signature;
@@ -118,7 +118,7 @@ export class TF2VScriptCompletionProvider implements CompletionItemProvider {
 	}
 
 	private addShortcutItems(items: CompletionItem[], docs: vscriptGlobals.Docs, itemKind: CompletionItemKind, dotRange: Range, append: string) {
-		for (const [funcName, info] of Object.entries(docs)) {
+		for (const [funcName, info] of docs) {
 			const item = new CompletionItem(funcName, itemKind);
 
 			item.detail = info.signature;
@@ -183,7 +183,7 @@ export class DocCompletionProvider implements CompletionItemProvider {
 
 		const completionItems = [];
 
-		for (const [name, entry] of Object.entries(vscriptGlobals.docSnippets)) {
+		for (const [name, entry] of vscriptGlobals.docSnippets) {
 			const item = new CompletionItem(name, CompletionItemKind.Snippet);
 
 			item.documentation = new MarkdownString(entry.desc);

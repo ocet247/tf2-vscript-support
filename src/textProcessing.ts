@@ -119,7 +119,7 @@ export class BackwardIterator {
 	public findMethodDoc(name: string, multiline: boolean = true): { doc: vscriptGlobals.Doc, isDeprecated: boolean } | undefined {
 		let doc;
 		if (!this.hasDot(multiline)) {
-			doc = vscriptGlobals.safeLookup(vscriptGlobals.allFunctions, name);
+			doc = vscriptGlobals.allFunctions.get(name);
 			
 			if (doc) {
 				return {
@@ -128,7 +128,7 @@ export class BackwardIterator {
 				};
 			}
 
-			doc = vscriptGlobals.safeLookup(vscriptGlobals.allDeprecatedFunctions, name);
+			doc = vscriptGlobals.allFunctions.get(name);
 			if (doc) {
 				return {
 					doc,
@@ -136,8 +136,8 @@ export class BackwardIterator {
 				};
 			}
 
-			for (const instance of Object.values(vscriptGlobals.instancesMethods)) {
-				doc = vscriptGlobals.safeLookup(instance, name);
+			for (const methods of vscriptGlobals.instancesMethods.values()) {
+				doc = methods.get(name);
 				if (doc) {
 					return {
 						doc,
@@ -150,9 +150,9 @@ export class BackwardIterator {
 		}
 		const instanceName = this.readIdentity(multiline);
 		if (instanceName) {
-			const entry = vscriptGlobals.safeLookup(vscriptGlobals.instancesMethods, instanceName);
+			const entry = vscriptGlobals.instancesMethods.get(instanceName);
 			if (entry) {
-				doc = vscriptGlobals.safeLookup(entry, name);
+				doc = entry.get(name);
 				if (!doc) {
 					return undefined;
 				}
@@ -164,7 +164,7 @@ export class BackwardIterator {
 			}
 		}
 
-		doc = vscriptGlobals.safeLookup(vscriptGlobals.allMethods, name);
+		doc = vscriptGlobals.allMethods.get(name);
 		if (doc) {
 			return {
 				doc,
@@ -172,7 +172,7 @@ export class BackwardIterator {
 			};
 		}
 
-		doc = vscriptGlobals.safeLookup(vscriptGlobals.allDeprecatedMethods, name);
+		doc = vscriptGlobals.allDeprecatedMethods.get(name);
 		if (!doc) {
 			return undefined;
 		}
@@ -187,24 +187,24 @@ export class BackwardIterator {
 	public findDoc(name: string, multiline: boolean = true): vscriptGlobals.Doc | undefined { 
 		if (!this.hasDot(multiline)) {
 			let entry =
-				vscriptGlobals.safeLookup(vscriptGlobals.allFunctions, name) ||
-				vscriptGlobals.safeLookup(vscriptGlobals.allDeprecatedFunctions, name) ||
-				vscriptGlobals.safeLookup(vscriptGlobals.builtInConstants, name) ||
-				vscriptGlobals.safeLookup(vscriptGlobals.builtInVariables, name);
+				vscriptGlobals.allFunctions.get(name) ||
+				vscriptGlobals.allDeprecatedFunctions.get(name) ||
+				vscriptGlobals.builtInConstants.get(name) ||
+				vscriptGlobals.builtInVariables.get(name);
 			
 			if (entry) {
 				return entry;
 			}
 
-			for (const instance of Object.values(vscriptGlobals.instancesMethods)) {
-				entry = vscriptGlobals.safeLookup(instance, name);
+			for (const instance of vscriptGlobals.instancesMethods.values()) {
+				entry = instance.get(name);
 				if (entry) {
 					return entry;
 				}
 			}
 
-			for (const instance of Object.values(vscriptGlobals.enumMembers)) {
-				entry = vscriptGlobals.safeLookup(instance, name);
+			for (const instance of vscriptGlobals.enumMembers.values()) {
+				entry = instance.get(name);
 				if (entry) {
 					return entry;
 				}
@@ -215,28 +215,27 @@ export class BackwardIterator {
 
 		const instanceName = this.readIdentity(multiline);
 		if (instanceName) {
-			let entry = vscriptGlobals.safeLookup(vscriptGlobals.instancesMethods, instanceName);
+			let entry = vscriptGlobals.instancesMethods.get(instanceName);
 			if (entry) {
-				return vscriptGlobals.safeLookup(entry, name);
+				return entry.get(name);
 			}
 
-			entry = vscriptGlobals.safeLookup(vscriptGlobals.enumMembers, instanceName);
+			entry = vscriptGlobals.enumMembers.get(instanceName);
 			if (entry) {
-				return vscriptGlobals.safeLookup(entry, name);
+				return entry.get(name);
 			}
 		}
 
 		
-		return vscriptGlobals.safeLookup(vscriptGlobals.allMethods, name) ||
-			vscriptGlobals.safeLookup(vscriptGlobals.allDeprecatedMethods, name) ||
-			vscriptGlobals.safeLookup(vscriptGlobals.builtInEnums, name);
+		return vscriptGlobals.allMethods.get(name) ||
+			vscriptGlobals.allDeprecatedMethods.get(name) ||
+			vscriptGlobals.builtInEnums.get(name);
 
 	}
 }
 
 export class CharCode {
 	private constructor() {} // Prevent initialisation
-
 
 	// Alphabetic Characters
 	public static readonly a = 'a'.charCodeAt(0);
