@@ -13,7 +13,7 @@ export default class TF2VScriptCodeActionProvider implements CodeActionProvider 
 				return;
 			}
 			const char = iterator.next();
-			
+
 			if (char === CharCode.LEFT_ROUND) {
 				break;
 			} else if (!CharCode.isWhitespace(char)) {
