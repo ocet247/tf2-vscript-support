@@ -99,12 +99,22 @@ export class TF2VScriptCompletionProvider implements CompletionItemProvider {
 				const item = new CompletionItem(funcName, itemKind);
 
 				item.detail = info.signature;
-				/*
-				if (info.description && typeof info.description === "string") {
-					item.documentation = new MarkdownString(info.description);
-				}*/
-				
-				item.insertText = new SnippetString(`${funcName}($0)`);
+
+
+				const open = info.signature.indexOf('(');
+				const close = info.signature.lastIndexOf(')');
+				// If close + 2 is further than open it means we have no parameters
+				// E.g GetListenServerHost() -> GetListenServerHost )( 
+				if (close < open + 2) {
+					item.insertText = new SnippetString(`${funcName}()`);
+				} else {
+					item.insertText = new SnippetString(`${funcName}($0)`);
+					item.command = {
+						title: 'Trigger Signature Help',
+						command: 'editor.action.triggerParameterHints'
+					};
+				}
+
 				item.command = {
 					title: 'Trigger Signature Help',
 					command: 'editor.action.triggerParameterHints'
@@ -123,7 +133,6 @@ export class TF2VScriptCompletionProvider implements CompletionItemProvider {
 			if (info.description && typeof info.description === "string") {
 				item.documentation = new MarkdownString(info.description);
 			}*/
-			
 			item.insertText = new SnippetString(funcName);
 			items.push(item);
 		}
@@ -135,16 +144,20 @@ export class TF2VScriptCompletionProvider implements CompletionItemProvider {
 				const item = new CompletionItem(funcName, itemKind);
 
 				item.detail = info.signature;
-				/*
-				if (info.description && typeof info.description === "string") {
-					item.documentation = new MarkdownString(info.description);
-				}*/
 				
-				item.insertText = new SnippetString(`${funcName}($0)`);
-				item.command = {
-					title: 'Trigger Signature Help',
-					command: 'editor.action.triggerParameterHints'
-				};
+				const open = info.signature.indexOf('(');
+				const close = info.signature.lastIndexOf(')');
+
+				if (close < open + 2) {
+					item.insertText = new SnippetString(`${funcName}()`);
+				} else {
+					item.insertText = new SnippetString(`${funcName}($0)`);
+					item.command = {
+						title: 'Trigger Signature Help',
+						command: 'editor.action.triggerParameterHints'
+					};
+				}
+
 				item.tags = [CompletionItemTag.Deprecated];
 				
 				items.push(item);
@@ -172,12 +185,20 @@ export class TF2VScriptCompletionProvider implements CompletionItemProvider {
 				if (info.description && typeof info.description === "string") {
 					item.documentation = new MarkdownString(info.description);
 				}*/
+
+				const open = info.signature.indexOf('(');
+				const close = info.signature.lastIndexOf(')');
 				
-				item.insertText = new SnippetString(`${append}${funcName}($0)`);
-				item.command = {
-					title: 'Trigger Signature Help',
-					command: 'editor.action.triggerParameterHints'
-				};
+				if (close < open + 2) {
+					item.insertText = new SnippetString(`${append}${funcName}()`);
+				} else {
+					item.insertText = new SnippetString(`${append}${funcName}($0)`);
+					item.command = {
+						title: 'Trigger Signature Help',
+						command: 'editor.action.triggerParameterHints'
+					};
+				}
+				
 				item.additionalTextEdits = [TextEdit.delete(dotRange)];
 				
 				items.push(item);
@@ -211,7 +232,6 @@ export class TF2VScriptCompletionProvider implements CompletionItemProvider {
 				);
 			}
 				
-			// Not allowing \r \n here for consistency as below in findFirstLetter method
 			if (!CharCode.isIndentation(ch)) {
 				return null;
 			}
