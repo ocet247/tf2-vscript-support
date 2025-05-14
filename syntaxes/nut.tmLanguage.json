@@ -1153,6 +1153,10 @@
 					"match": "(~|&|\\||\\^|>>>|<<|>>)"
 				},
 				{
+					"name": "keyword.operator.assignment.nut",
+					"match": "<-"
+				},
+				{
 					"name": "keyword.operator.comparison.nut",
 					"match": "(<=>|==|!=|<=|>=|<|>)"
 				},

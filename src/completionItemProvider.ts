@@ -93,6 +93,28 @@ export class TF2VScriptCompletionProvider implements CompletionItemProvider {
 	}
 
 	private addItems(items: CompletionItem[], docs: vscriptGlobals.Docs, itemKind: CompletionItemKind) {
+		// Callable
+		if (itemKind === CompletionItemKind.Function || itemKind === CompletionItemKind.Method) {
+			for (const [funcName, info] of docs) {
+				const item = new CompletionItem(funcName, itemKind);
+
+				item.detail = info.signature;
+				/*
+				if (info.description && typeof info.description === "string") {
+					item.documentation = new MarkdownString(info.description);
+				}*/
+				
+				item.insertText = new SnippetString(`${funcName}($0)`);
+				item.command = {
+					title: 'Trigger Signature Help',
+					command: 'editor.action.triggerParameterHints'
+				};
+
+				items.push(item);
+			}
+			return;
+		}
+
 		for (const [funcName, info] of docs) {
 			const item = new CompletionItem(funcName, itemKind);
 
@@ -101,12 +123,35 @@ export class TF2VScriptCompletionProvider implements CompletionItemProvider {
 			if (info.description && typeof info.description === "string") {
 				item.documentation = new MarkdownString(info.description);
 			}*/
+			
 			item.insertText = new SnippetString(funcName);
 			items.push(item);
 		}
 	}
 
 	private addDeprecatedItems(items: CompletionItem[], docs: vscriptGlobals.Docs, itemKind: CompletionItemKind) {
+		if (itemKind === CompletionItemKind.Function || itemKind === CompletionItemKind.Method) {
+			for (const [funcName, info] of docs) {
+				const item = new CompletionItem(funcName, itemKind);
+
+				item.detail = info.signature;
+				/*
+				if (info.description && typeof info.description === "string") {
+					item.documentation = new MarkdownString(info.description);
+				}*/
+				
+				item.insertText = new SnippetString(`${funcName}($0)`);
+				item.command = {
+					title: 'Trigger Signature Help',
+					command: 'editor.action.triggerParameterHints'
+				};
+				item.tags = [CompletionItemTag.Deprecated];
+				
+				items.push(item);
+			}
+			return;
+		}
+		
 		for (const [funcName, info] of docs) {
 			const item = new CompletionItem(funcName, itemKind);
 
@@ -118,6 +163,28 @@ export class TF2VScriptCompletionProvider implements CompletionItemProvider {
 	}
 
 	private addShortcutItems(items: CompletionItem[], docs: vscriptGlobals.Docs, itemKind: CompletionItemKind, dotRange: Range, append: string) {
+		if (itemKind === CompletionItemKind.Function || itemKind === CompletionItemKind.Method) {
+			for (const [funcName, info] of docs) {
+				const item = new CompletionItem(funcName, itemKind);
+
+				item.detail = info.signature;
+				/*
+				if (info.description && typeof info.description === "string") {
+					item.documentation = new MarkdownString(info.description);
+				}*/
+				
+				item.insertText = new SnippetString(`${append}${funcName}($0)`);
+				item.command = {
+					title: 'Trigger Signature Help',
+					command: 'editor.action.triggerParameterHints'
+				};
+				item.additionalTextEdits = [TextEdit.delete(dotRange)];
+				
+				items.push(item);
+			}
+			return;
+		}
+		
 		for (const [funcName, info] of docs) {
 			const item = new CompletionItem(funcName, itemKind);
 
