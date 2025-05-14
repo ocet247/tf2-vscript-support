@@ -3,7 +3,8 @@ import { CharCode } from './textProcessing';
 
 export enum TokenKind {
 	EOF = 0,
-
+	
+	LINE_FEED = 10,     // \n
 	LEFT_ROUND = 40,    // (
 	RIGHT_ROUND = 41,   // )
 	LEFT_CURLY = 123,   // {
@@ -250,6 +251,8 @@ export class Lexer {
 			case CharCode.LINE_FEED: {
 				this.line++;
 				this.column = 0;
+				
+				this.tokens.push(Token.singleCharToken(TokenKind.LINE_FEED, start));
 
 				this.next();
 				continue;
