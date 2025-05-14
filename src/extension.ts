@@ -6,6 +6,7 @@ import { TF2VScriptCompletionProvider, DocCompletionProvider } from './completio
 import TF2VScriptDiagnosticsProvider from './diagnosticsProvider';
 import TF2VScriptEnterHandler from './enterHandler';
 import CurrentDocument from './documentState';
+import TF2VScriptCodeActionProvider from './codeActionProvider';
 
 export function activate(context: vscode.ExtensionContext) {
 	const config = vscode.workspace.getConfiguration();
@@ -23,6 +24,7 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(vscode.languages.registerHoverProvider('nut', new TF2VScriptHoverProvider()));
 	context.subscriptions.push(vscode.languages.registerCompletionItemProvider('nut', new TF2VScriptCompletionProvider(), '.'));
 	context.subscriptions.push(vscode.languages.registerCompletionItemProvider('nut', new DocCompletionProvider(), '@'));
+	context.subscriptions.push(vscode.languages.registerCodeActionsProvider('nut', new TF2VScriptCodeActionProvider()));
 	context.subscriptions.push(vscode.workspace.onDidChangeTextDocument(event => TF2VScriptEnterHandler(event)));
 	context.subscriptions.push(...CurrentDocument.disposables);
 }

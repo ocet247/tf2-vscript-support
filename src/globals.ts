@@ -1,9 +1,15 @@
 export interface Doc {
 	signature: string,
-	description?: string | { [line: string]: boolean | undefined };
+	description?: string | { [line: string]: boolean | undefined },
+}
+
+export interface DeprecatedDoc extends Doc {
+	successor?: string
 }
 
 export type Docs = Map<string, Doc>;
+
+export type DeprecatedDocs = Map<string, DeprecatedDoc>;
 
 export type InstanceDocs = Map<string, Docs>;
 
@@ -2691,49 +2697,59 @@ export const allMethods: Docs = new Map([
 	}]
 ]);
 
-export const allDeprecatedMethods: Docs = new Map([
+export const allDeprecatedMethods: DeprecatedDocs = new Map([
 	/* --------------------------- *
 	 * CBaseEntity                 *
 	 * --------------------------- */
 	["__KeyValueFromFloat", {
 		signature: "CBaseEntity.__KeyValueFromFloat(key: string, value: float) -> bool",
-		description: "`(→ KeyValueFromFloat)`.\n\nBehaves the same as `KeyValueFromFloat`, use that instead."
+		description: "`(→ KeyValueFromFloat)`.\n\nBehaves the same as `KeyValueFromFloat`, use that instead.",
+		successor: "KeyValueFromFloat"
 	}],
 	["__KeyValueFromInt", {
 		signature: "CBaseEntity.__KeyValueFromInt(key: string, value: int) -> bool",
-		description: "`(→ KeyValueFromInt)`.\n\nBehaves the same as `KeyValueFromInt`, use that instead."
+		description: "`(→ KeyValueFromInt)`.\n\nBehaves the same as `KeyValueFromInt`, use that instead.",
+		successor: "KeyValueFromInt"
 	}],
 	["__KeyValueFromString", {
 		signature: "CBaseEntity.__KeyValueFromString(key: string, value: string) -> bool",
-		description: "`(→ KeyValueFromString)`.\n\nBehaves the same as `KeyValueFromString`, use that instead."
+		description: "`(→ KeyValueFromString)`.\n\nBehaves the same as `KeyValueFromString`, use that instead.",
+		successor: "KeyValueFromString"
 	}],
 	["__KeyValueFromVector", {
 		signature: "CBaseEntity.__KeyValueFromVector(key: string, value: Vector) -> bool",
-		description: "`(→ KeyValueFromVector)`.\n\nBehaves the same as `KeyValueFromVector`, use that instead."
+		description: "`(→ KeyValueFromVector)`.\n\nBehaves the same as `KeyValueFromVector`, use that instead.",
+		successor: "KeyValueFromVector"
 	}],
 	["GetAngles", {
 		signature: "CBaseEntity.GetAngles() -> Vector",
-		description: "`(→ GetAbsAngles)`.\n\nGet the entity's pitch, yaw, and roll as a **Vector**."
+		description: "`(→ GetAbsAngles)`.\n\nGet the entity's pitch, yaw, and roll as a **Vector**.",
+		successor: "GetAbsAngles"
 	}],
 	["GetLeftVector", {
 		signature: "CBaseEntity.GetLeftVector() -> Vector",
-		description: "`(→ GetRightVector)`.\n\nGet the *right* vector of the entity. This is purely for compatibility."
+		description: "`(→ GetRightVector)`.\n\nGet the *right* vector of the entity. This is purely for compatibility.",
+		successor: "GetRightVector"
 	}],
 	["GetVelocity", {
 		signature: "CBaseEntity.GetVelocity() -> Vector",
-		description: "`(→ GetAbsVelocity)`."
+		description: "`(→ GetAbsVelocity)`.",
+		successor: "GetAbsVelocity"
 	}],
 	["SetAngles", {
 		signature: "CBaseEntity.SetAngles(pitch: float, yaw: float, roll: float) -> null",
-		description: "`(→ SetAbsAngles)`.\n\nSet entity angles."
+		description: "`(→ SetAbsAngles)`.\n\nSet entity angles.",
+		successor: "SetAbsAngles"
 	}],
 	["SetOrigin", {
 		signature: "CBaseEntity.SetOrigin(origin: Vector) -> null",
-		description: "`(→ SetAbsOrigin)`."
+		description: "`(→ SetAbsOrigin)`.",
+		successor: "SetAbsOrigin"
 	}],
 	["SetVelocity", {
 		signature: "CBaseEntity.SetVelocity(velocity: Vector) -> null",
-		description: "`(→ SetAbsVelocity)`."
+		description: "`(→ SetAbsVelocity)`.",
+		successor: "SetAbsVelocity"
 	}]
 ]);
 
@@ -6704,7 +6720,7 @@ export const allFunctions: Docs = new Map([
 	}]
 ]);
 
-export const allDeprecatedFunctions: Docs = new Map([
+export const allDeprecatedFunctions: DeprecatedDocs = new Map([
 	["GetPhysAngularVelocity", {
 		signature: "GetPhysAngularVelocity(entity: handle) -> Vector",
 		description: "Returns the Angular velocity of the entity.  Deprecated, use the `GetPhysAngularVelocity` method on the entity instead."

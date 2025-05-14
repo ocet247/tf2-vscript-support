@@ -25,6 +25,10 @@ export class ForwardIterator {
 		this.cursor++;
 		return char;
 	}
+
+	public getCursor(): number {
+		return this.cursor;
+	}
 }
 
 export class BackwardIterator {
@@ -128,7 +132,7 @@ export class BackwardIterator {
 				};
 			}
 
-			doc = vscriptGlobals.allFunctions.get(name);
+			doc = vscriptGlobals.allDeprecatedFunctions.get(name);
 			if (doc) {
 				return {
 					doc,
@@ -146,8 +150,9 @@ export class BackwardIterator {
 				}
 			}
 
-			return undefined;
+			return;
 		}
+		
 		const instanceName = this.readIdentity(multiline);
 		if (instanceName) {
 			const entry = vscriptGlobals.instancesMethods.get(instanceName);
@@ -173,14 +178,12 @@ export class BackwardIterator {
 		}
 
 		doc = vscriptGlobals.allDeprecatedMethods.get(name);
-		if (!doc) {
-			return undefined;
+		if (doc) {
+			return {
+				doc,
+				isDeprecated: true
+			}
 		}
-
-		return {
-			doc,
-			isDeprecated: true
-		};
 	}
 
 
@@ -196,15 +199,15 @@ export class BackwardIterator {
 				return entry;
 			}
 
-			for (const instance of vscriptGlobals.instancesMethods.values()) {
-				entry = instance.get(name);
+			for (const methods of vscriptGlobals.instancesMethods.values()) {
+				entry = methods.get(name);
 				if (entry) {
 					return entry;
 				}
 			}
 
-			for (const instance of vscriptGlobals.enumMembers.values()) {
-				entry = instance.get(name);
+			for (const methods of vscriptGlobals.enumMembers.values()) {
+				entry = methods.get(name);
 				if (entry) {
 					return entry;
 				}
