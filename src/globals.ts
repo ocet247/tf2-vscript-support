@@ -7418,8 +7418,8 @@ export const enumMembers: InstanceDocs = new Map([
 	])],
 	["EHitGroup", new Map([
 		["HITGROUP_GENERIC", {
-			signature: "HITGROUP_GENERIC: null",
-			description: "Value: `null`\n\nBug: This is supposed to be 0"
+			signature: "HITGROUP_GENERIC: int",
+			description: "Value: `0`\n\nBug: This supposed to be `0` instead of the `null`"
 		}],
 		["HITGROUP_HEAD", {
 			signature: "HITGROUP_HEAD: int",
@@ -9015,7 +9015,7 @@ export const enumMembers: InstanceDocs = new Map([
 	["ETFTeam", new Map([
 		["TEAM_UNASSIGNED", {
 			signature: "TEAM_UNASSIGNED: int",
-			description: "Value: `null`\n\nBug: This is supposed to be 0"
+			description: "Value: `0`\n\nBug: This is supposed to be `0` instead of `null`"
 		}],
 		["TEAM_SPECTATOR", {
 			signature: "TEAM_SPECTATOR: int",
@@ -9218,8 +9218,8 @@ export const enumMembers: InstanceDocs = new Map([
 	])],
 	["FContents", new Map([
 		["CONTENTS_EMPTY", {
-			signature: "CONTENTS_EMPTY: null",
-			description: "Value: `null`\n\nBug: This is supposed to be 0"
+			signature: "CONTENTS_EMPTY: int",
+			description: "Value: `0`\n\nBug: This is supposed to be `0` instead of `null`"
 		}],
 		["CONTENTS_SOLID", {
 			signature: "CONTENTS_SOLID: int",
@@ -9356,8 +9356,8 @@ export const enumMembers: InstanceDocs = new Map([
 	])],
 	["FDmgType", new Map([
 		["DMG_GENERIC", {
-			signature: "DMG_GENERIC: null",
-			description: "Value: `null`\n\nBug: This is supposed to be 0"
+			signature: "DMG_GENERIC: int",
+			description: "Value: `0`\n\nBug: This is supposed to be `0` instead of `null`"
 		}],
 		["DMG_CRUSH", {
 			signature: "DMG_CRUSH: int",
