@@ -214,6 +214,10 @@ export class TF2VScriptCompletionProvider implements CompletionItemProvider {
 	}
 
 	private getDotRange(document: TextDocument, iterator: TokenIterator): Range | null {
+		if (!iterator.hasPrevious()) {
+			return null;
+		}
+		
 		let token = iterator.previous();
 		if (token.kind === TokenKind.DOT) {
 			return new Range(document.positionAt(token.start), document.positionAt(token.end));
