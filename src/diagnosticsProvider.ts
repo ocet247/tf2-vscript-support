@@ -5,8 +5,8 @@ import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
 */
-import { ForwardIterator, CharCode, BackwardIterator } from './textProcessing';
 import CurrentDocument from './documentState';
+import { Lexer, TokenIterator, TokenKind } from './lexer';
 
 export default class TF2VScriptDiagnosticsProvider {
 	private readonly diagnosticCollection: DiagnosticCollection;
@@ -71,9 +71,7 @@ export default class TF2VScriptDiagnosticsProvider {
 	}*/
 
 	private runDiagnostics(document: TextDocument): void {
-		const text = document.getText();
-		
-		const parseDiagnostics: Diagnostic[] = this.runParse(document, text);
+		const parseDiagnostics: Diagnostic[] = this.runParse(document);
 		this.diagnosticCollection.set(document.uri, [...parseDiagnostics, ...CurrentDocument.getLexer().getDiagnostics()]);
 	}
 
@@ -108,65 +106,62 @@ export default class TF2VScriptDiagnosticsProvider {
 		});
 	}*/
 
-	private runParse(document: TextDocument, text: string): Diagnostic[] {
+	private runParse(document: TextDocument): Diagnostic[] {
 		const diagnostics: Diagnostic[] = [];
 
-		const regex = /([_A-Za-z]\w*)(\s*\()?/gs
-		let match: RegExpExecArray | null;
-		while ((match = regex.exec(text))) {
-			const token = CurrentDocument.getLexer().getTokenAtPosition(match.index);
-			if (token && token.isComment()) {
+		const lexer = CurrentDocument.getLexer();
+		const iterator = new TokenIterator(lexer.getTokens());
+
+		while (iterator.hasNext()) {
+			const token = iterator.next();
+			if (token.kind != TokenKind.IDENTIFIER) {
 				continue;
 			}
 
-			const name = match[1];
-			const iterator = new BackwardIterator(text.slice(0, match.index));
-			const entry = iterator.findMethodDoc(name);
+			const lastIndex = iterator.getIndex();
+			// 2 steps back because the we're on the token after the identifier, while we need a token before it
+			iterator.setIndex(lastIndex - 2);
+			const doc = iterator.findMethodDoc(token.value);
 
-			if (!entry) {
+			iterator.setIndex(lastIndex);
+			if (!doc) {
 				continue;
 			}
-
-			const { doc, isDeprecated } = entry;
 
 			const signature = doc.signature;
-
-			const startPos = document.positionAt(match.index);
-			const endPos = startPos.translate(0, match[1].length);
-			const range = new Range(startPos, endPos);
-
-			if (isDeprecated) {
+			const range = new Range(document.positionAt(token.start), document.positionAt(token.end));
+			
+			if ("successor" in doc) {
 				const diagnostic = new Diagnostic(range, `'${signature}' is deprecated.`, DiagnosticSeverity.Hint);
 				diagnostic.tags = [DiagnosticTag.Deprecated];
 				diagnostics.push(diagnostic);
 			}
 
-			if (!match[2]) {
+			const usedParamCount = this.getUsedParamCount(iterator);
+			if (usedParamCount === -1) {
+				iterator.setIndex(lastIndex);
 				continue;
 			}
+			iterator.setIndex(lastIndex + 1);
 
-
-			const { paramCount, defaultParamCount } = this.getParamCount(signature);
-			// The slices are probably expensive since they create a new long strings, needs to be remade with iterator instead.
-			const usedParamCount = this.getUsedParamCount(text.slice(match.index + match[0].length));
+			const { minParamCount, maxParamCount } = this.getParamCount(signature);
+			
 
 			let message;
-			if (defaultParamCount === -1) {
-				const requiredParamCount = paramCount - 1;
-				if (usedParamCount >= requiredParamCount) {
+			if (maxParamCount === -1) {
+				if (usedParamCount >= minParamCount) {
 					continue;
 				}
 
-				message = `Expected at least ${requiredParamCount} arguments, but got ${usedParamCount}.`;
+				message = `Expected at least ${minParamCount} arguments, but got ${usedParamCount}.`;
 			} else {
-				const requiredParamCount = paramCount - defaultParamCount;
-				if (usedParamCount <= paramCount && usedParamCount >= requiredParamCount) {
+				if (usedParamCount <= maxParamCount && usedParamCount >= minParamCount) {
 					continue;
 				}
 
-				message = requiredParamCount === paramCount ?
-					`Expected ${paramCount} arguments, but got ${usedParamCount}.` :
-					`Expected ${requiredParamCount}-${paramCount} arguments, but got ${usedParamCount}.`;
+				message = minParamCount === maxParamCount ?
+					`Expected ${minParamCount} arguments, but got ${usedParamCount}.` :
+					`Expected ${minParamCount}-${maxParamCount} arguments, but got ${usedParamCount}.`;
 			}
 
 			diagnostics.push(new Diagnostic(range, message, DiagnosticSeverity.Error));
@@ -175,7 +170,7 @@ export default class TF2VScriptDiagnosticsProvider {
 		return diagnostics;
 	}
 
-	private getParamCount(signature: string): { paramCount: number, defaultParamCount: number } {
+	private getParamCount(signature: string): { minParamCount: number, maxParamCount: number } {
 		const open = signature.indexOf('(');
 		const close = signature.lastIndexOf(')');
 
@@ -183,99 +178,85 @@ export default class TF2VScriptDiagnosticsProvider {
 		// E.g GetListenServerHost() -> GetListenServerHost )( 
 		if (open === -1 || close === -1 || close < open + 2) {
 			return {
-				paramCount: 0,
-				defaultParamCount: 0
+				minParamCount: 0,
+				maxParamCount: 0
 			};
 		}
 		
-		const iterator = new ForwardIterator(signature.slice(open + 1, close));
+		const lexer = new Lexer(signature.slice(open + 1, close));
+		const iterator = new TokenIterator(lexer.getTokens());
+
 		let paramCount = 1;
-
-		// variadic
-		if (signature.indexOf("...") != -1) {	
-			while (iterator.hasNext()) {
-				const char = iterator.next();
-				if (char === CharCode.COMMA) {
-					paramCount++;
-				}
-			}
-			return {
-				paramCount,
-				defaultParamCount: -1
-			}
-		}
-
-		
-
 		let defaultParamCount = 0;
+		let isVariadic = false;
 		while (iterator.hasNext()) {
-			const char = iterator.next();
-			if (char === CharCode.COMMA) {
+			const token = iterator.next();
+			switch (token.kind) {
+			case TokenKind.COMMA:
 				paramCount++;
-			} else if (char === CharCode.EQUALS) {
+				break;
+			case TokenKind.ASSIGN:
 				defaultParamCount++;
+				break;
+			case TokenKind.VARPARAMS:
+				isVariadic = true;
+				break;
 			}
 		}
-		
+
 		return {
-			paramCount,
-			defaultParamCount
+			minParamCount: paramCount - defaultParamCount - (isVariadic ? 1 : 0),
+			maxParamCount: isVariadic ? -1 : paramCount
 		}
 	}
 
-	private getUsedParamCount(text: string): number {
-		const iterator = new ForwardIterator(text);
-		let paramCount = 0;
-		let depth = 1;
-		let foundParam = false;
+	private getUsedParamCount(iterator: TokenIterator): number {
+		// Find the (
 		while (iterator.hasNext()) {
-			let char = iterator.next();
-			switch (char) {
-			case CharCode.RIGHT_ROUND:
-			case CharCode.RIGHT_CURLY:
-			case CharCode.RIGHT_SQUARE:
+			const token = iterator.next();
+			if (token.isComment() || token.kind === TokenKind.LINE_FEED) {
+				continue;
+			}
+			if (token.kind === TokenKind.LEFT_ROUND) {
+				break;
+			}
+
+			return -1;
+		}
+		
+
+		let depth = 1;
+		let paramCount = 0;
+		let foundParam = false;
+		
+		while (iterator.hasNext()) {
+			const token = iterator.next();
+			switch (token.kind) {
+			case TokenKind.RIGHT_ROUND:
+			case TokenKind.RIGHT_CURLY:
+			case TokenKind.RIGHT_SQUARE:
 				depth--;
 				if (depth === 0) {
 					return foundParam ? paramCount + 1 : 0;
 				}
 				break;
-			case CharCode.LEFT_CURLY:
-			case CharCode.LEFT_SQUARE:
-			case CharCode.LEFT_ROUND:
+			case TokenKind.LEFT_ROUND:
+			case TokenKind.LEFT_CURLY:
+			case TokenKind.LEFT_SQUARE:
 				depth++;
 				break;
-			case CharCode.DOUBLE_QUOTE:
-			case CharCode.QUOTE:
-			case CharCode.BACKTICK:
-				const opening = char;		
-				// find the closing quote
-				while (iterator.hasNext()) {
-					char = iterator.next();
-					
-					// Ignore escape chars
-					if (char === CharCode.BACKSLASH) {
-						if (!iterator.hasNext()) {
-							break;
-						}
-
-						iterator.next();
-					}
-
-					if (char === opening) {
-						break;
-					}
-				}
-				break;
-			case CharCode.COMMA:
+			case TokenKind.COMMA:
 				if (depth === 1) {
 					paramCount++;
 				}
 				break;
 			}
-			if (!foundParam && !CharCode.isWhitespace(char)) {
+
+			if (!foundParam && !token.isComment() && token.kind != TokenKind.LINE_FEED) {
 				foundParam = true;
 			}
 		}
+
 		return foundParam ? paramCount + 1 : 0;
 	}
 	

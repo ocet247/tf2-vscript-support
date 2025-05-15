@@ -1,5 +1,6 @@
 import { Diagnostic, Position, Range } from 'vscode';
 import { CharCode } from './textProcessing';
+import * as vscriptGlobals from './globals';
 
 export enum TokenKind {
 	EOF = 0,
@@ -9,8 +10,8 @@ export enum TokenKind {
 	RIGHT_ROUND = 41,   // )
 	LEFT_CURLY = 123,   // {
 	RIGHT_CURLY = 125,  // }
-	LEFT_BRACKET = 91,  // [
-	RIGHT_BRACKET = 93, // ]
+	LEFT_SQUARE = 91,  // [
+	RIGHT_SQUARE = 93, // ]
 	SEMICOLON = 59,     // ;
 	COMMA = 44,         // ,
 	QUESTION = 63,      // ?
@@ -1095,22 +1096,204 @@ export class Lexer {
 		return result.toString();
 	}
 
-	public getTokenAtPosition(offset: number): Token | null {
+	public getTokenAtPosition(offset: number): { object: Token | null, index: number } {
 		let left = 0;
 		let right = this.tokens.length - 1;
 
 		while (left <= right) {
 			const mid = Math.floor((left + right) / 2);
 			const token = this.tokens[mid];
+
 			if (offset < token.start) {
 				right = mid - 1;
 			} else if (offset >= token.end) {
 				left = mid + 1;
 			} else {
-				return token;
+				return {
+					object: token,
+					index: mid
+				};
 			}
 		}
 
+		// Not found: return the closest token to the left
+		return {
+			object: null,
+			index: left - 1
+		};
+	}
+}
+
+export class TokenIterator {
+	private tokens: Token[];
+	private index: number;
+
+	constructor(tokens: Token[], index: number = 0) {
+		this.tokens = tokens;
+		this.index = index;
+	}
+
+	public hasNext(): boolean {
+		return this.index < this.tokens.length;
+	}
+
+	public next(): Token {
+		const token = this.tokens[this.index];
+		this.index++;
+		return token;
+	}
+
+	public hasPrevious(): boolean {
+		return this.index > -1;
+	}
+
+	public previous(): Token {
+		const token = this.tokens[this.index];
+		this.index--;
+		return token;
+	}
+
+	public reset(): void {
+		this.index = 0;
+	}
+
+	public setIndex(index: number): void {
+		this.index = index;
+	}
+
+	public getIndex(): number {
+		return this.index;
+	}
+
+	public readIdentity(multiline: boolean = true): string | null {
+		while (this.hasPrevious()) {
+			const token = this.previous();
+			if (token.isComment()) {
+				continue;
+			}
+
+			if (multiline && token.kind === TokenKind.LINE_FEED) {
+				continue;
+			}
+
+			if (token.kind === TokenKind.IDENTIFIER) {
+				return token.value;
+			}
+
+			break;
+		}
+
 		return null;
+	}
+
+	public hasDot(): boolean {
+		while (this.hasPrevious()) {
+			const token = this.previous();
+			if (token.isComment() || token.kind === TokenKind.LINE_FEED) {
+				continue;
+			}
+
+			if (token.kind === TokenKind.DOT) {
+				return true;
+			}
+
+			break;
+		}
+
+		return false;
+	}
+
+	public findMethodDoc(methodName: string | null = null): vscriptGlobals.Doc | undefined {
+		if (!methodName) {
+			methodName = this.readIdentity();
+			if (!methodName) {
+				return;
+			}
+		} 
+
+		if (!this.hasDot()) {
+			const entry =
+				vscriptGlobals.allFunctions.get(methodName) ||
+				vscriptGlobals.allDeprecatedFunctions.get(methodName);
+			
+			if (entry) {
+				return entry;
+			}
+
+			for (const methods of vscriptGlobals.instancesMethods.values()) {
+				const entry = methods.get(methodName);
+				if (entry) {
+					return entry;
+				}
+			}
+
+			return;
+		}
+
+		const instanceName = this.readIdentity();
+
+		if (instanceName) {
+			const entry = vscriptGlobals.instancesMethods.get(instanceName);
+			if (entry) {
+				return entry.get(methodName);
+			}
+		}
+
+		return vscriptGlobals.allMethods.get(methodName) ||
+			vscriptGlobals.allDeprecatedMethods.get(methodName);
+	}
+	
+	public findDoc(name: string | null = null): vscriptGlobals.Doc | undefined {
+		if (!name) {
+			name = this.readIdentity();
+			if (!name) {
+				return;
+			}
+		} 
+		if (!this.hasDot()) {
+			const entry =
+				vscriptGlobals.allFunctions.get(name) ||
+				vscriptGlobals.allDeprecatedFunctions.get(name) ||
+				vscriptGlobals.builtInConstants.get(name) ||
+				vscriptGlobals.builtInVariables.get(name);
+			
+			if (entry) {
+				return entry;
+			}
+
+			for (const methods of vscriptGlobals.instancesMethods.values()) {
+				const entry = methods.get(name);
+				if (entry) {
+					return entry;
+				}
+			}
+
+			for (const members of vscriptGlobals.enumMembers.values()) {
+				const entry = members.get(name);
+				if (entry) {
+					return entry;
+				}
+			}
+
+			return;
+		}
+
+		const instanceName = this.readIdentity();
+		if (instanceName) {
+			let entry = vscriptGlobals.instancesMethods.get(instanceName);
+			if (entry) {
+				return entry.get(name);
+			}
+
+			entry = vscriptGlobals.enumMembers.get(instanceName);
+			if (entry) {
+				return entry.get(name);
+			}
+		}
+
+		
+		return vscriptGlobals.allMethods.get(name) ||
+			vscriptGlobals.allDeprecatedMethods.get(name) ||
+			vscriptGlobals.builtInEnums.get(name);
 	}
 }

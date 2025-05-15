@@ -1,175 +1,10 @@
 import { CancellationToken, CodeAction, CodeActionContext, Position, CodeActionKind, CodeActionProvider, Command, DiagnosticTag, ProviderResult, Range, Selection, TextDocument, WorkspaceEdit } from "vscode";
 import * as vscriptGlobals from './globals';
-import { CharCode, ForwardIterator } from "./textProcessing";
+import { Token, TokenIterator, TokenKind } from "./lexer";
+import CurrentDocument from "./documentState";
 
 
 export default class TF2VScriptCodeActionProvider implements CodeActionProvider {
-	private getParamRange(document: TextDocument, position: Position): { deleteRange: Range, insertText: string } | undefined {
-		const iterator = new ForwardIterator(ForwardIterator.textFromPosition(document, position));
-		const offset = document.offsetAt(position);
-
-		while (true) {
-			if (!iterator.hasNext()) {
-				return;
-			}
-			const char = iterator.next();
-
-			if (char === CharCode.LEFT_ROUND) {
-				break;
-			} else if (!CharCode.isWhitespace(char)) {
-				return;
-			}
-		}
-		const deleteStartPos = document.positionAt(offset + iterator.getCursor());
-
-		let depth = 1;
-		while (iterator.hasNext()) {
-			let char = iterator.next();
-
-			switch (char) {
-			case CharCode.RIGHT_ROUND:
-			case CharCode.RIGHT_CURLY:
-			case CharCode.RIGHT_SQUARE:
-				depth--;
-				if (depth === 0) {
-					const deleteEndPos = document.positionAt(offset + iterator.getCursor() - 1);
-					const deleteRange = new Range(deleteStartPos, deleteEndPos);
-					const insertText = document.getText(deleteRange).trim();
-
-					return {
-						deleteRange,
-						insertText
-					}
-				}
-				break;
-			case CharCode.LEFT_CURLY:
-			case CharCode.LEFT_SQUARE:
-			case CharCode.LEFT_ROUND:
-				depth++;
-				break;
-			case CharCode.DOUBLE_QUOTE:
-			case CharCode.QUOTE:
-			case CharCode.BACKTICK:
-				const opening = char;
-				// find the closing quote
-				while (iterator.hasNext()) {
-					char = iterator.next();
-							
-					// Ignore escape chars
-					if (char === CharCode.BACKSLASH) {
-						if (!iterator.hasNext()) {
-							break;
-						}
-
-						iterator.next();
-					}
-
-					if (char === opening) {
-						break;
-					}
-				}
-				break;
-			case CharCode.COMMA:
-				if (depth !== 1) {
-					continue;
-				}
-
-				const insertEndPos = document.positionAt(offset + iterator.getCursor() - 1);
-				const insertText = document.getText(new Range(deleteStartPos, insertEndPos)).trim();
-				
-				while (iterator.hasNext()) {
-					if (!CharCode.isWhitespace(iterator.next())) {
-						break;
-					}
-				}
-
-				const deleteEndPos = document.positionAt(offset + iterator.getCursor() - 1);
-				const deleteRange = new Range(deleteStartPos, deleteEndPos);
-
-				return {
-					deleteRange,
-					insertText
-				}
-			}
-		}
-
-		const deleteEndPos = document.positionAt(offset + iterator.getCursor());
-		const deleteRange = new Range(deleteStartPos, deleteEndPos);
-		const insertText = document.getText(deleteRange).trim();
-
-		return {
-			deleteRange,
-			insertText
-		}
-	}
-
-	private getCallBodyRange(document: TextDocument, position: Position): Range | undefined {
-		const iterator = new ForwardIterator(ForwardIterator.textFromPosition(document, position));
-		const offset = document.offsetAt(position);
-
-		while (true) {
-			if (!iterator.hasNext()) {
-				return;
-			}
-			const char = iterator.next();
-
-			if (char === CharCode.LEFT_ROUND) {
-				break;
-			} else if (!CharCode.isWhitespace(char)) {
-				return;
-			}
-		}
-		const startPos = document.positionAt(offset + iterator.getCursor());
-
-		let depth = 1;
-		while (iterator.hasNext()) {
-			let char = iterator.next();
-
-			switch (char) {
-			case CharCode.RIGHT_ROUND:
-			case CharCode.RIGHT_CURLY:
-			case CharCode.RIGHT_SQUARE:
-				depth--;
-				if (depth === 0) {
-					const endPos = document.positionAt(offset + iterator.getCursor() - 1);
-
-					return new Range(startPos, endPos);
-				}
-				break;
-			case CharCode.LEFT_CURLY:
-			case CharCode.LEFT_SQUARE:
-			case CharCode.LEFT_ROUND:
-				depth++;
-				break;
-			case CharCode.DOUBLE_QUOTE:
-			case CharCode.QUOTE:
-			case CharCode.BACKTICK:
-				const opening = char;
-				// find the closing quote
-				while (iterator.hasNext()) {
-					char = iterator.next();
-							
-					// Ignore escape chars
-					if (char === CharCode.BACKSLASH) {
-						if (!iterator.hasNext()) {
-							break;
-						}
-
-						iterator.next();
-					}
-
-					if (char === opening) {
-						break;
-					}
-				}
-			}
-		}
-
-		const endPos = document.positionAt(offset + iterator.getCursor());
-
-		return new Range(startPos, endPos);
-	}
-
 	public provideCodeActions(document: TextDocument, range: Range, context: CodeActionContext, token: CancellationToken): CodeAction[] {
 		const fixes: CodeAction[] = []
 		for (const diagnostic of context.diagnostics) {
@@ -185,9 +20,13 @@ export default class TF2VScriptCodeActionProvider implements CodeActionProvider 
 					continue;
 				}
 				
-				const ranges = this.getParamRange(document, diagnostic.range.end);
+				const lexer = CurrentDocument.getLexer();
+				const tokenIndex = lexer.getTokenAtPosition(document.offsetAt(diagnostic.range.end)).index;
+				const iterator = new TokenIterator(lexer.getTokens(), tokenIndex);
+
+				const param = this.getFirstParam(document, iterator);
 				
-				if (!ranges) {
+				if (!param) {
 					continue;
 				}
 
@@ -198,8 +37,8 @@ export default class TF2VScriptCodeActionProvider implements CodeActionProvider 
 
 
 				fix.edit = new WorkspaceEdit();
-				fix.edit.delete(document.uri, ranges.deleteRange);
-				fix.edit.insert(document.uri, diagnostic.range.start, ranges.insertText + '.');
+				fix.edit.delete(document.uri, param.deleteRange);
+				fix.edit.insert(document.uri, diagnostic.range.start, param.text + '.');
 
 				fixes.push(fix);
 				
@@ -222,7 +61,11 @@ export default class TF2VScriptCodeActionProvider implements CodeActionProvider 
 
 			// Yes a hardcode
 			if (successor === "SetAbsAngles") {
-				const bodyRange = this.getCallBodyRange(document, diagnostic.range.end);
+				const lexer = CurrentDocument.getLexer();
+				const tokenIndex = lexer.getTokenAtPosition(document.offsetAt(diagnostic.range.end)).index;
+				const iterator = new TokenIterator(lexer.getTokens(), tokenIndex);
+
+				const bodyRange = this.getCallBodyRange(document, iterator);
 				if (bodyRange) {
 					fix.edit.insert(document.uri, bodyRange.start, "QAngle(");
 					fix.edit.insert(document.uri, bodyRange.end, ")");
@@ -236,5 +79,97 @@ export default class TF2VScriptCodeActionProvider implements CodeActionProvider 
 		}
 		return fixes;
 	}
+
+	private getFirstParam(document: TextDocument, iterator: TokenIterator): { deleteRange: Range, text: string } | undefined {
+		let depth = 0;
+		let startPos: Position | null = null;
+		let token: Token | null = null;
+		while (iterator.hasNext()) {
+			token = iterator.next();
+
+			switch (token.kind) {
+			case TokenKind.RIGHT_ROUND:
+			case TokenKind.RIGHT_CURLY:
+			case TokenKind.RIGHT_SQUARE:
+				depth--;
+				if (depth === 0 && startPos) {
+					const deleteRange = new Range(startPos, document.positionAt(token.start));
+					const text = document.getText(deleteRange);
+
+					return {
+						deleteRange,
+						text
+					}
+				}
+				break;
+			case TokenKind.LEFT_CURLY:
+			case TokenKind.LEFT_SQUARE:
+			case TokenKind.LEFT_ROUND:
+				if (depth === 0) {
+					startPos = document.positionAt(token.end);
+				}
+				depth++;
+				break;
+			case TokenKind.COMMA:
+				if (startPos) {
+					const text = document.getText(new Range(startPos, document.positionAt(token.start)));
+
+					token = iterator.next();
+					const deleteRange = new Range(startPos, document.positionAt(token.start));
+					
+					return {
+						deleteRange,
+						text
+					}
+				}
+			}
+		}
+
+		if (!startPos || !token) {
+			return;
+		}
+
+		const deleteRange = new Range(startPos, document.positionAt(token.end));
+		const text = document.getText(deleteRange);
+
+		return {
+			deleteRange,
+			text
+		}
+	}
 	
+	private getCallBodyRange(document: TextDocument, iterator: TokenIterator): Range | undefined {
+		let depth = 0;
+		let startPos: Position | null = null;
+		let token: Token | null = null;
+		while (iterator.hasNext()) {
+			token = iterator.next();
+
+			switch (token.kind) {
+			case TokenKind.RIGHT_ROUND:
+			case TokenKind.RIGHT_CURLY:
+			case TokenKind.RIGHT_SQUARE:
+				depth--;
+				if (depth === 0 && startPos) {
+					return new Range(startPos, document.positionAt(token.start));
+				}
+				break;
+			case TokenKind.LEFT_CURLY:
+			case TokenKind.LEFT_SQUARE:
+			case TokenKind.LEFT_ROUND:
+				if (depth === 0) {
+					startPos = document.positionAt(token.end);
+				}
+				depth++;
+				break;
+			}
+		}
+
+		if (!startPos || !token) {
+			return;
+		}
+
+		return new Range(startPos, document.positionAt(token.end))
+		
+	}
 }

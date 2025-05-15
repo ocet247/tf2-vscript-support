@@ -1,28 +1,32 @@
 import { HoverProvider, Hover, MarkdownString, TextDocument, CancellationToken, Position } from 'vscode';
-import { BackwardIterator } from './textProcessing';
 import CurrentDocument from './documentState';
+import { TokenIterator } from './lexer';
+
 
 export default class TF2VScriptHoverProvider implements HoverProvider {
 	public provideHover(document: TextDocument, position: Position, _token: CancellationToken): Hover | undefined {
 		if (!CurrentDocument.isInNut()) {
-			return undefined;
+			return;
 		}
+
+		const lexer = CurrentDocument.getLexer();
 		
-		const token = CurrentDocument.getLexer().getTokenAtPosition(document.offsetAt(position) - 1);
-		if (token && token.isComment()) {
-			return undefined;
+		const token = lexer.getTokenAtPosition(document.offsetAt(position) - 1);
+		if (token.object && token.object.isComment()) {
+			return;
 		}
 
 		const range = document.getWordRangeAtPosition(position);
 		if (!range) {
-			return undefined;
+			return;
 		}
-
 		const name = document.getText(range);
-		const iterator = new BackwardIterator(BackwardIterator.textFromPosition(document, range.start));
+		
+
+		const iterator = new TokenIterator(lexer.getTokens(), token.index - 1);
 		const doc = iterator.findDoc(name);
 		if (!doc) {
-			return undefined;
+			return;
 		}
 
 		const markdown = new MarkdownString();

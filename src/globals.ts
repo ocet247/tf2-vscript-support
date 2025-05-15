@@ -4,7 +4,7 @@ export interface Doc {
 }
 
 export interface DeprecatedDoc extends Doc {
-	successor?: string
+	successor: string
 }
 
 export type Docs = Map<string, Doc>;
@@ -6723,11 +6723,13 @@ export const allFunctions: Docs = new Map([
 export const allDeprecatedFunctions: DeprecatedDocs = new Map([
 	["GetPhysAngularVelocity", {
 		signature: "GetPhysAngularVelocity(entity: handle) -> Vector",
-		description: "Returns the Angular velocity of the entity.  Deprecated, use the `GetPhysAngularVelocity` method on the entity instead."
+		description: "Returns the Angular velocity of the entity.  Deprecated, use the `GetPhysAngularVelocity` method on the entity instead.",
+		successor: "GetPhysAngularVelocity"
 	}],
 	["GetPhysVelocity", {
 		signature: "GetPhysVelocity(entity: handle) -> Vector",
-		description: "Returns the velocity of the entity. Deprecated, use the `GetPhysVelocity` method on the entity instead."
+		description: "Returns the velocity of the entity. Deprecated, use the `GetPhysVelocity` method on the entity instead.",
+		successor: "GetPhysVelocity"
 	}]
 ]);
 

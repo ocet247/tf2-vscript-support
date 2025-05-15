@@ -50,7 +50,7 @@ export default async function TF2VScriptEnterHandler(event: TextDocumentChangeEv
 	const { offset, indent } = indentData;
 
 	const lexer = CurrentDocument.getLexer();
-	const token = lexer.getTokenAtPosition(offset);
+	const token = lexer.getTokenAtPosition(offset).object;
 	if (!token) {
 		return;
 	}

@@ -1,8 +1,7 @@
 import { CompletionItemProvider, CompletionItem, CompletionItemKind, CancellationToken, TextEdit, TextDocument, Position, MarkdownString, SnippetString, CompletionContext, Range, CompletionItemTag, CompletionList, ProviderResult } from 'vscode';
-import * as vscriptGlobals from './globals'
-import { BackwardIterator, CharCode } from './textProcessing';
+import * as vscriptGlobals from './globals';
 import CurrentDocument from './documentState';
-import { TokenKind } from './lexer';
+import { TokenIterator, TokenKind } from './lexer';
 
 export class TF2VScriptCompletionProvider implements CompletionItemProvider {
 	public provideCompletionItems(document: TextDocument, position: Position, _token: CancellationToken, _context: CompletionContext): Promise<CompletionItem[]> {
@@ -10,15 +9,17 @@ export class TF2VScriptCompletionProvider implements CompletionItemProvider {
 			return Promise.resolve([]);
 		}
 		
-		const token = CurrentDocument.getLexer().getTokenAtPosition(document.offsetAt(position) - 1);
-		if (token && token.isComment()) {
+		const lexer = CurrentDocument.getLexer();
+
+		const token = lexer.getTokenAtPosition(document.offsetAt(position) - 1);
+		if (token.object && token.object.isComment()) {
 			return Promise.resolve([]);
 		}
 
 		const items: CompletionItem[] = [];
-		const iterator = new BackwardIterator(BackwardIterator.textFromPosition(document, position));
-
+		const iterator = new TokenIterator(lexer.getTokens(), token.index);
 		const dotRange = this.getDotRange(document, iterator);
+
 		if (dotRange) {
 			const name = iterator.readIdentity(false);
 			if (name) {
@@ -48,8 +49,9 @@ export class TF2VScriptCompletionProvider implements CompletionItemProvider {
 			// No name but a dot means that we're searching for a shortcut
 			// If the last symbol was closing paranthesis it means that we have a method call which could return an entity
 			// Or we've possibly done table/class accessing with []
-			const lastChar = iterator.back();
-			if (lastChar != CharCode.RIGHT_ROUND && lastChar != CharCode.RIGHT_SQUARE) {
+
+			const lastToken = iterator.next();
+			if (!lastToken || lastToken.kind != TokenKind.RIGHT_ROUND && lastToken.kind != TokenKind.RIGHT_SQUARE) {
 				for (const [instance, docs] of vscriptGlobals.instancesMethods) {
 					this.addShortcutItems(items, docs, CompletionItemKind.Method, dotRange, instance + ".");
 				}
@@ -59,7 +61,7 @@ export class TF2VScriptCompletionProvider implements CompletionItemProvider {
 				
 				return Promise.resolve(items);
 			}
-
+			
 			this.addItems(items, vscriptGlobals.allMethods, CompletionItemKind.Method);
 			this.addDeprecatedItems(items, vscriptGlobals.allDeprecatedMethods, CompletionItemKind.Method);
 
@@ -99,7 +101,6 @@ export class TF2VScriptCompletionProvider implements CompletionItemProvider {
 				const item = new CompletionItem(funcName, itemKind);
 
 				item.detail = info.signature;
-
 
 				const open = info.signature.indexOf('(');
 				const close = info.signature.lastIndexOf(')');
@@ -212,44 +213,23 @@ export class TF2VScriptCompletionProvider implements CompletionItemProvider {
 		}
 	}
 
-	private getDotRange(document: TextDocument, iterator: BackwardIterator): Range | null {
-		while (iterator.hasNext()) {
-			const ch = iterator.next();
-			if (CharCode.isAlphaNumeric(ch)) {
-				continue;
-			}
+	private getDotRange(document: TextDocument, iterator: TokenIterator): Range | null {
+		let token = iterator.previous();
+		if (token.kind === TokenKind.DOT) {
+			return new Range(document.positionAt(token.start), document.positionAt(token.end));
+		}
+		if (token.kind !== TokenKind.IDENTIFIER) {
+			return null;
+		}
 
-			if (ch === CharCode.DOT) {
-				const dotPosition = document.positionAt(iterator.getCursor() + 1);
-				return new Range(
-					dotPosition,
-					dotPosition.translate(0, 1)
-				);
-			}
-				
-			if (!CharCode.isIndentation(ch)) {
-				return null;
-			}
+		if (!iterator.hasPrevious()) {
+			return null;
+		}
 
-			let indent = 1;
-			while (iterator.hasNext()) {
-				const ch = iterator.next();
-				if (CharCode.isIndentation(ch)) {
-					indent++;
-					continue;
-				}
-				if (ch === CharCode.DOT) {
-					const dotPosition = document.positionAt(iterator.getCursor() + 1);
-					return new Range(
-						dotPosition,
-						dotPosition.translate(0, indent + 1)
-					);
-				}
-				
-				break;
-			}
-
-			break;
+		const endPos = document.positionAt(token.start);
+		token = iterator.previous();
+		if (token.kind === TokenKind.DOT) {
+			return new Range(document.positionAt(token.start), endPos);
 		}
 
 		return null;
@@ -258,7 +238,7 @@ export class TF2VScriptCompletionProvider implements CompletionItemProvider {
 
 export class DocCompletionProvider implements CompletionItemProvider {
 	public provideCompletionItems(document: TextDocument, position: Position, _token: CancellationToken, _context: CompletionContext): ProviderResult<CompletionItem[] | CompletionList<CompletionItem>> {
-		const token = CurrentDocument.getLexer().getTokenAtPosition(document.offsetAt(position) - 1);
+		const token = CurrentDocument.getLexer().getTokenAtPosition(document.offsetAt(position) - 1).object;
 		if (!token || token.kind !== TokenKind.DOC) {
 			return Promise.resolve([]);
 		}
