@@ -116,11 +116,11 @@
 		"format-specifiers": {
 			"patterns": [
 				{
-					"name": "constant.character.escape.nut",
+					"name": "constant.other.placeholder",
 					"match": "%[-+0# ]?\\d*(\\.\\d+)?[A-Za-z]"
 				},
 				{
-					"name": "constant.character.escape.nut",
+					"name": "constant.other.placeholder",
 					"match": "%%"
 				}
 			]

@@ -2465,7 +2465,7 @@ export const allMethods: Docs = new Map([
 	}],
 	["len", {
 		signature: "string/array/table.len() -> int",
-		description: "Returns an string's/array's/table's length."
+		description: "Returns a string's/array's/table's length."
 	}],
 	["slice", {
 		signature: "string/array.slice(start_index: int, end_index: int = null) -> null",
@@ -2596,7 +2596,7 @@ export const allMethods: Docs = new Map([
 		description: "Returns an array containing all the keys of the table slots."
 	}],
 	["values", {
-		signature: "table.keys() -> array",
+		signature: "table.values() -> array",
 		description: "Returns an array containing all the values of the table slots."
 	}],
 	/* --------------------------- *
@@ -3705,6 +3705,9 @@ export const allFunctions: Docs = new Map([
 	/*
 	 * Events
 	 */
+]);
+
+export const events: Docs = new Map([
 	["Precache", {
 		signature: "Precache() -> null",
 		description: "Entity function that is called after the script executes, but before the entity is initialized. Can be used to call precache functions for models and sounds on map load."
