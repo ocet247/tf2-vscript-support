@@ -72,6 +72,7 @@ export default class TF2VScriptDiagnosticsProvider {
 
 	private runDiagnostics(document: TextDocument): void {
 		const parseDiagnostics: Diagnostic[] = this.runParse(document);
+
 		this.diagnosticCollection.set(document.uri, [...parseDiagnostics, ...CurrentDocument.getLexer().getDiagnostics()]);
 	}
 

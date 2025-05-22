@@ -1,38 +1,38 @@
-import { Diagnostic, Position, Range } from 'vscode';
-import { CharCode } from './textProcessing';
-import * as vscriptGlobals from './globals';
-
+import { Diagnostic, Range, TextDocument } from "vscode";
+import { CharCode } from "./textProcessing";
+import * as vscriptGlobals from "./globals";
 export enum TokenKind {
+	INVALID = -1,
 	EOF = 0,
 	
-	LINE_FEED = 10,     // \n
-	LEFT_ROUND = 40,    // (
-	RIGHT_ROUND = 41,   // )
-	LEFT_CURLY = 123,   // {
-	RIGHT_CURLY = 125,  // }
-	LEFT_SQUARE = 91,  // [
-	RIGHT_SQUARE = 93, // ]
-	SEMICOLON = 59,     // ;
-	COMMA = 44,         // ,
-	QUESTION = 63,      // ?
-	CARET = 94,         // ^
-	TILDE = 126,        // ~
-	DOT = 46,           // .
-	COLON = 58,         // :
-	PLUS = 43,          // +
-	MINUS = 45,         // -
-	MULTIPLY = 42,      // *
-	DIVIDE = 47,        // /
-	MODULO = 37,        // %
-	BIT_AND = 38,       // &
-	BIT_OR = 124,       // |
-	LESS = 60,          // <
-	GREATER = 62,       // >
-	ASSIGN = 61,        // =
-	EXCLAMATION = 33,   // !
-	LAMBDA = 64,        // @
+	LINE_FEED,
+	LEFT_ROUND,
+	RIGHT_ROUND,
+	LEFT_CURLY,
+	RIGHT_CURLY,
+	LEFT_SQUARE,
+	RIGHT_SQUARE,
+	SEMICOLON,
+	COMMA,
+	TERNARY,
+	BIT_XOR,
+	BIT_NOT,
+	DOT,
+	COLON,
+	PLUS,
+	MINUS,
+	MULTIPLY,
+	DIVIDE,
+	MODULO,
+	BIT_AND,
+	BIT_OR,
+	LESS,
+	GREATER,
+	ASSIGN,
+	NOT,
+	LAMBDA,
 
-	IDENTIFIER = 258,
+	IDENTIFIER,
 	STRING,
 	VERBATIM_STRING,
 	INTEGER,
@@ -99,12 +99,10 @@ export enum TokenKind {
 	ENUM,
 	CONST,
 	RAWCALL,
-	ASTERISK,
 	LINE_COMMENT,
 	BLOCK_COMMENT,
 	DOC
 };
-
 
 export class Token {
 	public readonly kind: TokenKind;
@@ -112,20 +110,21 @@ export class Token {
 	public readonly start: number;
 	public readonly end: number;
 
-	public static singleCharToken(kind: TokenKind, start: number) {
-		return new Token(
-			kind,
-			String.fromCharCode(kind),
-			start,
-			start + 1
-		);
-	}
+	private static readonly comments = new Set([
+		TokenKind.LINE_COMMENT,
+		TokenKind.BLOCK_COMMENT,
+		TokenKind.DOC
+	]);
 
 	constructor(kind: TokenKind, value: string, start: number, end: number) {
 		this.kind = kind;
 		this.value = value;
 		this.start = start;
 		this.end = end;
+	}
+
+	public isComment() {
+		return Token.comments.has(this.kind);
 	}
 
 	public log() {
@@ -136,30 +135,31 @@ export class Token {
 
 		console.log(`${kindName.padEnd(20)} ${valueDisplay.padEnd(15)} [${this.start}-${this.end}]`);
 	}
-
-	public isComment() {
-		return this.kind === TokenKind.LINE_COMMENT ||
-			this.kind === TokenKind.BLOCK_COMMENT ||
-			this.kind === TokenKind.DOC;
-	}
 }
+
+type TokenMap = {
+	[char: string]: TokenKind | TokenMap | Function;
+} & {
+	fallback?: TokenKind;
+} 
 
 export class Lexer {
 	private readonly text: string;
+	private readonly document: TextDocument | null;
+	
+	private previousToken: Token | undefined;
+	private currentToken: Token | undefined;
+
 	private readonly tokens: Token[];
-	private readonly diagnostics: Diagnostic[];
 
-	// 0 based offset
 	private cursor: number;
-
-	private line: number;
-	private column: number;
-
-	private current: number;
+	private current: string;
 
 	private readEOF: boolean;
 
-	private readonly keywords: Map<string, TokenKind> = new Map([
+	private readonly diagnostics: Diagnostic[];
+
+	private static readonly keywords: Map<string, TokenKind> = new Map([
 		['while', TokenKind.WHILE],
 		['do', TokenKind.DO],
 		['if', TokenKind.IF],
@@ -200,566 +200,282 @@ export class Lexer {
 		['rawcall', TokenKind.RAWCALL]
 	]);
 
-	constructor(text: string) {
-		this.text = text;
-		this.tokens = [];
-		this.diagnostics = [];
-
-		this.line = 0;
-		this.column = 0;
-		this.cursor = 0;
-		this.current = -1;
-
-		this.readEOF = false;
-
-		this.next();
-		this.lex();
+	private readonly tokenMap: TokenMap = {
+		'\n': TokenKind.LINE_FEED,
+		'#': this.lexLineComment.bind(this),
+		'/': {
+			'*': this.lexBlockComment.bind(this),
+			'/': this.lexLineComment.bind(this),
+			'=': TokenKind.DIVIDE_ASSIGN,
+			'>': TokenKind.ATTR_CLOSE
+		},
+		'=': {
+			'=': TokenKind.EQUALS,
+			fallback: TokenKind.ASSIGN
+		},
+		'<': {
+			'=': {
+				'>': TokenKind.THREE_WAY_CMP,
+				fallback: TokenKind.LESS_EQUALS
+			},
+			'-': TokenKind.NEW_SLOT,
+			'<': TokenKind.SHIFT_LEFT,
+			'/': TokenKind.ATTR_CLOSE,
+			fallback: TokenKind.LESS,
+		},
+		'>': {
+			'=': TokenKind.GREATER_EQUALS,
+			'>': {
+				'>': TokenKind.UNSIGNED_SHIFT_RIGHT,
+				fallback: TokenKind.SHIFT_RIGHT
+			},
+			fallback: TokenKind.GREATER
+		},
+		'!': {
+			'=': TokenKind.NOT_EQUALS,
+			fallback: TokenKind.NOT
+		},
+		'@': {
+			'"': this.lexVerbatimString.bind(this),
+			fallback: TokenKind.LAMBDA
+		},
+		'"': this.lexString.bind(this),
+		'\'': this.lexString.bind(this),
+		'{': TokenKind.LEFT_CURLY,
+		'}': TokenKind.RIGHT_CURLY,
+		'(': TokenKind.LEFT_ROUND,
+		')': TokenKind.RIGHT_ROUND,
+		'[': TokenKind.LEFT_SQUARE,
+		']': TokenKind.RIGHT_SQUARE,
+		';': TokenKind.SEMICOLON,
+		',': TokenKind.COMMA,
+		'?': TokenKind.TERNARY,
+		'^': TokenKind.BIT_XOR,
+		'~': TokenKind.BIT_NOT,
+		'.': {
+			'.': {
+				'.': TokenKind.VARPARAMS,
+				fallback: TokenKind.INVALID,
+			},
+			fallback: TokenKind.DOT
+		},
+		'&': {
+			'&': TokenKind.AND,
+			fallback: TokenKind.BIT_AND
+		},
+		'|': {
+			'|': TokenKind.OR,
+			fallback: TokenKind.BIT_OR
+		},
+		':': {
+			':': TokenKind.DOUBLE_COLON,
+			fallback: TokenKind.COLON
+		},
+		'%': {
+			'=': TokenKind.MODULO_ASSIGN,
+			fallback: TokenKind.MODULO
+		},
+		'-': {
+			'-': TokenKind.MINUS_MINUS,
+			'=': TokenKind.MINUS_ASSIGN,
+			fallback: TokenKind.MINUS
+		},
+		'+': {
+			'+': TokenKind.PLUS_PLUS,
+			'=': TokenKind.PLUS_ASSIGN,
+			fallback: TokenKind.PLUS
+		}
 	}
 
-	public getTokens(): Token[] {
-		return this.tokens;
+	constructor(text: string, document: TextDocument | null = null) {
+		this.text = text;
+		this.document = document;
+
+		this.tokens = [];
+
+		this.cursor = 0;
+		this.current = '';
+		this.readEOF = false;
+
+		this.diagnostics = [];
+
+		this.next();
+	}
+
+	private charCode(): number {
+		if (this.readEOF) {
+			return -1;
+		}
+		
+		return this.current.charCodeAt(0);
+	}
+
+	private next(): void {
+		if (this.readEOF) {
+			return;
+		}
+
+		this.current = this.text[this.cursor];
+		this.cursor++;
+
+		if (this.current === undefined) {
+			this.readEOF = true;
+			this.current = '';
+		}
+	}
+
+	public getCurrentToken(): Token | undefined {
+		return this.currentToken;
+	}
+
+	public getPreviousToken(): Token | undefined {
+		return this.previousToken;
+	}
+
+	private addError(message: string, start: number, end: number) {
+		if (!this.document) {
+			return;
+		}
+
+		const startPos = this.document.positionAt(start);
+		const endPos = this.document.positionAt(end);
+		this.diagnostics.push(new Diagnostic(new Range(startPos, endPos), message));
 	}
 
 	public getDiagnostics(): Diagnostic[] {
 		return this.diagnostics;
 	}
 
-	private next() {
-		if (this.readEOF) {
+	private newToken(kind: TokenKind, start: number, end: number, value?: string): void {
+		if (!value) {
+			value = this.text.slice(start, end);
+		}
+
+		const token = new Token(kind, value, start, end);
+		this.tokens.push(token);
+		if (kind === TokenKind.INVALID) {
+			this.addError(`invalid token '${value}'`, start, end);
+		} else if (kind === TokenKind.LINE_FEED) {
+			// The next cycle previousToken would be set to this one
+			this.currentToken = token;
+			this.lex();
+			return;
+		};
+		
+		if (token.isComment()) {
+			// We do not completely ignore newlines as they can be used to separate statements
+			this.lex();
 			return;
 		}
 
-		this.current = this.text.charCodeAt(this.cursor);
-		this.cursor++;
-		this.column++;
-
-		if (Number.isNaN(this.current)) {
-			this.readEOF = true;
-			this.current = -1;
-		}
+		this.previousToken = this.currentToken;
+		this.currentToken = token;
 	}
 
-	private lex() {
-		while (!this.readEOF) {
-			const start = this.cursor - 1;
-			switch (this.current) {
-			case CharCode.WHITESPACE:
-			case CharCode.CARRIAGE_RETURN:
-			case CharCode.TAB: {
-				this.next();
-				continue;
+	public lex(): void {
+		let entry: TokenKind | TokenMap | Function | undefined;
+		let previousEntry: TokenMap;
+		while (true) {
+			if (this.readEOF) {
+				this.newToken(TokenKind.EOF, this.cursor - 1, this.cursor - 1);
+				return;
 			}
-			case CharCode.LINE_FEED: {
-				this.line++;
-				this.column = 0;
+
+			const charCode = this.charCode();
+			
+			if (CharCode.isAlphabetic(charCode)) {
+				const start = this.cursor - 1;
+				this.lexIdentifier();
+				const end = this.cursor - 1;
+
+				const value = this.text.slice(start, end);
 				
-				this.tokens.push(Token.singleCharToken(TokenKind.LINE_FEED, start));
-
+				this.newToken(Lexer.keywords.get(value) ?? TokenKind.IDENTIFIER, start, end, value);
+				return;
+			}
+			
+			if (CharCode.isNumeric(charCode)) {
 				this.next();
 				continue;
 			}
-			case CharCode.HASH: {
-				this.lexLineComment();
+
+			entry = this.tokenMap[this.current];
+
+			if (typeof entry === "number") {
+				const start = this.cursor - 1;
+				const end = this.cursor;
+				this.next();
+				this.newToken(entry, start, end);
+				return;
+			}
+
+			if (typeof entry === "function") {
+				const start = this.cursor - 1;
+				const kind = entry();
 				const end = this.cursor - 1;
-
-				this.tokens.push(new Token(
-					TokenKind.LINE_COMMENT,
-					this.text.slice(start, end),
-					start,
-					end
-				));
-
-				continue;
+				this.newToken(kind, start, end);
+				return;
 			}
-			case CharCode.SLASH: {
-				this.next();
-				switch (this.current) {
-				case CharCode.ASTERISK: {
-					const kind = this.lexBlockComment();
-					const end = this.cursor - 1;
 
-					this.tokens.push(new Token(
-						kind,
-						this.text.slice(start, end),
-						start,
-						end
-					));
-
-					continue;
-				}
-				case CharCode.SLASH: {
-					this.lexLineComment();
-					const end = this.cursor - 1;
-
-					this.tokens.push(new Token(
-						TokenKind.LINE_COMMENT,
-						this.text.slice(start, end),
-						start,
-						end
-					));
-
-					continue;
-				}
-				case CharCode.EQUALS: {
-					this.tokens.push(new Token(
-						TokenKind.DIVIDE_ASSIGN,
-						'/=',
-						start,
-						start + 2
-					));
-
-					this.next();
-					continue;
-				}
-				}
-
-
-				this.tokens.push(Token.singleCharToken(TokenKind.DIVIDE, start));
-
-				continue;
-			}
-			case CharCode.EQUALS: {
-				this.next();
-				if (this.current === CharCode.EQUALS) {
-					this.tokens.push(new Token(
-						TokenKind.EQUALS,
-						'==',
-						start,
-						start + 2
-					));
-
-					this.next();
-					continue;
-				}
-
-				this.tokens.push(Token.singleCharToken(TokenKind.ASSIGN, start));
-
-				continue;
-			}
-			case CharCode.LESS: {
-				this.next();
-				switch (this.current) {
-				case CharCode.EQUALS: {
-					this.next();
-					if (this.current === CharCode.GREATER) {
-						this.tokens.push(new Token(
-							TokenKind.THREE_WAY_CMP,
-							'<=>',
-							start,
-							start + 3
-						));
-
-						this.next();
-						continue;
-					}
-
-					this.tokens.push(new Token(
-						TokenKind.LESS_EQUALS,
-						'<=',
-						start,
-						start + 2
-					));
-
-					continue;
-				}
-				case CharCode.MINUS: {
-					this.tokens.push(new Token(
-						TokenKind.NEW_SLOT,
-						'<-',
-						start,
-						start + 2
-					));
-
-					this.next();
-					continue;
-				}
-				case CharCode.LESS: {
-					this.tokens.push(new Token(
-						TokenKind.SHIFT_LEFT,
-						'<<',
-						start,
-						start + 2
-					));
-
-					this.next();
-					continue;
-				}
-				}
-
-				this.tokens.push(Token.singleCharToken(TokenKind.LESS, start));
-
-				continue;
-			}
-			case CharCode.GREATER: {
-				this.next();
-				switch (this.current) {
-				case CharCode.EQUALS: {
-					this.tokens.push(new Token(
-						TokenKind.GREATER_EQUALS,
-						'>=',
-						start,
-						start + 2
-					));
-
-					this.next();
-					continue;
-				}
-				case CharCode.GREATER: {
-					this.next();
-					if (this.current === CharCode.GREATER) {
-						this.tokens.push(new Token(
-							TokenKind.UNSIGNED_SHIFT_RIGHT,
-							'>>>',
-							start,
-							start + 3
-						));
-
-						this.next();
-						continue;
-					}
-					this.tokens.push(new Token(
-						TokenKind.SHIFT_RIGHT,
-						'>>',
-						start,
-						start + 2
-					));
-
-					this.next();
-					continue;
-				}
-				}
-
-				this.tokens.push(Token.singleCharToken(TokenKind.GREATER, start));
-
-				continue;
-			}
-			case CharCode.EXCLAMATION: {
-				this.next();
-				if (this.current === CharCode.EQUALS) {
-					this.tokens.push(new Token(
-						TokenKind.NOT_EQUALS,
-						'!=',
-						start,
-						start + 2
-					));
-
-					this.next();
-					continue;
-				}
-
-				this.tokens.push(Token.singleCharToken(TokenKind.EXCLAMATION, start));
-
-				continue;
-			}
-			case CharCode.RAVLYK: {
-				this.next();
-				if (this.current === CharCode.DOUBLE_QUOTE) {
-					this.lexVerbatimString();
-					const end = this.cursor - 1;
-
-					this.tokens.push(new Token(
-						TokenKind.VERBATIM_STRING,
-						this.text.slice(start, end),
-						start,
-						end
-					));
-
-					continue;
-				}
-
-				this.tokens.push(Token.singleCharToken(TokenKind.LAMBDA, start));
-
-				continue;
-			}
-			case CharCode.QUOTE:
-			case CharCode.DOUBLE_QUOTE: {
-				const { kind, value } = this.lexString();
-				const end = this.cursor - 1;
-				this.tokens.push(new Token(
-					kind,
-					value,
-					start,
-					end
-				));
-
-				continue;
-			}
-			case CharCode.LEFT_CURLY:
-			case CharCode.RIGHT_CURLY:
-			case CharCode.LEFT_ROUND:
-			case CharCode.RIGHT_ROUND:
-			case CharCode.LEFT_SQUARE:
-			case CharCode.RIGHT_SQUARE:
-			case CharCode.SEMICOLON:
-			case CharCode.COMMA:
-			case CharCode.QUESTION:
-			case CharCode.CARET:
-			case CharCode.TILDE: {
-				this.tokens.push(Token.singleCharToken(this.current, start));
-
-				this.next();
-				continue;
-			}
-			case CharCode.DOT: {
-				this.next();
-				if (this.current === CharCode.DOT) {
-					this.next();
-					if (this.current === CharCode.DOT) {
-						this.tokens.push(new Token(
-							TokenKind.VARPARAMS,
-							'...',
-							start,
-							start + 3
-						));
-
-						this.next();
-						continue;
-					}
-
-					this.diagnostics.push(new Diagnostic(
-						new Range(new Position(this.line, start), new Position(this.line, start + 2)),
-						"Invalid token '..'.",
-					));
-				}
-
-				this.tokens.push(Token.singleCharToken(TokenKind.DOT, start));
-
-				continue;
-			}
-			case CharCode.AMPERSAND: {
-				this.next();
-				if (this.current === CharCode.AMPERSAND) {
-					this.tokens.push(new Token(
-						TokenKind.AND,
-						'&&',
-						start,
-						start + 2
-					));
-
-					this.next();
-					continue;
-				}
-
-				this.tokens.push(Token.singleCharToken(TokenKind.BIT_AND, start));
-
-				continue;
-			}
-			case CharCode.PIPE: {
-				this.next();
-				if (this.current === CharCode.PIPE) {
-					this.tokens.push(new Token(
-						TokenKind.OR,
-						'||',
-						start,
-						start + 2
-					));
-
-					this.next();
-					continue;
-				}
-
-				this.tokens.push(Token.singleCharToken(TokenKind.BIT_OR, start));
-
-				continue;
-			}
-			case CharCode.COLON: {
-				this.next();
-				if (this.current === CharCode.COLON) {
-					this.tokens.push(new Token(
-						TokenKind.DOUBLE_COLON,
-						'::',
-						start,
-						start + 2
-					));
-
-					this.next();
-					continue;
-				}
-
-				this.tokens.push(Token.singleCharToken(TokenKind.COLON, start));
-
-				continue;
-			}
-			case CharCode.ASTERISK: {
-				this.next();
-				if (this.current === CharCode.EQUALS) {
-					this.tokens.push(new Token(
-						TokenKind.MULTIPLY_ASSIGN,
-						'*=',
-						start,
-						start + 2
-					));
-
-					this.next();
-					continue;
-				}
-
-				this.tokens.push(Token.singleCharToken(TokenKind.MULTIPLY, start));
-
-
-				continue;
-			}
-			case CharCode.PERCENT: {
-				this.next();
-				if (this.current === CharCode.EQUALS) {
-					this.tokens.push(new Token(
-						TokenKind.MODULO_ASSIGN,
-						'%=',
-						start,
-						start + 2
-					));
-
-					this.next();
-					continue;
-				}
-
-				this.tokens.push(Token.singleCharToken(TokenKind.MODULO, start));
-
-				continue;
-			}
-			case CharCode.MINUS: {
-				this.next();
-				switch (this.current) {
-				case CharCode.EQUALS: {
-					this.tokens.push(new Token(
-						TokenKind.MINUS_ASSIGN,
-						'-=',
-						start,
-						start + 2
-					));
-
-					this.next();
-					continue;
-				}
-				case CharCode.MINUS: {
-					this.tokens.push(new Token(
-						TokenKind.MINUS_MINUS,
-						'--',
-						start,
-						start + 2
-					));
-
-					this.next();
-					continue;
-				}
-				}
-
-				this.tokens.push(Token.singleCharToken(TokenKind.MINUS, start));
-
-				continue;
-			}
-			case CharCode.PLUS: {
-				this.next();
-				switch (this.current) {
-				case CharCode.EQUALS: {
-					this.tokens.push(new Token(
-						TokenKind.PLUS_ASSIGN,
-						'+=',
-						start,
-						start + 2
-					));
-
-					this.next();
-					continue;
-				}
-				case CharCode.PLUS: {
-					this.tokens.push(new Token(
-						TokenKind.PLUS_PLUS,
-						'++',
-						start,
-						start + 2
-					));
-
-					this.next();
-					continue;
-				}
-				}
-
-				this.tokens.push(Token.singleCharToken(TokenKind.PLUS, start));
-
-				continue;
-			}
-			default:
-				if (CharCode.isAlphabetic(this.current)) {
-					this.lexIdentifier();
-					const end = this.cursor - 1;
-
-					const value = this.text.slice(start, end);
-
-					this.tokens.push(new Token(
-						this.keywords.get(value) ?? TokenKind.IDENTIFIER,
-						value,
-						start,
-						end
-					));
-
-					continue;
-				}
-
-				if (CharCode.isNumeric(this.current)) {
-					const { kind, value } = this.lexNumber();
-					const end = this.cursor - 1;
-
-					this.tokens.push(new Token(
-						kind,
-						value,
-						start,
-						end
-					));
-
-					continue;
-				}
-
-				if (CharCode.isControl(this.current)) {
-					this.diagnostics.push(new Diagnostic(
-						new Range(new Position(this.line, this.cursor - 1), new Position(this.line, this.cursor)),
-						"Unexpected character (control)."
-					))
-				}
-
-				this.next();
-				continue;
-			}
-		}
-
-		this.tokens.push(new Token(
-			TokenKind.EOF,
-			'',
-			this.cursor - 1,
-			this.cursor - 1
-		));
-
-		return this.tokens;
-	}
-
-	private lexLineComment() {
-		do {
 			this.next();
-			// Find the end of the line
-			if (this.current === CharCode.LINE_FEED) {
+			if (entry) {
+				previousEntry = entry;
 				break;
 			}
-		} while (!this.readEOF);
+		}
+
+		
+		const start = this.cursor - 2;
+		while (true) {
+			if (this.readEOF || !(this.current in previousEntry)) {
+				if (!previousEntry.fallback) {
+					break;
+				}
+				const end = this.cursor - 1;
+
+				this.newToken(previousEntry.fallback, start, end);
+				return;
+			}
+
+			const entry = previousEntry[this.current];
+
+			if (typeof entry === "number") {
+				const end = this.cursor;
+				this.next();
+				this.newToken(entry, start, end);
+				return;
+			}
+
+			if (typeof entry === "function") {
+				const kind = entry();
+				const end = this.cursor - 1;
+				this.newToken(kind, start, end);
+				return;
+			}
+			
+			previousEntry = entry;
+			this.next();
+		}
+		
+		this.newToken(TokenKind.EOF, start, start);
+		return;
 	}
 
 	private lexBlockComment(): TokenKind {
 		let kind = TokenKind.BLOCK_COMMENT;
 		this.next();
-		if (this.current === CharCode.ASTERISK) {
+		if (this.charCode() === CharCode.ASTERISK) {
 			this.next();
-			if (this.current === CharCode.SLASH) {
+			if (this.charCode() === CharCode.SLASH) {
 				this.next();
 				return TokenKind.BLOCK_COMMENT;
 			}
 			kind = TokenKind.DOC;
 		}
 		while (!this.readEOF) {
-			if (this.current === CharCode.LINE_FEED) {
-				this.line++;
-				this.column = 0;
-			} else if (this.current === CharCode.ASTERISK) {
+			if (this.charCode() === CharCode.ASTERISK) {
 				this.next();
-				if (this.current === CharCode.SLASH) {
+				if (this.charCode() === CharCode.SLASH) {
 					this.next();
 					return kind;
 				}
@@ -768,332 +484,136 @@ export class Lexer {
 			this.next();
 		}
 
-
-		this.diagnostics.push(new Diagnostic(
-			new Range(new Position(this.line, this.cursor), new Position(this.line, this.cursor + 1)),
-			"'*/' expected.",
-		));
+		this.addError("'*/' expected.", this.cursor - 1, this.cursor);
 
 		return kind;
 	}
 
-	private lexVerbatimString() {
-		const opening = this.current;
+	private lexLineComment(): TokenKind {
 		do {
 			this.next();
-			if (this.current === CharCode.LINE_FEED) {
-				this.line++;
-				this.column = 0;
-			} else if (this.current === opening) {
-				this.next();
-				return;
-			}
-		} while (!this.readEOF);
+		} while (!this.readEOF && this.charCode() !== CharCode.LINE_FEED);
+
+		return TokenKind.LINE_COMMENT;
 	}
 
-	private lexString(): { kind: TokenKind, value: string } {
-		const opening = this.current;
-		const kind = opening === CharCode.QUOTE ? TokenKind.INTEGER : TokenKind.STRING;
-		let value = "";
-		
-		const startPos = new Position(this.line, this.column - 1);
-		this.next();
-		while (!this.readEOF) {
-			switch (this.current) {
-			case CharCode.LINE_FEED:
-				this.diagnostics.push(new Diagnostic(
-					new Range(new Position(this.line, this.column), new Position(this.line, this.column)),
-					"Multiline in a constant."
-				));
-
-				this.line++;
-				this.column = 0;
-
+	private lexVerbatimString(): TokenKind {
+		const opening = this.charCode();
+		do {
+			this.next();
+			if (this.charCode() === opening) {
 				this.next();
-				continue;
-			case CharCode.BACKSLASH:
-				this.next();
-				switch (this.current) {
-				case CharCode.x:
-					value += this.processHexEscape(2);
-
-					continue;
-				case CharCode.u:
-					value += this.processHexEscape(4);
-
-					continue;
-				case CharCode.U:
-					value += this.processHexEscape(8);
-
-					continue;
-				case CharCode.t:
-					value += '\t';
-
-					this.next();
-					continue;
-				case CharCode.a:
-					value += '\a';
-
-					this.next();
-					continue;
-				case CharCode.b:
-					value += '\b';
-
-					this.next();
-					continue;
-				case CharCode.n:
-					value += '\n';
-
-					this.next();
-					continue;
-				case CharCode.r:
-					value += '\r';
-
-					this.next();
-					continue;
-				case CharCode.v:
-					value += '\v';
-
-					this.next();
-					continue;
-				case CharCode.f:
-					value += '\f';
-
-					this.next();
-					continue;
-				case CharCode.N0:
-					value += '\0';
-
-					this.next();
-					continue;
-				case CharCode.BACKSLASH:
-					value += '\r';
-
-					this.next();
-					continue;
-				case CharCode.QUOTE:
-					value += '\'';
-
-					this.next();
-					continue;
-				case CharCode.DOUBLE_QUOTE:
-					value += '\"';
-
-					this.next();
-					continue;
-				default:
-					this.diagnostics.push(new Diagnostic(
-						new Range(new Position(this.line, this.column - 2), new Position(this.line, this.column)),
-						"Unrecognised escape character."
-					));
-
-					this.next();
-				}
-			case opening:
-				this.next();
-				if (opening === CharCode.QUOTE) {
-					if (value.length === 0) {
-						this.diagnostics.push(new Diagnostic(
-							new Range(startPos, new Position(this.line, this.column - 1)),
-							"Empty constant."
-						));
-					} else if (value.length > 1) {
-						this.diagnostics.push(new Diagnostic(
-							new Range(startPos, new Position(this.line, this.column - 1)),
-							"Constant is too long."
-						));
-					}
-
-					return {
-						kind,
-						value: value.charCodeAt(0).toString()
-					}
-				}
-
-				return {
-					kind,
-					value
-				}
-			default:
-				value += String.fromCharCode(this.current);
-
-				this.next();
+				return TokenKind.VERBATIM_STRING;
 			}
-		}
+		} while (!this.readEOF);
 
-		this.diagnostics.push(new Diagnostic(
-			new Range(new Position(this.line, this.column - 1), new Position(this.line, this.column - 1)),
-			"Unterminated string literal."
-		));
+		this.addError("Unterminated string literal.", this.cursor - 1, this.cursor);
 
-		return {
-			kind,
-			value
-		}
+		return TokenKind.VERBATIM_STRING;
 	}
 
 	private processHexEscape(maxDigits: number): string {
 		this.next();
-		if (!CharCode.isHexadecimal(this.current)) {
-			this.diagnostics.push(new Diagnostic(
-				new Range(new Position(this.line, this.column - 3), new Position(this.line, this.column)),
-				"Hexadecimal number expected."
-			));
+		const charCode = this.charCode();
+		if (!CharCode.isHexadecimal(charCode)) {
+			this.addError("Hexadecimal number expected.", this.cursor - 1, this.cursor);
 			return "";
 		}
-		let number = this.current;
+		let number = charCode;
 		for (let i = 1; i < maxDigits; i++) {
 			this.next();
-			if (!CharCode.isHexadecimal(this.current)) {
+			const charCode = this.charCode();
+			if (!CharCode.isHexadecimal(charCode)) {
 				return String.fromCharCode(number);
 			}
-			number += this.current;
+			number += charCode;
 		}
 
 		this.next();
 		return String.fromCharCode(number);
 	}
 
+	private lexString(sequence?: string): TokenKind {
+		const opening = this.charCode();
+		const isChar = opening === CharCode.QUOTE;
+
+		const start = this.cursor - 1;
+		this.next();
+		let chars = -1;
+		while (!this.readEOF) {
+			chars++;
+			const charCode = this.charCode();
+			switch (charCode) {
+			case CharCode.LINE_FEED:
+				this.addError("Multiline in a constant.", this.cursor - 1, this.cursor - 1);
+
+				this.next();
+				continue;
+			case CharCode.BACKSLASH:
+				this.next();
+				switch (this.charCode()) {
+				case CharCode.x:
+					this.processHexEscape(2);
+					continue;
+				case CharCode.u:
+					this.processHexEscape(4);
+					continue;
+				case CharCode.U:
+					this.processHexEscape(8);
+					continue;
+				case CharCode.t:
+				case CharCode.a:
+				case CharCode.b:
+				case CharCode.n:
+				case CharCode.r:
+				case CharCode.v:
+				case CharCode.f:
+				case CharCode.N0:
+				case CharCode.BACKSLASH:
+				case CharCode.QUOTE:
+				case CharCode.DOUBLE_QUOTE:
+					this.next();
+					continue;
+				default:
+					this.addError("Unrecognised escape character.", this.cursor - 2, this.cursor);
+
+					this.next();
+					continue;
+				}
+			default:
+				if (charCode != opening && (!sequence || this.text.slice(this.cursor - sequence.length, this.cursor))) {
+					this.next();
+					continue;
+				}
+				this.next();
+				if (!isChar) {	
+					return TokenKind.STRING;
+				}
+
+				if (chars === 0) {
+					this.addError("Empty constant", start, this.cursor - 1);
+				} else if (chars > 1) {
+					this.addError("Constant is too long.", start, this.cursor - 1);
+				}
+
+				return TokenKind.INTEGER;
+			}
+		}
+
+
+		this.addError("Unterminated string literal.", this.cursor - 1, this.cursor);
+
+		return TokenKind.STRING;
+	}
+
 	private lexIdentifier() {
 		do {
 			this.next();
-		} while (!this.readEOF && CharCode.isAlphaNumeric(this.current));
+		} while (!this.readEOF && CharCode.isAlphaNumeric(this.charCode()));
 	}
 
-	private lexNumber(): { kind: TokenKind, value: string } {
-		const first = this.current;
-
-		let start = this.cursor - 1;
-		this.next();
-		if (first === CharCode.N0) {
-			if (CharCode.isOctal(this.current)) {
-				const value = this.lexOctal();
-				return {
-					kind: TokenKind.INTEGER,
-					value: value,
-				}
-			} else if (this.current === CharCode.x || this.current === CharCode.X) {
-				const value = this.lexHexadecimal();
-				return {
-					kind: TokenKind.INTEGER,
-					value: value,
-				}
-			} else if (CharCode.isNumeric(this.current)) {
-				// Cut the 0 at the start;
-				start++;
-			}
-		}
-
-		let kind = TokenKind.INTEGER;
-		const startPos = new Position(this.line, this.column - 2);
-
-		while (!this.readEOF) {
-			if (this.current === CharCode.DOT) {
-				kind = TokenKind.FLOAT;
-			} else if (this.current === CharCode.e || this.current === CharCode.E) {
-				kind = TokenKind.FLOAT;
-
-				this.next();
-				let offset = 2;
-				if (this.current === CharCode.MINUS || this.current === CharCode.PLUS) {
-					this.next();
-					offset++;
-				}
-
-				if (!CharCode.isNumeric(this.current)) {
-					if (this.current === CharCode.DOT) {
-						do {
-							this.next();
-							if (CharCode.isNumeric(this.current) || this.current === CharCode.DOT) {
-								continue;
-							}
-							if (this.current === CharCode.e || this.current === CharCode.E) {
-								this.next();
-								if (this.current === CharCode.MINUS || this.current === CharCode.PLUS) {
-									continue;
-								}
-								break;
-							}
-							break;
-						} while (!this.readEOF);
-					}
-
-					this.diagnostics.push(new Diagnostic(
-						new Range(startPos, new Position(this.line, this.column - 1)),
-						"Exponent expected."
-					));
-
-					break;
-				}
-			} else if (!CharCode.isNumeric(this.current)) {
-				break;
-			}
-
-			this.next();
-		}
-
-		const end = this.cursor - 1;
-		return {
-			kind: kind,
-			value: this.text.slice(start, end)
-		}
-	}
-
-
-	private lexOctal(): string {
-		const startPos = new Position(this.line, this.column - 2);
-		let result = this.current - CharCode.N0;
-		do {
-			this.next();
-			if (!CharCode.isOctal(this.current)) {
-				if (CharCode.isNumeric(this.current)) {
-					do {
-						this.next();
-					} while (CharCode.isNumeric(this.current) && !this.readEOF);
-
-					this.diagnostics.push(new Diagnostic(
-						new Range(startPos, new Position(this.line, this.column - 1)),
-						"Invalid octal number."
-					));
-				}
-				break;
-			}
-
-			result = result * 8 + this.current - CharCode.N0;
-		} while (!this.readEOF);
-
-		return result.toString();
-	}
-
-	private lexHexadecimal(): string {
-		const startPos = new Position(this.line, this.column - 2);
-		let result = 0;
-		do {
-			this.next();
-			if (!CharCode.isHexadecimal(this.current)) {
-				if (CharCode.isAlphaNumeric(this.current)) {
-					do {
-						this.next();
-					} while (CharCode.isAlphaNumeric(this.current) && !this.readEOF);
-
-					this.diagnostics.push(new Diagnostic(
-						new Range(startPos, new Position(this.line, this.column - 1)),
-						"Invalid hexadecimal number."
-					));
-				}
-
-				break;
-			}
-
-			if (CharCode.isNumeric(this.current)) {
-				result = result * 16 + (this.current - CharCode.N0);
-			} else {
-				const upper = CharCode.toUpper(this.current);
-				result = result * 16 + (upper - CharCode.A + 10);
-			}
-		} while (!this.readEOF);
-
-		return result.toString();
+	public getTokens(): Token[] {
+		return this.tokens;
 	}
 
 	public getTokenAtPosition(offset: number): { object: Token | null, index: number } {
@@ -1179,7 +699,8 @@ export class TokenIterator {
 			if (token.kind === TokenKind.IDENTIFIER) {
 				return token.value;
 			}
-
+			
+			this.next();
 			break;
 		}
 
@@ -1249,7 +770,13 @@ export class TokenIterator {
 			if (!name) {
 				return;
 			}
-		} 
+		}
+
+		const entry = vscriptGlobals.events.get(name);
+		if (entry) {
+			return entry;
+		}
+
 		if (!this.hasDot()) {
 			const entry =
 				vscriptGlobals.allFunctions.get(name) ||

@@ -1,5 +1,5 @@
 import { Disposable, TextDocument, window, workspace } from "vscode";
-import { Lexer } from "./lexer";
+import { Lexer, TokenKind } from "./lexer";
 
 export default class CurrentDocument {
 	private static lexer: Lexer = this.startupLexer();
@@ -36,6 +36,13 @@ export default class CurrentDocument {
 		this.inNut = true;
 
 		const text = document.getText();
-		this.lexer = new Lexer(text);
+		this.lexer = new Lexer(text, document);
+		this.lexer.lex();
+		let token = this.lexer.getCurrentToken();
+		while (token && token.kind != TokenKind.EOF) {
+			token.log();
+			this.lexer.lex();
+			token = this.lexer.getCurrentToken();
+		}
 	}
 }
