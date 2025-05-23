@@ -423,7 +423,7 @@ export class Lexer {
 		const token = new Token(kind, value, start, end);
 		this.tokens.push(token);
 		if (kind === TokenKind.INVALID) {
-			this.addError(`invalid token '${value}'`, start, end);
+			this.addError(`Invalid token '${value}'`, start, end);
 		} else if (kind === TokenKind.LINE_FEED) {
 			// The next cycle previousToken would be set to this one
 			this.currentToken = token;
@@ -681,7 +681,12 @@ export class Lexer {
 
 				if (value.length === 0) {
 					this.addError("Empty constant", start, this.cursor - 1);
-				} else if (value.length > 1) {
+
+					this.next();
+					return { kind, value: '0' };
+				}
+				
+				if (value.length > 1) {
 					this.addError("Constant is too long.", start, this.cursor - 1);
 				}
 

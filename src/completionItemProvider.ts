@@ -42,6 +42,7 @@ export class TF2VScriptCompletionProvider implements CompletionItemProvider {
 
 				// If we have not found this instance name in our saved completions then we assume it has every other method
 				this.addItems(items, vscriptGlobals.allMethods, CompletionItemKind.Method);
+				this.addItems(items, vscriptGlobals.events, CompletionItemKind.Event);
 				this.addDeprecatedItems(items, vscriptGlobals.allDeprecatedMethods, CompletionItemKind.Method);
 				
 				return Promise.resolve(items);
@@ -63,6 +64,7 @@ export class TF2VScriptCompletionProvider implements CompletionItemProvider {
 			}
 			
 			this.addItems(items, vscriptGlobals.allMethods, CompletionItemKind.Method);
+			this.addItems(items, vscriptGlobals.events, CompletionItemKind.Event);
 			this.addDeprecatedItems(items, vscriptGlobals.allDeprecatedMethods, CompletionItemKind.Method);
 
 			return Promise.resolve(items);
@@ -71,6 +73,7 @@ export class TF2VScriptCompletionProvider implements CompletionItemProvider {
 		// Dotless completions
 
 		this.addItems(items, vscriptGlobals.allFunctions, CompletionItemKind.Function);
+		this.addItems(items, vscriptGlobals.events, CompletionItemKind.Event);
 		this.addDeprecatedItems(items, vscriptGlobals.allDeprecatedFunctions, CompletionItemKind.Function);
 
 		this.addItems(items, vscriptGlobals.builtInConstants, CompletionItemKind.Constant);
