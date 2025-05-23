@@ -37,12 +37,10 @@ export default class CurrentDocument {
 
 		const text = document.getText();
 		this.lexer = new Lexer(text, document);
-		this.lexer.lex();
-		let token = this.lexer.getCurrentToken();
-		while (token && token.kind != TokenKind.EOF) {
-			token.log();
-			this.lexer.lex();
-			token = this.lexer.getCurrentToken();
+
+		// There should be a parser instead
+		for (let token = this.lexer.lex(); token.kind != TokenKind.EOF; token = this.lexer.lex()) {
+			// token.log();
 		}
 	}
 }

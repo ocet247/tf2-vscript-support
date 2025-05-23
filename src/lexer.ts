@@ -1,6 +1,7 @@
 import { Diagnostic, Range, TextDocument } from "vscode";
 import { CharCode } from "./textProcessing";
 import * as vscriptGlobals from "./globals";
+
 export enum TokenKind {
 	INVALID = -1,
 	EOF = 0,
@@ -140,8 +141,8 @@ export class Token {
 type TokenMap = {
 	[char: string]: TokenKind | TokenMap | Function;
 } & {
-	fallback?: TokenKind;
-} 
+	fallback: TokenKind;
+}
 
 export class Lexer {
 	private readonly text: string;
@@ -200,14 +201,15 @@ export class Lexer {
 		['rawcall', TokenKind.RAWCALL]
 	]);
 
-	private readonly tokenMap: TokenMap = {
+	private readonly tokenMap: { [char: string]: TokenKind | TokenMap | Function } = {
 		'\n': TokenKind.LINE_FEED,
 		'#': this.lexLineComment.bind(this),
 		'/': {
 			'*': this.lexBlockComment.bind(this),
 			'/': this.lexLineComment.bind(this),
 			'=': TokenKind.DIVIDE_ASSIGN,
-			'>': TokenKind.ATTR_CLOSE
+			'>': TokenKind.ATTR_CLOSE,
+			fallback: TokenKind.DIVIDE
 		},
 		'=': {
 			'=': TokenKind.EQUALS,
@@ -284,7 +286,74 @@ export class Lexer {
 			'+': TokenKind.PLUS_PLUS,
 			'=': TokenKind.PLUS_ASSIGN,
 			fallback: TokenKind.PLUS
-		}
+		},
+		// Whoopsie
+		'a': this.lexIdentifier.bind(this),
+		'b': this.lexIdentifier.bind(this),
+		'c': this.lexIdentifier.bind(this),
+		'd': this.lexIdentifier.bind(this),
+		'e': this.lexIdentifier.bind(this),
+		'f': this.lexIdentifier.bind(this),
+		'g': this.lexIdentifier.bind(this),
+		'h': this.lexIdentifier.bind(this),
+		'i': this.lexIdentifier.bind(this),
+		'j': this.lexIdentifier.bind(this),
+		'k': this.lexIdentifier.bind(this),
+		'l': this.lexIdentifier.bind(this),
+		'm': this.lexIdentifier.bind(this),
+		'n': this.lexIdentifier.bind(this),
+		'o': this.lexIdentifier.bind(this),
+		'p': this.lexIdentifier.bind(this),
+		'q': this.lexIdentifier.bind(this),
+		'r': this.lexIdentifier.bind(this),
+		's': this.lexIdentifier.bind(this),
+		't': this.lexIdentifier.bind(this),
+		'u': this.lexIdentifier.bind(this),
+		'v': this.lexIdentifier.bind(this),
+		'w': this.lexIdentifier.bind(this),
+		'x': this.lexIdentifier.bind(this),
+		'y': this.lexIdentifier.bind(this),
+		'z': this.lexIdentifier.bind(this),
+
+		'A': this.lexIdentifier.bind(this),
+		'B': this.lexIdentifier.bind(this),
+		'C': this.lexIdentifier.bind(this),
+		'D': this.lexIdentifier.bind(this),
+		'E': this.lexIdentifier.bind(this),
+		'F': this.lexIdentifier.bind(this),
+		'G': this.lexIdentifier.bind(this),
+		'H': this.lexIdentifier.bind(this),
+		'I': this.lexIdentifier.bind(this),
+		'J': this.lexIdentifier.bind(this),
+		'K': this.lexIdentifier.bind(this),
+		'L': this.lexIdentifier.bind(this),
+		'M': this.lexIdentifier.bind(this),
+		'N': this.lexIdentifier.bind(this),
+		'O': this.lexIdentifier.bind(this),
+		'P': this.lexIdentifier.bind(this),
+		'Q': this.lexIdentifier.bind(this),
+		'R': this.lexIdentifier.bind(this),
+		'S': this.lexIdentifier.bind(this),
+		'T': this.lexIdentifier.bind(this),
+		'U': this.lexIdentifier.bind(this),
+		'V': this.lexIdentifier.bind(this),
+		'W': this.lexIdentifier.bind(this),
+		'X': this.lexIdentifier.bind(this),
+		'Y': this.lexIdentifier.bind(this),
+		'Z': this.lexIdentifier.bind(this),
+
+		'_': this.lexIdentifier.bind(this),
+
+		'0': this.lexNumber.bind(this),
+		'1': this.lexNumber.bind(this),
+		'2': this.lexNumber.bind(this),
+		'3': this.lexNumber.bind(this),
+		'4': this.lexNumber.bind(this),
+		'5': this.lexNumber.bind(this),
+		'6': this.lexNumber.bind(this),
+		'7': this.lexNumber.bind(this),
+		'8': this.lexNumber.bind(this),
+		'9': this.lexNumber.bind(this),
 	}
 
 	constructor(text: string, document: TextDocument | null = null) {
@@ -346,7 +415,7 @@ export class Lexer {
 		return this.diagnostics;
 	}
 
-	private newToken(kind: TokenKind, start: number, end: number, value?: string): void {
+	private newToken(kind: TokenKind, start: number, end: number, value?: string): Token {
 		if (!value) {
 			value = this.text.slice(start, end);
 		}
@@ -358,45 +427,29 @@ export class Lexer {
 		} else if (kind === TokenKind.LINE_FEED) {
 			// The next cycle previousToken would be set to this one
 			this.currentToken = token;
-			this.lex();
-			return;
+			return this.lex();
 		};
 		
 		if (token.isComment()) {
-			// We do not completely ignore newlines as they can be used to separate statements
-			this.lex();
-			return;
+			// we do not change our current token if our token is happens to be a comment
+			return this.lex();
 		}
 
 		this.previousToken = this.currentToken;
 		this.currentToken = token;
+		return token;
+	}
+	
+	public getTokens(): Token[] {
+		return this.tokens;
 	}
 
-	public lex(): void {
+	public lex(): Token {
 		let entry: TokenKind | TokenMap | Function | undefined;
 		let previousEntry: TokenMap;
 		while (true) {
 			if (this.readEOF) {
-				this.newToken(TokenKind.EOF, this.cursor - 1, this.cursor - 1);
-				return;
-			}
-
-			const charCode = this.charCode();
-			
-			if (CharCode.isAlphabetic(charCode)) {
-				const start = this.cursor - 1;
-				this.lexIdentifier();
-				const end = this.cursor - 1;
-
-				const value = this.text.slice(start, end);
-				
-				this.newToken(Lexer.keywords.get(value) ?? TokenKind.IDENTIFIER, start, end, value);
-				return;
-			}
-			
-			if (CharCode.isNumeric(charCode)) {
-				this.next();
-				continue;
+				return this.newToken(TokenKind.EOF, this.cursor - 1, this.cursor - 1);
 			}
 
 			entry = this.tokenMap[this.current];
@@ -405,16 +458,18 @@ export class Lexer {
 				const start = this.cursor - 1;
 				const end = this.cursor;
 				this.next();
-				this.newToken(entry, start, end);
-				return;
+				return this.newToken(entry, start, end);
 			}
 
 			if (typeof entry === "function") {
 				const start = this.cursor - 1;
-				const kind = entry();
+				const result = entry();
 				const end = this.cursor - 1;
-				this.newToken(kind, start, end);
-				return;
+				if (typeof result === "number") {	
+					return this.newToken(result, start, end);
+				}
+
+				return this.newToken(result.kind, start, end, result.value);
 			}
 
 			this.next();
@@ -427,38 +482,33 @@ export class Lexer {
 		
 		const start = this.cursor - 2;
 		while (true) {
-			if (this.readEOF || !(this.current in previousEntry)) {
-				if (!previousEntry.fallback) {
-					break;
-				}
-				const end = this.cursor - 1;
-
-				this.newToken(previousEntry.fallback, start, end);
-				return;
-			}
-
 			const entry = previousEntry[this.current];
 
+			if (this.readEOF || entry === undefined) {
+				const end = this.cursor - 1;
+
+				return this.newToken(previousEntry.fallback, start, end);
+			}
+			
 			if (typeof entry === "number") {
 				const end = this.cursor;
 				this.next();
-				this.newToken(entry, start, end);
-				return;
+				return this.newToken(entry, start, end);
 			}
 
 			if (typeof entry === "function") {
-				const kind = entry();
+				const result = entry();
 				const end = this.cursor - 1;
-				this.newToken(kind, start, end);
-				return;
+				if (typeof result === "number") {	
+					return this.newToken(result, start, end);
+				}
+
+				return this.newToken(result.kind, start, end, result.value);
 			}
 			
 			previousEntry = entry;
 			this.next();
 		}
-		
-		this.newToken(TokenKind.EOF, start, start);
-		return;
 	}
 
 	private lexBlockComment(): TokenKind {
@@ -497,19 +547,21 @@ export class Lexer {
 		return TokenKind.LINE_COMMENT;
 	}
 
-	private lexVerbatimString(): TokenKind {
+	private lexVerbatimString(): { kind: TokenKind, value: string } {
 		const opening = this.charCode();
+		let value = "";
 		do {
 			this.next();
 			if (this.charCode() === opening) {
 				this.next();
-				return TokenKind.VERBATIM_STRING;
+				return { kind: TokenKind.VERBATIM_STRING, value };
 			}
+			value += this.current;
 		} while (!this.readEOF);
 
 		this.addError("Unterminated string literal.", this.cursor - 1, this.cursor);
 
-		return TokenKind.VERBATIM_STRING;
+		return { kind: TokenKind.VERBATIM_STRING, value };
 	}
 
 	private processHexEscape(maxDigits: number): string {
@@ -533,15 +585,14 @@ export class Lexer {
 		return String.fromCharCode(number);
 	}
 
-	private lexString(sequence?: string): TokenKind {
+	private lexString(): { kind: TokenKind, value: string } {
 		const opening = this.charCode();
-		const isChar = opening === CharCode.QUOTE;
+		const kind = opening === CharCode.QUOTE ? TokenKind.INTEGER : TokenKind.STRING;
+		let value = "";
 
 		const start = this.cursor - 1;
 		this.next();
-		let chars = -1;
 		while (!this.readEOF) {
-			chars++;
 			const charCode = this.charCode();
 			switch (charCode) {
 			case CharCode.LINE_FEED:
@@ -553,25 +604,67 @@ export class Lexer {
 				this.next();
 				switch (this.charCode()) {
 				case CharCode.x:
-					this.processHexEscape(2);
+					value += this.processHexEscape(2);
 					continue;
 				case CharCode.u:
-					this.processHexEscape(4);
+					value += this.processHexEscape(4);
 					continue;
 				case CharCode.U:
-					this.processHexEscape(8);
+					value += this.processHexEscape(8);
 					continue;
 				case CharCode.t:
+					value += '\t';
+
+					this.next();
+					continue;
 				case CharCode.a:
+					value += '\a';
+
+					this.next();
+					continue;
 				case CharCode.b:
+					value += '\b';
+
+					this.next();
+					continue;
 				case CharCode.n:
+					value += '\n';
+
+					this.next();
+					continue;
 				case CharCode.r:
+					value += '\r';
+
+					this.next();
+					continue;
 				case CharCode.v:
+					value += '\v';
+
+					this.next();
+					continue;
 				case CharCode.f:
+					value += '\f';
+
+					this.next();
+					continue;
 				case CharCode.N0:
+					value += '\0';
+
+					this.next();
+					continue;
 				case CharCode.BACKSLASH:
+					value += '\r';
+
+					this.next();
+					continue;
 				case CharCode.QUOTE:
+					value += '\'';
+
+					this.next();
+					continue;
 				case CharCode.DOUBLE_QUOTE:
+					value += '\"';
+
 					this.next();
 					continue;
 				default:
@@ -580,40 +673,178 @@ export class Lexer {
 					this.next();
 					continue;
 				}
-			default:
-				if (charCode != opening && (!sequence || this.text.slice(this.cursor - sequence.length, this.cursor))) {
+			case opening:
+				if (kind === TokenKind.STRING) {
 					this.next();
-					continue;
-				}
-				this.next();
-				if (!isChar) {	
-					return TokenKind.STRING;
+					return { kind, value };
 				}
 
-				if (chars === 0) {
+				if (value.length === 0) {
 					this.addError("Empty constant", start, this.cursor - 1);
-				} else if (chars > 1) {
+				} else if (value.length > 1) {
 					this.addError("Constant is too long.", start, this.cursor - 1);
 				}
 
-				return TokenKind.INTEGER;
+				this.next();
+				return { kind, value: value.charCodeAt(0).toString() };
+			default:
+				value += this.current;
+				
+				this.next();
+				continue;
 			}
 		}
 
-
 		this.addError("Unterminated string literal.", this.cursor - 1, this.cursor);
 
-		return TokenKind.STRING;
+		return { kind, value };
 	}
 
-	private lexIdentifier() {
+	private lexNumber(): { kind: TokenKind, value: string } {
+		const first = this.charCode();
+
+		let start = this.cursor - 1;
+		this.next();
+		let charCode = this.charCode();
+		if (first === CharCode.N0) {
+			if (CharCode.isOctal(charCode)) {
+				const value = this.lexOctal();
+				return {
+					kind: TokenKind.INTEGER,
+					value: value,
+				}
+			} else if (charCode === CharCode.x || charCode === CharCode.X) {
+				const value = this.lexHexadecimal();
+				return {
+					kind: TokenKind.INTEGER,
+					value: value,
+				}
+			} else if (CharCode.isNumeric(charCode)) {
+				// Cut the 0 at the start;
+				start++;
+			}
+		}
+
+		let kind = TokenKind.INTEGER;
+		while (!this.readEOF) {
+			if (charCode === CharCode.DOT) {
+				kind = TokenKind.FLOAT;
+			} else if (charCode === CharCode.e || charCode === CharCode.E) {
+				kind = TokenKind.FLOAT;
+
+				this.next();
+				charCode = this.charCode();
+				let offset = 2;
+				if (charCode === CharCode.MINUS || charCode === CharCode.PLUS) {
+					this.next();
+					charCode = this.charCode();
+					offset++;
+				}
+
+				if (!CharCode.isNumeric(charCode)) {
+					if (charCode === CharCode.DOT) {
+						do {
+							this.next();		
+							charCode = this.charCode();
+							if (CharCode.isNumeric(charCode) || charCode === CharCode.DOT) {
+								continue;
+							}
+							if (charCode === CharCode.e || charCode === CharCode.E) {
+								this.next();	
+								charCode = this.charCode();
+								if (charCode === CharCode.MINUS || charCode === CharCode.PLUS) {
+									continue;
+								}
+								break;
+							}
+							break;
+						} while (!this.readEOF);
+					}
+
+					this.addError("Exponent expected.", start, this.cursor - 1);
+
+					break;
+				}
+			} else if (!CharCode.isNumeric(charCode)) {
+				break;
+			}
+
+			this.next();
+			charCode = this.charCode();
+		}
+
+		const end = this.cursor - 1;
+		return {
+			kind: kind,
+			value: this.text.slice(start, end)
+		}
+	}
+
+
+	private lexOctal(): string {
+		const start = this.cursor - 2;
+		let charCode = this.charCode();
+		let result = charCode - CharCode.N0;
+		do {
+			this.next();
+			charCode = this.charCode();
+			if (!CharCode.isOctal(charCode)) {
+				if (CharCode.isNumeric(charCode)) {
+					do {
+						this.next();
+						charCode = this.charCode();
+					} while (CharCode.isNumeric(charCode) && !this.readEOF);
+
+					this.addError("Invalid octal number.", start, this.cursor - 1);
+				}
+				break;
+			}
+
+			result = result * 8 + (charCode - CharCode.N0);
+		} while (!this.readEOF);
+
+		return result.toString();
+	}
+
+	private lexHexadecimal(): string {
+		const start = this.cursor - 2;
+		let result = 0;
+		do {
+			this.next();
+			let charCode = this.charCode();
+			if (!CharCode.isHexadecimal(charCode)) {
+				if (CharCode.isAlphaNumeric(charCode)) {
+					do {
+						this.next();
+						charCode = this.charCode();
+					} while (CharCode.isAlphaNumeric(charCode) && !this.readEOF);
+
+					this.addError("Invalid hexadecimal number.", start, this.cursor - 1);
+				}
+
+				break;
+			}
+
+			if (CharCode.isNumeric(charCode)) {
+				result = result * 16 + (charCode - CharCode.N0);
+			} else {
+				const upper = CharCode.toUpper(charCode);
+				result = result * 16 + (upper - CharCode.A + 10);
+			}
+		} while (!this.readEOF);
+
+		return result.toString();
+	}
+
+	private lexIdentifier(): { kind: TokenKind, value: string } {
+		const start = this.cursor - 1;
 		do {
 			this.next();
 		} while (!this.readEOF && CharCode.isAlphaNumeric(this.charCode()));
-	}
+		const end = this.cursor - 1;
 
-	public getTokens(): Token[] {
-		return this.tokens;
+		const value = this.text.slice(start, end);
+		return { kind: Lexer.keywords.get(value) ?? TokenKind.IDENTIFIER, value }
 	}
 
 	public getTokenAtPosition(offset: number): { object: Token | null, index: number } {
@@ -629,18 +860,12 @@ export class Lexer {
 			} else if (offset >= token.end) {
 				left = mid + 1;
 			} else {
-				return {
-					object: token,
-					index: mid
-				};
+				return { object: token, index: mid };
 			}
 		}
 
 		// Not found: return the closest token to the left
-		return {
-			object: null,
-			index: left - 1
-		};
+		return { object: null, index: left - 1 };
 	}
 }
 

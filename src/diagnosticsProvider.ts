@@ -147,7 +147,6 @@ export default class TF2VScriptDiagnosticsProvider {
 
 			const { minParamCount, maxParamCount } = this.getParamCount(signature);
 			
-
 			let message;
 			if (maxParamCount === -1) {
 				if (usedParamCount >= minParamCount) {
@@ -185,13 +184,11 @@ export default class TF2VScriptDiagnosticsProvider {
 		}
 		
 		const lexer = new Lexer(signature.slice(open + 1, close));
-		const iterator = new TokenIterator(lexer.getTokens());
 
 		let paramCount = 1;
 		let defaultParamCount = 0;
 		let isVariadic = false;
-		while (iterator.hasNext()) {
-			const token = iterator.next();
+		for (let token = lexer.lex(); token.kind != TokenKind.EOF; token = lexer.lex()) {
 			switch (token.kind) {
 			case TokenKind.COMMA:
 				paramCount++;
