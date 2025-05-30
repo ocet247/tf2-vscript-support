@@ -1,0 +1,2494 @@
+=== EBotType ===
+
+{| class = "standard-table"
+! Name
+! Value
+|-
+| <code>TF_BOT_TYPE</code>
+| 1337
+|}
+
+=== ECollisionGroup ===
+
+See the [[Collision_groups|main page]] for documentation on each collision group.
+
+{| class = "standard-table"
+! Name
+! Value
+|-
+| <code>COLLISION_GROUP_NONE</code>
+| 0
+|-
+| <code>COLLISION_GROUP_DEBRIS</code>
+| 1
+|-
+| <code>COLLISION_GROUP_DEBRIS_TRIGGER</code>
+| 2
+|-
+| <code>COLLISION_GROUP_INTERACTIVE_DEBRIS</code>
+| 3
+|-
+| <code>COLLISION_GROUP_INTERACTIVE</code>
+| 4
+|-
+| <code>COLLISION_GROUP_PLAYER</code>
+| 5
+|-
+| <code>COLLISION_GROUP_BREAKABLE_GLASS</code>
+| 6
+|-
+| <code>COLLISION_GROUP_VEHICLE</code>
+| 7
+|-
+| <code>COLLISION_GROUP_PLAYER_MOVEMENT</code>
+| 8
+|-
+| <code>COLLISION_GROUP_NPC</code>
+| 9
+|-
+| <code>COLLISION_GROUP_IN_VEHICLE</code>
+| 10
+|-
+| <code>COLLISION_GROUP_WEAPON</code>
+| 11
+|-
+| <code>COLLISION_GROUP_VEHICLE_CLIP</code>
+| 12
+|-
+| <code>COLLISION_GROUP_PROJECTILE</code>
+| 13
+|-
+| <code>COLLISION_GROUP_DOOR_BLOCKER</code>
+| 14
+|-
+| <code>COLLISION_GROUP_PASSABLE_DOOR</code>
+| 15
+|-
+| <code>COLLISION_GROUP_DISSOLVING</code>
+| 16
+|-
+| <code>COLLISION_GROUP_PUSHAWAY</code>
+| 17
+|-
+| <code>COLLISION_GROUP_NPC_ACTOR</code>
+| 18
+|-
+| <code>COLLISION_GROUP_NPC_SCRIPTED</code>
+| 19
+|-
+| <code>LAST_SHARED_COLLISION_GROUP</code>
+| 20
+|}
+
+{{note|{{tf2|2}} has extended collision groups, [[#TFCOLLISION_GROUP|see below]].}}
+
+=== ECritType ===
+{| class = "standard-table"
+! Name
+! Value
+|-
+| <code>CRIT_NONE</code>
+| 0
+|-
+| <code>CRIT_MINI</code>
+| 1
+|-
+| <code>CRIT_FULL</code>
+| 2
+|}
+
+=== EHitGroup ===
+
+{| class = "standard-table"
+! Name
+! Value
+|-
+| <code>HITGROUP_GENERIC</code>
+| null {{bug|This is supposed to be 0}}
+|-
+| <code>HITGROUP_HEAD</code>
+| 1
+|-
+| <code>HITGROUP_CHEST</code>
+| 2
+|-
+| <code>HITGROUP_STOMACH</code>
+| 3
+|-
+| <code>HITGROUP_LEFTARM</code>
+| 4
+|-
+| <code>HITGROUP_RIGHTARM</code>
+| 5
+|-
+| <code>HITGROUP_LEFTLEG</code>
+| 6
+|-
+| <code>HITGROUP_RIGHTLEG</code>
+| 7
+|-
+| <code>HITGROUP_GEAR</code>
+| 10
+|}
+
+=== EHoliday ===
+
+{| class = "standard-table"
+! Name
+! Value
+|-
+| <code>kHoliday_None</code>
+| 0
+|-
+| <code>kHoliday_TFBirthday</code>
+| 1
+|-
+| <code>kHoliday_Halloween</code>
+| 2
+|-
+| <code>kHoliday_Christmas</code>
+| 3
+|-
+| <code>kHoliday_CommunityUpdate</code>
+| 4
+|-
+| <code>kHoliday_EOTL</code>
+| 5
+|-
+| <code>kHoliday_Valentines</code>
+| 6
+|-
+| <code>kHoliday_MeetThePyro</code>
+| 7
+|-
+| <code>kHoliday_FullMoon</code>
+| 8
+|-
+| <code>kHoliday_HalloweenOrFullMoon</code>
+| 9
+|-
+| <code>kHoliday_HalloweenOrFullMoonOrValentines</code>
+| 10
+|-
+| <code>kHoliday_AprilFools</code>
+| 11
+|-
+| <code>kHoliday_Soldier</code>
+| 12
+|-
+| <code>kHoliday_Summer</code>
+| 13
+|-
+| <code>kHolidayCount</code>
+| 14
+|}
+
+=== EHudNotify ===
+
+{| class = "standard-table"
+! Name
+! Value
+|-
+| <code>HUD_PRINTNOTIFY</code>
+| 1
+|-
+| <code>HUD_PRINTCONSOLE</code>
+| 2
+|-
+| <code>HUD_PRINTTALK</code>
+| 3
+|-
+| <code>HUD_PRINTCENTER</code>
+| 4
+|}
+
+=== EMoveCollide ===
+
+{| class = "standard-table"
+! Name
+! Value
+|-
+| <code>MOVECOLLIDE_DEFAULT</code>
+| 0
+|-
+| <code>MOVECOLLIDE_FLY_BOUNCE</code>
+| 1
+|-
+| <code>MOVECOLLIDE_FLY_CUSTOM</code>
+| 2
+|-
+| <code>MOVECOLLIDE_FLY_SLIDE</code>
+| 3
+|-
+| <code>MOVECOLLIDE_MAX_BITS</code>
+| 3
+|-
+| <code>MOVECOLLIDE_COUNT</code>
+| 4
+|}
+
+=== EMoveType ===
+
+{| class = "standard-table"
+! Name
+! Value
+|-
+| <code>MOVETYPE_NONE</code>
+| 0
+|-
+| <code>MOVETYPE_ISOMETRIC</code>
+| 1
+|-
+| <code>MOVETYPE_WALK</code>
+| 2
+|-
+| <code>MOVETYPE_STEP</code>
+| 3
+|-
+| <code>MOVETYPE_FLY</code>
+| 4
+|-
+| <code>MOVETYPE_FLYGRAVITY</code>
+| 5
+|-
+| <code>MOVETYPE_VPHYSICS</code>
+| 6
+|-
+| <code>MOVETYPE_PUSH</code>
+| 7
+|-
+| <code>MOVETYPE_NOCLIP</code>
+| 8
+|-
+| <code>MOVETYPE_LADDER</code>
+| 9
+|-
+| <code>MOVETYPE_OBSERVER</code>
+| 10
+|-
+| <code>MOVETYPE_CUSTOM</code>
+| 11
+|-
+| <code>MOVETYPE_LAST</code>
+| 11
+|}
+
+=== ENavCornerType ===
+
+{| class = "standard-table"
+! Name
+! Value
+|-
+| <code>NORTH_WEST</code>
+| 0
+|-
+| <code>NORTH_EAST</code>
+| 1
+|-
+| <code>SOUTH_EAST</code>
+| 2
+|-
+| <code>SOUTH_WEST</code>
+| 3
+|-
+| <code>NUM_CORNERS</code>
+| 4
+|}
+
+=== ENavDirType ===
+
+{| class = "standard-table"
+! Name
+! Value
+|-
+| <code>NORTH</code>
+| 0
+|-
+| <code>EAST</code>
+| 1
+|-
+| <code>SOUTH</code>
+| 2
+|-
+| <code>WEST</code>
+| 3
+|-
+| <code>NUM_DIRECTIONS</code>
+| 4
+|}
+
+=== ENavRelativeDirType ===
+
+{| class = "standard-table"
+! Name
+! Value
+|-
+| <code>FORWARD</code>
+| 0
+|-
+| <code>RIGHT</code>
+| 1
+|-
+| <code>BACKWARD</code>
+| 2
+|-
+| <code>LEFT</code>
+| 3
+|-
+| <code>UP</code>
+| 4
+|-
+| <code>DOWN</code>
+| 5
+|-
+| <code>NUM_RELATIVE_DIRECTIONS</code>
+| 6
+|}
+
+=== ENavTraverseType ===
+
+{| class = "standard-table"
+! Name
+! Value
+|-
+| <code>GO_NORTH</code>
+| 0
+|-
+| <code>GO_EAST</code>
+| 1
+|-
+| <code>GO_SOUTH</code>
+| 2
+|-
+| <code>GO_WEST</code>
+| 3
+|-
+| <code>GO_LADDER_UP</code>
+| 4
+|-
+| <code>GO_LADDER_DOWN</code>
+| 5
+|-
+| <code>GO_JUMP</code>
+| 6
+|-
+| <code>GO_ELEVATOR_UP</code>
+| 7
+|-
+| <code>GO_ELEVATOR_DOWN</code>
+| 8
+|-
+| <code>NUM_TRAVERSE_TYPES</code>
+| 9
+|}
+
+=== ERenderFx ===
+
+{| class = "standard-table"
+! Name
+! Value
+|-
+| <code>kRenderFxNone</code>
+| 0
+|-
+| <code>kRenderFxPulseSlow</code>
+| 1
+|-
+| <code>kRenderFxPulseFast</code>
+| 2
+|-
+| <code>kRenderFxPulseSlowWide</code>
+| 3
+|-
+| <code>kRenderFxPulseFastWide</code>
+| 4
+|-
+| <code>kRenderFxFadeSlow</code>
+| 5
+|-
+| <code>kRenderFxFadeFast</code>
+| 6
+|-
+| <code>kRenderFxSolidSlow</code>
+| 7
+|-
+| <code>kRenderFxSolidFast</code>
+| 8
+|-
+| <code>kRenderFxStrobeSlow</code>
+| 9
+|-
+| <code>kRenderFxStrobeFast</code>
+| 10
+|-
+| <code>kRenderFxStrobeFaster</code>
+| 11
+|-
+| <code>kRenderFxFlickerSlow</code>
+| 12
+|-
+| <code>kRenderFxFlickerFast</code>
+| 13
+|-
+| <code>kRenderFxNoDissipation</code>
+| 14
+|-
+| <code>kRenderFxDistort</code>
+| 15
+|-
+| <code>kRenderFxHologram</code>
+| 16
+|-
+| <code>kRenderFxExplode</code>
+| 17
+|-
+| <code>kRenderFxGlowShell</code>
+| 18
+|-
+| <code>kRenderFxClampMinScale</code>
+| 19
+|-
+| <code>kRenderFxEnvRain</code>
+| 20
+|-
+| <code>kRenderFxEnvSnow</code>
+| 21
+|-
+| <code>kRenderFxSpotlight</code>
+| 22
+|-
+| <code>kRenderFxRagdoll</code>
+| 23
+|-
+| <code>kRenderFxPulseFastWider</code>
+| 24
+|-
+| <code>kRenderFxMax</code>
+| 25
+|}
+
+=== ERenderMode ===
+
+{| class = "standard-table"
+! Name
+! Value
+|-
+| <code>kRenderNormal</code>
+| 0
+|-
+| <code>kRenderTransColor</code>
+| 1
+|-
+| <code>kRenderTransTexture</code>
+| 2
+|-
+| <code>kRenderGlow</code>
+| 3
+|-
+| <code>kRenderTransAlpha</code>
+| 4
+|-
+| <code>kRenderTransAdd</code>
+| 5
+|-
+| <code>kRenderEnvironmental</code>
+| 6
+|-
+| <code>kRenderTransAddFrameBlend</code>
+| 7
+|-
+| <code>kRenderTransAlphaAdd</code>
+| 8
+|-
+| <code>kRenderWorldGlow</code>
+| 9
+|-
+| <code>kRenderNone</code>
+| 10
+|-
+| <code>kRenderModeCount</code>
+| 11
+|}
+
+=== ERoundState ===
+
+{| class = "standard-table"
+! Name
+! Value
+|-
+| <code>GR_STATE_INIT</code>
+| 0
+|-
+| <code>GR_STATE_PREGAME</code>
+| 1
+|-
+| <code>GR_STATE_STARTGAME</code>
+| 2
+|-
+| <code>GR_STATE_PREROUND</code>
+| 3
+|-
+| <code>GR_STATE_RND_RUNNING</code>
+| 4
+|-
+| <code>GR_STATE_TEAM_WIN</code>
+| 5
+|-
+| <code>GR_STATE_RESTART</code>
+| 6
+|-
+| <code>GR_STATE_STALEMATE</code>
+| 7
+|-
+| <code>GR_STATE_GAME_OVER</code>
+| 8
+|-
+| <code>GR_STATE_BONUS</code>
+| 9
+{{bug|This constant entry is missing!}}
+|-
+| <code>GR_STATE_BETWEEN_RNDS</code>
+| 10
+{{bug|This constant entry is missing!}}
+|-
+| <code>GR_NUM_ROUND_STATES</code>
+| 11
+|}
+
+=== EScriptRecipientFilter ===
+
+{| class = "standard-table"
+! Name
+! Value
+|-
+| <code>RECIPIENT_FILTER_DEFAULT</code>
+| 0
+|-
+| <code>RECIPIENT_FILTER_PAS_ATTENUATION</code>
+| 1
+|-
+| <code>RECIPIENT_FILTER_PAS</code>
+| 2
+|-
+| <code>RECIPIENT_FILTER_PVS</code>
+| 3
+|-
+| <code>RECIPIENT_FILTER_SINGLE_PLAYER</code>
+| 4
+|-
+| <code>RECIPIENT_FILTER_GLOBAL</code>
+| 5
+|-
+| <code>RECIPIENT_FILTER_TEAM</code>
+| 6
+|}
+
+=== ESolidType ===
+
+{| class = "standard-table"
+! Name
+! Value
+|-
+| <code>SOLID_NONE</code>
+| 0
+|-
+| <code>SOLID_BSP</code>
+| 1
+|-
+| <code>SOLID_BBOX</code>
+| 2
+|-
+| <code>SOLID_OBB</code>
+| 3
+|-
+| <code>SOLID_OBB_YAW</code>
+| 4
+|-
+| <code>SOLID_CUSTOM</code>
+| 5
+|-
+| <code>SOLID_VPHYSICS</code>
+| 6
+|-
+| <code>SOLID_LAST</code>
+| 7
+|}
+
+=== ESpectatorMode ===
+
+{| class = "standard-table"
+! Name
+! Value
+|-
+| <code>OBS_MODE_NONE</code>
+| 0
+|-
+| <code>OBS_MODE_DEATHCAM</code>
+| 1
+|-
+| <code>OBS_MODE_FREEZECAM</code>
+| 2
+|-
+| <code>OBS_MODE_FIXED</code>
+| 3
+|-
+| <code>OBS_MODE_IN_EYE</code>
+| 4
+|-
+| <code>OBS_MODE_CHASE</code>
+| 5
+|-
+| <code>OBS_MODE_POI</code>
+| 6
+|-
+| <code>OBS_MODE_ROAMING</code>
+| 7
+|-
+| <code>NUM_OBSERVER_MODES</code>
+| 8
+|}
+
+=== EStopwatchState ===
+
+{| class = "standard-table"
+! Name
+! Value
+|-
+| <code>STOPWATCH_CAPTURE_TIME_NOT_SET</code>
+| 0
+|-
+| <code>STOPWATCH_RUNNING</code>
+| 1
+|-
+| <code>STOPWATCH_OVERTIME</code>
+| 2
+|}
+
+=== ETFBotDifficultyType ===
+
+{| class = "standard-table"
+! Name
+! Value
+|-
+| <code>EASY</code>
+| 0
+|-
+| <code>NORMAL</code>
+| 1
+|-
+| <code>HARD</code>
+| 2
+|-
+| <code>EXPERT</code>
+| 3
+|-
+| <code>NUM_DIFFICULTY_LEVELS</code>
+| 4
+|-
+| <code>UNDEFINED</code>
+| -1
+|}
+
+=== ETFClass ===
+
+{| class = "standard-table"
+! Name
+! Value
+|-
+| <code>TF_CLASS_UNDEFINED</code>
+| 0
+|-
+| <code>TF_CLASS_SCOUT</code>
+| 1
+|-
+| <code>TF_CLASS_SNIPER</code>
+| 2
+|-
+| <code>TF_CLASS_SOLDIER</code>
+| 3
+|-
+| <code>TF_CLASS_DEMOMAN</code>
+| 4
+|-
+| <code>TF_CLASS_MEDIC</code>
+| 5
+|-
+| <code>TF_CLASS_HEAVYWEAPONS</code>
+| 6
+|-
+| <code>TF_CLASS_PYRO</code>
+| 7
+|-
+| <code>TF_CLASS_SPY</code>
+| 8
+|-
+| <code>TF_CLASS_ENGINEER</code>
+| 9
+|-
+| <code>TF_CLASS_CIVILIAN</code>
+| 10
+|-
+| <code>TF_CLASS_COUNT_ALL</code>
+| 11
+|-
+| <code>TF_CLASS_RANDOM</code>
+| 12
+|}
+
+=== ETFCond ===
+
+{| class = "standard-table"
+! Name
+! Value
+|-
+| <code>TF_COND_AIMING</code>
+| 0
+|-
+| <code>TF_COND_ZOOMED</code>
+| 1
+|-
+| <code>TF_COND_DISGUISING</code>
+| 2
+|-
+| <code>TF_COND_DISGUISED</code>
+| 3
+|-
+| <code>TF_COND_STEALTHED</code>
+| 4
+|-
+| <code>TF_COND_INVULNERABLE</code>
+| 5
+|-
+| <code>TF_COND_TELEPORTED</code>
+| 6
+|-
+| <code>TF_COND_TAUNTING</code>
+| 7
+|-
+| <code>TF_COND_INVULNERABLE_WEARINGOFF</code>
+| 8
+|-
+| <code>TF_COND_STEALTHED_BLINK</code>
+| 9
+|-
+| <code>TF_COND_SELECTED_TO_TELEPORT</code>
+| 10
+|-
+| <code>TF_COND_CRITBOOSTED</code>
+| 11
+|-
+| <code>TF_COND_TMPDAMAGEBONUS</code>
+| 12
+|-
+| <code>TF_COND_FEIGN_DEATH</code>
+| 13
+|-
+| <code>TF_COND_PHASE</code>
+| 14
+|-
+| <code>TF_COND_STUNNED</code>
+| 15
+|-
+| <code>TF_COND_OFFENSEBUFF</code>
+| 16
+|-
+| <code>TF_COND_SHIELD_CHARGE</code>
+| 17
+|-
+| <code>TF_COND_DEMO_BUFF</code>
+| 18
+|-
+| <code>TF_COND_ENERGY_BUFF</code>
+| 19
+|-
+| <code>TF_COND_RADIUSHEAL</code>
+| 20
+|-
+| <code>TF_COND_HEALTH_BUFF</code>
+| 21
+|-
+| <code>TF_COND_BURNING</code>
+| 22
+|-
+| <code>TF_COND_HEALTH_OVERHEALED</code>
+| 23
+|-
+| <code>TF_COND_URINE</code>
+| 24
+|-
+| <code>TF_COND_BLEEDING</code>
+| 25
+|-
+| <code>TF_COND_DEFENSEBUFF</code>
+| 26
+|-
+| <code>TF_COND_MAD_MILK</code>
+| 27
+|-
+| <code>TF_COND_MEGAHEAL</code>
+| 28
+|-
+| <code>TF_COND_REGENONDAMAGEBUFF</code>
+| 29
+|-
+| <code>TF_COND_MARKEDFORDEATH</code>
+| 30
+|-
+| <code>TF_COND_NOHEALINGDAMAGEBUFF</code>
+| 31
+|-
+| <code>TF_COND_SPEED_BOOST</code>
+| 32
+|-
+| <code>TF_COND_CRITBOOSTED_PUMPKIN</code>
+| 33
+|-
+| <code>TF_COND_CRITBOOSTED_USER_BUFF</code>
+| 34
+|-
+| <code>TF_COND_CRITBOOSTED_DEMO_CHARGE</code>
+| 35
+|-
+| <code>TF_COND_SODAPOPPER_HYPE</code>
+| 36
+|-
+| <code>TF_COND_CRITBOOSTED_FIRST_BLOOD</code>
+| 37
+|-
+| <code>TF_COND_CRITBOOSTED_BONUS_TIME</code>
+| 38
+|-
+| <code>TF_COND_CRITBOOSTED_CTF_CAPTURE</code>
+| 39
+|-
+| <code>TF_COND_CRITBOOSTED_ON_KILL</code>
+| 40
+|-
+| <code>TF_COND_CANNOT_SWITCH_FROM_MELEE</code>
+| 41
+|-
+| <code>TF_COND_DEFENSEBUFF_NO_CRIT_BLOCK</code>
+| 42
+|-
+| <code>TF_COND_REPROGRAMMED</code>
+| 43
+|-
+| <code>TF_COND_CRITBOOSTED_RAGE_BUFF</code>
+| 44
+|-
+| <code>TF_COND_DEFENSEBUFF_HIGH</code>
+| 45
+|-
+| <code>TF_COND_SNIPERCHARGE_RAGE_BUFF</code>
+| 46
+|-
+| <code>TF_COND_DISGUISE_WEARINGOFF</code>
+| 47
+|-
+| <code>TF_COND_MARKEDFORDEATH_SILENT</code>
+| 48
+|-
+| <code>TF_COND_DISGUISED_AS_DISPENSER</code>
+| 49
+|-
+| <code>TF_COND_SAPPED</code>
+| 50
+|-
+| <code>TF_COND_INVULNERABLE_HIDE_UNLESS_DAMAGED</code>
+| 51
+|-
+| <code>TF_COND_INVULNERABLE_USER_BUFF</code>
+| 52
+|-
+| <code>TF_COND_HALLOWEEN_BOMB_HEAD</code>
+| 53
+|-
+| <code>TF_COND_HALLOWEEN_THRILLER</code>
+| 54
+|-
+| <code>TF_COND_RADIUSHEAL_ON_DAMAGE</code>
+| 55
+|-
+| <code>TF_COND_CRITBOOSTED_CARD_EFFECT</code>
+| 56
+|-
+| <code>TF_COND_INVULNERABLE_CARD_EFFECT</code>
+| 57
+|-
+| <code>TF_COND_MEDIGUN_UBER_BULLET_RESIST</code>
+| 58
+|-
+| <code>TF_COND_MEDIGUN_UBER_BLAST_RESIST</code>
+| 59
+|-
+| <code>TF_COND_MEDIGUN_UBER_FIRE_RESIST</code>
+| 60
+|-
+| <code>TF_COND_MEDIGUN_SMALL_BULLET_RESIST</code>
+| 61
+|-
+| <code>TF_COND_MEDIGUN_SMALL_BLAST_RESIST</code>
+| 62
+|-
+| <code>TF_COND_MEDIGUN_SMALL_FIRE_RESIST</code>
+| 63
+|-
+| <code>TF_COND_STEALTHED_USER_BUFF</code>
+| 64
+|-
+| <code>TF_COND_MEDIGUN_DEBUFF</code>
+| 65
+|-
+| <code>TF_COND_STEALTHED_USER_BUFF_FADING</code>
+| 66
+|-
+| <code>TF_COND_BULLET_IMMUNE</code>
+| 67
+|-
+| <code>TF_COND_BLAST_IMMUNE</code>
+| 68
+|-
+| <code>TF_COND_FIRE_IMMUNE</code>
+| 69
+|-
+| <code>TF_COND_PREVENT_DEATH</code>
+| 70
+|-
+| <code>TF_COND_MVM_BOT_STUN_RADIOWAVE</code>
+| 71
+|-
+| <code>TF_COND_HALLOWEEN_SPEED_BOOST</code>
+| 72
+|-
+| <code>TF_COND_HALLOWEEN_QUICK_HEAL</code>
+| 73
+|-
+| <code>TF_COND_HALLOWEEN_GIANT</code>
+| 74
+|-
+| <code>TF_COND_HALLOWEEN_TINY</code>
+| 75
+|-
+| <code>TF_COND_HALLOWEEN_IN_HELL</code>
+| 76
+|-
+| <code>TF_COND_HALLOWEEN_GHOST_MODE</code>
+| 77
+|-
+| <code>TF_COND_MINICRITBOOSTED_ON_KILL</code>
+| 78
+|-
+| <code>TF_COND_OBSCURED_SMOKE</code>
+| 79
+|-
+| <code>TF_COND_PARACHUTE_ACTIVE</code>
+| 80
+|-
+| <code>TF_COND_BLASTJUMPING</code>
+| 81
+|-
+| <code>TF_COND_HALLOWEEN_KART</code>
+| 82
+|-
+| <code>TF_COND_HALLOWEEN_KART_DASH</code>
+| 83
+|-
+| <code>TF_COND_BALLOON_HEAD</code>
+| 84
+|-
+| <code>TF_COND_MELEE_ONLY</code>
+| 85
+|-
+| <code>TF_COND_SWIMMING_CURSE</code>
+| 86
+|-
+| <code>TF_COND_FREEZE_INPUT</code>
+| 87
+|-
+| <code>TF_COND_HALLOWEEN_KART_CAGE</code>
+| 88
+|-
+| <code>TF_COND_DONOTUSE_0</code>
+| 89
+|-
+| <code>TF_COND_RUNE_STRENGTH</code>
+| 90
+|-
+| <code>TF_COND_RUNE_HASTE</code>
+| 91
+|-
+| <code>TF_COND_RUNE_REGEN</code>
+| 92
+|-
+| <code>TF_COND_RUNE_RESIST</code>
+| 93
+|-
+| <code>TF_COND_RUNE_VAMPIRE</code>
+| 94
+|-
+| <code>TF_COND_RUNE_REFLECT</code>
+| 95
+|-
+| <code>TF_COND_RUNE_PRECISION</code>
+| 96
+|-
+| <code>TF_COND_RUNE_AGILITY</code>
+| 97
+|-
+| <code>TF_COND_GRAPPLINGHOOK</code>
+| 98
+|-
+| <code>TF_COND_GRAPPLINGHOOK_SAFEFALL</code>
+| 99
+|-
+| <code>TF_COND_GRAPPLINGHOOK_LATCHED</code>
+| 100
+|-
+| <code>TF_COND_GRAPPLINGHOOK_BLEEDING</code>
+| 101
+|-
+| <code>TF_COND_AFTERBURN_IMMUNE</code>
+| 102
+|-
+| <code>TF_COND_RUNE_KNOCKOUT</code>
+| 103
+|-
+| <code>TF_COND_RUNE_IMBALANCE</code>
+| 104
+|-
+| <code>TF_COND_CRITBOOSTED_RUNE_TEMP</code>
+| 105
+|-
+| <code>TF_COND_PASSTIME_INTERCEPTION</code>
+| 106
+|-
+| <code>TF_COND_SWIMMING_NO_EFFECTS</code>
+| 107
+|-
+| <code>TF_COND_PURGATORY</code>
+| 108
+|-
+| <code>TF_COND_RUNE_KING</code>
+| 109
+|-
+| <code>TF_COND_RUNE_PLAGUE</code>
+| 110
+|-
+| <code>TF_COND_RUNE_SUPERNOVA</code>
+| 111
+|-
+| <code>TF_COND_PLAGUE</code>
+| 112
+|-
+| <code>TF_COND_KING_BUFFED</code>
+| 113
+|-
+| <code>TF_COND_TEAM_GLOWS</code>
+| 114
+|-
+| <code>TF_COND_KNOCKED_INTO_AIR</code>
+| 115
+|-
+| <code>TF_COND_COMPETITIVE_WINNER</code>
+| 116
+|-
+| <code>TF_COND_COMPETITIVE_LOSER</code>
+| 117
+|-
+| <code>TF_COND_HEALING_DEBUFF</code>
+| 118
+|-
+| <code>TF_COND_PASSTIME_PENALTY_DEBUFF</code>
+| 119
+|-
+| <code>TF_COND_GRAPPLED_TO_PLAYER</code>
+| 120
+|-
+| <code>TF_COND_GRAPPLED_BY_PLAYER</code>
+| 121
+|-
+| <code>TF_COND_PARACHUTE_DEPLOYED</code>
+| 122
+|-
+| <code>TF_COND_GAS</code>
+| 123
+|-
+| <code>TF_COND_BURNING_PYRO</code>
+| 124
+|-
+| <code>TF_COND_ROCKETPACK</code>
+| 125
+|-
+| <code>TF_COND_LOST_FOOTING</code>
+| 126
+|-
+| <code>TF_COND_AIR_CURRENT</code>
+| 127
+|-
+| <code>TF_COND_HALLOWEEN_HELL_HEAL</code>
+| 128
+|-
+| <code>TF_COND_POWERUPMODE_DOMINANT</code>
+| 129
+|-
+| <code>TF_COND_IMMUNE_TO_PUSHBACK</code>
+| 130
+|-
+| <code>TF_COND_INVALID</code>
+| -1
+|}
+
+=== ETFDmgCustom ===
+
+{| class = "standard-table"
+! Name
+! Value
+|-
+| <code>TF_DMG_CUSTOM_NONE</code>
+| 0
+|-
+| <code>TF_DMG_CUSTOM_HEADSHOT</code>
+| 1
+|-
+| <code>TF_DMG_CUSTOM_BACKSTAB</code>
+| 2
+|-
+| <code>TF_DMG_CUSTOM_BURNING</code>
+| 3
+|-
+| <code>TF_DMG_WRENCH_FIX</code>
+| 4
+|-
+| <code>TF_DMG_CUSTOM_MINIGUN</code>
+| 5
+|-
+| <code>TF_DMG_CUSTOM_SUICIDE</code>
+| 6
+|-
+| <code>TF_DMG_CUSTOM_TAUNTATK_HADOUKEN</code>
+| 7
+|-
+| <code>TF_DMG_CUSTOM_BURNING_FLARE</code>
+| 8
+|-
+| <code>TF_DMG_CUSTOM_TAUNTATK_HIGH_NOON</code>
+| 9
+|-
+| <code>TF_DMG_CUSTOM_TAUNTATK_GRAND_SLAM</code>
+| 10
+|-
+| <code>TF_DMG_CUSTOM_PENETRATE_MY_TEAM</code>
+| 11
+|-
+| <code>TF_DMG_CUSTOM_PENETRATE_ALL_PLAYERS</code>
+| 12
+|-
+| <code>TF_DMG_CUSTOM_TAUNTATK_FENCING</code>
+| 13
+|-
+| <code>TF_DMG_CUSTOM_PENETRATE_NONBURNING_TEAMMATE</code>
+| 14
+|-
+| <code>TF_DMG_CUSTOM_TAUNTATK_ARROW_STAB</code>
+| 15
+|-
+| <code>TF_DMG_CUSTOM_TELEFRAG</code>
+| 16
+|-
+| <code>TF_DMG_CUSTOM_BURNING_ARROW</code>
+| 17
+|-
+| <code>TF_DMG_CUSTOM_FLYINGBURN</code>
+| 18
+|-
+| <code>TF_DMG_CUSTOM_PUMPKIN_BOMB</code>
+| 19
+|-
+| <code>TF_DMG_CUSTOM_DECAPITATION</code>
+| 20
+|-
+| <code>TF_DMG_CUSTOM_TAUNTATK_GRENADE</code>
+| 21
+|-
+| <code>TF_DMG_CUSTOM_BASEBALL</code>
+| 22
+|-
+| <code>TF_DMG_CUSTOM_CHARGE_IMPACT</code>
+| 23
+|-
+| <code>TF_DMG_CUSTOM_TAUNTATK_BARBARIAN_SWING</code>
+| 24
+|-
+| <code>TF_DMG_CUSTOM_AIR_STICKY_BURST</code>
+| 25
+|-
+| <code>TF_DMG_CUSTOM_DEFENSIVE_STICKY</code>
+| 26
+|-
+| <code>TF_DMG_CUSTOM_PICKAXE</code>
+| 27
+|-
+| <code>TF_DMG_CUSTOM_ROCKET_DIRECTHIT</code>
+| 28
+|-
+| <code>TF_DMG_CUSTOM_TAUNTATK_UBERSLICE</code>
+| 29
+|-
+| <code>TF_DMG_CUSTOM_PLAYER_SENTRY</code>
+| 30
+|-
+| <code>TF_DMG_CUSTOM_STANDARD_STICKY</code>
+| 31
+|-
+| <code>TF_DMG_CUSTOM_SHOTGUN_REVENGE_CRIT</code>
+| 32
+|-
+| <code>TF_DMG_CUSTOM_TAUNTATK_ENGINEER_GUITAR_SMASH</code>
+| 33
+|-
+| <code>TF_DMG_CUSTOM_BLEEDING</code>
+| 34
+|-
+| <code>TF_DMG_CUSTOM_GOLD_WRENCH</code>
+| 35
+|-
+| <code>TF_DMG_CUSTOM_CARRIED_BUILDING</code>
+| 36
+|-
+| <code>TF_DMG_CUSTOM_COMBO_PUNCH</code>
+| 37
+|-
+| <code>TF_DMG_CUSTOM_TAUNTATK_ENGINEER_ARM_KILL</code>
+| 38
+|-
+| <code>TF_DMG_CUSTOM_FISH_KILL</code>
+| 39
+|-
+| <code>TF_DMG_CUSTOM_TRIGGER_HURT</code>
+| 40
+|-
+| <code>TF_DMG_CUSTOM_DECAPITATION_BOSS</code>
+| 41
+|-
+| <code>TF_DMG_CUSTOM_STICKBOMB_EXPLOSION</code>
+| 42
+|-
+| <code>TF_DMG_CUSTOM_AEGIS_ROUND</code>
+| 43
+|-
+| <code>TF_DMG_CUSTOM_FLARE_EXPLOSION</code>
+| 44
+|-
+| <code>TF_DMG_CUSTOM_BOOTS_STOMP</code>
+| 45
+|-
+| <code>TF_DMG_CUSTOM_PLASMA</code>
+| 46
+|-
+| <code>TF_DMG_CUSTOM_PLASMA_CHARGED</code>
+| 47
+|-
+| <code>TF_DMG_CUSTOM_PLASMA_GIB</code>
+| 48
+|-
+| <code>TF_DMG_CUSTOM_PRACTICE_STICKY</code>
+| 49
+|-
+| <code>TF_DMG_CUSTOM_EYEBALL_ROCKET</code>
+| 50
+|-
+| <code>TF_DMG_CUSTOM_HEADSHOT_DECAPITATION</code>
+| 51
+|-
+| <code>TF_DMG_CUSTOM_TAUNTATK_ARMAGEDDON</code>
+| 52
+|-
+| <code>TF_DMG_CUSTOM_FLARE_PELLET</code>
+| 53
+|-
+| <code>TF_DMG_CUSTOM_CLEAVER</code>
+| 54
+|-
+| <code>TF_DMG_CUSTOM_CLEAVER_CRIT</code>
+| 55
+|-
+| <code>TF_DMG_CUSTOM_SAPPER_RECORDER_DEATH</code>
+| 56
+|-
+| <code>TF_DMG_CUSTOM_MERASMUS_PLAYER_BOMB</code>
+| 57
+|-
+| <code>TF_DMG_CUSTOM_MERASMUS_GRENADE</code>
+| 58
+|-
+| <code>TF_DMG_CUSTOM_MERASMUS_ZAP</code>
+| 59
+|-
+| <code>TF_DMG_CUSTOM_MERASMUS_DECAPITATION</code>
+| 60
+|-
+| <code>TF_DMG_CUSTOM_CANNONBALL_PUSH</code>
+| 61
+|-
+| <code>TF_DMG_CUSTOM_TAUNTATK_ALLCLASS_GUITAR_RIFF</code>
+| 62
+|-
+| <code>TF_DMG_CUSTOM_THROWABLE</code>
+| 63
+|-
+| <code>TF_DMG_CUSTOM_THROWABLE_KILL</code>
+| 64
+|-
+| <code>TF_DMG_CUSTOM_SPELL_TELEPORT</code>
+| 65
+|-
+| <code>TF_DMG_CUSTOM_SPELL_SKELETON</code>
+| 66
+|-
+| <code>TF_DMG_CUSTOM_SPELL_MIRV</code>
+| 67
+|-
+| <code>TF_DMG_CUSTOM_SPELL_METEOR</code>
+| 68
+|-
+| <code>TF_DMG_CUSTOM_SPELL_LIGHTNING</code>
+| 69
+|-
+| <code>TF_DMG_CUSTOM_SPELL_FIREBALL</code>
+| 70
+|-
+| <code>TF_DMG_CUSTOM_SPELL_MONOCULUS</code>
+| 71
+|-
+| <code>TF_DMG_CUSTOM_SPELL_BLASTJUMP</code>
+| 72
+|-
+| <code>TF_DMG_CUSTOM_SPELL_BATS</code>
+| 73
+|-
+| <code>TF_DMG_CUSTOM_SPELL_TINY</code>
+| 74
+|-
+| <code>TF_DMG_CUSTOM_KART</code>
+| 75
+|-
+| <code>TF_DMG_CUSTOM_GIANT_HAMMER</code>
+| 76
+|-
+| <code>TF_DMG_CUSTOM_RUNE_REFLECT</code>
+| 77
+|-
+| <code>TF_DMG_CUSTOM_DRAGONS_FURY_IGNITE</code>
+| 78
+|-
+| <code>TF_DMG_CUSTOM_DRAGONS_FURY_BONUS_BURNING</code>
+| 79
+|-
+| <code>TF_DMG_CUSTOM_SLAP_KILL</code>
+| 80
+|-
+| <code>TF_DMG_CUSTOM_CROC</code>
+| 81
+|-
+| <code>TF_DMG_CUSTOM_TAUNTATK_GASBLAST</code>
+| 82
+|-
+| <code>TF_DMG_CUSTOM_AXTINGUISHER_BOOSTED</code>
+| 83
+|-
+| <code>TF_DMG_CUSTOM_KRAMPUS_MELEE</code>
+| 84
+|-
+| <code>TF_DMG_CUSTOM_KRAMPUS_RANGED</code>
+| 85
+|-
+| <code>TF_DMG_CUSTOM_END</code>
+| 86
+|}
+
+=== ETFTeam ===
+
+{| class = "standard-table"
+! Name
+! Value
+|-
+| <code>TEAM_UNASSIGNED</code>
+| null {{bug|This is supposed to be 0}}
+|-
+| <code>TEAM_SPECTATOR</code>
+| 1
+|-
+| <code>TF_TEAM_PVE_DEFENDERS</code>
+| 2
+|-
+| <code>TF_TEAM_RED</code>
+| 2
+|-
+| <code>TF_TEAM_BLUE</code>
+| 3
+|-
+| <code>TF_TEAM_PVE_INVADERS</code>
+| 3
+|-
+| <code>TF_TEAM_COUNT</code>
+| 4
+|-
+| <code>TF_TEAM_PVE_INVADERS_GIANTS</code>
+| 4
+|-
+| <code>TEAM_ANY</code>
+| -2
+|-
+| <code>TEAM_INVALID</code>
+| -1
+|}
+
+=== Math ===
+
+{| class = "standard-table"
+! Name
+! Value
+|-
+| <code>Zero</code>
+| 0
+|-
+| <code>Epsilon</code>
+| 1.19209e-07
+|-
+| <code>GoldenRatio</code>
+| 1.61803
+|-
+| <code>One</code>
+| 1
+|-
+| <code>Sqrt2</code>
+| 1.41421
+|-
+| <code>Sqrt3</code>
+| 1.73205
+|-
+| <code>E</code>
+| 2.71828
+|-
+| <code>Pi</code>
+| 3.14159
+|-
+| <code>Tau</code>
+| 6.28319
+|}
+
+=== Server ===
+
+{| class = "standard-table"
+! Name
+! Value
+|-
+| <code>ConstantNamingConvention</code>
+| Constants are named as follows: F -> flags, E -> enums, (nothing) -> random values/constants
+|-
+| <code>DIST_EPSILON</code>
+| 0.03125
+|-
+| <code>MAX_PLAYERS</code>
+| 101
+|-
+| <code>MAX_EDICTS</code>
+| 2048
+|}
+
+== Bit Fields ==
+These enums setup their constants by using shifted bit values, a defining trait of [https://en.wikipedia.org/wiki/Bit_field bit fields]. It may be necessary to account for multiple constants of the same enum at once, necessitating the use of [https://en.wikipedia.org/wiki/Bitwise_operation bitwise operators].
+
+=== FButtons ===
+
+{| class = "standard-table"
+! Name
+! Value
+|-
+| <code>IN_ATTACK</code>
+| 1
+|-
+| <code>IN_JUMP</code>
+| 2
+|-
+| <code>IN_DUCK</code>
+| 4
+|-
+| <code>IN_FORWARD</code>
+| 8
+|-
+| <code>IN_BACK</code>
+| 16
+|-
+| <code>IN_USE</code>
+| 32
+|-
+| <code>IN_CANCEL</code>
+| 64
+|-
+| <code>IN_LEFT</code>
+| 128
+|-
+| <code>IN_RIGHT</code>
+| 256
+|-
+| <code>IN_MOVELEFT</code>
+| 512
+|-
+| <code>IN_MOVERIGHT</code>
+| 1024
+|-
+| <code>IN_ATTACK2</code>
+| 2048
+|-
+| <code>IN_RUN</code>
+| 4096
+|-
+| <code>IN_RELOAD</code>
+| 8192
+|-
+| <code>IN_ALT1</code>
+| 16384
+|-
+| <code>IN_ALT2</code>
+| 32768
+|-
+| <code>IN_SCORE</code>
+| 65536
+|-
+| <code>IN_SPEED</code>
+| 131072
+|-
+| <code>IN_WALK</code>
+| 262144
+|-
+| <code>IN_ZOOM</code>
+| 524288
+|-
+| <code>IN_WEAPON1</code>
+| 1048576
+|-
+| <code>IN_WEAPON2</code>
+| 2097152
+|-
+| <code>IN_BULLRUSH</code>
+| 4194304
+|-
+| <code>IN_GRENADE1</code>
+| 8388608
+|-
+| <code>IN_GRENADE2</code>
+| 16777216
+|-
+| <code>IN_ATTACK3</code>
+| 33554432
+|}
+
+=== FContents ===
+{{seealso|[[BSP flags (Source)#Contents flags]]}}
+{| class = "standard-table"
+! Name
+! Value
+|-
+| <code>CONTENTS_EMPTY</code>
+| null {{bug|hidetested=1|This is supposed to be 0}}
+|-
+| <code>CONTENTS_SOLID</code>
+| 1
+|-
+| <code>CONTENTS_WINDOW</code>
+| 2
+|-
+| <code>CONTENTS_AUX</code>
+| 4
+|-
+| <code>CONTENTS_GRATE</code>
+| 8
+|-
+| <code>CONTENTS_SLIME</code>
+| 16
+|-
+| <code>CONTENTS_WATER</code>
+| 32
+|-
+| <code>CONTENTS_BLOCKLOS</code>
+| 64
+|-
+| <code>CONTENTS_OPAQUE</code>
+| 128
+|-
+| <code>LAST_VISIBLE_CONTENTS</code>
+| 128
+|-
+| <code>ALL_VISIBLE_CONTENTS</code>
+| 255
+|-
+| <code>CONTENTS_TESTFOGVOLUME</code>
+| 256
+|-
+| <code>CONTENTS_UNUSED</code>
+| 512
+|-
+| <code>CONTENTS_UNUSED6</code>
+| 1024
+|-
+| <code>CONTENTS_TEAM1</code>
+| 2048
+|-
+| <code>CONTENTS_TEAM2</code>
+| 4096
+|-
+| <code>CONTENTS_IGNORE_NODRAW_OPAQUE</code>
+| 8192
+|-
+| <code>CONTENTS_MOVEABLE</code>
+| 16384
+|-
+| <code>CONTENTS_AREAPORTAL</code>
+| 32768
+|-
+| <code>CONTENTS_PLAYERCLIP</code>
+| 65536
+|-
+| <code>CONTENTS_MONSTERCLIP</code>
+| 131072
+|-
+| <code>CONTENTS_CURRENT_0</code>
+| 262144
+|-
+| <code>CONTENTS_CURRENT_90</code>
+| 524288
+|-
+| <code>CONTENTS_CURRENT_180</code>
+| 1048576
+|-
+| <code>CONTENTS_CURRENT_270</code>
+| 2097152
+|-
+| <code>CONTENTS_CURRENT_UP</code>
+| 4194304
+|-
+| <code>CONTENTS_CURRENT_DOWN</code>
+| 8388608
+|-
+| <code>CONTENTS_ORIGIN</code>
+| 16777216
+|-
+| <code>CONTENTS_MONSTER</code>
+| 33554432
+|-
+| <code>CONTENTS_DEBRIS</code>
+| 67108864
+|-
+| <code>CONTENTS_DETAIL</code>
+| 134217728
+|-
+| <code>CONTENTS_TRANSLUCENT</code>
+| 268435456
+|-
+| <code>CONTENTS_LADDER</code>
+| 536870912
+|-
+| <code>CONTENTS_HITBOX</code>
+| 1073741824
+|}
+
+=== FDmgType ===
+:''See [[Damage_types|Damage Types]] for more complete descriptions.
+{| class = "standard-table"
+! Name
+! Value
+|-
+| <code>DMG_GENERIC</code>
+| null {{bug|This is supposed to be 0}}
+|-
+| <code>DMG_CRUSH</code>
+| 1
+|-
+| <code>DMG_BULLET</code>
+| 2
+|-
+| <code>DMG_SLASH</code>
+| 4
+|-
+| <code>DMG_BURN</code>
+| 8
+|-
+| <code>DMG_VEHICLE</code>
+{{tf2}} Train
+| 16
+|-
+| <code>DMG_FALL</code>
+| 32
+|-
+| <code>DMG_BLAST</code>
+| 64
+|-
+| <code>DMG_CLUB</code>
+| 128
+|-
+| <code>DMG_SHOCK</code>
+| 256
+|-
+| <code>DMG_SONIC</code>
+| 512
+|-
+| <code>DMG_ENERGYBEAM</code>
+| 1024
+|-
+| <code>DMG_PREVENT_PHYSICS_FORCE</code>
+| 2048
+|-
+| <code>DMG_NEVERGIB</code>
+| 4096
+|-
+| <code>DMG_ALWAYSGIB</code>
+| 8192
+|-
+| <code>DMG_DROWN</code>
+| 16384
+|-
+| <code>DMG_PARALYZE</code>
+| 32768
+|-
+| <code>DMG_NERVEGAS</code>
+{{tf2}} Sawblade
+| 65536
+|-
+| <code>DMG_POISON</code>
+| 131072
+|-
+| <code>DMG_RADIATION</code>
+| 262144
+|-
+| <code>DMG_DROWNRECOVER</code>
+| 524288
+|-
+| <code>DMG_ACID</code>
+{{tf2}} Crit
+| 1048576
+|-
+| <code>DMG_SLOWBURN</code>
+{{tf2}} Bullet falloff
+| 2097152
+|-
+| <code>DMG_REMOVENORAGDOLL</code>
+| 4194304
+|-
+| <code>DMG_PHYSGUN</code>
+| 8388608
+|-
+| <code>DMG_PLASMA</code>
+| 16777216
+|-
+| <code>DMG_AIRBOAT</code>
+| 33554432
+|-
+| <code>DMG_DISSOLVE</code>
+| 67108864
+|-
+| <code>DMG_BLAST_SURFACE</code>
+| 134217728
+|-
+| <code>DMG_DIRECT</code>
+| 268435456
+|-
+| <code>DMG_BUCKSHOT</code>
+| 536870912
+|}
+
+=== FEntityEffects ===
+{{seealso|[[Effect flags]]}}
+
+{| class = "standard-table"
+! Name
+! Value
+|-
+| <code>EF_BONEMERGE</code>
+| 1
+|-
+| <code>EF_BRIGHTLIGHT</code>
+| 2
+|-
+| <code>EF_DIMLIGHT</code>
+| 4
+|-
+| <code>EF_NOINTERP</code>
+| 8
+|-
+| <code>EF_MAX_BITS</code>
+| 10
+|-
+| <code>EF_NOSHADOW</code>
+| 16
+|-
+| <code>EF_NODRAW</code>
+| 32
+|-
+| <code>EF_NORECEIVESHADOW</code>
+| 64
+|-
+| <code>EF_BONEMERGE_FASTCULL</code>
+| 128
+|-
+| <code>EF_ITEM_BLINK</code>
+| 256
+|-
+| <code>EF_PARENT_ANIMATES</code>
+| 512
+|}
+
+=== FEntityEFlags ===
+
+{| class = "standard-table"
+! Name
+! Value
+|-
+| <code>EFL_KILLME</code>
+| 1
+|-
+| <code>EFL_DORMANT</code>
+| 2
+|-
+| <code>EFL_NOCLIP_ACTIVE</code>
+| 4
+|-
+| <code>EFL_SETTING_UP_BONES</code>
+| 8
+|-
+| <code>EFL_HAS_PLAYER_CHILD</code>
+| 16
+|-
+| <code>EFL_KEEP_ON_RECREATE_ENTITIES</code>
+| 16
+|-
+| <code>EFL_DIRTY_SHADOWUPDATE</code>
+| 32
+|-
+| <code>EFL_NOTIFY</code>
+| 64
+|-
+| <code>EFL_FORCE_CHECK_TRANSMIT</code>
+| 128
+|-
+| <code>EFL_BOT_FROZEN</code>
+| 256
+|-
+| <code>EFL_SERVER_ONLY</code>
+| 512
+|-
+| <code>EFL_NO_AUTO_EDICT_ATTACH</code>
+| 1024
+|-
+| <code>EFL_DIRTY_ABSTRANSFORM</code>
+| 2048
+|-
+| <code>EFL_DIRTY_ABSVELOCITY</code>
+| 4096
+|-
+| <code>EFL_DIRTY_ABSANGVELOCITY</code>
+| 8192
+|-
+| <code>EFL_DIRTY_SURROUNDING_COLLISION_BOUNDS</code>
+| 16384
+|-
+| <code>EFL_DIRTY_SPATIAL_PARTITION</code>
+| 32768
+|-
+| <code>EFL_FORCE_ALLOW_MOVEPARENT</code>
+| 65536
+|-
+| <code>EFL_IN_SKYBOX</code>
+| 131072
+|-
+| <code>EFL_USE_PARTITION_WHEN_NOT_SOLID</code>
+| 262144
+|-
+| <code>EFL_TOUCHING_FLUID</code>
+| 524288
+|-
+| <code>EFL_IS_BEING_LIFTED_BY_BARNACLE</code>
+| 1048576
+|-
+| <code>EFL_NO_ROTORWASH_PUSH</code>
+| 2097152
+|-
+| <code>EFL_NO_THINK_FUNCTION</code>
+| 4194304
+|-
+| <code>EFL_NO_GAME_PHYSICS_SIMULATION</code>
+| 8388608
+|-
+| <code>EFL_CHECK_UNTOUCH</code>
+| 16777216
+|-
+| <code>EFL_DONTBLOCKLOS</code>
+| 33554432
+|-
+| <code>EFL_DONTWALKON</code>
+| 67108864
+|-
+| <code>EFL_NO_DISSOLVE</code>
+| 134217728
+|-
+| <code>EFL_NO_MEGAPHYSCANNON_RAGDOLL</code>
+| 268435456
+|-
+| <code>EFL_NO_WATER_VELOCITY_CHANGE</code>
+| 536870912
+|-
+| <code>EFL_NO_PHYSCANNON_INTERACTION</code>
+| 1073741824
+|-
+| <code>EFL_NO_DAMAGE_FORCES</code>
+| 2147483648
+|}
+=== FHideHUD ===
+
+{| class = "standard-table"
+! Name
+! Value
+|-
+| <code>HIDEHUD_WEAPONSELECTION</code>
+| 1
+|-
+| <code>HIDEHUD_FLASHLIGHT</code>
+| 2
+|-
+| <code>HIDEHUD_ALL</code>
+| 4
+|-
+| <code>HIDEHUD_HEALTH</code>
+| 8
+|-
+| <code>HIDEHUD_PLAYERDEAD</code>
+| 16
+|-
+| <code>HIDEHUD_BITCOUNT</code>
+| 18
+|-
+| <code>HIDEHUD_NEEDSUIT</code>
+| 32
+|-
+| <code>HIDEHUD_MISCSTATUS</code>
+| 64
+|-
+| <code>HIDEHUD_CHAT</code>
+| 128
+|-
+| <code>HIDEHUD_CROSSHAIR</code>
+| 256
+|-
+| <code>HIDEHUD_VEHICLE_CROSSHAIR</code>
+| 512
+|-
+| <code>HIDEHUD_INVEHICLE</code>
+| 1024
+|-
+| <code>HIDEHUD_BONUS_PROGRESS</code>
+| 2048
+|-
+| <code>HIDEHUD_BUILDING_STATUS</code>
+| 4096
+|-
+| <code>HIDEHUD_CLOAK_AND_FEIGN</code>
+| 8192
+|-
+| <code>HIDEHUD_PIPES_AND_CHARGE</code>
+| 16384
+|-
+| <code>HIDEHUD_METAL</code>
+| 32768
+|-
+| <code>HIDEHUD_TARGET_ID</code>
+| 65536
+|-
+| <code>HIDEHUD_MATCH_STATUS</code>
+| 131072
+|}
+
+=== FNavAttributeType ===
+
+{| class = "standard-table"
+! Name
+! Value
+|-
+| <code>NAV_MESH_INVALID</code>
+| 0
+|-
+| <code>NAV_MESH_CROUCH</code>
+| 1
+|-
+| <code>NAV_MESH_JUMP</code>
+| 2
+|-
+| <code>NAV_MESH_PRECISE</code>
+| 4
+|-
+| <code>NAV_MESH_NO_JUMP</code>
+| 8
+|-
+| <code>NAV_MESH_STOP</code>
+| 16
+|-
+| <code>NAV_MESH_RUN</code>
+| 32
+|-
+| <code>NAV_MESH_WALK</code>
+| 64
+|-
+| <code>NAV_MESH_AVOID</code>
+| 128
+|-
+| <code>NAV_MESH_TRANSIENT</code>
+| 256
+|-
+| <code>NAV_MESH_DONT_HIDE</code>
+| 512
+|-
+| <code>NAV_MESH_STAND</code>
+| 1024
+|-
+| <code>NAV_MESH_NO_HOSTAGES</code>
+| 2048
+|-
+| <code>NAV_MESH_STAIRS</code>
+| 4096
+|-
+| <code>NAV_MESH_NO_MERGE</code>
+| 8192
+|-
+| <code>NAV_MESH_OBSTACLE_TOP</code>
+| 16384
+|-
+| <code>NAV_MESH_CLIFF</code>
+| 32768
+|-
+| <code>NAV_MESH_FIRST_CUSTOM</code>
+| 65536
+|-
+| <code>NAV_MESH_LAST_CUSTOM</code>
+| 67108864
+|-
+| <code>NAV_MESH_FUNC_COST</code>
+| 536870912
+|-
+| <code>NAV_MESH_HAS_ELEVATOR</code>
+| 1073741824
+|-
+| <code>NAV_MESH_NAV_BLOCKER</code>
+| 2147483648
+|}
+
+=== FPlayer ===
+{{note|The name is misleading, these flags exist on all entities, not just players.}}
+
+{| class = "standard-table"
+! Name
+! Value
+|-
+| <code>FL_ONGROUND</code>
+| 1
+|-
+| <code>FL_DUCKING</code>
+| 2
+|-
+| <code>FL_ANIMDUCKING</code>
+| 4
+|-
+| <code>FL_WATERJUMP</code>
+| 8
+|-
+| <code>PLAYER_FLAG_BITS</code>
+| 11
+|-
+| <code>FL_ONTRAIN</code>
+| 16
+|-
+| <code>FL_INRAIN</code>
+| 32
+|-
+| <code>FL_FROZEN</code>
+| 64
+|-
+| <code>FL_ATCONTROLS</code>
+| 128
+|-
+| <code>FL_CLIENT</code>
+| 256
+|-
+| <code>FL_FAKECLIENT</code>
+| 512
+|-
+| <code>FL_INWATER</code>
+| 1024
+|-
+| <code>FL_FLY</code>
+| 2048
+|-
+| <code>FL_SWIM</code>
+| 4096
+|-
+| <code>FL_CONVEYOR</code>
+| 8192
+|-
+| <code>FL_NPC</code>
+| 16384
+|-
+| <code>FL_GODMODE</code>
+| 32768
+|-
+| <code>FL_NOTARGET</code>
+| 65536
+|-
+| <code>FL_AIMTARGET</code>
+| 131072
+|-
+| <code>FL_PARTIALGROUND</code>
+| 262144
+|-
+| <code>FL_STATICPROP</code>
+| 524288
+|-
+| <code>FL_GRAPHED</code>
+| 1048576
+|-
+| <code>FL_GRENADE</code>
+| 2097152
+|-
+| <code>FL_STEPMOVEMENT</code>
+| 4194304
+|-
+| <code>FL_DONTTOUCH</code>
+| 8388608
+|-
+| <code>FL_BASEVELOCITY</code>
+| 16777216
+|-
+| <code>FL_WORLDBRUSH</code>
+| 33554432
+|-
+| <code>FL_OBJECT</code>
+| 67108864
+|-
+| <code>FL_KILLME</code>
+| 134217728
+|-
+| <code>FL_ONFIRE</code>
+| 268435456
+|-
+| <code>FL_DISSOLVING</code>
+| 536870912
+|-
+| <code>FL_TRANSRAGDOLL</code>
+| 1073741824
+|-
+| <code>FL_UNBLOCKABLE_BY_PLAYER</code>
+| 2147483648
+|}
+=== FSolid ===
+
+{| class = "standard-table"
+! Name
+! Value
+|-
+| <code>FSOLID_CUSTOMRAYTEST</code>
+| 1
+|-
+| <code>FSOLID_CUSTOMBOXTEST</code>
+| 2
+|-
+| <code>FSOLID_NOT_SOLID</code>
+| 4
+|-
+| <code>FSOLID_TRIGGER</code>
+| 8
+|-
+| <code>FSOLID_MAX_BITS</code>
+| 10
+|-
+| <code>FSOLID_NOT_STANDABLE</code>
+| 16
+|-
+| <code>FSOLID_VOLUME_CONTENTS</code>
+| 32
+|-
+| <code>FSOLID_FORCE_WORLD_ALIGNED</code>
+| 64
+|-
+| <code>FSOLID_USE_TRIGGER_BOUNDS</code>
+| 128
+|-
+| <code>FSOLID_ROOT_PARENT_ALIGNED</code>
+| 256
+|-
+| <code>FSOLID_TRIGGER_TOUCH_DEBRIS</code>
+| 512
+|}
+=== FSurf ===
+{{seealso|[[BSP flags (Source)#Surface flags]]}}
+{| class = "standard-table"
+! Name
+! Value
+|-
+| <code>SURF_LIGHT</code>
+| 1
+|-
+| <code>SURF_SKY2D</code>
+| 2
+|-
+| <code>SURF_SKY</code>
+| 4
+|-
+| <code>SURF_WARP</code>
+| 8
+|-
+| <code>SURF_TRANS</code>
+| 16
+|-
+| <code>SURF_NOPORTAL</code>
+| 32
+|-
+| <code>SURF_TRIGGER</code>
+| 64
+|-
+| <code>SURF_NODRAW</code>
+| 128
+|-
+| <code>SURF_HINT</code>
+| 256
+|-
+| <code>SURF_SKIP</code>
+| 512
+|-
+| <code>SURF_NOLIGHT</code>
+| 1024
+|-
+| <code>SURF_BUMPLIGHT</code>
+| 2048
+|-
+| <code>SURF_NOSHADOWS</code>
+| 4096
+|-
+| <code>SURF_NODECALS</code>
+| 8192
+|-
+| <code>SURF_NOCHOP</code>
+| 16384
+|-
+| <code>SURF_HITBOX</code>
+| 32768
+|}
+
+=== FTaunts ===
+
+{| class = "standard-table"
+! Name
+! Value
+|-
+| <code>TAUNT_BASE_WEAPON</code>
+| 0
+|-
+| <code>TAUNT_MISC_ITEM</code>
+| 1
+|-
+| <code>TAUNT_SHOW_ITEM</code>
+| 2
+|-
+| <code>TAUNT_LONG</code>
+| 3
+|-
+| <code>TAUNT_SPECIAL</code>
+| 4
+|}
+
+=== FTFBotAttributeType ===
+
+{| class = "standard-table"
+! Name
+! Value
+|-
+| <code>REMOVE_ON_DEATH</code>
+| 1
+|-
+| <code>AGGRESSIVE</code>
+| 2
+|-
+| <code>IS_NPC</code>
+| 4
+|-
+| <code>SUPPRESS_FIRE</code>
+| 8
+|-
+| <code>DISABLE_DODGE</code>
+| 16
+|-
+| <code>BECOME_SPECTATOR_ON_DEATH</code>
+| 32
+|-
+| <code>QUOTA_MANANGED</code>
+| 64
+|-
+| <code>RETAIN_BUILDINGS</code>
+| 128
+|-
+| <code>SPAWN_WITH_FULL_CHARGE</code>
+| 256
+|-
+| <code>ALWAYS_CRIT</code>
+| 512
+|-
+| <code>IGNORE_ENEMIES</code>
+| 1024
+|-
+| <code>HOLD_FIRE_UNTIL_FULL_RELOAD</code>
+| 2048
+|-
+| <code>PRIORITIZE_DEFENSE</code>
+| 4096
+|-
+| <code>ALWAYS_FIRE_WEAPON</code>
+| 8192
+|-
+| <code>TELEPORT_TO_HINT</code>
+| 16384
+|-
+| <code>MINIBOSS</code>
+| 32768
+|-
+| <code>USE_BOSS_HEALTH_BAR</code>
+| 65536
+|-
+| <code>IGNORE_FLAG</code>
+| 131072
+|-
+| <code>AUTO_JUMP</code>
+| 262144
+|-
+| <code>AIR_CHARGE_ONLY</code>
+| 524288
+|-
+| <code>PREFER_VACCINATOR_BULLETS</code>
+| 1048576
+|-
+| <code>PREFER_VACCINATOR_BLAST</code>
+| 2097152
+|-
+| <code>PREFER_VACCINATOR_FIRE</code>
+| 4194304
+|-
+| <code>BULLET_IMMUNE</code>
+| 8388608
+|-
+| <code>BLAST_IMMUNE</code>
+| 16777216
+|-
+| <code>FIRE_IMMUNE</code>
+| 33554432
+|-
+| <code>PARACHUTE</code>
+| 67108864
+|-
+| <code>PROJECTILE_SHIELD</code>
+| 134217728
+|}
+
+=== FTFNavAttributeType ===
+
+{| class = "standard-table"
+! Name
+! Value
+|-
+| <code>TF_NAV_INVALID</code>
+| 0
+|-
+| <code>TF_NAV_BLOCKED</code>
+| 1
+|-
+| <code>TF_NAV_SPAWN_ROOM_RED</code>
+| 2
+|-
+| <code>TF_NAV_SPAWN_ROOM_BLUE</code>
+| 4
+|-
+| <code>TF_NAV_SPAWN_ROOM_EXIT</code>
+| 8
+|-
+| <code>TF_NAV_HAS_AMMO</code>
+| 16
+|-
+| <code>TF_NAV_HAS_HEALTH</code>
+| 32
+|-
+| <code>TF_NAV_CONTROL_POINT</code>
+| 64
+|-
+| <code>TF_NAV_BLUE_SENTRY_DANGER</code>
+| 128
+|-
+| <code>TF_NAV_RED_SENTRY_DANGER</code>
+| 256
+|-
+| <code>TF_NAV_BLUE_SETUP_GATE</code>
+| 2048
+|-
+| <code>TF_NAV_RED_SETUP_GATE</code>
+| 4096
+|-
+| <code>TF_NAV_BLOCKED_AFTER_POINT_CAPTURE</code>
+| 8192
+|-
+| <code>TF_NAV_BLOCKED_UNTIL_POINT_CAPTURE</code>
+| 16384
+|-
+| <code>TF_NAV_BLUE_ONE_WAY_DOOR</code>
+| 32768
+|-
+| <code>TF_NAV_RED_ONE_WAY_DOOR</code>
+| 65536
+|-
+| <code>TF_NAV_WITH_SECOND_POINT</code>
+| 131072
+|-
+| <code>TF_NAV_WITH_THIRD_POINT</code>
+| 262144
+|-
+| <code>TF_NAV_WITH_FOURTH_POINT</code>
+| 524288
+|-
+| <code>TF_NAV_WITH_FIFTH_POINT</code>
+| 1048576
+|-
+| <code>TF_NAV_SNIPER_SPOT</code>
+| 2097152
+|-
+| <code>TF_NAV_SENTRY_SPOT</code>
+| 4194304
+|-
+| <code>TF_NAV_ESCAPE_ROUTE</code>
+| 8388608
+|-
+| <code>TF_NAV_ESCAPE_ROUTE_VISIBLE</code>
+| 16777216
+|-
+| <code>TF_NAV_NO_SPAWNING</code>
+| 33554432
+|-
+| <code>TF_NAV_RESCUE_CLOSET</code>
+| 67108864
+|-
+| <code>TF_NAV_BOMB_CAN_DROP_HERE</code>
+| 134217728
+|-
+| <code>TF_NAV_DOOR_NEVER_BLOCKS</code>
+| 268435456
+|-
+| <code>TF_NAV_DOOR_ALWAYS_BLOCKS</code>
+| 536870912
+|-
+| <code>TF_NAV_UNBLOCKABLE</code>
+| 1073741824
+|-
+| <code>TF_NAV_PERSISTENT_ATTRIBUTES</code>
+| 1988098048
+|}

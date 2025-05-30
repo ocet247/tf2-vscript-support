@@ -1,0 +1,3026 @@
+	EBotType: {
+		TF_BOT_TYPE: {
+			signature: "TF_BOT_TYPE: int",
+			description: "Value: `1337`"
+		},
+	},
+	ECollisionGroup: {
+		COLLISION_GROUP_NONE: {
+			signature: "COLLISION_GROUP_NONE: int",
+			description: "Value: `0`"
+		},
+		COLLISION_GROUP_DEBRIS: {
+			signature: "COLLISION_GROUP_DEBRIS: int",
+			description: "Value: `1`"
+		},
+		COLLISION_GROUP_DEBRIS_TRIGGER: {
+			signature: "COLLISION_GROUP_DEBRIS_TRIGGER: int",
+			description: "Value: `2`"
+		},
+		COLLISION_GROUP_INTERACTIVE_DEBRIS: {
+			signature: "COLLISION_GROUP_INTERACTIVE_DEBRIS: int",
+			description: "Value: `3`"
+		},
+		COLLISION_GROUP_INTERACTIVE: {
+			signature: "COLLISION_GROUP_INTERACTIVE: int",
+			description: "Value: `4`"
+		},
+		COLLISION_GROUP_PLAYER: {
+			signature: "COLLISION_GROUP_PLAYER: int",
+			description: "Value: `5`"
+		},
+		COLLISION_GROUP_BREAKABLE_GLASS: {
+			signature: "COLLISION_GROUP_BREAKABLE_GLASS: int",
+			description: "Value: `6`"
+		},
+		COLLISION_GROUP_VEHICLE: {
+			signature: "COLLISION_GROUP_VEHICLE: int",
+			description: "Value: `7`"
+		},
+		COLLISION_GROUP_PLAYER_MOVEMENT: {
+			signature: "COLLISION_GROUP_PLAYER_MOVEMENT: int",
+			description: "Value: `8`"
+		},
+		COLLISION_GROUP_NPC: {
+			signature: "COLLISION_GROUP_NPC: int",
+			description: "Value: `9`"
+		},
+		COLLISION_GROUP_IN_VEHICLE: {
+			signature: "COLLISION_GROUP_IN_VEHICLE: int",
+			description: "Value: `10`"
+		},
+		COLLISION_GROUP_WEAPON: {
+			signature: "COLLISION_GROUP_WEAPON: int",
+			description: "Value: `11`"
+		},
+		COLLISION_GROUP_VEHICLE_CLIP: {
+			signature: "COLLISION_GROUP_VEHICLE_CLIP: int",
+			description: "Value: `12`"
+		},
+		COLLISION_GROUP_PROJECTILE: {
+			signature: "COLLISION_GROUP_PROJECTILE: int",
+			description: "Value: `13`"
+		},
+		COLLISION_GROUP_DOOR_BLOCKER: {
+			signature: "COLLISION_GROUP_DOOR_BLOCKER: int",
+			description: "Value: `14`"
+		},
+		COLLISION_GROUP_PASSABLE_DOOR: {
+			signature: "COLLISION_GROUP_PASSABLE_DOOR: int",
+			description: "Value: `15`"
+		},
+		COLLISION_GROUP_DISSOLVING: {
+			signature: "COLLISION_GROUP_DISSOLVING: int",
+			description: "Value: `16`"
+		},
+		COLLISION_GROUP_PUSHAWAY: {
+			signature: "COLLISION_GROUP_PUSHAWAY: int",
+			description: "Value: `17`"
+		},
+		COLLISION_GROUP_NPC_ACTOR: {
+			signature: "COLLISION_GROUP_NPC_ACTOR: int",
+			description: "Value: `18`"
+		},
+		COLLISION_GROUP_NPC_SCRIPTED: {
+			signature: "COLLISION_GROUP_NPC_SCRIPTED: int",
+			description: "Value: `19`"
+		},
+		LAST_SHARED_COLLISION_GROUP: {
+			signature: "LAST_SHARED_COLLISION_GROUP: int",
+			description: "Value: `20`"
+		},
+	},
+	ECritType: {
+		CRIT_NONE: {
+			signature: "CRIT_NONE: int",
+			description: "Value: `0`"
+		},
+		CRIT_MINI: {
+			signature: "CRIT_MINI: int",
+			description: "Value: `1`"
+		},
+		CRIT_FULL: {
+			signature: "CRIT_FULL: int",
+			description: "Value: `2`"
+		},
+	},
+	EHitGroup: {
+		HITGROUP_GENERIC: {
+			signature: "HITGROUP_GENERIC: int",
+			description: "Value: `null {{bug|This is supposed to be 0}}`"
+		},
+		HITGROUP_HEAD: {
+			signature: "HITGROUP_HEAD: int",
+			description: "Value: `1`"
+		},
+		HITGROUP_CHEST: {
+			signature: "HITGROUP_CHEST: int",
+			description: "Value: `2`"
+		},
+		HITGROUP_STOMACH: {
+			signature: "HITGROUP_STOMACH: int",
+			description: "Value: `3`"
+		},
+		HITGROUP_LEFTARM: {
+			signature: "HITGROUP_LEFTARM: int",
+			description: "Value: `4`"
+		},
+		HITGROUP_RIGHTARM: {
+			signature: "HITGROUP_RIGHTARM: int",
+			description: "Value: `5`"
+		},
+		HITGROUP_LEFTLEG: {
+			signature: "HITGROUP_LEFTLEG: int",
+			description: "Value: `6`"
+		},
+		HITGROUP_RIGHTLEG: {
+			signature: "HITGROUP_RIGHTLEG: int",
+			description: "Value: `7`"
+		},
+		HITGROUP_GEAR: {
+			signature: "HITGROUP_GEAR: int",
+			description: "Value: `10`"
+		},
+	},
+	EHoliday: {
+		kHoliday_None: {
+			signature: "kHoliday_None: int",
+			description: "Value: `0`"
+		},
+		kHoliday_TFBirthday: {
+			signature: "kHoliday_TFBirthday: int",
+			description: "Value: `1`"
+		},
+		kHoliday_Halloween: {
+			signature: "kHoliday_Halloween: int",
+			description: "Value: `2`"
+		},
+		kHoliday_Christmas: {
+			signature: "kHoliday_Christmas: int",
+			description: "Value: `3`"
+		},
+		kHoliday_CommunityUpdate: {
+			signature: "kHoliday_CommunityUpdate: int",
+			description: "Value: `4`"
+		},
+		kHoliday_EOTL: {
+			signature: "kHoliday_EOTL: int",
+			description: "Value: `5`"
+		},
+		kHoliday_Valentines: {
+			signature: "kHoliday_Valentines: int",
+			description: "Value: `6`"
+		},
+		kHoliday_MeetThePyro: {
+			signature: "kHoliday_MeetThePyro: int",
+			description: "Value: `7`"
+		},
+		kHoliday_FullMoon: {
+			signature: "kHoliday_FullMoon: int",
+			description: "Value: `8`"
+		},
+		kHoliday_HalloweenOrFullMoon: {
+			signature: "kHoliday_HalloweenOrFullMoon: int",
+			description: "Value: `9`"
+		},
+		kHoliday_HalloweenOrFullMoonOrValentines: {
+			signature: "kHoliday_HalloweenOrFullMoonOrValentines: int",
+			description: "Value: `10`"
+		},
+		kHoliday_AprilFools: {
+			signature: "kHoliday_AprilFools: int",
+			description: "Value: `11`"
+		},
+		kHoliday_Soldier: {
+			signature: "kHoliday_Soldier: int",
+			description: "Value: `12`"
+		},
+		kHoliday_Summer: {
+			signature: "kHoliday_Summer: int",
+			description: "Value: `13`"
+		},
+		kHolidayCount: {
+			signature: "kHolidayCount: int",
+			description: "Value: `14`"
+		},
+	},
+	EHudNotify: {
+		HUD_PRINTNOTIFY: {
+			signature: "HUD_PRINTNOTIFY: int",
+			description: "Value: `1`"
+		},
+		HUD_PRINTCONSOLE: {
+			signature: "HUD_PRINTCONSOLE: int",
+			description: "Value: `2`"
+		},
+		HUD_PRINTTALK: {
+			signature: "HUD_PRINTTALK: int",
+			description: "Value: `3`"
+		},
+		HUD_PRINTCENTER: {
+			signature: "HUD_PRINTCENTER: int",
+			description: "Value: `4`"
+		},
+	},
+	EMoveCollide: {
+		MOVECOLLIDE_DEFAULT: {
+			signature: "MOVECOLLIDE_DEFAULT: int",
+			description: "Value: `0`"
+		},
+		MOVECOLLIDE_FLY_BOUNCE: {
+			signature: "MOVECOLLIDE_FLY_BOUNCE: int",
+			description: "Value: `1`"
+		},
+		MOVECOLLIDE_FLY_CUSTOM: {
+			signature: "MOVECOLLIDE_FLY_CUSTOM: int",
+			description: "Value: `2`"
+		},
+		MOVECOLLIDE_FLY_SLIDE: {
+			signature: "MOVECOLLIDE_FLY_SLIDE: int",
+			description: "Value: `3`"
+		},
+		MOVECOLLIDE_MAX_BITS: {
+			signature: "MOVECOLLIDE_MAX_BITS: int",
+			description: "Value: `3`"
+		},
+		MOVECOLLIDE_COUNT: {
+			signature: "MOVECOLLIDE_COUNT: int",
+			description: "Value: `4`"
+		},
+	},
+	EMoveType: {
+		MOVETYPE_NONE: {
+			signature: "MOVETYPE_NONE: int",
+			description: "Value: `0`"
+		},
+		MOVETYPE_ISOMETRIC: {
+			signature: "MOVETYPE_ISOMETRIC: int",
+			description: "Value: `1`"
+		},
+		MOVETYPE_WALK: {
+			signature: "MOVETYPE_WALK: int",
+			description: "Value: `2`"
+		},
+		MOVETYPE_STEP: {
+			signature: "MOVETYPE_STEP: int",
+			description: "Value: `3`"
+		},
+		MOVETYPE_FLY: {
+			signature: "MOVETYPE_FLY: int",
+			description: "Value: `4`"
+		},
+		MOVETYPE_FLYGRAVITY: {
+			signature: "MOVETYPE_FLYGRAVITY: int",
+			description: "Value: `5`"
+		},
+		MOVETYPE_VPHYSICS: {
+			signature: "MOVETYPE_VPHYSICS: int",
+			description: "Value: `6`"
+		},
+		MOVETYPE_PUSH: {
+			signature: "MOVETYPE_PUSH: int",
+			description: "Value: `7`"
+		},
+		MOVETYPE_NOCLIP: {
+			signature: "MOVETYPE_NOCLIP: int",
+			description: "Value: `8`"
+		},
+		MOVETYPE_LADDER: {
+			signature: "MOVETYPE_LADDER: int",
+			description: "Value: `9`"
+		},
+		MOVETYPE_OBSERVER: {
+			signature: "MOVETYPE_OBSERVER: int",
+			description: "Value: `10`"
+		},
+		MOVETYPE_CUSTOM: {
+			signature: "MOVETYPE_CUSTOM: int",
+			description: "Value: `11`"
+		},
+		MOVETYPE_LAST: {
+			signature: "MOVETYPE_LAST: int",
+			description: "Value: `11`"
+		},
+	},
+	ENavCornerType: {
+		NORTH_WEST: {
+			signature: "NORTH_WEST: int",
+			description: "Value: `0`"
+		},
+		NORTH_EAST: {
+			signature: "NORTH_EAST: int",
+			description: "Value: `1`"
+		},
+		SOUTH_EAST: {
+			signature: "SOUTH_EAST: int",
+			description: "Value: `2`"
+		},
+		SOUTH_WEST: {
+			signature: "SOUTH_WEST: int",
+			description: "Value: `3`"
+		},
+		NUM_CORNERS: {
+			signature: "NUM_CORNERS: int",
+			description: "Value: `4`"
+		},
+	},
+	ENavDirType: {
+		NORTH: {
+			signature: "NORTH: int",
+			description: "Value: `0`"
+		},
+		EAST: {
+			signature: "EAST: int",
+			description: "Value: `1`"
+		},
+		SOUTH: {
+			signature: "SOUTH: int",
+			description: "Value: `2`"
+		},
+		WEST: {
+			signature: "WEST: int",
+			description: "Value: `3`"
+		},
+		NUM_DIRECTIONS: {
+			signature: "NUM_DIRECTIONS: int",
+			description: "Value: `4`"
+		},
+	},
+	ENavRelativeDirType: {
+		FORWARD: {
+			signature: "FORWARD: int",
+			description: "Value: `0`"
+		},
+		RIGHT: {
+			signature: "RIGHT: int",
+			description: "Value: `1`"
+		},
+		BACKWARD: {
+			signature: "BACKWARD: int",
+			description: "Value: `2`"
+		},
+		LEFT: {
+			signature: "LEFT: int",
+			description: "Value: `3`"
+		},
+		UP: {
+			signature: "UP: int",
+			description: "Value: `4`"
+		},
+		DOWN: {
+			signature: "DOWN: int",
+			description: "Value: `5`"
+		},
+		NUM_RELATIVE_DIRECTIONS: {
+			signature: "NUM_RELATIVE_DIRECTIONS: int",
+			description: "Value: `6`"
+		},
+	},
+	ENavTraverseType: {
+		GO_NORTH: {
+			signature: "GO_NORTH: int",
+			description: "Value: `0`"
+		},
+		GO_EAST: {
+			signature: "GO_EAST: int",
+			description: "Value: `1`"
+		},
+		GO_SOUTH: {
+			signature: "GO_SOUTH: int",
+			description: "Value: `2`"
+		},
+		GO_WEST: {
+			signature: "GO_WEST: int",
+			description: "Value: `3`"
+		},
+		GO_LADDER_UP: {
+			signature: "GO_LADDER_UP: int",
+			description: "Value: `4`"
+		},
+		GO_LADDER_DOWN: {
+			signature: "GO_LADDER_DOWN: int",
+			description: "Value: `5`"
+		},
+		GO_JUMP: {
+			signature: "GO_JUMP: int",
+			description: "Value: `6`"
+		},
+		GO_ELEVATOR_UP: {
+			signature: "GO_ELEVATOR_UP: int",
+			description: "Value: `7`"
+		},
+		GO_ELEVATOR_DOWN: {
+			signature: "GO_ELEVATOR_DOWN: int",
+			description: "Value: `8`"
+		},
+		NUM_TRAVERSE_TYPES: {
+			signature: "NUM_TRAVERSE_TYPES: int",
+			description: "Value: `9`"
+		},
+	},
+	ERenderFx: {
+		kRenderFxNone: {
+			signature: "kRenderFxNone: int",
+			description: "Value: `0`"
+		},
+		kRenderFxPulseSlow: {
+			signature: "kRenderFxPulseSlow: int",
+			description: "Value: `1`"
+		},
+		kRenderFxPulseFast: {
+			signature: "kRenderFxPulseFast: int",
+			description: "Value: `2`"
+		},
+		kRenderFxPulseSlowWide: {
+			signature: "kRenderFxPulseSlowWide: int",
+			description: "Value: `3`"
+		},
+		kRenderFxPulseFastWide: {
+			signature: "kRenderFxPulseFastWide: int",
+			description: "Value: `4`"
+		},
+		kRenderFxFadeSlow: {
+			signature: "kRenderFxFadeSlow: int",
+			description: "Value: `5`"
+		},
+		kRenderFxFadeFast: {
+			signature: "kRenderFxFadeFast: int",
+			description: "Value: `6`"
+		},
+		kRenderFxSolidSlow: {
+			signature: "kRenderFxSolidSlow: int",
+			description: "Value: `7`"
+		},
+		kRenderFxSolidFast: {
+			signature: "kRenderFxSolidFast: int",
+			description: "Value: `8`"
+		},
+		kRenderFxStrobeSlow: {
+			signature: "kRenderFxStrobeSlow: int",
+			description: "Value: `9`"
+		},
+		kRenderFxStrobeFast: {
+			signature: "kRenderFxStrobeFast: int",
+			description: "Value: `10`"
+		},
+		kRenderFxStrobeFaster: {
+			signature: "kRenderFxStrobeFaster: int",
+			description: "Value: `11`"
+		},
+		kRenderFxFlickerSlow: {
+			signature: "kRenderFxFlickerSlow: int",
+			description: "Value: `12`"
+		},
+		kRenderFxFlickerFast: {
+			signature: "kRenderFxFlickerFast: int",
+			description: "Value: `13`"
+		},
+		kRenderFxNoDissipation: {
+			signature: "kRenderFxNoDissipation: int",
+			description: "Value: `14`"
+		},
+		kRenderFxDistort: {
+			signature: "kRenderFxDistort: int",
+			description: "Value: `15`"
+		},
+		kRenderFxHologram: {
+			signature: "kRenderFxHologram: int",
+			description: "Value: `16`"
+		},
+		kRenderFxExplode: {
+			signature: "kRenderFxExplode: int",
+			description: "Value: `17`"
+		},
+		kRenderFxGlowShell: {
+			signature: "kRenderFxGlowShell: int",
+			description: "Value: `18`"
+		},
+		kRenderFxClampMinScale: {
+			signature: "kRenderFxClampMinScale: int",
+			description: "Value: `19`"
+		},
+		kRenderFxEnvRain: {
+			signature: "kRenderFxEnvRain: int",
+			description: "Value: `20`"
+		},
+		kRenderFxEnvSnow: {
+			signature: "kRenderFxEnvSnow: int",
+			description: "Value: `21`"
+		},
+		kRenderFxSpotlight: {
+			signature: "kRenderFxSpotlight: int",
+			description: "Value: `22`"
+		},
+		kRenderFxRagdoll: {
+			signature: "kRenderFxRagdoll: int",
+			description: "Value: `23`"
+		},
+		kRenderFxPulseFastWider: {
+			signature: "kRenderFxPulseFastWider: int",
+			description: "Value: `24`"
+		},
+		kRenderFxMax: {
+			signature: "kRenderFxMax: int",
+			description: "Value: `25`"
+		},
+	},
+	ERenderMode: {
+		kRenderNormal: {
+			signature: "kRenderNormal: int",
+			description: "Value: `0`"
+		},
+		kRenderTransColor: {
+			signature: "kRenderTransColor: int",
+			description: "Value: `1`"
+		},
+		kRenderTransTexture: {
+			signature: "kRenderTransTexture: int",
+			description: "Value: `2`"
+		},
+		kRenderGlow: {
+			signature: "kRenderGlow: int",
+			description: "Value: `3`"
+		},
+		kRenderTransAlpha: {
+			signature: "kRenderTransAlpha: int",
+			description: "Value: `4`"
+		},
+		kRenderTransAdd: {
+			signature: "kRenderTransAdd: int",
+			description: "Value: `5`"
+		},
+		kRenderEnvironmental: {
+			signature: "kRenderEnvironmental: int",
+			description: "Value: `6`"
+		},
+		kRenderTransAddFrameBlend: {
+			signature: "kRenderTransAddFrameBlend: int",
+			description: "Value: `7`"
+		},
+		kRenderTransAlphaAdd: {
+			signature: "kRenderTransAlphaAdd: int",
+			description: "Value: `8`"
+		},
+		kRenderWorldGlow: {
+			signature: "kRenderWorldGlow: int",
+			description: "Value: `9`"
+		},
+		kRenderNone: {
+			signature: "kRenderNone: int",
+			description: "Value: `10`"
+		},
+		kRenderModeCount: {
+			signature: "kRenderModeCount: int",
+			description: "Value: `11`"
+		},
+	},
+	ERoundState: {
+		GR_STATE_INIT: {
+			signature: "GR_STATE_INIT: int",
+			description: "Value: `0`"
+		},
+		GR_STATE_PREGAME: {
+			signature: "GR_STATE_PREGAME: int",
+			description: "Value: `1`"
+		},
+		GR_STATE_STARTGAME: {
+			signature: "GR_STATE_STARTGAME: int",
+			description: "Value: `2`"
+		},
+		GR_STATE_PREROUND: {
+			signature: "GR_STATE_PREROUND: int",
+			description: "Value: `3`"
+		},
+		GR_STATE_RND_RUNNING: {
+			signature: "GR_STATE_RND_RUNNING: int",
+			description: "Value: `4`"
+		},
+		GR_STATE_TEAM_WIN: {
+			signature: "GR_STATE_TEAM_WIN: int",
+			description: "Value: `5`"
+		},
+		GR_STATE_RESTART: {
+			signature: "GR_STATE_RESTART: int",
+			description: "Value: `6`"
+		},
+		GR_STATE_STALEMATE: {
+			signature: "GR_STATE_STALEMATE: int",
+			description: "Value: `7`"
+		},
+		GR_STATE_GAME_OVER: {
+			signature: "GR_STATE_GAME_OVER: int",
+			description: "Value: `8`"
+		},
+		GR_STATE_BONUS: {
+			signature: "GR_STATE_BONUS: int",
+			description: "Value: `9`"
+		},
+		GR_STATE_BETWEEN_RNDS: {
+			signature: "GR_STATE_BETWEEN_RNDS: int",
+			description: "Value: `10`"
+		},
+		GR_NUM_ROUND_STATES: {
+			signature: "GR_NUM_ROUND_STATES: int",
+			description: "Value: `11`"
+		},
+	},
+	EScriptRecipientFilter: {
+		RECIPIENT_FILTER_DEFAULT: {
+			signature: "RECIPIENT_FILTER_DEFAULT: int",
+			description: "Value: `0`"
+		},
+		RECIPIENT_FILTER_PAS_ATTENUATION: {
+			signature: "RECIPIENT_FILTER_PAS_ATTENUATION: int",
+			description: "Value: `1`"
+		},
+		RECIPIENT_FILTER_PAS: {
+			signature: "RECIPIENT_FILTER_PAS: int",
+			description: "Value: `2`"
+		},
+		RECIPIENT_FILTER_PVS: {
+			signature: "RECIPIENT_FILTER_PVS: int",
+			description: "Value: `3`"
+		},
+		RECIPIENT_FILTER_SINGLE_PLAYER: {
+			signature: "RECIPIENT_FILTER_SINGLE_PLAYER: int",
+			description: "Value: `4`"
+		},
+		RECIPIENT_FILTER_GLOBAL: {
+			signature: "RECIPIENT_FILTER_GLOBAL: int",
+			description: "Value: `5`"
+		},
+		RECIPIENT_FILTER_TEAM: {
+			signature: "RECIPIENT_FILTER_TEAM: int",
+			description: "Value: `6`"
+		},
+	},
+	ESolidType: {
+		SOLID_NONE: {
+			signature: "SOLID_NONE: int",
+			description: "Value: `0`"
+		},
+		SOLID_BSP: {
+			signature: "SOLID_BSP: int",
+			description: "Value: `1`"
+		},
+		SOLID_BBOX: {
+			signature: "SOLID_BBOX: int",
+			description: "Value: `2`"
+		},
+		SOLID_OBB: {
+			signature: "SOLID_OBB: int",
+			description: "Value: `3`"
+		},
+		SOLID_OBB_YAW: {
+			signature: "SOLID_OBB_YAW: int",
+			description: "Value: `4`"
+		},
+		SOLID_CUSTOM: {
+			signature: "SOLID_CUSTOM: int",
+			description: "Value: `5`"
+		},
+		SOLID_VPHYSICS: {
+			signature: "SOLID_VPHYSICS: int",
+			description: "Value: `6`"
+		},
+		SOLID_LAST: {
+			signature: "SOLID_LAST: int",
+			description: "Value: `7`"
+		},
+	},
+	ESpectatorMode: {
+		OBS_MODE_NONE: {
+			signature: "OBS_MODE_NONE: int",
+			description: "Value: `0`"
+		},
+		OBS_MODE_DEATHCAM: {
+			signature: "OBS_MODE_DEATHCAM: int",
+			description: "Value: `1`"
+		},
+		OBS_MODE_FREEZECAM: {
+			signature: "OBS_MODE_FREEZECAM: int",
+			description: "Value: `2`"
+		},
+		OBS_MODE_FIXED: {
+			signature: "OBS_MODE_FIXED: int",
+			description: "Value: `3`"
+		},
+		OBS_MODE_IN_EYE: {
+			signature: "OBS_MODE_IN_EYE: int",
+			description: "Value: `4`"
+		},
+		OBS_MODE_CHASE: {
+			signature: "OBS_MODE_CHASE: int",
+			description: "Value: `5`"
+		},
+		OBS_MODE_POI: {
+			signature: "OBS_MODE_POI: int",
+			description: "Value: `6`"
+		},
+		OBS_MODE_ROAMING: {
+			signature: "OBS_MODE_ROAMING: int",
+			description: "Value: `7`"
+		},
+		NUM_OBSERVER_MODES: {
+			signature: "NUM_OBSERVER_MODES: int",
+			description: "Value: `8`"
+		},
+	},
+	EStopwatchState: {
+		STOPWATCH_CAPTURE_TIME_NOT_SET: {
+			signature: "STOPWATCH_CAPTURE_TIME_NOT_SET: int",
+			description: "Value: `0`"
+		},
+		STOPWATCH_RUNNING: {
+			signature: "STOPWATCH_RUNNING: int",
+			description: "Value: `1`"
+		},
+		STOPWATCH_OVERTIME: {
+			signature: "STOPWATCH_OVERTIME: int",
+			description: "Value: `2`"
+		},
+	},
+	ETFBotDifficultyType: {
+		EASY: {
+			signature: "EASY: int",
+			description: "Value: `0`"
+		},
+		NORMAL: {
+			signature: "NORMAL: int",
+			description: "Value: `1`"
+		},
+		HARD: {
+			signature: "HARD: int",
+			description: "Value: `2`"
+		},
+		EXPERT: {
+			signature: "EXPERT: int",
+			description: "Value: `3`"
+		},
+		NUM_DIFFICULTY_LEVELS: {
+			signature: "NUM_DIFFICULTY_LEVELS: int",
+			description: "Value: `4`"
+		},
+		UNDEFINED: {
+			signature: "UNDEFINED: int",
+			description: "Value: `-1`"
+		},
+	},
+	ETFClass: {
+		TF_CLASS_UNDEFINED: {
+			signature: "TF_CLASS_UNDEFINED: int",
+			description: "Value: `0`"
+		},
+		TF_CLASS_SCOUT: {
+			signature: "TF_CLASS_SCOUT: int",
+			description: "Value: `1`"
+		},
+		TF_CLASS_SNIPER: {
+			signature: "TF_CLASS_SNIPER: int",
+			description: "Value: `2`"
+		},
+		TF_CLASS_SOLDIER: {
+			signature: "TF_CLASS_SOLDIER: int",
+			description: "Value: `3`"
+		},
+		TF_CLASS_DEMOMAN: {
+			signature: "TF_CLASS_DEMOMAN: int",
+			description: "Value: `4`"
+		},
+		TF_CLASS_MEDIC: {
+			signature: "TF_CLASS_MEDIC: int",
+			description: "Value: `5`"
+		},
+		TF_CLASS_HEAVYWEAPONS: {
+			signature: "TF_CLASS_HEAVYWEAPONS: int",
+			description: "Value: `6`"
+		},
+		TF_CLASS_PYRO: {
+			signature: "TF_CLASS_PYRO: int",
+			description: "Value: `7`"
+		},
+		TF_CLASS_SPY: {
+			signature: "TF_CLASS_SPY: int",
+			description: "Value: `8`"
+		},
+		TF_CLASS_ENGINEER: {
+			signature: "TF_CLASS_ENGINEER: int",
+			description: "Value: `9`"
+		},
+		TF_CLASS_CIVILIAN: {
+			signature: "TF_CLASS_CIVILIAN: int",
+			description: "Value: `10`"
+		},
+		TF_CLASS_COUNT_ALL: {
+			signature: "TF_CLASS_COUNT_ALL: int",
+			description: "Value: `11`"
+		},
+		TF_CLASS_RANDOM: {
+			signature: "TF_CLASS_RANDOM: int",
+			description: "Value: `12`"
+		},
+	},
+	ETFCond: {
+		TF_COND_AIMING: {
+			signature: "TF_COND_AIMING: int",
+			description: "Value: `0`"
+		},
+		TF_COND_ZOOMED: {
+			signature: "TF_COND_ZOOMED: int",
+			description: "Value: `1`"
+		},
+		TF_COND_DISGUISING: {
+			signature: "TF_COND_DISGUISING: int",
+			description: "Value: `2`"
+		},
+		TF_COND_DISGUISED: {
+			signature: "TF_COND_DISGUISED: int",
+			description: "Value: `3`"
+		},
+		TF_COND_STEALTHED: {
+			signature: "TF_COND_STEALTHED: int",
+			description: "Value: `4`"
+		},
+		TF_COND_INVULNERABLE: {
+			signature: "TF_COND_INVULNERABLE: int",
+			description: "Value: `5`"
+		},
+		TF_COND_TELEPORTED: {
+			signature: "TF_COND_TELEPORTED: int",
+			description: "Value: `6`"
+		},
+		TF_COND_TAUNTING: {
+			signature: "TF_COND_TAUNTING: int",
+			description: "Value: `7`"
+		},
+		TF_COND_INVULNERABLE_WEARINGOFF: {
+			signature: "TF_COND_INVULNERABLE_WEARINGOFF: int",
+			description: "Value: `8`"
+		},
+		TF_COND_STEALTHED_BLINK: {
+			signature: "TF_COND_STEALTHED_BLINK: int",
+			description: "Value: `9`"
+		},
+		TF_COND_SELECTED_TO_TELEPORT: {
+			signature: "TF_COND_SELECTED_TO_TELEPORT: int",
+			description: "Value: `10`"
+		},
+		TF_COND_CRITBOOSTED: {
+			signature: "TF_COND_CRITBOOSTED: int",
+			description: "Value: `11`"
+		},
+		TF_COND_TMPDAMAGEBONUS: {
+			signature: "TF_COND_TMPDAMAGEBONUS: int",
+			description: "Value: `12`"
+		},
+		TF_COND_FEIGN_DEATH: {
+			signature: "TF_COND_FEIGN_DEATH: int",
+			description: "Value: `13`"
+		},
+		TF_COND_PHASE: {
+			signature: "TF_COND_PHASE: int",
+			description: "Value: `14`"
+		},
+		TF_COND_STUNNED: {
+			signature: "TF_COND_STUNNED: int",
+			description: "Value: `15`"
+		},
+		TF_COND_OFFENSEBUFF: {
+			signature: "TF_COND_OFFENSEBUFF: int",
+			description: "Value: `16`"
+		},
+		TF_COND_SHIELD_CHARGE: {
+			signature: "TF_COND_SHIELD_CHARGE: int",
+			description: "Value: `17`"
+		},
+		TF_COND_DEMO_BUFF: {
+			signature: "TF_COND_DEMO_BUFF: int",
+			description: "Value: `18`"
+		},
+		TF_COND_ENERGY_BUFF: {
+			signature: "TF_COND_ENERGY_BUFF: int",
+			description: "Value: `19`"
+		},
+		TF_COND_RADIUSHEAL: {
+			signature: "TF_COND_RADIUSHEAL: int",
+			description: "Value: `20`"
+		},
+		TF_COND_HEALTH_BUFF: {
+			signature: "TF_COND_HEALTH_BUFF: int",
+			description: "Value: `21`"
+		},
+		TF_COND_BURNING: {
+			signature: "TF_COND_BURNING: int",
+			description: "Value: `22`"
+		},
+		TF_COND_HEALTH_OVERHEALED: {
+			signature: "TF_COND_HEALTH_OVERHEALED: int",
+			description: "Value: `23`"
+		},
+		TF_COND_URINE: {
+			signature: "TF_COND_URINE: int",
+			description: "Value: `24`"
+		},
+		TF_COND_BLEEDING: {
+			signature: "TF_COND_BLEEDING: int",
+			description: "Value: `25`"
+		},
+		TF_COND_DEFENSEBUFF: {
+			signature: "TF_COND_DEFENSEBUFF: int",
+			description: "Value: `26`"
+		},
+		TF_COND_MAD_MILK: {
+			signature: "TF_COND_MAD_MILK: int",
+			description: "Value: `27`"
+		},
+		TF_COND_MEGAHEAL: {
+			signature: "TF_COND_MEGAHEAL: int",
+			description: "Value: `28`"
+		},
+		TF_COND_REGENONDAMAGEBUFF: {
+			signature: "TF_COND_REGENONDAMAGEBUFF: int",
+			description: "Value: `29`"
+		},
+		TF_COND_MARKEDFORDEATH: {
+			signature: "TF_COND_MARKEDFORDEATH: int",
+			description: "Value: `30`"
+		},
+		TF_COND_NOHEALINGDAMAGEBUFF: {
+			signature: "TF_COND_NOHEALINGDAMAGEBUFF: int",
+			description: "Value: `31`"
+		},
+		TF_COND_SPEED_BOOST: {
+			signature: "TF_COND_SPEED_BOOST: int",
+			description: "Value: `32`"
+		},
+		TF_COND_CRITBOOSTED_PUMPKIN: {
+			signature: "TF_COND_CRITBOOSTED_PUMPKIN: int",
+			description: "Value: `33`"
+		},
+		TF_COND_CRITBOOSTED_USER_BUFF: {
+			signature: "TF_COND_CRITBOOSTED_USER_BUFF: int",
+			description: "Value: `34`"
+		},
+		TF_COND_CRITBOOSTED_DEMO_CHARGE: {
+			signature: "TF_COND_CRITBOOSTED_DEMO_CHARGE: int",
+			description: "Value: `35`"
+		},
+		TF_COND_SODAPOPPER_HYPE: {
+			signature: "TF_COND_SODAPOPPER_HYPE: int",
+			description: "Value: `36`"
+		},
+		TF_COND_CRITBOOSTED_FIRST_BLOOD: {
+			signature: "TF_COND_CRITBOOSTED_FIRST_BLOOD: int",
+			description: "Value: `37`"
+		},
+		TF_COND_CRITBOOSTED_BONUS_TIME: {
+			signature: "TF_COND_CRITBOOSTED_BONUS_TIME: int",
+			description: "Value: `38`"
+		},
+		TF_COND_CRITBOOSTED_CTF_CAPTURE: {
+			signature: "TF_COND_CRITBOOSTED_CTF_CAPTURE: int",
+			description: "Value: `39`"
+		},
+		TF_COND_CRITBOOSTED_ON_KILL: {
+			signature: "TF_COND_CRITBOOSTED_ON_KILL: int",
+			description: "Value: `40`"
+		},
+		TF_COND_CANNOT_SWITCH_FROM_MELEE: {
+			signature: "TF_COND_CANNOT_SWITCH_FROM_MELEE: int",
+			description: "Value: `41`"
+		},
+		TF_COND_DEFENSEBUFF_NO_CRIT_BLOCK: {
+			signature: "TF_COND_DEFENSEBUFF_NO_CRIT_BLOCK: int",
+			description: "Value: `42`"
+		},
+		TF_COND_REPROGRAMMED: {
+			signature: "TF_COND_REPROGRAMMED: int",
+			description: "Value: `43`"
+		},
+		TF_COND_CRITBOOSTED_RAGE_BUFF: {
+			signature: "TF_COND_CRITBOOSTED_RAGE_BUFF: int",
+			description: "Value: `44`"
+		},
+		TF_COND_DEFENSEBUFF_HIGH: {
+			signature: "TF_COND_DEFENSEBUFF_HIGH: int",
+			description: "Value: `45`"
+		},
+		TF_COND_SNIPERCHARGE_RAGE_BUFF: {
+			signature: "TF_COND_SNIPERCHARGE_RAGE_BUFF: int",
+			description: "Value: `46`"
+		},
+		TF_COND_DISGUISE_WEARINGOFF: {
+			signature: "TF_COND_DISGUISE_WEARINGOFF: int",
+			description: "Value: `47`"
+		},
+		TF_COND_MARKEDFORDEATH_SILENT: {
+			signature: "TF_COND_MARKEDFORDEATH_SILENT: int",
+			description: "Value: `48`"
+		},
+		TF_COND_DISGUISED_AS_DISPENSER: {
+			signature: "TF_COND_DISGUISED_AS_DISPENSER: int",
+			description: "Value: `49`"
+		},
+		TF_COND_SAPPED: {
+			signature: "TF_COND_SAPPED: int",
+			description: "Value: `50`"
+		},
+		TF_COND_INVULNERABLE_HIDE_UNLESS_DAMAGED: {
+			signature: "TF_COND_INVULNERABLE_HIDE_UNLESS_DAMAGED: int",
+			description: "Value: `51`"
+		},
+		TF_COND_INVULNERABLE_USER_BUFF: {
+			signature: "TF_COND_INVULNERABLE_USER_BUFF: int",
+			description: "Value: `52`"
+		},
+		TF_COND_HALLOWEEN_BOMB_HEAD: {
+			signature: "TF_COND_HALLOWEEN_BOMB_HEAD: int",
+			description: "Value: `53`"
+		},
+		TF_COND_HALLOWEEN_THRILLER: {
+			signature: "TF_COND_HALLOWEEN_THRILLER: int",
+			description: "Value: `54`"
+		},
+		TF_COND_RADIUSHEAL_ON_DAMAGE: {
+			signature: "TF_COND_RADIUSHEAL_ON_DAMAGE: int",
+			description: "Value: `55`"
+		},
+		TF_COND_CRITBOOSTED_CARD_EFFECT: {
+			signature: "TF_COND_CRITBOOSTED_CARD_EFFECT: int",
+			description: "Value: `56`"
+		},
+		TF_COND_INVULNERABLE_CARD_EFFECT: {
+			signature: "TF_COND_INVULNERABLE_CARD_EFFECT: int",
+			description: "Value: `57`"
+		},
+		TF_COND_MEDIGUN_UBER_BULLET_RESIST: {
+			signature: "TF_COND_MEDIGUN_UBER_BULLET_RESIST: int",
+			description: "Value: `58`"
+		},
+		TF_COND_MEDIGUN_UBER_BLAST_RESIST: {
+			signature: "TF_COND_MEDIGUN_UBER_BLAST_RESIST: int",
+			description: "Value: `59`"
+		},
+		TF_COND_MEDIGUN_UBER_FIRE_RESIST: {
+			signature: "TF_COND_MEDIGUN_UBER_FIRE_RESIST: int",
+			description: "Value: `60`"
+		},
+		TF_COND_MEDIGUN_SMALL_BULLET_RESIST: {
+			signature: "TF_COND_MEDIGUN_SMALL_BULLET_RESIST: int",
+			description: "Value: `61`"
+		},
+		TF_COND_MEDIGUN_SMALL_BLAST_RESIST: {
+			signature: "TF_COND_MEDIGUN_SMALL_BLAST_RESIST: int",
+			description: "Value: `62`"
+		},
+		TF_COND_MEDIGUN_SMALL_FIRE_RESIST: {
+			signature: "TF_COND_MEDIGUN_SMALL_FIRE_RESIST: int",
+			description: "Value: `63`"
+		},
+		TF_COND_STEALTHED_USER_BUFF: {
+			signature: "TF_COND_STEALTHED_USER_BUFF: int",
+			description: "Value: `64`"
+		},
+		TF_COND_MEDIGUN_DEBUFF: {
+			signature: "TF_COND_MEDIGUN_DEBUFF: int",
+			description: "Value: `65`"
+		},
+		TF_COND_STEALTHED_USER_BUFF_FADING: {
+			signature: "TF_COND_STEALTHED_USER_BUFF_FADING: int",
+			description: "Value: `66`"
+		},
+		TF_COND_BULLET_IMMUNE: {
+			signature: "TF_COND_BULLET_IMMUNE: int",
+			description: "Value: `67`"
+		},
+		TF_COND_BLAST_IMMUNE: {
+			signature: "TF_COND_BLAST_IMMUNE: int",
+			description: "Value: `68`"
+		},
+		TF_COND_FIRE_IMMUNE: {
+			signature: "TF_COND_FIRE_IMMUNE: int",
+			description: "Value: `69`"
+		},
+		TF_COND_PREVENT_DEATH: {
+			signature: "TF_COND_PREVENT_DEATH: int",
+			description: "Value: `70`"
+		},
+		TF_COND_MVM_BOT_STUN_RADIOWAVE: {
+			signature: "TF_COND_MVM_BOT_STUN_RADIOWAVE: int",
+			description: "Value: `71`"
+		},
+		TF_COND_HALLOWEEN_SPEED_BOOST: {
+			signature: "TF_COND_HALLOWEEN_SPEED_BOOST: int",
+			description: "Value: `72`"
+		},
+		TF_COND_HALLOWEEN_QUICK_HEAL: {
+			signature: "TF_COND_HALLOWEEN_QUICK_HEAL: int",
+			description: "Value: `73`"
+		},
+		TF_COND_HALLOWEEN_GIANT: {
+			signature: "TF_COND_HALLOWEEN_GIANT: int",
+			description: "Value: `74`"
+		},
+		TF_COND_HALLOWEEN_TINY: {
+			signature: "TF_COND_HALLOWEEN_TINY: int",
+			description: "Value: `75`"
+		},
+		TF_COND_HALLOWEEN_IN_HELL: {
+			signature: "TF_COND_HALLOWEEN_IN_HELL: int",
+			description: "Value: `76`"
+		},
+		TF_COND_HALLOWEEN_GHOST_MODE: {
+			signature: "TF_COND_HALLOWEEN_GHOST_MODE: int",
+			description: "Value: `77`"
+		},
+		TF_COND_MINICRITBOOSTED_ON_KILL: {
+			signature: "TF_COND_MINICRITBOOSTED_ON_KILL: int",
+			description: "Value: `78`"
+		},
+		TF_COND_OBSCURED_SMOKE: {
+			signature: "TF_COND_OBSCURED_SMOKE: int",
+			description: "Value: `79`"
+		},
+		TF_COND_PARACHUTE_ACTIVE: {
+			signature: "TF_COND_PARACHUTE_ACTIVE: int",
+			description: "Value: `80`"
+		},
+		TF_COND_BLASTJUMPING: {
+			signature: "TF_COND_BLASTJUMPING: int",
+			description: "Value: `81`"
+		},
+		TF_COND_HALLOWEEN_KART: {
+			signature: "TF_COND_HALLOWEEN_KART: int",
+			description: "Value: `82`"
+		},
+		TF_COND_HALLOWEEN_KART_DASH: {
+			signature: "TF_COND_HALLOWEEN_KART_DASH: int",
+			description: "Value: `83`"
+		},
+		TF_COND_BALLOON_HEAD: {
+			signature: "TF_COND_BALLOON_HEAD: int",
+			description: "Value: `84`"
+		},
+		TF_COND_MELEE_ONLY: {
+			signature: "TF_COND_MELEE_ONLY: int",
+			description: "Value: `85`"
+		},
+		TF_COND_SWIMMING_CURSE: {
+			signature: "TF_COND_SWIMMING_CURSE: int",
+			description: "Value: `86`"
+		},
+		TF_COND_FREEZE_INPUT: {
+			signature: "TF_COND_FREEZE_INPUT: int",
+			description: "Value: `87`"
+		},
+		TF_COND_HALLOWEEN_KART_CAGE: {
+			signature: "TF_COND_HALLOWEEN_KART_CAGE: int",
+			description: "Value: `88`"
+		},
+		TF_COND_DONOTUSE_0: {
+			signature: "TF_COND_DONOTUSE_0: int",
+			description: "Value: `89`"
+		},
+		TF_COND_RUNE_STRENGTH: {
+			signature: "TF_COND_RUNE_STRENGTH: int",
+			description: "Value: `90`"
+		},
+		TF_COND_RUNE_HASTE: {
+			signature: "TF_COND_RUNE_HASTE: int",
+			description: "Value: `91`"
+		},
+		TF_COND_RUNE_REGEN: {
+			signature: "TF_COND_RUNE_REGEN: int",
+			description: "Value: `92`"
+		},
+		TF_COND_RUNE_RESIST: {
+			signature: "TF_COND_RUNE_RESIST: int",
+			description: "Value: `93`"
+		},
+		TF_COND_RUNE_VAMPIRE: {
+			signature: "TF_COND_RUNE_VAMPIRE: int",
+			description: "Value: `94`"
+		},
+		TF_COND_RUNE_REFLECT: {
+			signature: "TF_COND_RUNE_REFLECT: int",
+			description: "Value: `95`"
+		},
+		TF_COND_RUNE_PRECISION: {
+			signature: "TF_COND_RUNE_PRECISION: int",
+			description: "Value: `96`"
+		},
+		TF_COND_RUNE_AGILITY: {
+			signature: "TF_COND_RUNE_AGILITY: int",
+			description: "Value: `97`"
+		},
+		TF_COND_GRAPPLINGHOOK: {
+			signature: "TF_COND_GRAPPLINGHOOK: int",
+			description: "Value: `98`"
+		},
+		TF_COND_GRAPPLINGHOOK_SAFEFALL: {
+			signature: "TF_COND_GRAPPLINGHOOK_SAFEFALL: int",
+			description: "Value: `99`"
+		},
+		TF_COND_GRAPPLINGHOOK_LATCHED: {
+			signature: "TF_COND_GRAPPLINGHOOK_LATCHED: int",
+			description: "Value: `100`"
+		},
+		TF_COND_GRAPPLINGHOOK_BLEEDING: {
+			signature: "TF_COND_GRAPPLINGHOOK_BLEEDING: int",
+			description: "Value: `101`"
+		},
+		TF_COND_AFTERBURN_IMMUNE: {
+			signature: "TF_COND_AFTERBURN_IMMUNE: int",
+			description: "Value: `102`"
+		},
+		TF_COND_RUNE_KNOCKOUT: {
+			signature: "TF_COND_RUNE_KNOCKOUT: int",
+			description: "Value: `103`"
+		},
+		TF_COND_RUNE_IMBALANCE: {
+			signature: "TF_COND_RUNE_IMBALANCE: int",
+			description: "Value: `104`"
+		},
+		TF_COND_CRITBOOSTED_RUNE_TEMP: {
+			signature: "TF_COND_CRITBOOSTED_RUNE_TEMP: int",
+			description: "Value: `105`"
+		},
+		TF_COND_PASSTIME_INTERCEPTION: {
+			signature: "TF_COND_PASSTIME_INTERCEPTION: int",
+			description: "Value: `106`"
+		},
+		TF_COND_SWIMMING_NO_EFFECTS: {
+			signature: "TF_COND_SWIMMING_NO_EFFECTS: int",
+			description: "Value: `107`"
+		},
+		TF_COND_PURGATORY: {
+			signature: "TF_COND_PURGATORY: int",
+			description: "Value: `108`"
+		},
+		TF_COND_RUNE_KING: {
+			signature: "TF_COND_RUNE_KING: int",
+			description: "Value: `109`"
+		},
+		TF_COND_RUNE_PLAGUE: {
+			signature: "TF_COND_RUNE_PLAGUE: int",
+			description: "Value: `110`"
+		},
+		TF_COND_RUNE_SUPERNOVA: {
+			signature: "TF_COND_RUNE_SUPERNOVA: int",
+			description: "Value: `111`"
+		},
+		TF_COND_PLAGUE: {
+			signature: "TF_COND_PLAGUE: int",
+			description: "Value: `112`"
+		},
+		TF_COND_KING_BUFFED: {
+			signature: "TF_COND_KING_BUFFED: int",
+			description: "Value: `113`"
+		},
+		TF_COND_TEAM_GLOWS: {
+			signature: "TF_COND_TEAM_GLOWS: int",
+			description: "Value: `114`"
+		},
+		TF_COND_KNOCKED_INTO_AIR: {
+			signature: "TF_COND_KNOCKED_INTO_AIR: int",
+			description: "Value: `115`"
+		},
+		TF_COND_COMPETITIVE_WINNER: {
+			signature: "TF_COND_COMPETITIVE_WINNER: int",
+			description: "Value: `116`"
+		},
+		TF_COND_COMPETITIVE_LOSER: {
+			signature: "TF_COND_COMPETITIVE_LOSER: int",
+			description: "Value: `117`"
+		},
+		TF_COND_HEALING_DEBUFF: {
+			signature: "TF_COND_HEALING_DEBUFF: int",
+			description: "Value: `118`"
+		},
+		TF_COND_PASSTIME_PENALTY_DEBUFF: {
+			signature: "TF_COND_PASSTIME_PENALTY_DEBUFF: int",
+			description: "Value: `119`"
+		},
+		TF_COND_GRAPPLED_TO_PLAYER: {
+			signature: "TF_COND_GRAPPLED_TO_PLAYER: int",
+			description: "Value: `120`"
+		},
+		TF_COND_GRAPPLED_BY_PLAYER: {
+			signature: "TF_COND_GRAPPLED_BY_PLAYER: int",
+			description: "Value: `121`"
+		},
+		TF_COND_PARACHUTE_DEPLOYED: {
+			signature: "TF_COND_PARACHUTE_DEPLOYED: int",
+			description: "Value: `122`"
+		},
+		TF_COND_GAS: {
+			signature: "TF_COND_GAS: int",
+			description: "Value: `123`"
+		},
+		TF_COND_BURNING_PYRO: {
+			signature: "TF_COND_BURNING_PYRO: int",
+			description: "Value: `124`"
+		},
+		TF_COND_ROCKETPACK: {
+			signature: "TF_COND_ROCKETPACK: int",
+			description: "Value: `125`"
+		},
+		TF_COND_LOST_FOOTING: {
+			signature: "TF_COND_LOST_FOOTING: int",
+			description: "Value: `126`"
+		},
+		TF_COND_AIR_CURRENT: {
+			signature: "TF_COND_AIR_CURRENT: int",
+			description: "Value: `127`"
+		},
+		TF_COND_HALLOWEEN_HELL_HEAL: {
+			signature: "TF_COND_HALLOWEEN_HELL_HEAL: int",
+			description: "Value: `128`"
+		},
+		TF_COND_POWERUPMODE_DOMINANT: {
+			signature: "TF_COND_POWERUPMODE_DOMINANT: int",
+			description: "Value: `129`"
+		},
+		TF_COND_IMMUNE_TO_PUSHBACK: {
+			signature: "TF_COND_IMMUNE_TO_PUSHBACK: int",
+			description: "Value: `130`"
+		},
+		TF_COND_INVALID: {
+			signature: "TF_COND_INVALID: int",
+			description: "Value: `-1`"
+		},
+	},
+	ETFDmgCustom: {
+		TF_DMG_CUSTOM_NONE: {
+			signature: "TF_DMG_CUSTOM_NONE: int",
+			description: "Value: `0`"
+		},
+		TF_DMG_CUSTOM_HEADSHOT: {
+			signature: "TF_DMG_CUSTOM_HEADSHOT: int",
+			description: "Value: `1`"
+		},
+		TF_DMG_CUSTOM_BACKSTAB: {
+			signature: "TF_DMG_CUSTOM_BACKSTAB: int",
+			description: "Value: `2`"
+		},
+		TF_DMG_CUSTOM_BURNING: {
+			signature: "TF_DMG_CUSTOM_BURNING: int",
+			description: "Value: `3`"
+		},
+		TF_DMG_WRENCH_FIX: {
+			signature: "TF_DMG_WRENCH_FIX: int",
+			description: "Value: `4`"
+		},
+		TF_DMG_CUSTOM_MINIGUN: {
+			signature: "TF_DMG_CUSTOM_MINIGUN: int",
+			description: "Value: `5`"
+		},
+		TF_DMG_CUSTOM_SUICIDE: {
+			signature: "TF_DMG_CUSTOM_SUICIDE: int",
+			description: "Value: `6`"
+		},
+		TF_DMG_CUSTOM_TAUNTATK_HADOUKEN: {
+			signature: "TF_DMG_CUSTOM_TAUNTATK_HADOUKEN: int",
+			description: "Value: `7`"
+		},
+		TF_DMG_CUSTOM_BURNING_FLARE: {
+			signature: "TF_DMG_CUSTOM_BURNING_FLARE: int",
+			description: "Value: `8`"
+		},
+		TF_DMG_CUSTOM_TAUNTATK_HIGH_NOON: {
+			signature: "TF_DMG_CUSTOM_TAUNTATK_HIGH_NOON: int",
+			description: "Value: `9`"
+		},
+		TF_DMG_CUSTOM_TAUNTATK_GRAND_SLAM: {
+			signature: "TF_DMG_CUSTOM_TAUNTATK_GRAND_SLAM: int",
+			description: "Value: `10`"
+		},
+		TF_DMG_CUSTOM_PENETRATE_MY_TEAM: {
+			signature: "TF_DMG_CUSTOM_PENETRATE_MY_TEAM: int",
+			description: "Value: `11`"
+		},
+		TF_DMG_CUSTOM_PENETRATE_ALL_PLAYERS: {
+			signature: "TF_DMG_CUSTOM_PENETRATE_ALL_PLAYERS: int",
+			description: "Value: `12`"
+		},
+		TF_DMG_CUSTOM_TAUNTATK_FENCING: {
+			signature: "TF_DMG_CUSTOM_TAUNTATK_FENCING: int",
+			description: "Value: `13`"
+		},
+		TF_DMG_CUSTOM_PENETRATE_NONBURNING_TEAMMATE: {
+			signature: "TF_DMG_CUSTOM_PENETRATE_NONBURNING_TEAMMATE: int",
+			description: "Value: `14`"
+		},
+		TF_DMG_CUSTOM_TAUNTATK_ARROW_STAB: {
+			signature: "TF_DMG_CUSTOM_TAUNTATK_ARROW_STAB: int",
+			description: "Value: `15`"
+		},
+		TF_DMG_CUSTOM_TELEFRAG: {
+			signature: "TF_DMG_CUSTOM_TELEFRAG: int",
+			description: "Value: `16`"
+		},
+		TF_DMG_CUSTOM_BURNING_ARROW: {
+			signature: "TF_DMG_CUSTOM_BURNING_ARROW: int",
+			description: "Value: `17`"
+		},
+		TF_DMG_CUSTOM_FLYINGBURN: {
+			signature: "TF_DMG_CUSTOM_FLYINGBURN: int",
+			description: "Value: `18`"
+		},
+		TF_DMG_CUSTOM_PUMPKIN_BOMB: {
+			signature: "TF_DMG_CUSTOM_PUMPKIN_BOMB: int",
+			description: "Value: `19`"
+		},
+		TF_DMG_CUSTOM_DECAPITATION: {
+			signature: "TF_DMG_CUSTOM_DECAPITATION: int",
+			description: "Value: `20`"
+		},
+		TF_DMG_CUSTOM_TAUNTATK_GRENADE: {
+			signature: "TF_DMG_CUSTOM_TAUNTATK_GRENADE: int",
+			description: "Value: `21`"
+		},
+		TF_DMG_CUSTOM_BASEBALL: {
+			signature: "TF_DMG_CUSTOM_BASEBALL: int",
+			description: "Value: `22`"
+		},
+		TF_DMG_CUSTOM_CHARGE_IMPACT: {
+			signature: "TF_DMG_CUSTOM_CHARGE_IMPACT: int",
+			description: "Value: `23`"
+		},
+		TF_DMG_CUSTOM_TAUNTATK_BARBARIAN_SWING: {
+			signature: "TF_DMG_CUSTOM_TAUNTATK_BARBARIAN_SWING: int",
+			description: "Value: `24`"
+		},
+		TF_DMG_CUSTOM_AIR_STICKY_BURST: {
+			signature: "TF_DMG_CUSTOM_AIR_STICKY_BURST: int",
+			description: "Value: `25`"
+		},
+		TF_DMG_CUSTOM_DEFENSIVE_STICKY: {
+			signature: "TF_DMG_CUSTOM_DEFENSIVE_STICKY: int",
+			description: "Value: `26`"
+		},
+		TF_DMG_CUSTOM_PICKAXE: {
+			signature: "TF_DMG_CUSTOM_PICKAXE: int",
+			description: "Value: `27`"
+		},
+		TF_DMG_CUSTOM_ROCKET_DIRECTHIT: {
+			signature: "TF_DMG_CUSTOM_ROCKET_DIRECTHIT: int",
+			description: "Value: `28`"
+		},
+		TF_DMG_CUSTOM_TAUNTATK_UBERSLICE: {
+			signature: "TF_DMG_CUSTOM_TAUNTATK_UBERSLICE: int",
+			description: "Value: `29`"
+		},
+		TF_DMG_CUSTOM_PLAYER_SENTRY: {
+			signature: "TF_DMG_CUSTOM_PLAYER_SENTRY: int",
+			description: "Value: `30`"
+		},
+		TF_DMG_CUSTOM_STANDARD_STICKY: {
+			signature: "TF_DMG_CUSTOM_STANDARD_STICKY: int",
+			description: "Value: `31`"
+		},
+		TF_DMG_CUSTOM_SHOTGUN_REVENGE_CRIT: {
+			signature: "TF_DMG_CUSTOM_SHOTGUN_REVENGE_CRIT: int",
+			description: "Value: `32`"
+		},
+		TF_DMG_CUSTOM_TAUNTATK_ENGINEER_GUITAR_SMASH: {
+			signature: "TF_DMG_CUSTOM_TAUNTATK_ENGINEER_GUITAR_SMASH: int",
+			description: "Value: `33`"
+		},
+		TF_DMG_CUSTOM_BLEEDING: {
+			signature: "TF_DMG_CUSTOM_BLEEDING: int",
+			description: "Value: `34`"
+		},
+		TF_DMG_CUSTOM_GOLD_WRENCH: {
+			signature: "TF_DMG_CUSTOM_GOLD_WRENCH: int",
+			description: "Value: `35`"
+		},
+		TF_DMG_CUSTOM_CARRIED_BUILDING: {
+			signature: "TF_DMG_CUSTOM_CARRIED_BUILDING: int",
+			description: "Value: `36`"
+		},
+		TF_DMG_CUSTOM_COMBO_PUNCH: {
+			signature: "TF_DMG_CUSTOM_COMBO_PUNCH: int",
+			description: "Value: `37`"
+		},
+		TF_DMG_CUSTOM_TAUNTATK_ENGINEER_ARM_KILL: {
+			signature: "TF_DMG_CUSTOM_TAUNTATK_ENGINEER_ARM_KILL: int",
+			description: "Value: `38`"
+		},
+		TF_DMG_CUSTOM_FISH_KILL: {
+			signature: "TF_DMG_CUSTOM_FISH_KILL: int",
+			description: "Value: `39`"
+		},
+		TF_DMG_CUSTOM_TRIGGER_HURT: {
+			signature: "TF_DMG_CUSTOM_TRIGGER_HURT: int",
+			description: "Value: `40`"
+		},
+		TF_DMG_CUSTOM_DECAPITATION_BOSS: {
+			signature: "TF_DMG_CUSTOM_DECAPITATION_BOSS: int",
+			description: "Value: `41`"
+		},
+		TF_DMG_CUSTOM_STICKBOMB_EXPLOSION: {
+			signature: "TF_DMG_CUSTOM_STICKBOMB_EXPLOSION: int",
+			description: "Value: `42`"
+		},
+		TF_DMG_CUSTOM_AEGIS_ROUND: {
+			signature: "TF_DMG_CUSTOM_AEGIS_ROUND: int",
+			description: "Value: `43`"
+		},
+		TF_DMG_CUSTOM_FLARE_EXPLOSION: {
+			signature: "TF_DMG_CUSTOM_FLARE_EXPLOSION: int",
+			description: "Value: `44`"
+		},
+		TF_DMG_CUSTOM_BOOTS_STOMP: {
+			signature: "TF_DMG_CUSTOM_BOOTS_STOMP: int",
+			description: "Value: `45`"
+		},
+		TF_DMG_CUSTOM_PLASMA: {
+			signature: "TF_DMG_CUSTOM_PLASMA: int",
+			description: "Value: `46`"
+		},
+		TF_DMG_CUSTOM_PLASMA_CHARGED: {
+			signature: "TF_DMG_CUSTOM_PLASMA_CHARGED: int",
+			description: "Value: `47`"
+		},
+		TF_DMG_CUSTOM_PLASMA_GIB: {
+			signature: "TF_DMG_CUSTOM_PLASMA_GIB: int",
+			description: "Value: `48`"
+		},
+		TF_DMG_CUSTOM_PRACTICE_STICKY: {
+			signature: "TF_DMG_CUSTOM_PRACTICE_STICKY: int",
+			description: "Value: `49`"
+		},
+		TF_DMG_CUSTOM_EYEBALL_ROCKET: {
+			signature: "TF_DMG_CUSTOM_EYEBALL_ROCKET: int",
+			description: "Value: `50`"
+		},
+		TF_DMG_CUSTOM_HEADSHOT_DECAPITATION: {
+			signature: "TF_DMG_CUSTOM_HEADSHOT_DECAPITATION: int",
+			description: "Value: `51`"
+		},
+		TF_DMG_CUSTOM_TAUNTATK_ARMAGEDDON: {
+			signature: "TF_DMG_CUSTOM_TAUNTATK_ARMAGEDDON: int",
+			description: "Value: `52`"
+		},
+		TF_DMG_CUSTOM_FLARE_PELLET: {
+			signature: "TF_DMG_CUSTOM_FLARE_PELLET: int",
+			description: "Value: `53`"
+		},
+		TF_DMG_CUSTOM_CLEAVER: {
+			signature: "TF_DMG_CUSTOM_CLEAVER: int",
+			description: "Value: `54`"
+		},
+		TF_DMG_CUSTOM_CLEAVER_CRIT: {
+			signature: "TF_DMG_CUSTOM_CLEAVER_CRIT: int",
+			description: "Value: `55`"
+		},
+		TF_DMG_CUSTOM_SAPPER_RECORDER_DEATH: {
+			signature: "TF_DMG_CUSTOM_SAPPER_RECORDER_DEATH: int",
+			description: "Value: `56`"
+		},
+		TF_DMG_CUSTOM_MERASMUS_PLAYER_BOMB: {
+			signature: "TF_DMG_CUSTOM_MERASMUS_PLAYER_BOMB: int",
+			description: "Value: `57`"
+		},
+		TF_DMG_CUSTOM_MERASMUS_GRENADE: {
+			signature: "TF_DMG_CUSTOM_MERASMUS_GRENADE: int",
+			description: "Value: `58`"
+		},
+		TF_DMG_CUSTOM_MERASMUS_ZAP: {
+			signature: "TF_DMG_CUSTOM_MERASMUS_ZAP: int",
+			description: "Value: `59`"
+		},
+		TF_DMG_CUSTOM_MERASMUS_DECAPITATION: {
+			signature: "TF_DMG_CUSTOM_MERASMUS_DECAPITATION: int",
+			description: "Value: `60`"
+		},
+		TF_DMG_CUSTOM_CANNONBALL_PUSH: {
+			signature: "TF_DMG_CUSTOM_CANNONBALL_PUSH: int",
+			description: "Value: `61`"
+		},
+		TF_DMG_CUSTOM_TAUNTATK_ALLCLASS_GUITAR_RIFF: {
+			signature: "TF_DMG_CUSTOM_TAUNTATK_ALLCLASS_GUITAR_RIFF: int",
+			description: "Value: `62`"
+		},
+		TF_DMG_CUSTOM_THROWABLE: {
+			signature: "TF_DMG_CUSTOM_THROWABLE: int",
+			description: "Value: `63`"
+		},
+		TF_DMG_CUSTOM_THROWABLE_KILL: {
+			signature: "TF_DMG_CUSTOM_THROWABLE_KILL: int",
+			description: "Value: `64`"
+		},
+		TF_DMG_CUSTOM_SPELL_TELEPORT: {
+			signature: "TF_DMG_CUSTOM_SPELL_TELEPORT: int",
+			description: "Value: `65`"
+		},
+		TF_DMG_CUSTOM_SPELL_SKELETON: {
+			signature: "TF_DMG_CUSTOM_SPELL_SKELETON: int",
+			description: "Value: `66`"
+		},
+		TF_DMG_CUSTOM_SPELL_MIRV: {
+			signature: "TF_DMG_CUSTOM_SPELL_MIRV: int",
+			description: "Value: `67`"
+		},
+		TF_DMG_CUSTOM_SPELL_METEOR: {
+			signature: "TF_DMG_CUSTOM_SPELL_METEOR: int",
+			description: "Value: `68`"
+		},
+		TF_DMG_CUSTOM_SPELL_LIGHTNING: {
+			signature: "TF_DMG_CUSTOM_SPELL_LIGHTNING: int",
+			description: "Value: `69`"
+		},
+		TF_DMG_CUSTOM_SPELL_FIREBALL: {
+			signature: "TF_DMG_CUSTOM_SPELL_FIREBALL: int",
+			description: "Value: `70`"
+		},
+		TF_DMG_CUSTOM_SPELL_MONOCULUS: {
+			signature: "TF_DMG_CUSTOM_SPELL_MONOCULUS: int",
+			description: "Value: `71`"
+		},
+		TF_DMG_CUSTOM_SPELL_BLASTJUMP: {
+			signature: "TF_DMG_CUSTOM_SPELL_BLASTJUMP: int",
+			description: "Value: `72`"
+		},
+		TF_DMG_CUSTOM_SPELL_BATS: {
+			signature: "TF_DMG_CUSTOM_SPELL_BATS: int",
+			description: "Value: `73`"
+		},
+		TF_DMG_CUSTOM_SPELL_TINY: {
+			signature: "TF_DMG_CUSTOM_SPELL_TINY: int",
+			description: "Value: `74`"
+		},
+		TF_DMG_CUSTOM_KART: {
+			signature: "TF_DMG_CUSTOM_KART: int",
+			description: "Value: `75`"
+		},
+		TF_DMG_CUSTOM_GIANT_HAMMER: {
+			signature: "TF_DMG_CUSTOM_GIANT_HAMMER: int",
+			description: "Value: `76`"
+		},
+		TF_DMG_CUSTOM_RUNE_REFLECT: {
+			signature: "TF_DMG_CUSTOM_RUNE_REFLECT: int",
+			description: "Value: `77`"
+		},
+		TF_DMG_CUSTOM_DRAGONS_FURY_IGNITE: {
+			signature: "TF_DMG_CUSTOM_DRAGONS_FURY_IGNITE: int",
+			description: "Value: `78`"
+		},
+		TF_DMG_CUSTOM_DRAGONS_FURY_BONUS_BURNING: {
+			signature: "TF_DMG_CUSTOM_DRAGONS_FURY_BONUS_BURNING: int",
+			description: "Value: `79`"
+		},
+		TF_DMG_CUSTOM_SLAP_KILL: {
+			signature: "TF_DMG_CUSTOM_SLAP_KILL: int",
+			description: "Value: `80`"
+		},
+		TF_DMG_CUSTOM_CROC: {
+			signature: "TF_DMG_CUSTOM_CROC: int",
+			description: "Value: `81`"
+		},
+		TF_DMG_CUSTOM_TAUNTATK_GASBLAST: {
+			signature: "TF_DMG_CUSTOM_TAUNTATK_GASBLAST: int",
+			description: "Value: `82`"
+		},
+		TF_DMG_CUSTOM_AXTINGUISHER_BOOSTED: {
+			signature: "TF_DMG_CUSTOM_AXTINGUISHER_BOOSTED: int",
+			description: "Value: `83`"
+		},
+		TF_DMG_CUSTOM_KRAMPUS_MELEE: {
+			signature: "TF_DMG_CUSTOM_KRAMPUS_MELEE: int",
+			description: "Value: `84`"
+		},
+		TF_DMG_CUSTOM_KRAMPUS_RANGED: {
+			signature: "TF_DMG_CUSTOM_KRAMPUS_RANGED: int",
+			description: "Value: `85`"
+		},
+		TF_DMG_CUSTOM_END: {
+			signature: "TF_DMG_CUSTOM_END: int",
+			description: "Value: `86`"
+		},
+	},
+	ETFTeam: {
+		TEAM_UNASSIGNED: {
+			signature: "TEAM_UNASSIGNED: int",
+			description: "Value: `null {{bug|This is supposed to be 0}}`"
+		},
+		TEAM_SPECTATOR: {
+			signature: "TEAM_SPECTATOR: int",
+			description: "Value: `1`"
+		},
+		TF_TEAM_PVE_DEFENDERS: {
+			signature: "TF_TEAM_PVE_DEFENDERS: int",
+			description: "Value: `2`"
+		},
+		TF_TEAM_RED: {
+			signature: "TF_TEAM_RED: int",
+			description: "Value: `2`"
+		},
+		TF_TEAM_BLUE: {
+			signature: "TF_TEAM_BLUE: int",
+			description: "Value: `3`"
+		},
+		TF_TEAM_PVE_INVADERS: {
+			signature: "TF_TEAM_PVE_INVADERS: int",
+			description: "Value: `3`"
+		},
+		TF_TEAM_COUNT: {
+			signature: "TF_TEAM_COUNT: int",
+			description: "Value: `4`"
+		},
+		TF_TEAM_PVE_INVADERS_GIANTS: {
+			signature: "TF_TEAM_PVE_INVADERS_GIANTS: int",
+			description: "Value: `4`"
+		},
+		TEAM_ANY: {
+			signature: "TEAM_ANY: int",
+			description: "Value: `-2`"
+		},
+		TEAM_INVALID: {
+			signature: "TEAM_INVALID: int",
+			description: "Value: `-1`"
+		},
+	},
+	Math: {
+		Zero: {
+			signature: "Zero: int",
+			description: "Value: `0`"
+		},
+		Epsilon: {
+			signature: "Epsilon: int",
+			description: "Value: `1.19209e-07`"
+		},
+		GoldenRatio: {
+			signature: "GoldenRatio: int",
+			description: "Value: `1.61803`"
+		},
+		One: {
+			signature: "One: int",
+			description: "Value: `1`"
+		},
+		Sqrt2: {
+			signature: "Sqrt2: int",
+			description: "Value: `1.41421`"
+		},
+		Sqrt3: {
+			signature: "Sqrt3: int",
+			description: "Value: `1.73205`"
+		},
+		E: {
+			signature: "E: int",
+			description: "Value: `2.71828`"
+		},
+		Pi: {
+			signature: "Pi: int",
+			description: "Value: `3.14159`"
+		},
+		Tau: {
+			signature: "Tau: int",
+			description: "Value: `6.28319`"
+		},
+	},
+	Server: {
+		ConstantNamingConvention: {
+			signature: "ConstantNamingConvention: int",
+			description: "Value: `Constants are named as follows: F -> flags, E -> enums, (nothing) -> random values/constants`"
+		},
+		DIST_EPSILON: {
+			signature: "DIST_EPSILON: int",
+			description: "Value: `0.03125`"
+		},
+		MAX_PLAYERS: {
+			signature: "MAX_PLAYERS: int",
+			description: "Value: `101`"
+		},
+		MAX_EDICTS: {
+			signature: "MAX_EDICTS: int",
+			description: "Value: `2048`"
+		},
+	},
+	FButtons: {
+		IN_ATTACK: {
+			signature: "IN_ATTACK: int",
+			description: "Value: `1`"
+		},
+		IN_JUMP: {
+			signature: "IN_JUMP: int",
+			description: "Value: `2`"
+		},
+		IN_DUCK: {
+			signature: "IN_DUCK: int",
+			description: "Value: `4`"
+		},
+		IN_FORWARD: {
+			signature: "IN_FORWARD: int",
+			description: "Value: `8`"
+		},
+		IN_BACK: {
+			signature: "IN_BACK: int",
+			description: "Value: `16`"
+		},
+		IN_USE: {
+			signature: "IN_USE: int",
+			description: "Value: `32`"
+		},
+		IN_CANCEL: {
+			signature: "IN_CANCEL: int",
+			description: "Value: `64`"
+		},
+		IN_LEFT: {
+			signature: "IN_LEFT: int",
+			description: "Value: `128`"
+		},
+		IN_RIGHT: {
+			signature: "IN_RIGHT: int",
+			description: "Value: `256`"
+		},
+		IN_MOVELEFT: {
+			signature: "IN_MOVELEFT: int",
+			description: "Value: `512`"
+		},
+		IN_MOVERIGHT: {
+			signature: "IN_MOVERIGHT: int",
+			description: "Value: `1024`"
+		},
+		IN_ATTACK2: {
+			signature: "IN_ATTACK2: int",
+			description: "Value: `2048`"
+		},
+		IN_RUN: {
+			signature: "IN_RUN: int",
+			description: "Value: `4096`"
+		},
+		IN_RELOAD: {
+			signature: "IN_RELOAD: int",
+			description: "Value: `8192`"
+		},
+		IN_ALT1: {
+			signature: "IN_ALT1: int",
+			description: "Value: `16384`"
+		},
+		IN_ALT2: {
+			signature: "IN_ALT2: int",
+			description: "Value: `32768`"
+		},
+		IN_SCORE: {
+			signature: "IN_SCORE: int",
+			description: "Value: `65536`"
+		},
+		IN_SPEED: {
+			signature: "IN_SPEED: int",
+			description: "Value: `131072`"
+		},
+		IN_WALK: {
+			signature: "IN_WALK: int",
+			description: "Value: `262144`"
+		},
+		IN_ZOOM: {
+			signature: "IN_ZOOM: int",
+			description: "Value: `524288`"
+		},
+		IN_WEAPON1: {
+			signature: "IN_WEAPON1: int",
+			description: "Value: `1048576`"
+		},
+		IN_WEAPON2: {
+			signature: "IN_WEAPON2: int",
+			description: "Value: `2097152`"
+		},
+		IN_BULLRUSH: {
+			signature: "IN_BULLRUSH: int",
+			description: "Value: `4194304`"
+		},
+		IN_GRENADE1: {
+			signature: "IN_GRENADE1: int",
+			description: "Value: `8388608`"
+		},
+		IN_GRENADE2: {
+			signature: "IN_GRENADE2: int",
+			description: "Value: `16777216`"
+		},
+		IN_ATTACK3: {
+			signature: "IN_ATTACK3: int",
+			description: "Value: `33554432`"
+		},
+	},
+	FContents: {
+		CONTENTS_EMPTY: {
+			signature: "CONTENTS_EMPTY: int",
+			description: "Value: `null {{bug|hidetested=1|This is supposed to be 0}}`"
+		},
+		CONTENTS_SOLID: {
+			signature: "CONTENTS_SOLID: int",
+			description: "Value: `1`"
+		},
+		CONTENTS_WINDOW: {
+			signature: "CONTENTS_WINDOW: int",
+			description: "Value: `2`"
+		},
+		CONTENTS_AUX: {
+			signature: "CONTENTS_AUX: int",
+			description: "Value: `4`"
+		},
+		CONTENTS_GRATE: {
+			signature: "CONTENTS_GRATE: int",
+			description: "Value: `8`"
+		},
+		CONTENTS_SLIME: {
+			signature: "CONTENTS_SLIME: int",
+			description: "Value: `16`"
+		},
+		CONTENTS_WATER: {
+			signature: "CONTENTS_WATER: int",
+			description: "Value: `32`"
+		},
+		CONTENTS_BLOCKLOS: {
+			signature: "CONTENTS_BLOCKLOS: int",
+			description: "Value: `64`"
+		},
+		CONTENTS_OPAQUE: {
+			signature: "CONTENTS_OPAQUE: int",
+			description: "Value: `128`"
+		},
+		LAST_VISIBLE_CONTENTS: {
+			signature: "LAST_VISIBLE_CONTENTS: int",
+			description: "Value: `128`"
+		},
+		ALL_VISIBLE_CONTENTS: {
+			signature: "ALL_VISIBLE_CONTENTS: int",
+			description: "Value: `255`"
+		},
+		CONTENTS_TESTFOGVOLUME: {
+			signature: "CONTENTS_TESTFOGVOLUME: int",
+			description: "Value: `256`"
+		},
+		CONTENTS_UNUSED: {
+			signature: "CONTENTS_UNUSED: int",
+			description: "Value: `512`"
+		},
+		CONTENTS_UNUSED6: {
+			signature: "CONTENTS_UNUSED6: int",
+			description: "Value: `1024`"
+		},
+		CONTENTS_TEAM1: {
+			signature: "CONTENTS_TEAM1: int",
+			description: "Value: `2048`"
+		},
+		CONTENTS_TEAM2: {
+			signature: "CONTENTS_TEAM2: int",
+			description: "Value: `4096`"
+		},
+		CONTENTS_IGNORE_NODRAW_OPAQUE: {
+			signature: "CONTENTS_IGNORE_NODRAW_OPAQUE: int",
+			description: "Value: `8192`"
+		},
+		CONTENTS_MOVEABLE: {
+			signature: "CONTENTS_MOVEABLE: int",
+			description: "Value: `16384`"
+		},
+		CONTENTS_AREAPORTAL: {
+			signature: "CONTENTS_AREAPORTAL: int",
+			description: "Value: `32768`"
+		},
+		CONTENTS_PLAYERCLIP: {
+			signature: "CONTENTS_PLAYERCLIP: int",
+			description: "Value: `65536`"
+		},
+		CONTENTS_MONSTERCLIP: {
+			signature: "CONTENTS_MONSTERCLIP: int",
+			description: "Value: `131072`"
+		},
+		CONTENTS_CURRENT_0: {
+			signature: "CONTENTS_CURRENT_0: int",
+			description: "Value: `262144`"
+		},
+		CONTENTS_CURRENT_90: {
+			signature: "CONTENTS_CURRENT_90: int",
+			description: "Value: `524288`"
+		},
+		CONTENTS_CURRENT_180: {
+			signature: "CONTENTS_CURRENT_180: int",
+			description: "Value: `1048576`"
+		},
+		CONTENTS_CURRENT_270: {
+			signature: "CONTENTS_CURRENT_270: int",
+			description: "Value: `2097152`"
+		},
+		CONTENTS_CURRENT_UP: {
+			signature: "CONTENTS_CURRENT_UP: int",
+			description: "Value: `4194304`"
+		},
+		CONTENTS_CURRENT_DOWN: {
+			signature: "CONTENTS_CURRENT_DOWN: int",
+			description: "Value: `8388608`"
+		},
+		CONTENTS_ORIGIN: {
+			signature: "CONTENTS_ORIGIN: int",
+			description: "Value: `16777216`"
+		},
+		CONTENTS_MONSTER: {
+			signature: "CONTENTS_MONSTER: int",
+			description: "Value: `33554432`"
+		},
+		CONTENTS_DEBRIS: {
+			signature: "CONTENTS_DEBRIS: int",
+			description: "Value: `67108864`"
+		},
+		CONTENTS_DETAIL: {
+			signature: "CONTENTS_DETAIL: int",
+			description: "Value: `134217728`"
+		},
+		CONTENTS_TRANSLUCENT: {
+			signature: "CONTENTS_TRANSLUCENT: int",
+			description: "Value: `268435456`"
+		},
+		CONTENTS_LADDER: {
+			signature: "CONTENTS_LADDER: int",
+			description: "Value: `536870912`"
+		},
+		CONTENTS_HITBOX: {
+			signature: "CONTENTS_HITBOX: int",
+			description: "Value: `1073741824`"
+		},
+	},
+	FDmgType: {
+		DMG_GENERIC: {
+			signature: "DMG_GENERIC: int",
+			description: "Value: `null {{bug|This is supposed to be 0}}`"
+		},
+		DMG_CRUSH: {
+			signature: "DMG_CRUSH: int",
+			description: "Value: `1`"
+		},
+		DMG_BULLET: {
+			signature: "DMG_BULLET: int",
+			description: "Value: `2`"
+		},
+		DMG_SLASH: {
+			signature: "DMG_SLASH: int",
+			description: "Value: `4`"
+		},
+		DMG_BURN: {
+			signature: "DMG_BURN: int",
+			description: "Value: `8`"
+		},
+		DMG_VEHICLE: {
+			signature: "DMG_VEHICLE: int",
+			description: "Value: `tf2}} Train`"
+		},
+		DMG_FALL: {
+			signature: "DMG_FALL: int",
+			description: "Value: `32`"
+		},
+		DMG_BLAST: {
+			signature: "DMG_BLAST: int",
+			description: "Value: `64`"
+		},
+		DMG_CLUB: {
+			signature: "DMG_CLUB: int",
+			description: "Value: `128`"
+		},
+		DMG_SHOCK: {
+			signature: "DMG_SHOCK: int",
+			description: "Value: `256`"
+		},
+		DMG_SONIC: {
+			signature: "DMG_SONIC: int",
+			description: "Value: `512`"
+		},
+		DMG_ENERGYBEAM: {
+			signature: "DMG_ENERGYBEAM: int",
+			description: "Value: `1024`"
+		},
+		DMG_PREVENT_PHYSICS_FORCE: {
+			signature: "DMG_PREVENT_PHYSICS_FORCE: int",
+			description: "Value: `2048`"
+		},
+		DMG_NEVERGIB: {
+			signature: "DMG_NEVERGIB: int",
+			description: "Value: `4096`"
+		},
+		DMG_ALWAYSGIB: {
+			signature: "DMG_ALWAYSGIB: int",
+			description: "Value: `8192`"
+		},
+		DMG_DROWN: {
+			signature: "DMG_DROWN: int",
+			description: "Value: `16384`"
+		},
+		DMG_PARALYZE: {
+			signature: "DMG_PARALYZE: int",
+			description: "Value: `32768`"
+		},
+		DMG_NERVEGAS: {
+			signature: "DMG_NERVEGAS: int",
+			description: "Value: `tf2}} Sawblade`"
+		},
+		DMG_POISON: {
+			signature: "DMG_POISON: int",
+			description: "Value: `131072`"
+		},
+		DMG_RADIATION: {
+			signature: "DMG_RADIATION: int",
+			description: "Value: `262144`"
+		},
+		DMG_DROWNRECOVER: {
+			signature: "DMG_DROWNRECOVER: int",
+			description: "Value: `524288`"
+		},
+		DMG_ACID: {
+			signature: "DMG_ACID: int",
+			description: "Value: `tf2}} Crit`"
+		},
+		DMG_SLOWBURN: {
+			signature: "DMG_SLOWBURN: int",
+			description: "Value: `tf2}} Bullet falloff`"
+		},
+		DMG_REMOVENORAGDOLL: {
+			signature: "DMG_REMOVENORAGDOLL: int",
+			description: "Value: `4194304`"
+		},
+		DMG_PHYSGUN: {
+			signature: "DMG_PHYSGUN: int",
+			description: "Value: `8388608`"
+		},
+		DMG_PLASMA: {
+			signature: "DMG_PLASMA: int",
+			description: "Value: `16777216`"
+		},
+		DMG_AIRBOAT: {
+			signature: "DMG_AIRBOAT: int",
+			description: "Value: `33554432`"
+		},
+		DMG_DISSOLVE: {
+			signature: "DMG_DISSOLVE: int",
+			description: "Value: `67108864`"
+		},
+		DMG_BLAST_SURFACE: {
+			signature: "DMG_BLAST_SURFACE: int",
+			description: "Value: `134217728`"
+		},
+		DMG_DIRECT: {
+			signature: "DMG_DIRECT: int",
+			description: "Value: `268435456`"
+		},
+		DMG_BUCKSHOT: {
+			signature: "DMG_BUCKSHOT: int",
+			description: "Value: `536870912`"
+		},
+	},
+	FEntityEffects: {
+		EF_BONEMERGE: {
+			signature: "EF_BONEMERGE: int",
+			description: "Value: `1`"
+		},
+		EF_BRIGHTLIGHT: {
+			signature: "EF_BRIGHTLIGHT: int",
+			description: "Value: `2`"
+		},
+		EF_DIMLIGHT: {
+			signature: "EF_DIMLIGHT: int",
+			description: "Value: `4`"
+		},
+		EF_NOINTERP: {
+			signature: "EF_NOINTERP: int",
+			description: "Value: `8`"
+		},
+		EF_MAX_BITS: {
+			signature: "EF_MAX_BITS: int",
+			description: "Value: `10`"
+		},
+		EF_NOSHADOW: {
+			signature: "EF_NOSHADOW: int",
+			description: "Value: `16`"
+		},
+		EF_NODRAW: {
+			signature: "EF_NODRAW: int",
+			description: "Value: `32`"
+		},
+		EF_NORECEIVESHADOW: {
+			signature: "EF_NORECEIVESHADOW: int",
+			description: "Value: `64`"
+		},
+		EF_BONEMERGE_FASTCULL: {
+			signature: "EF_BONEMERGE_FASTCULL: int",
+			description: "Value: `128`"
+		},
+		EF_ITEM_BLINK: {
+			signature: "EF_ITEM_BLINK: int",
+			description: "Value: `256`"
+		},
+		EF_PARENT_ANIMATES: {
+			signature: "EF_PARENT_ANIMATES: int",
+			description: "Value: `512`"
+		},
+	},
+	FEntityEFlags: {
+		EFL_KILLME: {
+			signature: "EFL_KILLME: int",
+			description: "Value: `1`"
+		},
+		EFL_DORMANT: {
+			signature: "EFL_DORMANT: int",
+			description: "Value: `2`"
+		},
+		EFL_NOCLIP_ACTIVE: {
+			signature: "EFL_NOCLIP_ACTIVE: int",
+			description: "Value: `4`"
+		},
+		EFL_SETTING_UP_BONES: {
+			signature: "EFL_SETTING_UP_BONES: int",
+			description: "Value: `8`"
+		},
+		EFL_HAS_PLAYER_CHILD: {
+			signature: "EFL_HAS_PLAYER_CHILD: int",
+			description: "Value: `16`"
+		},
+		EFL_KEEP_ON_RECREATE_ENTITIES: {
+			signature: "EFL_KEEP_ON_RECREATE_ENTITIES: int",
+			description: "Value: `16`"
+		},
+		EFL_DIRTY_SHADOWUPDATE: {
+			signature: "EFL_DIRTY_SHADOWUPDATE: int",
+			description: "Value: `32`"
+		},
+		EFL_NOTIFY: {
+			signature: "EFL_NOTIFY: int",
+			description: "Value: `64`"
+		},
+		EFL_FORCE_CHECK_TRANSMIT: {
+			signature: "EFL_FORCE_CHECK_TRANSMIT: int",
+			description: "Value: `128`"
+		},
+		EFL_BOT_FROZEN: {
+			signature: "EFL_BOT_FROZEN: int",
+			description: "Value: `256`"
+		},
+		EFL_SERVER_ONLY: {
+			signature: "EFL_SERVER_ONLY: int",
+			description: "Value: `512`"
+		},
+		EFL_NO_AUTO_EDICT_ATTACH: {
+			signature: "EFL_NO_AUTO_EDICT_ATTACH: int",
+			description: "Value: `1024`"
+		},
+		EFL_DIRTY_ABSTRANSFORM: {
+			signature: "EFL_DIRTY_ABSTRANSFORM: int",
+			description: "Value: `2048`"
+		},
+		EFL_DIRTY_ABSVELOCITY: {
+			signature: "EFL_DIRTY_ABSVELOCITY: int",
+			description: "Value: `4096`"
+		},
+		EFL_DIRTY_ABSANGVELOCITY: {
+			signature: "EFL_DIRTY_ABSANGVELOCITY: int",
+			description: "Value: `8192`"
+		},
+		EFL_DIRTY_SURROUNDING_COLLISION_BOUNDS: {
+			signature: "EFL_DIRTY_SURROUNDING_COLLISION_BOUNDS: int",
+			description: "Value: `16384`"
+		},
+		EFL_DIRTY_SPATIAL_PARTITION: {
+			signature: "EFL_DIRTY_SPATIAL_PARTITION: int",
+			description: "Value: `32768`"
+		},
+		EFL_FORCE_ALLOW_MOVEPARENT: {
+			signature: "EFL_FORCE_ALLOW_MOVEPARENT: int",
+			description: "Value: `65536`"
+		},
+		EFL_IN_SKYBOX: {
+			signature: "EFL_IN_SKYBOX: int",
+			description: "Value: `131072`"
+		},
+		EFL_USE_PARTITION_WHEN_NOT_SOLID: {
+			signature: "EFL_USE_PARTITION_WHEN_NOT_SOLID: int",
+			description: "Value: `262144`"
+		},
+		EFL_TOUCHING_FLUID: {
+			signature: "EFL_TOUCHING_FLUID: int",
+			description: "Value: `524288`"
+		},
+		EFL_IS_BEING_LIFTED_BY_BARNACLE: {
+			signature: "EFL_IS_BEING_LIFTED_BY_BARNACLE: int",
+			description: "Value: `1048576`"
+		},
+		EFL_NO_ROTORWASH_PUSH: {
+			signature: "EFL_NO_ROTORWASH_PUSH: int",
+			description: "Value: `2097152`"
+		},
+		EFL_NO_THINK_FUNCTION: {
+			signature: "EFL_NO_THINK_FUNCTION: int",
+			description: "Value: `4194304`"
+		},
+		EFL_NO_GAME_PHYSICS_SIMULATION: {
+			signature: "EFL_NO_GAME_PHYSICS_SIMULATION: int",
+			description: "Value: `8388608`"
+		},
+		EFL_CHECK_UNTOUCH: {
+			signature: "EFL_CHECK_UNTOUCH: int",
+			description: "Value: `16777216`"
+		},
+		EFL_DONTBLOCKLOS: {
+			signature: "EFL_DONTBLOCKLOS: int",
+			description: "Value: `33554432`"
+		},
+		EFL_DONTWALKON: {
+			signature: "EFL_DONTWALKON: int",
+			description: "Value: `67108864`"
+		},
+		EFL_NO_DISSOLVE: {
+			signature: "EFL_NO_DISSOLVE: int",
+			description: "Value: `134217728`"
+		},
+		EFL_NO_MEGAPHYSCANNON_RAGDOLL: {
+			signature: "EFL_NO_MEGAPHYSCANNON_RAGDOLL: int",
+			description: "Value: `268435456`"
+		},
+		EFL_NO_WATER_VELOCITY_CHANGE: {
+			signature: "EFL_NO_WATER_VELOCITY_CHANGE: int",
+			description: "Value: `536870912`"
+		},
+		EFL_NO_PHYSCANNON_INTERACTION: {
+			signature: "EFL_NO_PHYSCANNON_INTERACTION: int",
+			description: "Value: `1073741824`"
+		},
+		EFL_NO_DAMAGE_FORCES: {
+			signature: "EFL_NO_DAMAGE_FORCES: int",
+			description: "Value: `2147483648`"
+		},
+	},
+	FHideHUD: {
+		HIDEHUD_WEAPONSELECTION: {
+			signature: "HIDEHUD_WEAPONSELECTION: int",
+			description: "Value: `1`"
+		},
+		HIDEHUD_FLASHLIGHT: {
+			signature: "HIDEHUD_FLASHLIGHT: int",
+			description: "Value: `2`"
+		},
+		HIDEHUD_ALL: {
+			signature: "HIDEHUD_ALL: int",
+			description: "Value: `4`"
+		},
+		HIDEHUD_HEALTH: {
+			signature: "HIDEHUD_HEALTH: int",
+			description: "Value: `8`"
+		},
+		HIDEHUD_PLAYERDEAD: {
+			signature: "HIDEHUD_PLAYERDEAD: int",
+			description: "Value: `16`"
+		},
+		HIDEHUD_BITCOUNT: {
+			signature: "HIDEHUD_BITCOUNT: int",
+			description: "Value: `18`"
+		},
+		HIDEHUD_NEEDSUIT: {
+			signature: "HIDEHUD_NEEDSUIT: int",
+			description: "Value: `32`"
+		},
+		HIDEHUD_MISCSTATUS: {
+			signature: "HIDEHUD_MISCSTATUS: int",
+			description: "Value: `64`"
+		},
+		HIDEHUD_CHAT: {
+			signature: "HIDEHUD_CHAT: int",
+			description: "Value: `128`"
+		},
+		HIDEHUD_CROSSHAIR: {
+			signature: "HIDEHUD_CROSSHAIR: int",
+			description: "Value: `256`"
+		},
+		HIDEHUD_VEHICLE_CROSSHAIR: {
+			signature: "HIDEHUD_VEHICLE_CROSSHAIR: int",
+			description: "Value: `512`"
+		},
+		HIDEHUD_INVEHICLE: {
+			signature: "HIDEHUD_INVEHICLE: int",
+			description: "Value: `1024`"
+		},
+		HIDEHUD_BONUS_PROGRESS: {
+			signature: "HIDEHUD_BONUS_PROGRESS: int",
+			description: "Value: `2048`"
+		},
+		HIDEHUD_BUILDING_STATUS: {
+			signature: "HIDEHUD_BUILDING_STATUS: int",
+			description: "Value: `4096`"
+		},
+		HIDEHUD_CLOAK_AND_FEIGN: {
+			signature: "HIDEHUD_CLOAK_AND_FEIGN: int",
+			description: "Value: `8192`"
+		},
+		HIDEHUD_PIPES_AND_CHARGE: {
+			signature: "HIDEHUD_PIPES_AND_CHARGE: int",
+			description: "Value: `16384`"
+		},
+		HIDEHUD_METAL: {
+			signature: "HIDEHUD_METAL: int",
+			description: "Value: `32768`"
+		},
+		HIDEHUD_TARGET_ID: {
+			signature: "HIDEHUD_TARGET_ID: int",
+			description: "Value: `65536`"
+		},
+		HIDEHUD_MATCH_STATUS: {
+			signature: "HIDEHUD_MATCH_STATUS: int",
+			description: "Value: `131072`"
+		},
+	},
+	FNavAttributeType: {
+		NAV_MESH_INVALID: {
+			signature: "NAV_MESH_INVALID: int",
+			description: "Value: `0`"
+		},
+		NAV_MESH_CROUCH: {
+			signature: "NAV_MESH_CROUCH: int",
+			description: "Value: `1`"
+		},
+		NAV_MESH_JUMP: {
+			signature: "NAV_MESH_JUMP: int",
+			description: "Value: `2`"
+		},
+		NAV_MESH_PRECISE: {
+			signature: "NAV_MESH_PRECISE: int",
+			description: "Value: `4`"
+		},
+		NAV_MESH_NO_JUMP: {
+			signature: "NAV_MESH_NO_JUMP: int",
+			description: "Value: `8`"
+		},
+		NAV_MESH_STOP: {
+			signature: "NAV_MESH_STOP: int",
+			description: "Value: `16`"
+		},
+		NAV_MESH_RUN: {
+			signature: "NAV_MESH_RUN: int",
+			description: "Value: `32`"
+		},
+		NAV_MESH_WALK: {
+			signature: "NAV_MESH_WALK: int",
+			description: "Value: `64`"
+		},
+		NAV_MESH_AVOID: {
+			signature: "NAV_MESH_AVOID: int",
+			description: "Value: `128`"
+		},
+		NAV_MESH_TRANSIENT: {
+			signature: "NAV_MESH_TRANSIENT: int",
+			description: "Value: `256`"
+		},
+		NAV_MESH_DONT_HIDE: {
+			signature: "NAV_MESH_DONT_HIDE: int",
+			description: "Value: `512`"
+		},
+		NAV_MESH_STAND: {
+			signature: "NAV_MESH_STAND: int",
+			description: "Value: `1024`"
+		},
+		NAV_MESH_NO_HOSTAGES: {
+			signature: "NAV_MESH_NO_HOSTAGES: int",
+			description: "Value: `2048`"
+		},
+		NAV_MESH_STAIRS: {
+			signature: "NAV_MESH_STAIRS: int",
+			description: "Value: `4096`"
+		},
+		NAV_MESH_NO_MERGE: {
+			signature: "NAV_MESH_NO_MERGE: int",
+			description: "Value: `8192`"
+		},
+		NAV_MESH_OBSTACLE_TOP: {
+			signature: "NAV_MESH_OBSTACLE_TOP: int",
+			description: "Value: `16384`"
+		},
+		NAV_MESH_CLIFF: {
+			signature: "NAV_MESH_CLIFF: int",
+			description: "Value: `32768`"
+		},
+		NAV_MESH_FIRST_CUSTOM: {
+			signature: "NAV_MESH_FIRST_CUSTOM: int",
+			description: "Value: `65536`"
+		},
+		NAV_MESH_LAST_CUSTOM: {
+			signature: "NAV_MESH_LAST_CUSTOM: int",
+			description: "Value: `67108864`"
+		},
+		NAV_MESH_FUNC_COST: {
+			signature: "NAV_MESH_FUNC_COST: int",
+			description: "Value: `536870912`"
+		},
+		NAV_MESH_HAS_ELEVATOR: {
+			signature: "NAV_MESH_HAS_ELEVATOR: int",
+			description: "Value: `1073741824`"
+		},
+		NAV_MESH_NAV_BLOCKER: {
+			signature: "NAV_MESH_NAV_BLOCKER: int",
+			description: "Value: `2147483648`"
+		},
+	},
+	FPlayer: {
+		FL_ONGROUND: {
+			signature: "FL_ONGROUND: int",
+			description: "Value: `1`"
+		},
+		FL_DUCKING: {
+			signature: "FL_DUCKING: int",
+			description: "Value: `2`"
+		},
+		FL_ANIMDUCKING: {
+			signature: "FL_ANIMDUCKING: int",
+			description: "Value: `4`"
+		},
+		FL_WATERJUMP: {
+			signature: "FL_WATERJUMP: int",
+			description: "Value: `8`"
+		},
+		PLAYER_FLAG_BITS: {
+			signature: "PLAYER_FLAG_BITS: int",
+			description: "Value: `11`"
+		},
+		FL_ONTRAIN: {
+			signature: "FL_ONTRAIN: int",
+			description: "Value: `16`"
+		},
+		FL_INRAIN: {
+			signature: "FL_INRAIN: int",
+			description: "Value: `32`"
+		},
+		FL_FROZEN: {
+			signature: "FL_FROZEN: int",
+			description: "Value: `64`"
+		},
+		FL_ATCONTROLS: {
+			signature: "FL_ATCONTROLS: int",
+			description: "Value: `128`"
+		},
+		FL_CLIENT: {
+			signature: "FL_CLIENT: int",
+			description: "Value: `256`"
+		},
+		FL_FAKECLIENT: {
+			signature: "FL_FAKECLIENT: int",
+			description: "Value: `512`"
+		},
+		FL_INWATER: {
+			signature: "FL_INWATER: int",
+			description: "Value: `1024`"
+		},
+		FL_FLY: {
+			signature: "FL_FLY: int",
+			description: "Value: `2048`"
+		},
+		FL_SWIM: {
+			signature: "FL_SWIM: int",
+			description: "Value: `4096`"
+		},
+		FL_CONVEYOR: {
+			signature: "FL_CONVEYOR: int",
+			description: "Value: `8192`"
+		},
+		FL_NPC: {
+			signature: "FL_NPC: int",
+			description: "Value: `16384`"
+		},
+		FL_GODMODE: {
+			signature: "FL_GODMODE: int",
+			description: "Value: `32768`"
+		},
+		FL_NOTARGET: {
+			signature: "FL_NOTARGET: int",
+			description: "Value: `65536`"
+		},
+		FL_AIMTARGET: {
+			signature: "FL_AIMTARGET: int",
+			description: "Value: `131072`"
+		},
+		FL_PARTIALGROUND: {
+			signature: "FL_PARTIALGROUND: int",
+			description: "Value: `262144`"
+		},
+		FL_STATICPROP: {
+			signature: "FL_STATICPROP: int",
+			description: "Value: `524288`"
+		},
+		FL_GRAPHED: {
+			signature: "FL_GRAPHED: int",
+			description: "Value: `1048576`"
+		},
+		FL_GRENADE: {
+			signature: "FL_GRENADE: int",
+			description: "Value: `2097152`"
+		},
+		FL_STEPMOVEMENT: {
+			signature: "FL_STEPMOVEMENT: int",
+			description: "Value: `4194304`"
+		},
+		FL_DONTTOUCH: {
+			signature: "FL_DONTTOUCH: int",
+			description: "Value: `8388608`"
+		},
+		FL_BASEVELOCITY: {
+			signature: "FL_BASEVELOCITY: int",
+			description: "Value: `16777216`"
+		},
+		FL_WORLDBRUSH: {
+			signature: "FL_WORLDBRUSH: int",
+			description: "Value: `33554432`"
+		},
+		FL_OBJECT: {
+			signature: "FL_OBJECT: int",
+			description: "Value: `67108864`"
+		},
+		FL_KILLME: {
+			signature: "FL_KILLME: int",
+			description: "Value: `134217728`"
+		},
+		FL_ONFIRE: {
+			signature: "FL_ONFIRE: int",
+			description: "Value: `268435456`"
+		},
+		FL_DISSOLVING: {
+			signature: "FL_DISSOLVING: int",
+			description: "Value: `536870912`"
+		},
+		FL_TRANSRAGDOLL: {
+			signature: "FL_TRANSRAGDOLL: int",
+			description: "Value: `1073741824`"
+		},
+		FL_UNBLOCKABLE_BY_PLAYER: {
+			signature: "FL_UNBLOCKABLE_BY_PLAYER: int",
+			description: "Value: `2147483648`"
+		},
+	},
+	FSolid: {
+		FSOLID_CUSTOMRAYTEST: {
+			signature: "FSOLID_CUSTOMRAYTEST: int",
+			description: "Value: `1`"
+		},
+		FSOLID_CUSTOMBOXTEST: {
+			signature: "FSOLID_CUSTOMBOXTEST: int",
+			description: "Value: `2`"
+		},
+		FSOLID_NOT_SOLID: {
+			signature: "FSOLID_NOT_SOLID: int",
+			description: "Value: `4`"
+		},
+		FSOLID_TRIGGER: {
+			signature: "FSOLID_TRIGGER: int",
+			description: "Value: `8`"
+		},
+		FSOLID_MAX_BITS: {
+			signature: "FSOLID_MAX_BITS: int",
+			description: "Value: `10`"
+		},
+		FSOLID_NOT_STANDABLE: {
+			signature: "FSOLID_NOT_STANDABLE: int",
+			description: "Value: `16`"
+		},
+		FSOLID_VOLUME_CONTENTS: {
+			signature: "FSOLID_VOLUME_CONTENTS: int",
+			description: "Value: `32`"
+		},
+		FSOLID_FORCE_WORLD_ALIGNED: {
+			signature: "FSOLID_FORCE_WORLD_ALIGNED: int",
+			description: "Value: `64`"
+		},
+		FSOLID_USE_TRIGGER_BOUNDS: {
+			signature: "FSOLID_USE_TRIGGER_BOUNDS: int",
+			description: "Value: `128`"
+		},
+		FSOLID_ROOT_PARENT_ALIGNED: {
+			signature: "FSOLID_ROOT_PARENT_ALIGNED: int",
+			description: "Value: `256`"
+		},
+		FSOLID_TRIGGER_TOUCH_DEBRIS: {
+			signature: "FSOLID_TRIGGER_TOUCH_DEBRIS: int",
+			description: "Value: `512`"
+		},
+	},
+	FSurf: {
+		SURF_LIGHT: {
+			signature: "SURF_LIGHT: int",
+			description: "Value: `1`"
+		},
+		SURF_SKY2D: {
+			signature: "SURF_SKY2D: int",
+			description: "Value: `2`"
+		},
+		SURF_SKY: {
+			signature: "SURF_SKY: int",
+			description: "Value: `4`"
+		},
+		SURF_WARP: {
+			signature: "SURF_WARP: int",
+			description: "Value: `8`"
+		},
+		SURF_TRANS: {
+			signature: "SURF_TRANS: int",
+			description: "Value: `16`"
+		},
+		SURF_NOPORTAL: {
+			signature: "SURF_NOPORTAL: int",
+			description: "Value: `32`"
+		},
+		SURF_TRIGGER: {
+			signature: "SURF_TRIGGER: int",
+			description: "Value: `64`"
+		},
+		SURF_NODRAW: {
+			signature: "SURF_NODRAW: int",
+			description: "Value: `128`"
+		},
+		SURF_HINT: {
+			signature: "SURF_HINT: int",
+			description: "Value: `256`"
+		},
+		SURF_SKIP: {
+			signature: "SURF_SKIP: int",
+			description: "Value: `512`"
+		},
+		SURF_NOLIGHT: {
+			signature: "SURF_NOLIGHT: int",
+			description: "Value: `1024`"
+		},
+		SURF_BUMPLIGHT: {
+			signature: "SURF_BUMPLIGHT: int",
+			description: "Value: `2048`"
+		},
+		SURF_NOSHADOWS: {
+			signature: "SURF_NOSHADOWS: int",
+			description: "Value: `4096`"
+		},
+		SURF_NODECALS: {
+			signature: "SURF_NODECALS: int",
+			description: "Value: `8192`"
+		},
+		SURF_NOCHOP: {
+			signature: "SURF_NOCHOP: int",
+			description: "Value: `16384`"
+		},
+		SURF_HITBOX: {
+			signature: "SURF_HITBOX: int",
+			description: "Value: `32768`"
+		},
+	},
+	FTaunts: {
+		TAUNT_BASE_WEAPON: {
+			signature: "TAUNT_BASE_WEAPON: int",
+			description: "Value: `0`"
+		},
+		TAUNT_MISC_ITEM: {
+			signature: "TAUNT_MISC_ITEM: int",
+			description: "Value: `1`"
+		},
+		TAUNT_SHOW_ITEM: {
+			signature: "TAUNT_SHOW_ITEM: int",
+			description: "Value: `2`"
+		},
+		TAUNT_LONG: {
+			signature: "TAUNT_LONG: int",
+			description: "Value: `3`"
+		},
+		TAUNT_SPECIAL: {
+			signature: "TAUNT_SPECIAL: int",
+			description: "Value: `4`"
+		},
+	},
+	FTFBotAttributeType: {
+		REMOVE_ON_DEATH: {
+			signature: "REMOVE_ON_DEATH: int",
+			description: "Value: `1`"
+		},
+		AGGRESSIVE: {
+			signature: "AGGRESSIVE: int",
+			description: "Value: `2`"
+		},
+		IS_NPC: {
+			signature: "IS_NPC: int",
+			description: "Value: `4`"
+		},
+		SUPPRESS_FIRE: {
+			signature: "SUPPRESS_FIRE: int",
+			description: "Value: `8`"
+		},
+		DISABLE_DODGE: {
+			signature: "DISABLE_DODGE: int",
+			description: "Value: `16`"
+		},
+		BECOME_SPECTATOR_ON_DEATH: {
+			signature: "BECOME_SPECTATOR_ON_DEATH: int",
+			description: "Value: `32`"
+		},
+		QUOTA_MANANGED: {
+			signature: "QUOTA_MANANGED: int",
+			description: "Value: `64`"
+		},
+		RETAIN_BUILDINGS: {
+			signature: "RETAIN_BUILDINGS: int",
+			description: "Value: `128`"
+		},
+		SPAWN_WITH_FULL_CHARGE: {
+			signature: "SPAWN_WITH_FULL_CHARGE: int",
+			description: "Value: `256`"
+		},
+		ALWAYS_CRIT: {
+			signature: "ALWAYS_CRIT: int",
+			description: "Value: `512`"
+		},
+		IGNORE_ENEMIES: {
+			signature: "IGNORE_ENEMIES: int",
+			description: "Value: `1024`"
+		},
+		HOLD_FIRE_UNTIL_FULL_RELOAD: {
+			signature: "HOLD_FIRE_UNTIL_FULL_RELOAD: int",
+			description: "Value: `2048`"
+		},
+		PRIORITIZE_DEFENSE: {
+			signature: "PRIORITIZE_DEFENSE: int",
+			description: "Value: `4096`"
+		},
+		ALWAYS_FIRE_WEAPON: {
+			signature: "ALWAYS_FIRE_WEAPON: int",
+			description: "Value: `8192`"
+		},
+		TELEPORT_TO_HINT: {
+			signature: "TELEPORT_TO_HINT: int",
+			description: "Value: `16384`"
+		},
+		MINIBOSS: {
+			signature: "MINIBOSS: int",
+			description: "Value: `32768`"
+		},
+		USE_BOSS_HEALTH_BAR: {
+			signature: "USE_BOSS_HEALTH_BAR: int",
+			description: "Value: `65536`"
+		},
+		IGNORE_FLAG: {
+			signature: "IGNORE_FLAG: int",
+			description: "Value: `131072`"
+		},
+		AUTO_JUMP: {
+			signature: "AUTO_JUMP: int",
+			description: "Value: `262144`"
+		},
+		AIR_CHARGE_ONLY: {
+			signature: "AIR_CHARGE_ONLY: int",
+			description: "Value: `524288`"
+		},
+		PREFER_VACCINATOR_BULLETS: {
+			signature: "PREFER_VACCINATOR_BULLETS: int",
+			description: "Value: `1048576`"
+		},
+		PREFER_VACCINATOR_BLAST: {
+			signature: "PREFER_VACCINATOR_BLAST: int",
+			description: "Value: `2097152`"
+		},
+		PREFER_VACCINATOR_FIRE: {
+			signature: "PREFER_VACCINATOR_FIRE: int",
+			description: "Value: `4194304`"
+		},
+		BULLET_IMMUNE: {
+			signature: "BULLET_IMMUNE: int",
+			description: "Value: `8388608`"
+		},
+		BLAST_IMMUNE: {
+			signature: "BLAST_IMMUNE: int",
+			description: "Value: `16777216`"
+		},
+		FIRE_IMMUNE: {
+			signature: "FIRE_IMMUNE: int",
+			description: "Value: `33554432`"
+		},
+		PARACHUTE: {
+			signature: "PARACHUTE: int",
+			description: "Value: `67108864`"
+		},
+		PROJECTILE_SHIELD: {
+			signature: "PROJECTILE_SHIELD: int",
+			description: "Value: `134217728`"
+		},
+	},
+	FTFNavAttributeType: {
+		TF_NAV_INVALID: {
+			signature: "TF_NAV_INVALID: int",
+			description: "Value: `0`"
+		},
+		TF_NAV_BLOCKED: {
+			signature: "TF_NAV_BLOCKED: int",
+			description: "Value: `1`"
+		},
+		TF_NAV_SPAWN_ROOM_RED: {
+			signature: "TF_NAV_SPAWN_ROOM_RED: int",
+			description: "Value: `2`"
+		},
+		TF_NAV_SPAWN_ROOM_BLUE: {
+			signature: "TF_NAV_SPAWN_ROOM_BLUE: int",
+			description: "Value: `4`"
+		},
+		TF_NAV_SPAWN_ROOM_EXIT: {
+			signature: "TF_NAV_SPAWN_ROOM_EXIT: int",
+			description: "Value: `8`"
+		},
+		TF_NAV_HAS_AMMO: {
+			signature: "TF_NAV_HAS_AMMO: int",
+			description: "Value: `16`"
+		},
+		TF_NAV_HAS_HEALTH: {
+			signature: "TF_NAV_HAS_HEALTH: int",
+			description: "Value: `32`"
+		},
+		TF_NAV_CONTROL_POINT: {
+			signature: "TF_NAV_CONTROL_POINT: int",
+			description: "Value: `64`"
+		},
+		TF_NAV_BLUE_SENTRY_DANGER: {
+			signature: "TF_NAV_BLUE_SENTRY_DANGER: int",
+			description: "Value: `128`"
+		},
+		TF_NAV_RED_SENTRY_DANGER: {
+			signature: "TF_NAV_RED_SENTRY_DANGER: int",
+			description: "Value: `256`"
+		},
+		TF_NAV_BLUE_SETUP_GATE: {
+			signature: "TF_NAV_BLUE_SETUP_GATE: int",
+			description: "Value: `2048`"
+		},
+		TF_NAV_RED_SETUP_GATE: {
+			signature: "TF_NAV_RED_SETUP_GATE: int",
+			description: "Value: `4096`"
+		},
+		TF_NAV_BLOCKED_AFTER_POINT_CAPTURE: {
+			signature: "TF_NAV_BLOCKED_AFTER_POINT_CAPTURE: int",
+			description: "Value: `8192`"
+		},
+		TF_NAV_BLOCKED_UNTIL_POINT_CAPTURE: {
+			signature: "TF_NAV_BLOCKED_UNTIL_POINT_CAPTURE: int",
+			description: "Value: `16384`"
+		},
+		TF_NAV_BLUE_ONE_WAY_DOOR: {
+			signature: "TF_NAV_BLUE_ONE_WAY_DOOR: int",
+			description: "Value: `32768`"
+		},
+		TF_NAV_RED_ONE_WAY_DOOR: {
+			signature: "TF_NAV_RED_ONE_WAY_DOOR: int",
+			description: "Value: `65536`"
+		},
+		TF_NAV_WITH_SECOND_POINT: {
+			signature: "TF_NAV_WITH_SECOND_POINT: int",
+			description: "Value: `131072`"
+		},
+		TF_NAV_WITH_THIRD_POINT: {
+			signature: "TF_NAV_WITH_THIRD_POINT: int",
+			description: "Value: `262144`"
+		},
+		TF_NAV_WITH_FOURTH_POINT: {
+			signature: "TF_NAV_WITH_FOURTH_POINT: int",
+			description: "Value: `524288`"
+		},
+		TF_NAV_WITH_FIFTH_POINT: {
+			signature: "TF_NAV_WITH_FIFTH_POINT: int",
+			description: "Value: `1048576`"
+		},
+		TF_NAV_SNIPER_SPOT: {
+			signature: "TF_NAV_SNIPER_SPOT: int",
+			description: "Value: `2097152`"
+		},
+		TF_NAV_SENTRY_SPOT: {
+			signature: "TF_NAV_SENTRY_SPOT: int",
+			description: "Value: `4194304`"
+		},
+		TF_NAV_ESCAPE_ROUTE: {
+			signature: "TF_NAV_ESCAPE_ROUTE: int",
+			description: "Value: `8388608`"
+		},
+		TF_NAV_ESCAPE_ROUTE_VISIBLE: {
+			signature: "TF_NAV_ESCAPE_ROUTE_VISIBLE: int",
+			description: "Value: `16777216`"
+		},
+		TF_NAV_NO_SPAWNING: {
+			signature: "TF_NAV_NO_SPAWNING: int",
+			description: "Value: `33554432`"
+		},
+		TF_NAV_RESCUE_CLOSET: {
+			signature: "TF_NAV_RESCUE_CLOSET: int",
+			description: "Value: `67108864`"
+		},
+		TF_NAV_BOMB_CAN_DROP_HERE: {
+			signature: "TF_NAV_BOMB_CAN_DROP_HERE: int",
+			description: "Value: `134217728`"
+		},
+		TF_NAV_DOOR_NEVER_BLOCKS: {
+			signature: "TF_NAV_DOOR_NEVER_BLOCKS: int",
+			description: "Value: `268435456`"
+		},
+		TF_NAV_DOOR_ALWAYS_BLOCKS: {
+			signature: "TF_NAV_DOOR_ALWAYS_BLOCKS: int",
+			description: "Value: `536870912`"
+		},
+		TF_NAV_UNBLOCKABLE: {
+			signature: "TF_NAV_UNBLOCKABLE: int",
+			description: "Value: `1073741824`"
+		},
+		TF_NAV_PERSISTENT_ATTRIBUTES: {
+			signature: "TF_NAV_PERSISTENT_ATTRIBUTES: int",
+			description: "Value: `1988098048`"
+		},
+	},

@@ -1,0 +1,66 @@
+{
+  "comments": {
+    "lineComment": "#",
+    "lineComment": "//",
+    "blockComment": ["/*", "*/"]
+  },
+  "brackets": [
+    ["{", "}"],
+    ["[", "]"],
+    ["(", ")"]
+  ],
+  "autoClosingPairs": [
+    { "open": "{", "close": "}" },
+    { "open": "[", "close": "]" },
+    { "open": "(", "close": ")" },
+    { "open": "'", "close": "'", "notIn": ["comment"] },
+    { "open": "\"", "close": "\"", "notIn": ["string", "comment"] },
+    { "open": "`", "close": "`", "notIn": ["comment"] },
+    { "open": "</", "close": " />", "notIn": ["string", "comment"] }
+  ],
+  "autoCloseBefore": ";:.,=}])> \n\t\"`",
+  "surroundingPairs": [
+    ["{", "}"],
+    ["[", "]"],
+    ["(", ")"],
+    ["\"", "\""],
+    ["'", "'"],
+    ["`", "`"]
+  ],
+  "onEnterRules": [
+    {
+      // e.g.  */|
+      "beforeText": "^(\\t| {2})* \\*/\\s*$",
+      "action": {
+        "indent": "none",
+        "removeText": 1
+      }
+    },
+    {
+      // e.g.  *-----*/|
+      "beforeText": "^(\\t| {2})* \\*[^/]*\\*/\\s*$",
+      "action": {
+        "indent": "none",
+        "removeText": 1
+      }
+    },
+    {
+      // Add // when pressing enter from inside line comment
+      "beforeText": "(?<!\\\\)(?<!\\w:)//.*",
+      "afterText": "^(?!\\s*$).+",
+      "action": {
+        "indent": "none",
+        "appendText": "// "
+      }
+    },
+    {
+      // Same for #
+      "beforeText": "(?<!\\\\)(?<!\\w:)#.*",
+      "afterText": "^(?!\\s*$).+",
+      "action": {
+        "indent": "none",
+        "appendText": "# "
+      }
+    }
+  ]
+}

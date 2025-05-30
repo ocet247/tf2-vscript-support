@@ -1,0 +1,969 @@
+	None: {
+		signature: "Quaternion()",
+		description: "Creates a new identity quaternion."
+	},
+	None: {
+		signature: "Quaternion(x: float, y: float, z: float, w: float)",
+		description: "Creates a new quaternion of the form `*w* + *x***i** + *y***j** + *z***k**`."
+	},
+	Dot: {
+		signature: "Dot(factor: Quaternion) -> float",
+		description: "The 4D scalar product of two quaternions. represents the angle between the quaternions in the range [1, 0]."
+	},
+	Invert: {
+		signature: "Invert() -> Quaternion",
+		description: "Returns a quaternion with the complimentary rotation."
+	},
+	Norm: {
+		signature: "Norm() -> float",
+		description: "Normalizes the quaternion."
+	},
+	SetPitchYawRoll: {
+		signature: "SetPitchYawRoll(pitch: float, yaw: float, roll: float) -> void",
+		description: "Recomputes the quaternion from the supplied Euler angles."
+	},
+	ToKVString: {
+		signature: "ToKVString() -> string",
+		description: "Returns a string with the values separated by one space."
+	},
+	ToQAngle: {
+		signature: "ToQAngle() -> QAngle",
+		description: "Returns the angles resulting from the rotation."
+	},
+	AddThinkToEnt: {
+		signature: "AddThinkToEnt(entity: handle, function_name: string) -> void",
+		description: "Sets a function in the entity's script to rerun by itself constantly. Pass null as the function name to remove a think function."
+	},
+	AddToScriptHelp: {
+		signature: "AddToScriptHelp()"
+	},
+	Assert: {
+		signature: "Assert(value: bool, optional_message: string) -> void",
+		description: "Test value and if not true, throws exception, optionally with message."
+	},
+	ClearGameEventCallbacks: {
+		signature: "ClearGameEventCallbacks() -> void",
+		description: "Empties the tables of game event callback functions."
+	},
+	CreateProp: {
+		signature: "CreateProp(classname: string, origin: Vector, model_name: string, activity: int) -> handle",
+		description: "Create a prop."
+	},
+	CreateSceneEntity: {
+		signature: "CreateSceneEntity(scene: string) -> handle",
+		description: "Create a scene entity to play the specified scene."
+	},
+	developer: {
+		signature: "developer() -> int",
+		description: "The current level of the `developer` console variable."
+	},
+	DispatchParticleEffect: {
+		signature: "DispatchParticleEffect(name: string, origin: Vector, direction: Vector) -> void",
+		description: "Dispatches a one-off particle system. To pass angles into this, use the `.Forward()` method on a QAngle."
+	},
+	Document: {
+		signature: "Document(symbol_or_table: unknown, item_if_symbol: unknown = null, description_if_symbol: string = null) -> void"
+	},
+	DoEntFire: {
+		signature: "DoEntFire(target: string, action: string, value: string, delay: float, activator: handle, caller: handle) -> void",
+		description: "Generate an entity I/O event. The *caller* and *activator* argument takes a *CBaseEntity* script handle, and entities assigned can receive inputs with *target* set to *!self*, or *!activator* / *!caller*. Negative delays are clamped to 0."
+	},
+	DoIncludeScript: {
+		signature: "DoIncludeScript(file: string, handle/scope: table) -> bool",
+		description: "Execute a script and put all its content for the argument passed to the`*scope*`parameter. The file must have the `.nut` extension."
+	},
+	IncludeScript: {
+		signature: "IncludeScript(file: string, scope: table = null) -> bool",
+		description: "Wrapper for DoIncludeScript."
+	},
+	EmitAmbientSoundOn: {
+		signature: "EmitAmbientSoundOn(sound_name: string, volume: float, soundlevel: int, pitch: int, entity: handle) -> void",
+		description: "Play named sound on an entity using configurations similar to [this page](https://developer.valvesoftware.com/wiki/ambient_generic]]. Soundlevel is in decibels, see [[Soundscripts#SoundLevel) for real world equivalents."
+	},
+	StopAmbientSoundOn: {
+		signature: "StopAmbientSoundOn(sound_name: string, entity: handle) -> void",
+		description: "Stop named sound on an entity using configurations similar to [ambient_generic](https://developer.valvesoftware.com/wiki/ambient_generic)."
+	},
+	EmitSoundOn: {
+		signature: "EmitSoundOn(sound_script: string, entity: handle) -> void",
+		description: "Play named sound on given entity. The sound must be precached first for it to play (using `PrecacheSound` or `PrecacheScriptSound`)."
+	},
+	StopSoundOn: {
+		signature: "StopSoundOn(sound_script: string, entity: handle) -> void",
+		description: "Stop named sound on an entity."
+	},
+	EmitSoundOnClient: {
+		signature: "EmitSoundOnClient(sound_script: string, player: handle) -> void",
+		description: "Play named sound only on the client for the specified player. The sound must be precached first for it to play (`PrecacheScriptSound`)."
+	},
+	EntFire: {
+		signature: "EntFire(target: string, action: string, value: string = null, delay: float = 0, activator: handle = null) -> void",
+		description: "Wrapper for DoEntFire() that sets`*activator*` to null, but has no`*caller*`param. Negative delays are clamped to 0."
+	},
+	EntFireByHandle: {
+		signature: "EntFireByHandle(entity: handle, action: string, value: string, delay: float, activator: handle, caller: handle) -> void",
+		description: "Generate an entity I/O event. First parameter is an entity instance. Negative delays are clamped to 0."
+	},
+	EntIndexToHScript: {
+		signature: "EntIndexToHScript(entindex: int) -> handle",
+		description: "Turn an entity index integer to an HScript representing that entity's script instance."
+	},
+	FileToString: {
+		signature: "FileToString(file: string) -> string",
+		description: "Reads a string from file located in the game's *scriptdata* folder. Returns the string from the file, null if no file or file is greater than 16384 bytes."
+	},
+	FindCircularReference: {
+		signature: "FindCircularReference()"
+	},
+	FindCircularReferences: {
+		signature: "FindCircularReferences()"
+	},
+	FireGameEvent: {
+		signature: "FireGameEvent(name: string, params: table) -> bool",
+		description: "Fire a game event to a listening callback function in script. Parameters are passed in a squirrel table."
+	},
+	FireScriptHook: {
+		signature: "FireScriptHook(name: string, params: table) -> bool",
+		description: "Fire a script hook to a listening callback function in script. Parameters are passed in a squirrel table."
+	},
+	FireScriptEvent: {
+		signature: "FireScriptEvent(event: string, params: table) -> void",
+		description: "Wrapper for `__RunEventCallbacks()`."
+	},
+	FrameTime: {
+		signature: "FrameTime() -> float",
+		description: "Get the time spent on the server in the last frame. Usually this will be 0.015 (the default tickrate)."
+	},
+	GetDeveloperLevel: {
+		signature: "GetDeveloperLevel() -> int",
+		description: "Gets the level of 'developer'"
+	},
+	GetFrameCount: {
+		signature: "GetFrameCount() -> int",
+		description: "Returns the engines current frame count. The counter does not reset between map changes. This is NOT the tick count."
+	},
+	GetFriction: {
+		signature: "GetFriction(player: handle) -> float",
+		description: "Returns the Friction on a player entity, meaningless if not a player."
+	},
+	GetFunctionSignature: {
+		signature: "GetFunctionSignature(func: function, prefix: string) -> string"
+	},
+	GetListenServerHost: {
+		signature: "GetListenServerHost() -> handle",
+		description: "Get the local player on a listen server. Returns null on dedicated servers."
+	},
+	GetMapName: {
+		signature: "GetMapName() -> string",
+		description: "Get the name of the map without extension, e.g. `ctf_2fort`. For workshop maps, this will be in the format `workshop/[name].ugc[id]`."
+	},
+	GetModelIndex: {
+		signature: "GetModelIndex(model_name: string) -> int",
+		description: "Returns the index of the named model."
+	},
+	GetPlayerFromUserID: {
+		signature: "GetPlayerFromUserID(userid: int) -> handle",
+		description: "Given a user id, return the entity, or null."
+	},
+	GetSoundDuration: {
+		signature: "GetSoundDuration(sound_name: string, actor_model_name: string) -> float",
+		description: "Returns float duration of the sound. Actor model name is optional and can be left null."
+	},
+	IsDedicatedServer: {
+		signature: "IsDedicatedServer() -> bool",
+		description: "Returns true if this server is a dedicated server."
+	},
+	IsModelPrecached: {
+		signature: "IsModelPrecached(model_name: string) -> bool",
+		description: "Checks if the *model_name* is precached."
+	},
+	IsSoundPrecached: {
+		signature: "IsSoundPrecached(sound_name: string) -> bool",
+		description: "Checks if the *sound_name* is precached."
+	},
+	IsPlayerABot: {
+		signature: "IsPlayerABot(player: handle) -> bool",
+		description: "Is this player/entity a puppet or AI bot. To check if the player is a AI bot (`CTFBot`) specifically, use `IsBotOfType` instead."
+	},
+	IsWeakref: {
+		signature: "IsWeakref() -> bool"
+	},
+	LocalTime: {
+		signature: "LocalTime(result: table) -> void",
+		description: "Fills out a table with the local time (second, minute, hour, day, month, year, dayofweek, dayofyear, daylightsavings). This mirrors the `tm` structure in C++, see the [https://cplusplus.com/reference/ctime/tm/ reference page] for more information."
+	},
+	MakeNamespace: {
+		signature: "MakeNamespace()"
+	},
+	MaxClients: {
+		signature: "MaxClients() -> float",
+		description: "Get the current number of max clients set by the maxplayers command."
+	},
+	PickupObject: {
+		signature: "PickupObject(player: handle, entity: handle) -> void",
+		description: "Object from world is put into the \"Held\" slot of the player. Warning: it will smoothly interpolate from where it is to the players hand - which is a bit goofy if it is on other side of level."
+	},
+	PlayerInstanceFromIndex: {
+		signature: "PlayerInstanceFromIndex(index: int) -> CBasePlayer",
+		description: "Get a script handle of a player using the player index."
+	},
+	PrecacheEntityFromTable: {
+		signature: "PrecacheEntityFromTable(keyvalues: table) -> bool",
+		description: "Precache an entity from [KeyValues](https://developer.valvesoftware.com/wiki/KeyValues) in a table. Internally this function creates the entity, fire `DispatchSpawn` and removes it instantly. Returns false if the table has no *classname* key, if the value of *classname* is null or empty, or if the entity failed to be created."
+	},
+	PrecacheModel: {
+		signature: "PrecacheModel(model_name: string) -> int",
+		description: "Precache a model (`.mdl`) or sprite (`.vmt`) and return model index. The extension must be specified. Returns -1 if null or empty *model_name* is passed in. Missing models/sprites will still return a new index."
+	},
+	PrecacheScriptSound: {
+		signature: "PrecacheScriptSound(sound_name: string) -> bool",
+		description: "Precache a soundscript. Returns false if soundscript is missing, or if a null or empty sound name is passed in."
+	},
+	PrecacheSound: {
+		signature: "PrecacheSound(sound_name: string) -> bool",
+		description: "Precache a raw sound. Returns false if a null or empty sound name is passed in."
+	},
+	PrintHelp: {
+		signature: "PrintHelp() -> void",
+		description: "Equivalent to running `script_help` command."
+	},
+	RandomFloat: {
+		signature: "RandomFloat(min: float, max: float) -> float",
+		description: "Generate a random floating-point number within a range, inclusive."
+	},
+	RandomInt: {
+		signature: "RandomInt(min: int, max: int) -> int",
+		description: "Generate a random integer within a range, inclusive."
+	},
+	RegisterFunctionDocumentation: {
+		signature: "RegisterFunctionDocumentation(func: unknown, name: string, signature: string, description: string) -> void"
+	},
+	RegisterScriptGameEventListener: {
+		signature: "RegisterScriptGameEventListener(event_name: string) -> void",
+		description: "Register as a listener for a game event from script. It's what `__CollectGameEventCallbacks()` uses to register event callbacks to the C++ code."
+	},
+	RegisterScriptHookListener: {
+		signature: "RegisterScriptHookListener(name: string) -> void",
+		description: "Register as a listener for a script hook from script."
+	},
+	RetrieveNativeSignature: {
+		signature: "RetrieveNativeSignature(func: function) -> string"
+	},
+	RotateOrientation: {
+		signature: "RotateOrientation(QAngle, QAngle) -> QAngle",
+		description: "Rotate a QAngle by another QAngle."
+	},
+	RotatePosition: {
+		signature: "RotatePosition(origin: Vector, rotation: QAngle, input: Vector) -> Vector",
+		description: "Rotate the input Vector around an origin."
+	},
+	ScreenFade: {
+		signature: "ScreenFade(player: handle, red: int, green: int, blue: int, alpha: int, fade_time: float, fade_hold: float, flags: FFADE) -> void",
+		description: "Start a customisable screenfade. If no player is specified, the fade will apply to all players.\n\nSee [FFADE](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#FFADE)."
+	},
+	ScreenShake: {
+		signature: "ScreenShake(center: Vector, amplitude: float, frequency: float, duration: float, radius: float, command: SHAKE_COMMAND, air_shake: bool) -> void",
+		description: "Start a customisable screenshake. Set *command* to 0 to start a shake, or 1 to stop an existing shake. *air_shake* determines whether the airborne players should be affected by the shake as well.\n\nSee [SHAKE_COMMAND](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#SHAKE_COMMAND)."
+	},
+	ScriptHooksEnabled: {
+		signature: "ScriptHooksEnabled() -> bool",
+		description: "Returns whether script hooks are currently enabled."
+	},
+	SendGlobalGameEvent: {
+		signature: "SendGlobalGameEvent(event_name: string, params: table) -> bool",
+		description: "Sends a real game event to everything. Parameters are passed in a squirrel table."
+	},
+	SendToConsole: {
+		signature: "SendToConsole(command: string) -> void",
+		description: "Issues a command to the local client, as if they typed in the command in their console. Does nothing on dedicated servers."
+	},
+	SendToServerConsole: {
+		signature: "SendToServerConsole(command: string) -> void",
+		description: "Issues a command to the server, as if typed in the console."
+	},
+	SendToConsoleServer: {
+		signature: "SendToConsoleServer(command: string) -> void",
+		description: "Copy of SendToServerConsole with another name for compat."
+	},
+	SetFakeClientConVarValue: {
+		signature: "SetFakeClientConVarValue(bot: handle, cvar: string, value: string) -> void",
+		description: "Sets a USERINFO client ConVar for a fakeclient."
+	},
+	SetSkyboxTexture: {
+		signature: "SetSkyboxTexture(texture: string) -> void",
+		description: "Sets the current skybox texture. The path is relative to \"materials/skybox/\". Only the main name of a skybox texture is needed, for example \"sky_gravel_01\"."
+	},
+	SpawnEntityFromTable: {
+		signature: "SpawnEntityFromTable(name: string, keyvalues: table) -> handle",
+		description: "Spawn entity from KeyValues in table - 'name' is entity name, rest are KeyValues for spawn."
+	},
+	SpawnEntityGroupFromTable: {
+		signature: "SpawnEntityGroupFromTable(groups: table) -> bool",
+		description: "Hierarchically spawn an entity group from a set of spawn tables. This computes a spawn order for entities so that parenting is resolved correctly."
+	},
+	StringToFile: {
+		signature: "StringToFile(file: string, string: string) -> void",
+		description: "Stores a string as a file, located in the game's *scriptdata* folder."
+	},
+	Time: {
+		signature: "Time() -> float",
+		description: "Get the current time since map load in seconds. The time resets on map change."
+	},
+	TraceLine: {
+		signature: "TraceLine(start: Vector, end: Vector, ignore: handle) -> float",
+		description: "Trace a ray. Return fraction along line that hits world or models. Optionally, ignore the specified entity."
+	},
+	TraceLinePlayersIncluded: {
+		signature: "TraceLinePlayersIncluded(start: Vector, end: Vector, ignore: handle) -> float",
+		description: "Different version of `TraceLine` that also hits players and NPCs."
+	},
+	UniqueString: {
+		signature: "UniqueString(suffix: string = \"\") -> string",
+		description: "Generate a string guaranteed to be unique across the life of the script VM, with an optional suffix. Useful for adding data to tables when not sure what keys are already in use in that table."
+	},
+	DoUniqueString: {
+		signature: "DoUniqueString(suffix: string) -> string",
+		description: "Internal function called by `UniqueString`."
+	},
+	VSquirrel_OnCreateScope: {
+		signature: "VSquirrel_OnCreateScope(value: any, scope: table) -> table",
+		description: "Creates a new scope with the name of value in the submitted table (includes unique params)."
+	},
+	VSquirrel_OnReleaseScope: {
+		signature: "VSquirrel_OnReleaseScope(created_scope: table) -> void",
+		description: "Removes a scope created via VSquirrel_OnCreateScope."
+	},
+	__CollectEventCallbacks: {
+		signature: "__CollectEventCallbacks(scope, prefix, global_table_name, reg_func) -> void",
+		description: "Overloaded function. Its only used for this: `__CollectEventCallbacks(scope, \"OnGameEvent_\", \"GameEventCallbacks\", ::RegisterScriptGameEventListener)`."
+	},
+	__CollectGameEventCallbacks: {
+		signature: "__CollectGameEventCallbacks(scope: table) -> void",
+		description: "Wrapper that registers callbacks for both [OnGameEvent_*x* ↑](https://developer.valvesoftware.com/wiki/#Hooks) and `OnScriptEvent_` functions. Done using the `__CollectEventCallbacks` function."
+	},
+	__ReplaceClosures: {
+		signature: "__ReplaceClosures(script, scope) -> void"
+	},
+	__RunEventCallbacks: {
+		signature: "__RunEventCallbacks(event, params, prefix, global_table_name, warn_if_missing: bool) -> void",
+		description: "Call all functions in the callback array for the given game event."
+	},
+	__RunGameEventCallbacks: {
+		signature: "__RunGameEventCallbacks(event, params) -> void",
+		description: "Wrapper for `__RunEventCallbacks()`."
+	},
+	__RunScriptHookCallbacks: {
+		signature: "__RunScriptHookCallbacks(event, param) -> void"
+	},
+	AllowThirdPersonCamera: {
+		signature: "AllowThirdPersonCamera() -> bool"
+	},
+	ArePlayersInHell: {
+		signature: "ArePlayersInHell() -> bool"
+	},
+	FlagsMayBeCapped: {
+		signature: "FlagsMayBeCapped() -> bool",
+		description: "May a flag be captured?"
+	},
+	ForceEnableUpgrades: {
+		signature: "ForceEnableUpgrades(state: int) -> void",
+		description: "Whether to force on MvM-styled upgrades on/off. 0 -> default, 1 -> force off, 2 -> force on."
+	},
+	ForceEscortPushLogic: {
+		signature: "ForceEscortPushLogic(state: int) -> void",
+		description: "Forces payload pushing logic. 0 -> default, 1 -> force off, 2 -> force on."
+	},
+	GameModeUsesCurrency: {
+		signature: "GameModeUsesCurrency() -> bool",
+		description: "Does the current gamemode have currency?"
+	},
+	GameModeUsesMiniBosses: {
+		signature: "GameModeUsesMiniBosses() -> bool",
+		description: "Does the current gamemode have minibosses?"
+	},
+	GameModeUsesUpgrades: {
+		signature: "GameModeUsesUpgrades() -> bool",
+		description: "Does the current gamemode have upgrades?"
+	},
+	GetClassLimit: {
+		signature: "GetClassLimit(class: ETFClass) -> int",
+		description: "Get class limit for class.\n\nSee [ETFClass](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ETFClass)."
+	},
+	GetGravityMultiplier: {
+		signature: "GetGravityMultiplier() -> float"
+	},
+	GetMannVsMachineAlarmStatus: {
+		signature: "GetMannVsMachineAlarmStatus() -> bool"
+	},
+	GetOvertimeAllowedForCTF: {
+		signature: "GetOvertimeAllowedForCTF() -> bool"
+	},
+	GetRoundState: {
+		signature: "GetRoundState() -> int",
+		description: "Get current round state. See [Constants.ERoundState](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ERoundState)."
+	},
+	GetStopWatchState: {
+		signature: "GetStopWatchState() -> int",
+		description: "Get the current stopwatch state. See [Constants.EStopwatchState](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#EStopwatchState)."
+	},
+	GetWinningTeam: {
+		signature: "GetWinningTeam() -> int",
+		description: "Who won!"
+	},
+	HaveStopWatchWinner: {
+		signature: "HaveStopWatchWinner() -> bool"
+	},
+	InMatchStartCountdown: {
+		signature: "InMatchStartCountdown() -> bool",
+		description: "Are we in the pre-match/setup state?"
+	},
+	InOvertime: {
+		signature: "InOvertime() -> bool",
+		description: "Currently in overtime?"
+	},
+	IsAttackDefenseMode: {
+		signature: "IsAttackDefenseMode() -> bool"
+	},
+	IsBirthday: {
+		signature: "IsBirthday() -> bool",
+		description: "Are we in birthday mode?"
+	},
+	IsCompetitiveMode: {
+		signature: "IsCompetitiveMode() -> bool",
+		description: "Playing competitive?"
+	},
+	IsDefaultGameMode: {
+		signature: "IsDefaultGameMode() -> bool",
+		description: "The absence of arena, mvm, tournament mode, etc."
+	},
+	IsHolidayActive: {
+		signature: "IsHolidayActive(holiday: EHoliday) -> bool",
+		description: "Is the given holiday active?\n\nSee [EHoliday](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#EHoliday)."
+	},
+	IsHolidayMap: {
+		signature: "IsHolidayMap(holiday: EHoliday) -> bool",
+		description: "Playing a holiday map?\n\nSee [EHoliday](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#EHoliday)."
+	},
+	IsInArenaMode: {
+		signature: "IsInArenaMode() -> bool",
+		description: "Playing arena mode?"
+	},
+	IsInKothMode: {
+		signature: "IsInKothMode() -> bool",
+		description: "Playing king of the hill mode?"
+	},
+	IsInMedievalMode: {
+		signature: "IsInMedievalMode() -> bool",
+		description: "Playing medieval mode?"
+	},
+	IsInWaitingForPlayers: {
+		signature: "IsInWaitingForPlayers() -> bool",
+		description: "Are we waiting for some stragglers?"
+	},
+	IsMannVsMachineMode: {
+		signature: "IsMannVsMachineMode() -> bool",
+		description: "Playing MvM? Beep boop."
+	},
+	IsMannVsMachineRespecEnabled: {
+		signature: "IsMannVsMachineRespecEnabled() -> bool",
+		description: "Are players allowed to refund their upgrades?"
+	},
+	IsMatchTypeCasual: {
+		signature: "IsMatchTypeCasual() -> bool",
+		description: "Playing casual?"
+	},
+	IsMatchTypeCompetitive: {
+		signature: "IsMatchTypeCompetitive() -> bool",
+		description: "Playing competitive?"
+	},
+	IsPasstimeMode: {
+		signature: "IsPasstimeMode() -> bool",
+		description: "No ball games."
+	},
+	IsPowerupMode: {
+		signature: "IsPowerupMode() -> bool",
+		description: "Playing powerup mode? Not compatible with MvM."
+	},
+	IsPVEModeActive: {
+		signature: "IsPVEModeActive() -> bool"
+	},
+	IsQuickBuildTime: {
+		signature: "IsQuickBuildTime() -> bool",
+		description: "If an engie places a building, will it immediately upgrade? Eg. MvM pre-round etc."
+	},
+	IsTruceActive: {
+		signature: "IsTruceActive() -> bool"
+	},
+	IsUsingGrapplingHook: {
+		signature: "IsUsingGrapplingHook() -> bool"
+	},
+	IsUsingSpells: {
+		signature: "IsUsingSpells() -> bool"
+	},
+	MapHasMatchSummaryStage: {
+		signature: "MapHasMatchSummaryStage() -> bool"
+	},
+	MatchmakingShouldUseStopwatchMode: {
+		signature: "MatchmakingShouldUseStopwatchMode() -> bool"
+	},
+	PlayerReadyStatus_ArePlayersOnTeamReady: {
+		signature: "PlayerReadyStatus_ArePlayersOnTeamReady(team: ETFTeam) -> bool",
+		description: "See [ETFTeam](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ETFTeam)."
+	},
+	PlayerReadyStatus_HaveMinPlayersToEnable: {
+		signature: "PlayerReadyStatus_HaveMinPlayersToEnable() -> bool"
+	},
+	PlayerReadyStatus_ResetState: {
+		signature: "PlayerReadyStatus_ResetState() -> void"
+	},
+	PlayersAreOnMatchSummaryStage: {
+		signature: "PlayersAreOnMatchSummaryStage() -> bool"
+	},
+	PointsMayBeCaptured: {
+		signature: "PointsMayBeCaptured() -> bool",
+		description: "Are points able to be captured?"
+	},
+	SetGravityMultiplier: {
+		signature: "SetGravityMultiplier(multiplier: float) -> void"
+	},
+	SetMannVsMachineAlarmStatus: {
+		signature: "SetMannVsMachineAlarmStatus(status: bool) -> void"
+	},
+	SetOvertimeAllowedForCTF: {
+		signature: "SetOvertimeAllowedForCTF(state: bool) -> void"
+	},
+	SetPlayersInHell: {
+		signature: "SetPlayersInHell(state: bool) -> void"
+	},
+	SetUsingSpells: {
+		signature: "SetUsingSpells(state: bool) -> void"
+	},
+	UsePlayerReadyStatusMode: {
+		signature: "UsePlayerReadyStatusMode() -> bool"
+	},
+	ClientPrint: {
+		signature: "ClientPrint(player: CBasePlayer, destination: EHudNotify, message: string) -> void",
+		description: "Print a client message. If you pass null instead of a valid player, the message will be sent to all clients.\n\nSee [EHudNotify](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#EHudNotify)."
+	},
+	DebugDrawBox: {
+		signature: "DebugDrawBox(origin: Vector, min: Vector, max: Vector, r: int, g: int, b: int, alpha: int, duration: float) -> void",
+		description: "Draw a debug overlay box."
+	},
+	DebugDrawBoxAngles: {
+		signature: "DebugDrawBoxAngles(origin: Vector, min: Vector, max: Vector, direction: QAngle, rgb: Vector, alpha: int, duration: float) -> void",
+		description: "Draw a debug oriented box."
+	},
+	DebugDrawBoxDirection: {
+		signature: "DebugDrawBoxDirection(center: Vector, min: Vector, max: Vector, forward: Vector, rgb: Vector, alpha: float, duration: float) -> void",
+		description: "Draw a debug forward box."
+	},
+	DebugDrawCircle: {
+		signature: "DebugDrawCircle(center: Vector, rgb: Vector, alpha: float, radius: float, ztest: bool, duration: float) -> void",
+		description: "Draw a debug circle."
+	},
+	DebugDrawClear: {
+		signature: "DebugDrawClear() -> void",
+		description: "Try to clear all the debug overlay info."
+	},
+	DebugDrawLine: {
+		signature: "DebugDrawLine(start: Vector, end: Vector, red: int, green: int, blue: int', z_test: bool, time: float) -> void",
+		description: "Draw a debug overlay line."
+	},
+	DebugDrawLine_vCol: {
+		signature: "DebugDrawLine_vCol(start: Vector, end: Vector, rgb: Vector, ztest: bool, duration: float) -> void",
+		description: "Draw a debug line using color vec."
+	},
+	DebugDrawScreenTextLine: {
+		signature: "DebugDrawScreenTextLine(x: float, y: float, line_offset: int, text: string, r: int, g: int, b: int, a: int, duration: float) -> void",
+		description: "Draw text with a line offset."
+	},
+	DebugDrawText: {
+		signature: "DebugDrawText(origin: Vector, text: string, use_view_check: bool, duration: float) -> void",
+		description: "Draw text on the screen, starting on the position of *origin*."
+	},
+	__DumpScope: {
+		signature: "__DumpScope(indentation: int, scope: table) -> void",
+		description: "Dumps a scope's contents and expands all tables and arrays; this is what the `ent_script_dump` command uses."
+	},
+	DumpObject: {
+		signature: "DumpObject(object: handle) -> void",
+		description: "Dumps information about a class or instance."
+	},
+	Msg: {
+		signature: "Msg(message: string) -> void",
+		description: "Prints message to console without any line feed after."
+	},
+	printf: {
+		signature: "printf(format: string, args...) -> void",
+		description: "Prints message to console with C style formatting. The line feed is not included."
+	},
+	printl: {
+		signature: "printl(message: string) -> void",
+		description: "Prints message to console with a line feed after."
+	},
+	realPrint: {
+		signature: "realPrint(message: string) -> void",
+		description: "Identical to print. print seems to be a wrapper for this."
+	},
+	Say: {
+		signature: "Say(player: CBasePlayer, message: string, team_only: bool) -> void",
+		description: "Calling this will have the specified player send the message to chat, either to team_only (true) or to everyone."
+	},
+	ShowMessage: {
+		signature: "ShowMessage(message: string) -> void",
+		description: "Displays a HUD message defined in `scripts/titles.txt` to all clients, similar to an [env_message](https://developer.valvesoftware.com/wiki/env_message) entity."
+	},
+	array: {
+		signature: "ay(length: int, fill: any = null) -> int",
+		description: "Returns a new array of the given length where each element is set to <tt>*fill*</tt> (<tt>null</tt> by default)."
+	},
+	assert: {
+		signature: "rt(exp: bool) -> bool",
+		description: "Throws an assertion error if the given expression evaluates to `false` (i.e. the values <tt>0, 0.0, null</tt> and <tt>false</tt>)."
+	},
+	callee: {
+		signature: "callee() -> function",
+		description: "Returns the currently running closure."
+	},
+	castf2i: {
+		signature: "castf2i(value: float) -> int",
+		description: "Interprets the float's bytes as if it were a 32-bit integer representation."
+	},
+	casti2f: {
+		signature: "casti2f(value: int) -> float",
+		description: "Interprets the integer's bytes as if it were a floating-point encoding."
+	},
+	collectgarbage: {
+		signature: "collectgarbage() -> int",
+		description: "Runs the garbage collector and returns the number of reference cycles found(and deleted) This function only works on garbage collector builds."
+	},
+	compilestring: {
+		signature: "compilestring(string: string, buffer_name: string = null) -> any",
+		description: "Compiles a string containing a squirrel script into a function and returns it."
+	},
+	dummy: {
+		signature: "dummy()"
+	},
+	enabledebuginfo: {
+		signature: "enabledebuginfo(enable: any) -> void",
+		description: "Enable/disable the debug line information generation at compile time. enable != null enables . enable == null disables."
+	},
+	error: {
+		signature: "error(x: string) -> void",
+		description: "Prints x in the standard error output ."
+	},
+	getconsttable: {
+		signature: "getconsttable() -> table",
+		description: "Returns the const table of the VM."
+	},
+	getroottable: {
+		signature: "getroottable() -> table",
+		description: "Returns the root table of the VM."
+	},
+	getstackinfos: {
+		signature: "getstackinfos(level: int) -> table",
+		description: "Returns the stack frame informations at the given stack level (0 is the current function 1 is the caller and so on). If the stack level doesn't exist the function returns null."
+	},
+	newthread: {
+		signature: "newthread(threadfunc: function) -> coroutine",
+		description: "Creates a new cooperative thread object(coroutine) and returns it ."
+	},
+	print: {
+		signature: "message: string) -> string",
+		description: "Prints the given parameter but with no newline unlike `printl()`."
+	},
+	resurrectunreachable: {
+		signature: "resurrectunreachable() -> array",
+		description: "Runs the garbage collector and returns an array containing all unreachable object found. If no unreachable object is found, null is returned instead. This function is meant to help debugging reference cycles. This function only works on garbage collector builds."
+	},
+	setconsttable: {
+		signature: "setconsttable(new_const: table) -> table",
+		description: "Sets the const table of the VM which also returns the previous const table."
+	},
+	setdebughook: {
+		signature: "setdebughook(hook_func: function) -> void",
+		description: "Sets the debug hook."
+	},
+	seterrorhandler: {
+		signature: "seterrorhandler(error_handler: function) -> void",
+		description: "Sets the runtime error handler ."
+	},
+	setroottable: {
+		signature: "setroottable(new_root: table) -> table",
+		description: "Sets the root table of the VM which also returns the previous root table."
+	},
+	suspend: {
+		signature: "suspend(ret: any) -> void",
+		description: "Suspends the coroutine that called this function."
+	},
+	swap2: {
+		signature: "swap2(value: int) -> int",
+		description: "Swaps bytes 1 and 2 of the integer."
+	},
+	swap4: {
+		signature: "swap4(value: int) -> int",
+		description: "Reverse byte order of the four bytes."
+	},
+	swapfloat: {
+		signature: "swapfloat(value: float) -> float",
+		description: "Reverse byte order of the four bytes."
+	},
+	type: {
+		signature: "type(var)",
+		description: "Returns var._typeof(), i.e. the type of the given parameter as a string"
+	},
+	blob: {
+		signature: "b(init_size: int = 0) -> int"
+	},
+	eos: {
+		signature: "eos() -> int"
+	},
+	flush: {
+		signature: "flush()"
+	},
+	len: {
+		signature: "len() -> int"
+	},
+	readblob: {
+		signature: "readblob(number_of_bytes: int) -> blob"
+	},
+	readn: {
+		signature: "readn(data_type: char) -> any"
+	},
+	resize: {
+		signature: "resize(new_size: int) -> void"
+	},
+	seek: {
+		signature: "seek(offset: int, offset_basis: int) -> int"
+	},
+	swap2: {
+		signature: "swap2() -> void"
+	},
+	swap4: {
+		signature: "swap4() -> void"
+	},
+	tell: {
+		signature: "tell() -> int"
+	},
+	writeblob: {
+		signature: "writeblob(blob: blob) -> void"
+	},
+	writen: {
+		signature: "writen(value: num, data_type: char) -> void"
+	},
+	abs: {
+		signature: "(x: num) -> num",
+		description: "Returns <nowiki>|x|</nowiki> as integer unlike `fabs()`."
+	},
+	acos: {
+		signature: "s(x: num) -> num",
+		description: "Returns cos<sup>-1</sup>(x), -1 ≤ x ≤ 1."
+	},
+	asin: {
+		signature: "n(x: num) -> num",
+		description: "Returns sin<sup>-1</sup>(x), -1 ≤ x ≤ 1."
+	},
+	atan: {
+		signature: "n(x: num) -> num",
+		description: "Returns tan<sup>-1</sup>(x)."
+	},
+	atan2: {
+		signature: "n2(y: num, x: num) -> num",
+		description: "Returns the angle between the ray from the point (0, 0) through (x, y) and the positive x-axis, confined to (−PI, PI], See also [atan2](https://developer.valvesoftware.com/wiki/w:atan2). Note the order of the parameters x and y!]"
+	},
+	ceil: {
+		signature: "l(x: num) -> num",
+		description: "Returns the smallest integer that is ≥ x."
+	},
+	cos: {
+		signature: "(x: num) -> num",
+		description: "Returns cos(x)."
+	},
+	exp: {
+		signature: "(x: num) -> num",
+		description: "Returns exp(x) = e<sup>x</sup>."
+	},
+	fabs: {
+		signature: "s(x: num) -> num",
+		description: "Returns <nowiki>|x|</nowiki> as float unlike `abs()`."
+	},
+	floor: {
+		signature: "or(x: num) -> num",
+		description: "Returns the largest integer that is ≤ x."
+	},
+	log: {
+		signature: "(x: num) -> num",
+		description: "Returns log<sub>e</sub>(x) = ln(x)."
+	},
+	log10: {
+		signature: "10(x: num) -> num",
+		description: "Returns log<sub>10</sub>(x)."
+	},
+	pow: {
+		signature: "(x: num, y: num) -> num",
+		description: "Returns x<sup>y</sup>."
+	},
+	rand: {
+		signature: "rand()",
+		description: "Returns a random integer with `0 &le; rand() &le; RAND_MAX`."
+	},
+	sin: {
+		signature: "(x: num) -> num",
+		description: "Returns sin(x)."
+	},
+	sqrt: {
+		signature: "t(x: num) -> num",
+		description: "Returns the square root of x."
+	},
+	srand: {
+		signature: "nd(seed: num) -> num",
+		description: "Sets the starting point for generating a series of pseudorandom integers."
+	},
+	tan: {
+		signature: "(x: num) -> num",
+		description: "Returns tan(x)"
+	},
+	find: {
+		signature: "find(search_string: string, start_index: int = null) -> int",
+		description: "Looks for the sub-string passed as its first parameter, starting at either the beginning of the string or at a specific character index if one is provided as a second parameter. If the sub-string is found, returns the index at which it first occurs, otherwise returns null."
+	},
+	len: {
+		signature: "len() -> int",
+		description: "Returns the length of the string, ie. the number of characters it comprises."
+	},
+	slice: {
+		signature: "slice(start_index: int, end_index: int = null) -> string",
+		description: "Creates a sub-string from a string. Copies characters from *start_index* to *end_index*. The sub-string includes the character at *start_index*, but excludes the one at *end_index*. If *end_index* is not specified, copies until the last character. If the provided end index is beyond the string, an exception is thrown."
+	},
+	tofloat: {
+		signature: "tofloat() -> float",
+		description: "Returns float value represented by the string. Must only contain numeric characters and/or plus and minus symbols. An exception is thrown otherwise."
+	},
+	tointeger: {
+		signature: "tointeger() -> int",
+		description: "Returns integer value represented by the string. Must only contain numeric characters. An exception is thrown otherwise. Hexadecimal notation is supported (i.e. `0xFF`). If a hexadecimal string contains more than 10 characters, including the `0x`, returns -1."
+	},
+	tolower: {
+		signature: "tolower() -> string",
+		description: "Returns a new string with all upper-case characters converted to lower-case."
+	},
+	toupper: {
+		signature: "toupper() -> string",
+		description: "Returns a new string with all lower-case characters converted to upper-case."
+	},
+	endswith: {
+		signature: "endswith(str: string, cmp: string) -> bool",
+		description: "Returns true if the end of the string matches the comparison string."
+	},
+	escape: {
+		signature: "escape(str: string) -> string",
+		description: "Returns a string with backslashes before characters that need to be escaped: `“ a b t n v f r \\\\ ” ’ 0 xNN`."
+	},
+	format: {
+		signature: "format(format: string, args...) -> string",
+		description: "Returns a [formatted string](https://developer.valvesoftware.com/wiki/w:printf format string). Same rules as the standard C functions (except * is not supported)."
+	},
+	lstrip: {
+		signature: "lstrip(str: string) -> string",
+		description: "Removes whitespace at the beginning of the given string."
+	},
+	rstrip: {
+		signature: "rstrip(str: string) -> string",
+		description: "Removes whitespace at the end of the given string."
+	},
+	split: {
+		signature: "split(str: string, separator: string, skip_empty: bool = false) -> array",
+		description: "Returns an array of strings split at each point where a separator character occurs in str. The separator is not returned as part of any array element. the parameter separators is a string that specifies the characters as to be used for the splitting. If skipempty is true, empty strings are not added to array."
+	},
+	startswith: {
+		signature: "startswith(str: string, cmp: string) -> bool",
+		description: "Returns true if the beginning of the string matches the comparison string."
+	},
+	strip: {
+		signature: "strip(str: string) -> string",
+		description: "Removes whitespace at the beginning and end of the given string"
+	},
+	BeginScriptDebug: {
+		signature: "BeginScriptDebug() -> void"
+	},
+	EndScriptDebug: {
+		signature: "EndScriptDebug() -> void"
+	},
+	ScriptDebugAddTextFilter: {
+		signature: "ScriptDebugAddTextFilter() -> void"
+	},
+	ScriptDebugAddTrace: {
+		signature: "ScriptDebugAddTrace() -> void"
+	},
+	ScriptDebugAddWatch: {
+		signature: "ScriptDebugAddWatch() -> void"
+	},
+	ScriptDebugAddWatches: {
+		signature: "ScriptDebugAddWatches() -> void"
+	},
+	ScriptDebugAddWatchPattern: {
+		signature: "ScriptDebugAddWatchPattern() -> void"
+	},
+	ScriptDebugClearTraces: {
+		signature: "ScriptDebugClearTraces() -> void"
+	},
+	ScriptDebugClearWatches: {
+		signature: "ScriptDebugClearWatches() -> void"
+	},
+	ScriptDebugDefaultWatchColor: {
+		signature: "ScriptDebugDefaultWatchColor() -> void"
+	},
+	ScriptDebugDraw: {
+		signature: "ScriptDebugDraw() -> void"
+	},
+	ScriptDebugDrawWatches: {
+		signature: "ScriptDebugDrawWatches() -> void"
+	},
+	ScriptDebugDumpKeys: {
+		signature: "ScriptDebugDumpKeys() -> void"
+	},
+	ScriptDebugHook: {
+		signature: "ScriptDebugHook() -> void"
+	},
+	ScriptDebugIterateKeys: {
+		signature: "ScriptDebugIterateKeys() -> void"
+	},
+	ScriptDebugIterateKeysRecursive: {
+		signature: "ScriptDebugIterateKeysRecursive() -> void"
+	},
+	ScriptDebugRemoveTextFilter: {
+		signature: "ScriptDebugRemoveTextFilter() -> void"
+	},
+	ScriptDebugRemoveTrace: {
+		signature: "ScriptDebugRemoveTrace() -> void"
+	},
+	ScriptDebugRemoveWatch: {
+		signature: "ScriptDebugRemoveWatch() -> void"
+	},
+	ScriptDebugRemoveWatches: {
+		signature: "ScriptDebugRemoveWatches() -> void"
+	},
+	ScriptDebugRemoveWatchPattern: {
+		signature: "ScriptDebugRemoveWatchPattern() -> void"
+	},
+	ScriptDebugText: {
+		signature: "ScriptDebugText() -> void"
+	},
+	ScriptDebugTextDraw: {
+		signature: "ScriptDebugTextDraw() -> void"
+	},
+	ScriptDebugTextPrint: {
+		signature: "ScriptDebugTextPrint() -> void"
+	},
+	ScriptDebugTextTrace: {
+		signature: "ScriptDebugTextTrace() -> void"
+	},
+	ScriptDebugTraceAll: {
+		signature: "ScriptDebugTraceAll() -> void"
+	},
+	ScriptDebugWatches: {
+		signature: "ScriptDebugWatches() -> void"
+	},
+	__VScriptServerDebugHook: {
+		signature: "__VScriptServerDebugHook()"
+	},

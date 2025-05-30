@@ -1,0 +1,1684 @@
+== achievement_earned ==
+* <b>player</b> <small>(byte)</small> - entindex of the player
+* <b>achievement</b> <small>(short)</small> - achievement ID
+
+== achievement_earned_local ==
+* <b>achievement</b> <small>(short)</small>
+
+== achievement_event ==
+* <b>achievement_name</b> <small>(string)</small> - non-localized name of achievement
+* <b>cur_val</b> <small>(short)</small> - # of steps toward achievement
+* <b>max_val</b> <small>(short)</small> - total # of steps in achievement
+
+== achievement_increment ==
+* <b>achievement_id</b> <small>(long)</small> - ID of achievement that went up
+* <b>cur_val</b> <small>(short)</small> - # of steps toward achievement
+* <b>max_val</b> <small>(short)</small> - total # of steps in achievement
+
+== air_dash ==
+* <b>player</b> <small>(byte)</small>
+
+== ammo_pickup ==
+* <b>ammo_index</b> <small>(long)</small>
+* <b>amount</b> <small>(long)</small>
+* <b>total</b> <small>(long)</small>
+
+== arena_match_maxstreak ==
+* <b>team</b> <small>(byte)</small>
+* <b>streak</b> <small>(byte)</small>
+
+== arena_player_notification ==
+* <b>player</b> <small>(byte)</small>
+* <b>message</b> <small>(byte)</small>
+
+== arena_round_start ==
+called when round is active, players can move
+
+== arena_win_panel ==
+* <b>panel_style</b> <small>(byte)</small> - for client to determine layout
+* <b>winning_team</b> <small>(byte)</small>
+* <b>winreason</b> <small>(byte)</small> - the reason the team won
+* <b>cappers</b> <small>(string)</small> - string where each character is a player index of someone that capped
+* <b>flagcaplimit</b> <small>(short)</small> - if win reason was flag cap limit, the value of the flag cap limit
+* <b>blue_score</b> <small>(short)</small> - red team score
+* <b>red_score</b> <small>(short)</small> - blue team score
+* <b>blue_score_prev</b> <small>(short)</small> - previous red team score
+* <b>red_score_prev</b> <small>(short)</small> - previous blue team score
+* <b>round_complete</b> <small>(short)</small> - is this a complete round, or the end of a mini-round
+* <b>player_1</b> <small>(short)</small>
+* <b>player_1_damage</b> <small>(short)</small>
+* <b>player_1_healing</b> <small>(short)</small>
+* <b>player_1_lifetime</b> <small>(short)</small>
+* <b>player_1_kills</b> <small>(short)</small>
+* <b>player_2</b> <small>(short)</small>
+* <b>player_2_damage</b> <small>(short)</small>
+* <b>player_2_healing</b> <small>(short)</small>
+* <b>player_2_lifetime</b> <small>(short)</small>
+* <b>player_2_kills</b> <small>(short)</small>
+* <b>player_3</b> <small>(short)</small>
+* <b>player_3_damage</b> <small>(short)</small>
+* <b>player_3_healing</b> <small>(short)</small>
+* <b>player_3_lifetime</b> <small>(short)</small>
+* <b>player_3_kills</b> <small>(short)</small>
+* <b>player_4</b> <small>(short)</small>
+* <b>player_4_damage</b> <small>(short)</small>
+* <b>player_4_healing</b> <small>(short)</small>
+* <b>player_4_lifetime</b> <small>(short)</small>
+* <b>player_4_kills</b> <small>(short)</small>
+* <b>player_5</b> <small>(short)</small>
+* <b>player_5_damage</b> <small>(short)</small>
+* <b>player_5_healing</b> <small>(short)</small>
+* <b>player_5_lifetime</b> <small>(short)</small>
+* <b>player_5_kills</b> <small>(short)</small>
+* <b>player_6</b> <small>(short)</small>
+* <b>player_6_damage</b> <small>(short)</small>
+* <b>player_6_healing</b> <small>(short)</small>
+* <b>player_6_lifetime</b> <small>(short)</small>
+* <b>player_6_kills</b> <small>(short)</small>
+
+== arrow_impact ==
+* <b>attachedEntity</b> <small>(short)</small>
+* <b>shooter</b> <small>(short)</small>
+* <b>boneIndexAttached</b> <small>(short)</small>
+* <b>bonePositionX</b> <small>(float)</small>
+* <b>bonePositionY</b> <small>(float)</small>
+* <b>bonePositionZ</b> <small>(float)</small>
+* <b>boneAnglesX</b> <small>(float)</small>
+* <b>boneAnglesY</b> <small>(float)</small>
+* <b>boneAnglesZ</b> <small>(float)</small>
+* <b>projectileType</b> <small>(short)</small>
+* <b>isCrit</b> <small>(bool)</small>
+
+== base_player_teleported ==
+* <b>entindex</b> <small>(short)</small>
+
+== bonus_updated ==
+* <b>numadvanced</b> <small>(short)</small>
+* <b>numbronze</b> <small>(short)</small>
+* <b>numsilver</b> <small>(short)</small>
+* <b>numgold</b> <small>(short)</small>
+
+== break_breakable ==
+* <b>entindex</b> <small>(long)</small>
+* <b>userid</b> <small>(short)</small>
+* <b>material</b> <small>(byte)</small> - BREAK_GLASS, BREAK_WOOD, etc
+
+== break_prop ==
+* <b>entindex</b> <small>(long)</small>
+* <b>userid</b> <small>(short)</small>
+
+== browse_replays ==
+
+== building_healed ==
+* <b>building</b> <small>(short)</small>
+* <b>healer</b> <small>(short)</small>
+* <b>amount</b> <small>(short)</small>
+
+== building_info_changed ==
+* <b>building_type</b> <small>(byte)</small>
+* <b>object_mode</b> <small>(byte)</small>
+* <b>remove</b> <small>(byte)</small>
+
+== cart_updated ==
+
+== christmas_gift_grab ==
+* <b>userid</b> <small>(short)</small>
+
+== cl_drawline ==
+* <b>player</b> <small>(byte)</small> - index of the player
+* <b>panel</b> <small>(byte)</small> - type of panel
+* <b>line</b> <small>(byte)</small> - type of line
+* <b>x</b> <small>(float)</small>
+* <b>y</b> <small>(float)</small>
+
+== client_beginconnect ==
+client tries to connect to server
+* <b>address</b> <small>(string)</small> - Name we used to connect to the server
+* <b>ip</b> <small>(long)</small>
+* <b>port</b> <small>(short)</small> - server port
+* <b>source</b> <small>(string)</small> - what caused us to attempt this connection?  (blank for general command line, "serverbrowser", "quickplay", etc)
+
+== client_connected ==
+client has completed the challenge / handshake process and is in SIGNONSTATE_CONNECTED
+* <b>address</b> <small>(string)</small> - Name we used to connect to the server
+* <b>ip</b> <small>(long)</small>
+* <b>port</b> <small>(short)</small> - server port
+
+== client_disconnect ==
+client side disconnect message
+* <b>message</b> <small>(string)</small> - Why are we disconnecting?  This could be a localization token or an English-language string
+
+== client_fullconnect ==
+* <b>address</b> <small>(string)</small> - Name we used to connect to the server
+* <b>ip</b> <small>(long)</small>
+* <b>port</b> <small>(short)</small> - server port
+
+== competitive_stats_update ==
+* <b>index</b> <small>(short)</small> - entindex of the player
+* <b>kills_rank</b> <small>(byte)</small> - num std deviations above
+* <b>score_rank</b> <small>(byte)</small>
+* <b>damage_rank</b> <small>(byte)</small>
+* <b>healing_rank</b> <small>(byte)</small>
+* <b>support_rank</b> <small>(byte)</small>
+
+== competitive_victory ==
+
+== conga_kill ==
+* <b>index</b> <small>(short)</small> - entindex of the player
+
+== controlpoint_endtouch ==
+* <b>player</b> <small>(short)</small> - entindex of the player
+* <b>area</b> <small>(short)</small> - index of the control point area
+
+== controlpoint_fake_capture ==
+* <b>player</b> <small>(short)</small> - entindex of the player
+* <b>int_data</b> <small>(short)</small>
+
+== controlpoint_fake_capture_mult ==
+* <b>player</b> <small>(short)</small> - entindex of the player
+* <b>int_data</b> <small>(short)</small>
+
+== controlpoint_initialized ==
+
+== controlpoint_pulse_element ==
+* <b>player</b> <small>(short)</small> - entindex of the player
+
+== controlpoint_starttouch ==
+* <b>player</b> <small>(short)</small> - entindex of the player
+* <b>area</b> <small>(short)</small> - index of the control point area
+
+== controlpoint_timer_updated ==
+* <b>index</b> <small>(short)</small> - index of the cap being updated
+* <b>time</b> <small>(float)</small> - time
+
+== controlpoint_unlock_updated ==
+* <b>index</b> <small>(short)</small> - index of the cap being updated
+* <b>time</b> <small>(float)</small> - time
+
+== controlpoint_updatecapping ==
+* <b>index</b> <small>(short)</small> - index of the cap being updated
+
+== controlpoint_updateimages ==
+* <b>index</b> <small>(short)</small> - index of the cap being updated
+
+== controlpoint_updatelayout ==
+* <b>index</b> <small>(short)</small> - index of the cap being updated
+
+== controlpoint_updateowner ==
+* <b>index</b> <small>(short)</small> - index of the cap being updated
+
+== cross_spectral_bridge ==
+* <b>player</b> <small>(short)</small> - userid of the player that crossed
+
+== crossbow_heal ==
+* <b>healer</b> <small>(byte)</small> - userid of the Healer
+* <b>target</b> <small>(byte)</small> - userid of the player that got hit
+* <b>amount</b> <small>(short)</small> - amount that was healed
+
+== ctf_flag_captured ==
+* <b>capping_team</b> <small>(short)</small>
+* <b>capping_team_score</b> <small>(short)</small>
+
+== damage_mitigated ==
+* <b>mitigator</b> <small>(byte)</small> - userid of the player who provided the mitigation
+* <b>damaged</b> <small>(byte)</small> - userid of the player who took the damage
+* <b>amount</b> <small>(short)</small> - amount that was mitigated
+* <b>itemdefindex</b> <small>(short)</small> - defindex of the item that provided the mitigation
+
+== damage_prevented ==
+* <b>preventor</b> <small>(short)</small> - Who prevented the damage
+* <b>victim</b> <small>(short)</small> - Who took the damage that was prevented
+* <b>amount</b> <small>(short)</small> - How much got prevented
+* <b>condition</b> <small>(short)</small> - Which condition did the preventing
+
+== damage_resisted ==
+* <b>entindex</b> <small>(byte)</small>
+
+== deadringer_cheat_death ==
+* <b>spy</b> <small>(byte)</small> - userid of the Spy that cheat the death
+* <b>attacker</b> <small>(byte)</small> - userid of the player that caused the cheat death to happen
+
+== demoman_det_stickies ==
+* <b>player</b> <small>(short)</small> - entindex of the detonating player
+
+== deploy_buff_banner ==
+* <b>buff_type</b> <small>(byte)</small> - type of buff (skin index)
+* <b>buff_owner</b> <small>(short)</small> - user ID of the person who gets the banner
+
+== doomsday_rocket_open ==
+* <b>team</b> <small>(byte)</small> - which team opened the rocket
+
+== duck_xp_level_up ==
+* <b>level</b> <small>(short)</small> - leveled up to what
+
+== duel_status ==
+* <b>killer</b> <small>(short)</small>
+* <b>score_type</b> <small>(short)</small>
+* <b>initiator</b> <small>(short)</small>
+* <b>target</b> <small>(short)</small>
+* <b>initiator_score</b> <small>(short)</small>
+* <b>target_score</b> <small>(short)</small>
+
+== econ_inventory_connected ==
+
+== enter_vehicle ==
+* <b>vehicle</b> <small>(long)</small> - entindex of the vehicle
+
+== entered_performance_mode ==
+
+== entity_killed ==
+* <b>entindex_killed</b> <small>(long)</small>
+* <b>entindex_attacker</b> <small>(long)</small>
+* <b>entindex_inflictor</b> <small>(long)</small>
+* <b>damagebits</b> <small>(long)</small>
+
+== environmental_death ==
+* <b>killer</b> <small>(byte)</small> - index of the killer
+* <b>victim</b> <small>(byte)</small> - index of the victim
+
+== escape_hell ==
+* <b>player</b> <small>(short)</small> - userid of the player that escaped
+
+== escaped_loot_island ==
+* <b>player</b> <small>(short)</small> - userid of the escaping player
+
+== escort_progress ==
+* <b>team</b> <small>(byte)</small> - which team
+* <b>progress</b> <small>(float)</small>
+* <b>reset</b> <small>(bool)</small>
+
+== escort_recede ==
+* <b>team</b> <small>(byte)</small> - which team
+* <b>recedetime</b> <small>(float)</small>
+
+== escort_speed ==
+* <b>team</b> <small>(byte)</small> - which team
+* <b>speed</b> <small>(byte)</small>
+* <b>players</b> <small>(byte)</small>
+
+== eyeball_boss_escape_imminent ==
+* <b>level</b> <small>(short)</small>
+* <b>time_remaining</b> <small>(byte)</small>
+
+== eyeball_boss_escaped ==
+* <b>level</b> <small>(short)</small>
+
+== eyeball_boss_killed ==
+* <b>level</b> <small>(short)</small>
+
+== eyeball_boss_killer ==
+* <b>level</b> <small>(short)</small>
+* <b>player_entindex</b> <small>(byte)</small>
+
+== eyeball_boss_stunned ==
+* <b>level</b> <small>(short)</small>
+* <b>player_entindex</b> <small>(byte)</small>
+
+== eyeball_boss_summoned ==
+* <b>level</b> <small>(short)</small>
+
+== fish_notice ==
+* <b>userid</b> <small>(short)</small> - user ID who died
+* <b>victim_entindex</b> <small>(long)</small>
+* <b>inflictor_entindex</b> <small>(long)</small> - ent index of inflictor (a sentry, for example)
+* <b>attacker</b> <small>(short)</small> - user ID who killed
+* <b>weapon</b> <small>(string)</small> - weapon name killer used
+* <b>weaponid</b> <small>(short)</small> - ID of weapon killed used
+* <b>damagebits</b> <small>(long)</small> - bits of type of damage
+* <b>customkill</b> <small>(short)</small> - type of custom kill
+* <b>assister</b> <small>(short)</small> - user ID of assister
+* <b>weapon_logclassname</b> <small>(string)</small> - weapon name that should be printed on the log
+* <b>stun_flags</b> <small>(short)</small> - victim's stun flags at the moment of death
+* <b>death_flags</b> <small>(short)</small> - [[Team_Fortress_2/Scripting/Script_Functions/Constants#TF_DEATH|death flags]].
+* <b>silent_kill</b> <small>(bool)</small>
+* <b>assister_fallback</b> <small>(string)</small> - contains a string to use if "assister" is -1
+
+== fish_notice__arm ==
+* <b>userid</b> <small>(short)</small> - user ID who died
+* <b>victim_entindex</b> <small>(long)</small>
+* <b>inflictor_entindex</b> <small>(long)</small> - ent index of inflictor (a sentry, for example)
+* <b>attacker</b> <small>(short)</small> - user ID who killed
+* <b>weapon</b> <small>(string)</small> - weapon name killer used
+* <b>weaponid</b> <small>(short)</small> - ID of weapon killed used
+* <b>damagebits</b> <small>(long)</small> - bits of type of damage
+* <b>customkill</b> <small>(short)</small> - type of custom kill
+* <b>assister</b> <small>(short)</small> - user ID of assister
+* <b>weapon_logclassname</b> <small>(string)</small> - weapon name that should be printed on the log
+* <b>stun_flags</b> <small>(short)</small> - victim's stun flags at the moment of death
+* <b>death_flags</b> <small>(short)</small> - [[Team_Fortress_2/Scripting/Script_Functions/Constants#TF_DEATH|death flags]].
+* <b>silent_kill</b> <small>(bool)</small>
+* <b>assister_fallback</b> <small>(string)</small> - contains a string to use if "assister" is -1
+
+== flag_carried_in_detection_zone ==
+
+== flagstatus_update ==
+* <b>userid</b> <small>(short)</small> - user ID of the player who now has the flag
+* <b>entindex</b> <small>(long)</small> - ent index of flag
+
+== flare_ignite_npc ==
+* <b>entindex</b> <small>(long)</small> - entity ignited
+
+== freezecam_started ==
+
+== game_end ==
+a game ended
+* <b>winner</b> <small>(byte)</small> - winner team/user id
+
+== game_init ==
+sent when a new game is started
+
+== game_message ==
+a message send by game logic to everyone
+* <b>target</b> <small>(byte)</small> - 0 = console, 1 = HUD
+* <b>text</b> <small>(string)</small> - the message text
+
+== game_newmap ==
+send when new map is completely loaded
+* <b>mapname</b> <small>(string)</small> - map name
+
+== game_start ==
+a new game starts
+* <b>roundslimit</b> <small>(long)</small> - max round
+* <b>timelimit</b> <small>(long)</small> - time limit
+* <b>fraglimit</b> <small>(long)</small> - frag limit
+* <b>objective</b> <small>(string)</small> - round objective
+
+== gameui_activate ==
+
+== gameui_activated ==
+
+== gameui_hidden ==
+
+== gameui_hide ==
+
+== gc_lost_session ==
+
+== gc_new_session ==
+
+== halloween_boss_killed ==
+* <b>boss</b> <small>(short)</small> - 1=HHH 2=Monoculus 3=Merasmus
+* <b>killer</b> <small>(short)</small> - userid of the killing player
+
+== halloween_duck_collected ==
+* <b>collector</b> <small>(short)</small> - userid of the collecting player
+
+== halloween_pumpkin_grab ==
+* <b>userid</b> <small>(short)</small>
+
+== halloween_skeleton_killed ==
+* <b>player</b> <small>(short)</small> - userid of the player that killed the skeleton
+
+== halloween_soul_collected ==
+* <b>intended_target</b> <small>(byte)</small> - userid of the intended target
+* <b>collecting_player</b> <small>(byte)</small> - userid of the player who picked up the soul
+* <b>soul_count</b> <small>(byte)</small> - number of souls collected (gift boxes)
+
+== helicopter_grenade_punt_miss ==
+
+== hide_annotation ==
+* <b>id</b> <small>(long)</small>
+
+== hide_freezepanel ==
+
+== hltv_changed_mode ==
+* <b>oldmode</b> <small>(short)</small>
+* <b>newmode</b> <small>(short)</small>
+* <b>obs_target</b> <small>(short)</small>
+
+== hltv_changed_target ==
+* <b>mode</b> <small>(short)</small>
+* <b>old_target</b> <small>(short)</small>
+* <b>obs_target</b> <small>(short)</small>
+
+== host_quit ==
+
+== intro_finish ==
+* <b>player</b> <small>(short)</small> - entindex of the player
+
+== intro_nextcamera ==
+* <b>player</b> <small>(short)</small> - entindex of the player
+
+== inventory_updated ==
+
+== item_found ==
+* <b>player</b> <small>(byte)</small> - entindex of the player
+* <b>quality</b> <small>(byte)</small> - quality of the item
+* <b>method</b> <small>(byte)</small> - method by which we acquired the item
+* <b>itemdef</b> <small>(long)</small> - the item definition index
+* <b>isstrange</b> <small>(byte)</small>
+* <b>isunusual</b> <small>(byte)</small>
+* <b>wear</b> <small>(float)</small>
+
+== item_pickup ==
+* <b>userid</b> <small>(short)</small>
+* <b>item</b> <small>(string)</small>
+
+== item_schema_initialized ==
+
+== items_acknowledged ==
+* <b>blocker</b> <small>(short)</small> - entindex of the blocker
+* <b>victim</b> <small>(short)</small> - entindex of the victim
+
+== kill_in_hell ==
+* <b>killer</b> <small>(short)</small> - userid of the killer
+* <b>victim</b> <small>(short)</small> - userid of the victim
+
+== kill_refills_meter ==
+* <b>index</b> <small>(short)</small> - entindex of the player
+
+== killed_capping_player ==
+* <b>cp</b> <small>(byte)</small> - index of the point
+* <b>killer</b> <small>(byte)</small> - index of the killer
+* <b>victim</b> <small>(byte)</small> - index of the victim
+* <b>assister</b> <small>(byte)</small> - index of the assister
+
+== landed ==
+* <b>player</b> <small>(byte)</small>
+
+== leave_vehicle ==
+* <b>vehicle</b> <small>(long)</small> - entindex of the vehicle
+
+== lobby_updated ==
+
+== localplayer_becameobserver ==
+
+== localplayer_builtobject ==
+* <b>object</b> <small>(short)</small> - type of object built
+* <b>object_mode</b> <small>(short)</small> - used for teleporters: entrance vs. exit
+* <b>index</b> <small>(short)</small> - index of the object
+
+== localplayer_changeclass ==
+
+== localplayer_changedisguise ==
+* <b>disguised</b> <small>(bool)</small>
+
+== localplayer_changeteam ==
+
+== localplayer_chargeready ==
+local player has full medic charge
+
+== localplayer_healed ==
+* <b>amount</b> <small>(short)</small>
+
+== localplayer_pickup_weapon ==
+
+== localplayer_respawn ==
+
+== localplayer_score_changed ==
+* <b>score</b> <small>(short)</small>
+
+== localplayer_winddown ==
+local player minigun winddown
+
+== mainmenu_stabilized ==
+* <b>attacker</b> <small>(short)</small>
+* <b>victim</b> <small>(short)</small>
+* <b>assister</b> <small>(short)</small>
+
+== match_invites_updated ==
+
+== medic_death ==
+* <b>userid</b> <small>(short)</small> - user ID who died
+* <b>attacker</b> <small>(short)</small> - user ID who killed
+* <b>healing</b> <small>(short)</small> - amount healed in this life
+* <b>charged</b> <small>(bool)</small> - had a full ubercharge?
+
+== medic_defended ==
+* <b>userid</b> <small>(short)</small>
+* <b>medic</b> <small>(short)</small>
+
+== medigun_shield_blocked_damage ==
+* <b>userid</b> <small>(short)</small> - user ID of the player using the shield
+* <b>damage</b> <small>(float)</small> - damage that was blocked
+
+== merasmus_escape_warning ==
+* <b>level</b> <small>(short)</small>
+* <b>time_remaining</b> <small>(byte)</small>
+
+== merasmus_escaped ==
+* <b>level</b> <small>(short)</small>
+
+== merasmus_killed ==
+* <b>level</b> <small>(short)</small>
+
+== merasmus_prop_found ==
+* <b>player</b> <small>(short)</small> - userid of the player that found the prop Merasmus was hiding in
+
+== merasmus_stunned ==
+* <b>player</b> <small>(short)</small> - userid of the stunning player
+
+== merasmus_summoned ==
+* <b>level</b> <small>(short)</small>
+
+== minigame_win ==
+* <b>team</b> <small>(byte)</small> - which team won the minigame
+* <b>type</b> <small>(byte)</small> - what type of minigame was won
+
+== minigame_won ==
+* <b>player</b> <small>(short)</small> - userid of the winning player
+* <b>game</b> <small>(short)</small> - index of the game
+
+== mvm_adv_wave_complete_no_gates ==
+* <b>index</b> <small>(short)</small> - wave index
+
+== mvm_adv_wave_killed_stun_radio ==
+
+== mvm_begin_wave ==
+* <b>wave_index</b> <small>(short)</small>
+* <b>max_waves</b> <small>(short)</small>
+* <b>advanced</b> <small>(short)</small>
+
+== mvm_bomb_alarm_triggered ==
+
+== mvm_bomb_carrier_killed ==
+* <b>level</b> <small>(short)</small> - upgrade level of the carrier
+
+== mvm_bomb_deploy_reset_by_player ==
+* <b>player</b> <small>(short)</small>
+
+== mvm_bomb_reset_by_player ==
+* <b>player</b> <small>(short)</small>
+
+== mvm_creditbonus_all ==
+
+== mvm_creditbonus_all_advanced ==
+
+== mvm_creditbonus_wave ==
+
+== mvm_kill_robot_delivering_bomb ==
+* <b>player</b> <small>(short)</small> - entindex of the player
+
+== mvm_mannhattan_pit ==
+
+== mvm_medic_powerup_shared ==
+* <b>player</b> <small>(short)</small> - entindex of the player
+
+== mvm_mission_complete ==
+* <b>mission</b> <small>(string)</small>
+
+== mvm_mission_update ==
+* <b>class</b> <small>(short)</small>
+* <b>count</b> <small>(short)</small>
+
+== mvm_pickup_currency ==
+* <b>player</b> <small>(short)</small> - entindex of the player
+* <b>currency</b> <small>(short)</small>
+
+== mvm_quick_sentry_upgrade ==
+* <b>player</b> <small>(short)</small> - entindex of the player
+
+== mvm_reset_stats ==
+
+== mvm_scout_marked_for_death ==
+* <b>player</b> <small>(short)</small> - entindex of the player
+
+== mvm_sentrybuster_detonate ==
+* <b>player</b> <small>(short)</small> - entindex of the target player
+* <b>det_x</b> <small>(float)</small> - origin of the sentry buster
+* <b>det_y</b> <small>(float)</small>
+* <b>det_z</b> <small>(float)</small>
+
+== mvm_sentrybuster_killed ==
+* <b>sentry_buster</b> <small>(short)</small> - entindex
+
+== mvm_sniper_headshot_currency ==
+* <b>userid</b> <small>(short)</small> - user ID of the player
+* <b>currency</b> <small>(short)</small> - currency collected
+
+== mvm_tank_destroyed_by_players ==
+
+== mvm_wave_complete ==
+* <b>advanced</b> <small>(bool)</small> - is this an advanced popfile
+
+== mvm_wave_failed ==
+
+== nav_blocked ==
+* <b>area</b> <small>(long)</small>
+* <b>blocked</b> <small>(bool)</small>
+
+== npc_hurt ==
+Fired when an Engineer building ([[obj_sentrygun]], [[obj_dispenser]], [[obj_teleporter]]), [[base_boss]], MvM tank ([[tank_boss]]) or Halloween enemy ([[headless_hatman]], [[eyeball_boss]], [[merasmus]], [[tf_zombie]]) is damaged.
+* <b>entindex</b> <small>(short)</small>
+* <b>health</b> <small>(short)</small>
+* <b>attacker_player</b> <small>(short)</small>
+* <b>weaponid</b> <small>(short)</small>
+* <b>damageamount</b> <small>(short)</small>
+* <b>crit</b> <small>(bool)</small>
+* <b>boss</b> <small>(short)</small> - 1=HHH 2=Monoculus 3=Merasmus
+
+== num_cappers_changed ==
+* <b>index</b> <small>(short)</small> - index of the trigger
+* <b>count</b> <small>(byte)</small> - number of cappers (-1 for blocked)
+
+== object_deflected ==
+* <b>userid</b> <small>(short)</small> - player who deflected the object
+* <b>ownerid</b> <small>(short)</small> - owner of the object
+* <b>weaponid</b> <small>(short)</small> - weapon id (0 means the player in ownerid was pushed)
+* <b>object_entindex</b> <small>(short)</small> - entindex of the object that got deflected
+
+== object_destroyed ==
+* <b>userid</b> <small>(short)</small> - user ID who died
+* <b>attacker</b> <small>(short)</small> - user ID who killed
+* <b>assister</b> <small>(short)</small> - user ID of assister
+* <b>weapon</b> <small>(string)</small> - weapon name killer used
+* <b>weaponid</b> <small>(short)</small> - id of the weapon used
+* <b>objecttype</b> <small>(short)</small> - type of object destroyed
+* <b>index</b> <small>(short)</small> - index of the object destroyed
+* <b>was_building</b> <small>(bool)</small> - object was being built when it died
+* <b>team</b> <small>(short)</small> - building's team
+
+== object_detonated ==
+* <b>userid</b> <small>(short)</small> - user ID of the object owner
+* <b>objecttype</b> <small>(short)</small> - type of object removed
+* <b>index</b> <small>(short)</small> - index of the object removed
+
+== object_removed ==
+* <b>userid</b> <small>(short)</small> - user ID of the object owner
+* <b>objecttype</b> <small>(short)</small> - type of object removed
+* <b>index</b> <small>(short)</small> - index of the object removed
+
+== overtime_nag ==
+
+== parachute_deploy ==
+* <b>index</b> <small>(short)</small> - entindex of the player
+
+== parachute_holster ==
+* <b>index</b> <small>(short)</small> - entindex of the player
+
+== party_chat ==
+* <b>steamid</b> <small>(string)</small> - steamID (64-bit value converted to string) of user who said or did the thing.  May be
+* <b>text</b> <small>(string)</small> - The message.  May have different meaning for some types
+* <b>type</b> <small>(short)</small> - What sort of message?  ETFPartyChatType enum
+
+== party_criteria_changed ==
+
+== party_invites_changed ==
+
+== party_member_join ==
+* <b>steamid</b> <small>(string)</small> - steamID (64-bit value converted to string) of joined
+
+== party_member_leave ==
+* <b>steamid</b> <small>(string)</small> - steamID (64-bit value converted to string) of leaver
+
+== party_pref_changed ==
+
+== party_queue_state_changed ==
+* <b>matchgroup</b> <small>(short)</small> - ETFMatchGroup
+
+== party_updated ==
+
+== pass_ball_blocked ==
+* <b>owner</b> <small>(short)</small>
+* <b>blocker</b> <small>(short)</small>
+
+== pass_ball_stolen ==
+* <b>victim</b> <small>(short)</small>
+* <b>attacker</b> <small>(short)</small>
+
+== pass_free ==
+* <b>owner</b> <small>(short)</small>
+* <b>attacker</b> <small>(short)</small>
+
+== pass_get ==
+* <b>owner</b> <small>(short)</small>
+* <b>team</b> <small>(short)</small>
+
+== pass_pass_caught ==
+* <b>passer</b> <small>(short)</small>
+* <b>catcher</b> <small>(short)</small>
+* <b>dist</b> <small>(float)</small>
+* <b>duration</b> <small>(float)</small>
+
+== pass_score ==
+* <b>scorer</b> <small>(short)</small>
+* <b>assister</b> <small>(short)</small>
+* <b>points</b> <small>(byte)</small>
+
+== path_track_passed ==
+* <b>index</b> <small>(short)</small> - [[CHandle|entity handle]] of the node being passed (not the index!)
+{{tip|To retrieve the entity index and therefore the script handle: <code>EntIndexToHScript(params.index & (Constants.Server.MAX_EDICTS - 1))</code>}}
+
+== payload_pushed ==
+* <b>pusher</b> <small>(byte)</small> - userid of the player who pushed
+* <b>distance</b> <small>(short)</small> - how far they pushed
+
+== physgun_pickup ==
+* <b>entindex</b> <small>(long)</small> - entity picked up
+
+== player_abandoned_match ==
+* <b>game_over</b> <small>(bool)</small>
+
+== player_account_changed ==
+* <b>old_value</b> <small>(short)</small>
+* <b>new_value</b> <small>(short)</small>
+
+== player_activate ==
+* <b>userid</b> <small>(short)</small> - user ID on server
+
+== player_askedforball ==
+* <b>userid</b> <small>(short)</small>
+
+== player_bonuspoints ==
+* <b>points</b> <small>(short)</small>
+* <b>player_entindex</b> <small>(short)</small>
+* <b>source_entindex</b> <small>(short)</small>
+
+== player_buff ==
+* <b>userid</b> <small>(short)</small> - user ID of the player the buff is being applied to
+* <b>buff_owner</b> <small>(short)</small> - user ID of the player with the banner
+* <b>buff_type</b> <small>(byte)</small> - type of buff
+
+== player_builtobject ==
+* <b>userid</b> <small>(short)</small> - user ID of the builder
+* <b>object</b> <small>(short)</small> - type of object built
+* <b>index</b> <small>(short)</small> - index of the object
+
+== player_buyback ==
+* <b>player</b> <small>(short)</small>
+* <b>cost</b> <small>(short)</small>
+
+== player_calledformedic ==
+* <b>userid</b> <small>(short)</small>
+
+== player_carryobject ==
+* <b>userid</b> <small>(short)</small> - user ID of the builder
+* <b>object</b> <small>(short)</small> - type of object built
+* <b>index</b> <small>(short)</small> - index of the object
+
+== player_changeclass ==
+* <b>userid</b> <small>(short)</small> - user ID who changed class
+* <b>class</b> <small>(short)</small> - class that they changed to
+
+== player_changename ==
+* <b>userid</b> <small>(short)</small> - user ID on server
+* <b>oldname</b> <small>(string)</small> - players old (current) name
+* <b>newname</b> <small>(string)</small> - players new name
+
+== player_chargedeployed ==
+* <b>userid</b> <small>(short)</small> - user ID of medic who deployed charge
+* <b>targetid</b> <small>(short)</small> - user ID of who the medic charged
+
+== player_chat ==
+a public player chat
+* <b>teamonly</b> <small>(bool)</small> - true if team only chat
+* <b>userid</b> <small>(short)</small> - chatting player
+* <b>text</b> <small>(string)</small> - chat text
+
+== player_class ==
+a player changed his class
+* <b>userid</b> <small>(short)</small> - user ID on server
+* <b>class</b> <small>(string)</small> - new player class / model
+
+== player_connect ==
+A new client has connected. This does NOT fire between level changes as the player is already connected. Use <code>player_spawn</code> instead if you need to catch every player entity that is created.
+* <b>name</b> <small>(string)</small> - player name
+* <b>index</b> <small>(byte)</small> - player slot (entity index-1)
+* <b>userid</b> <small>(short)</small> - user ID on server (unique on server)
+* <b>networkid</b> <small>(string)</small> - player network (i.e steam) id
+* <b>address</b> <small>(string)</small> - ip:port
+* <b>bot</b> <small>(short)</small> - is a bot
+
+== player_connect_client ==
+a new client connected
+* <b>name</b> <small>(string)</small> - player name
+* <b>index</b> <small>(byte)</small> - player slot (entity index-1)
+* <b>userid</b> <small>(short)</small> - user ID on server (unique on server)
+* <b>networkid</b> <small>(string)</small> - player network (i.e steam) id
+* <b>bot</b> <small>(short)</small> - is a bot
+
+== player_currency_changed ==
+* <b>currency</b> <small>(short)</small>
+
+== player_damage_dodged ==
+* <b>damage</b> <small>(short)</small>
+
+== player_damaged ==
+* <b>amount</b> <small>(short)</small>
+* <b>type</b> <small>(long)</small>
+
+== player_death ==
+Fired when a player dies. This shows up in the kill feed.
+{{warning|This also fires when a Spy feigns death using the Dead Ringer. Make sure to check for this case using <code>if (params.death_flags & 32</code>)!}}
+
+* <b>userid</b> <small>(short)</small> - user ID who died
+* <b>victim_entindex</b> <small>(long)</small>
+* <b>inflictor_entindex</b> <small>(long)</small> - ent index of inflictor (a sentry, for example)
+* <b>attacker</b> <small>(short)</small> - user ID who killed
+{{warning|If you are retrieving a handle from this, i.e. with <code>GetPlayerFromUserID</code>, ALWAYS check if it's not null first! If the player died from the environment or NPCs, the attacker handle will be null.}}
+* <b>weapon</b> <small>(string)</small> - weapon name killer used
+* <b>weaponid</b> <small>(short)</small> - ID of weapon killer used
+* <b>damagebits</b> <small>(long)</small> - bits of type of damage
+* <b>customkill</b> <small>(short)</small> - type of custom kill
+* <b>assister</b> <small>(short)</small> - user ID of assister
+* <b>weapon_logclassname</b> <small>(string)</small> - weapon name that should be printed on the log
+* <b>stun_flags</b> <small>(short)</small> - victim's stun flags at the moment of death
+* <b>death_flags</b> <small>(short)</small> - [[Team_Fortress_2/Scripting/Script_Functions/Constants#TF_DEATH|death flags]]
+* <b>silent_kill</b> <small>(bool)</small>
+* <b>playerpenetratecount</b> <small>(short)</small>
+* <b>assister_fallback</b> <small>(string)</small> - contains a string to use if "assister" is -1
+* <b>kill_streak_total</b> <small>(short)</small> - Kill streak count (level)
+* <b>kill_streak_wep</b> <small>(short)</small> - Kill streak for killing weapon
+* <b>kill_streak_assist</b> <small>(short)</small> - Kill streak for assister count
+* <b>kill_streak_victim</b> <small>(short)</small> - Victims kill streak
+* <b>ducks_streaked</b> <small>(short)</small> - Duck streak increment from this kill
+* <b>duck_streak_total</b> <small>(short)</small> - Duck streak count for attacker
+* <b>duck_streak_assist</b> <small>(short)</small> - Duck streak count for assister
+* <b>duck_streak_victim</b> <small>(short)</small> - (former) duck streak count for victim
+* <b>rocket_jump</b> <small>(bool)</small> - was the victim rocket jumping
+* <b>weapon_def_index</b> <small>(long)</small> - item def index of weapon killer used
+* <b>crit_type</b> <small>(short)</small> - Crit type of kill.  0: None 1: Mini 2: Full
+{{note|The fields below are unused, check <code>death_flags</code> instead.}}
+* <b>dominated</b> <small>(short)</small> - did killer dominate victim with this kill
+* <b>assister_dominated</b> <small>(short)</small> - did assister dominate victim with this kill
+* <b>revenge</b> <small>(short)</small> - did killer get revenge on victim with this kill
+* <b>assister_revenge</b> <small>(short)</small> - did assister get revenge on victim with this kill
+* <b>first_blood</b> <small>(bool)</small> - was this a first blood kill
+* <b>feign_death</b> <small>(bool)</small> - the victim is feign death
+
+== player_destroyed_pipebomb ==
+* <b>userid</b> <small>(short)</small>
+
+== player_directhit_stun ==
+* <b>attacker</b> <small>(short)</small> - entindex of the attacker
+* <b>victim</b> <small>(short)</small> - entindex of the victim
+
+== player_disconnect ==
+A client has disconnected. The player handle and script scope still exists when this event fires, as it persists for a frame after disconnect.
+
+* <b>userid</b> <small>(short)</small> - user ID on server
+* <b>reason</b> <small>(string)</small> - "self", "kick", "ban", "cheat", "error"
+* <b>name</b> <small>(string)</small> - player name
+* <b>networkid</b> <small>(string)</small> - player network (i.e steam) id
+* <b>bot</b> <small>(short)</small> - is a bot
+
+== player_domination ==
+* <b>dominator</b> <small>(short)</small> - userID of who gained domination
+* <b>dominated</b> <small>(short)</small> - userID of who got dominated
+* <b>dominations</b> <small>(short)</small> - Number of dominations this dominator has
+
+== player_dropobject ==
+* <b>userid</b> <small>(short)</small> - user ID of the builder
+* <b>object</b> <small>(short)</small> - type of object built
+* <b>index</b> <small>(short)</small> - index of the object
+
+== player_escort_score ==
+* <b>player</b> <small>(byte)</small>
+* <b>points</b> <small>(byte)</small>
+
+== player_extinguished ==
+sent when a burning player is extinguished by a medic
+* <b>victim</b> <small>(byte)</small> - entindex of the player that was extinguished
+* <b>healer</b> <small>(byte)</small> - entindex of the player who did the extinguishing
+* <b>itemdefindex</b> <small>(short)</small> - item defindex that did the extinguishing
+
+== player_healed ==
+* <b>patient</b> <small>(short)</small>
+* <b>healer</b> <small>(short)</small>
+* <b>amount</b> <small>(short)</small>
+
+== player_healedbymedic ==
+* <b>medic</b> <small>(byte)</small>
+
+== player_healedmediccall ==
+local player heals someone who called for medic.
+* <b>userid</b> <small>(short)</small> - userid of person who got healed
+
+== player_healonhit ==
+* <b>amount</b> <small>(short)</small>
+* <b>entindex</b> <small>(byte)</small>
+* <b>weapon_def_index</b> <small>(long)</small> - item def index of the healing weapon
+
+== player_highfive_cancel ==
+* <b>entindex</b> <small>(byte)</small>
+
+== player_highfive_start ==
+* <b>entindex</b> <small>(byte)</small>
+
+== player_highfive_success ==
+* <b>initiator_entindex</b> <small>(byte)</small>
+* <b>partner_entindex</b> <small>(byte)</small>
+
+== player_hintmessage ==
+* <b>hintmessage</b> <small>(string)</small> - localizable string of a hint
+
+== player_hurt ==
+* <b>userid</b> <small>(short)</small>
+* <b>health</b> <small>(short)</small> - if <= 0, then this will play the killsound
+* <b>attacker</b> <small>(short)</small>
+* <b>damageamount</b> <small>(short)</small>
+* <b>custom</b> <small>(short)</small>
+* <b>showdisguisedcrit</b> <small>(bool)</small> - if our attribute specifically crits disguised enemies we need to show it on the client
+* <b>crit</b> <small>(bool)</small> - legacy only, use <code>bonuseffect</code>
+* <b>minicrit</b> <small>(bool)</small> - legacy only, use <code>bonuseffect</code>
+* <b>allseecrit</b> <small>(bool)</small>
+* <b>weaponid</b> <small>(short)</small>
+* <b>bonuseffect</b> <small>(byte)</small> - type of damage effect, see [[Team_Fortress_2/Scripting/Script_Functions/Constants#kBonusEffect|constants page]].
+{{warning|A value of ''4'' is no damage effect. 0 is crits!}}
+
+== player_ignited ==
+sent when a player is ignited, only to the two players involved
+* <b>pyro_entindex</b> <small>(byte)</small> - entindex of the pyro who ignited the victim
+* <b>victim_entindex</b> <small>(byte)</small> - entindex of the player ignited by the pyro
+* <b>weaponid</b> <small>(byte)</small> - weaponid of the weapon used
+
+== player_ignited_inv ==
+sent when a player is ignited by a pyro who is being invulned, only to the medic who's doing the invulning
+* <b>pyro_entindex</b> <small>(byte)</small> - entindex of the pyro who ignited the victim
+* <b>victim_entindex</b> <small>(byte)</small> - entindex of the player ignited by the pyro
+* <b>medic_entindex</b> <small>(byte)</small> - entindex of the medic releasing the invuln
+
+== player_info ==
+a player changed his name
+* <b>name</b> <small>(string)</small> - player name
+* <b>index</b> <small>(byte)</small> - player slot (entity index-1)
+* <b>userid</b> <small>(short)</small> - user ID on server (unique on server)
+* <b>networkid</b> <small>(string)</small> - player network (i.e steam) id
+* <b>bot</b> <small>(bool)</small> - true if player is a AI bot
+
+== player_initial_spawn ==
+* <b>index</b> <small>(short)</small> - entindex of the player
+
+== player_invulned ==
+* <b>userid</b> <small>(short)</small>
+* <b>medic_userid</b> <small>(short)</small>
+
+== player_jarated ==
+sent when a player is jarated, only to the two players involved
+* <b>thrower_entindex</b> <small>(byte)</small> - entindex of the player who threw the jarate
+* <b>victim_entindex</b> <small>(byte)</small> - entindex of the player receiving it
+
+== player_jarated_fade ==
+sent when a player is jarated, only to the two players involved
+* <b>thrower_entindex</b> <small>(byte)</small> - entindex of the player who threw the jarate
+* <b>victim_entindex</b> <small>(byte)</small> - entindex of the player receiving it
+
+== player_killed_achievement_zone ==
+* <b>attacker</b> <small>(short)</small> - entindex of the attacker
+* <b>victim</b> <small>(short)</small> - entindex of the victim
+* <b>zone_id</b> <small>(short)</small> - type of area (0 for general, 1 for capture zone)
+
+== player_mvp ==
+* <b>player</b> <small>(short)</small>
+
+== player_pinned ==
+* <b>pinned</b> <small>(byte)</small>
+
+== player_regenerate ==
+
+== player_rocketpack_pushed ==
+* <b>pusher</b> <small>(short)</small> - userID of who pushed
+* <b>pushed</b> <small>(short)</small> - userID of who got pushed
+
+== player_sapped_object ==
+* <b>userid</b> <small>(short)</small> - user ID of the spy
+* <b>ownerid</b> <small>(short)</small> - user ID of the building owner
+* <b>object</b> <small>(byte)</small>
+* <b>sapperid</b> <small>(short)</small> - index of the sapper
+
+== player_say ==
+* <b>userid</b> <small>(short)</small> - user ID on server
+* <b>text</b> <small>(string)</small> - the say text
+
+== player_score ==
+players scores changed
+* <b>userid</b> <small>(short)</small> - user ID on server
+* <b>kills</b> <small>(short)</small> - # of kills
+* <b>deaths</b> <small>(short)</small> - # of deaths
+* <b>score</b> <small>(short)</small> - total game score
+
+== player_score_changed ==
+* <b>player</b> <small>(byte)</small>
+* <b>delta</b> <small>(short)</small>
+
+== player_shield_blocked ==
+sent when a player is jarated, only to the two players involved
+* <b>attacker_entindex</b> <small>(byte)</small> - entindex of the player who threw the jarate
+* <b>blocker_entindex</b> <small>(byte)</small> - entindex of the player receiving it
+
+== player_shoot ==
+{{note|Not implemented.}}
+* <b>userid</b> <small>(short)</small> - user ID on server
+* <b>weapon</b> <small>(byte)</small> - weapon ID
+* <b>mode</b> <small>(byte)</small> - weapon mode
+
+== player_spawn ==
+This event will be sent once when the player entity is created, i.e. they joined the server or they are loading in after a map change. In this case, <code>team</code> is equal to 0 (unassigned). Each time afterwards, the event will only be fired when the player spawns alive on red or blue team. This is also fired once when [[SourceTV]] is loaded in.
+
+* <b>userid</b> <small>(short)</small> - user ID who spawned
+* <b>team</b> <small>(short)</small> - team they spawned on
+* <b>class</b> <small>(short)</small> - class they spawned as
+
+== player_stats_updated ==
+* <b>forceupload</b> <small>(bool)</small>
+
+== player_stealsandvich ==
+* <b>owner</b> <small>(short)</small>
+* <b>target</b> <small>(short)</small>
+
+== player_stunned ==
+* <b>stunner</b> <small>(short)</small> {{warning|If there's no attacker, this key won't exist (such as being stunned after hitting a wall with a bumper kart)}}
+* <b>victim</b> <small>(short)</small>
+* <b>victim_capping</b> <small>(bool)</small>
+* <b>big_stun</b> <small>(bool)</small>
+
+== player_team ==
+Fired when player joins a team.
+* <b>userid</b> <small>(short)</small> - user ID on server
+* <b>team</b> <small>(byte)</small> - team id
+* <b>oldteam</b> <small>(byte)</small> - old team id
+* <b>disconnect</b> <small>(bool)</small> - team change because player disconnects
+* <b>autoteam</b> <small>(bool)</small> - true if the player was auto assigned to the team
+* <b>silent</b> <small>(bool)</small> - if true wont print the team join messages
+* <b>name</b> <small>(string)</small> - player's name
+
+== player_teleported ==
+* <b>userid</b> <small>(short)</small> - userid of the player
+* <b>builderid</b> <small>(short)</small> - userid of the player who built the teleporter
+* <b>dist</b> <small>(float)</small> - distance the player was teleported
+
+== player_turned_to_ghost ==
+* <b>userid</b> <small>(short)</small> - user ID of the player who changed to a ghost
+
+== player_upgraded ==
+
+== player_upgradedobject ==
+* <b>userid</b> <small>(short)</small> - user ID of the builder
+* <b>object</b> <small>(short)</small> - type of object built
+* <b>index</b> <small>(short)</small> - index of the object
+* <b>isbuilder</b> <small>(bool)</small>
+
+== player_use ==
+* <b>userid</b> <small>(short)</small> - user ID on server
+* <b>entity</b> <small>(short)</small> - entity used by player
+
+== player_used_powerup_bottle ==
+* <b>player</b> <small>(short)</small>
+* <b>type</b> <small>(short)</small>
+* <b>time</b> <small>(float)</small>
+
+== playing_commentary ==
+
+== post_inventory_application ==
+Fired when the player has items resupplied, i.e. when the player spawns or touches resupply ([[func_regenerate]]).
+* <b>userid</b> <small>(short)</small>
+
+== projectile_direct_hit ==
+* <b>attacker</b> <small>(byte)</small> - index of the player who shot the projectile
+* <b>victim</b> <small>(byte)</small> - index of the player who got direct-ht
+* <b>weapon_def_index</b> <small>(long)</small> - defindex of the direct hitting weapon
+
+== projectile_removed ==
+* <b>attacker</b> <small>(byte)</small>
+* <b>weapon_def_index</b> <small>(long)</small>
+* <b>num_hit</b> <small>(byte)</small>
+* <b>num_direct_hit</b> <small>(byte)</small>
+
+== pumpkin_lord_killed ==
+
+== pumpkin_lord_summoned ==
+
+== pve_win_panel ==
+* <b>panel_style</b> <small>(byte)</small> - for client to determine layout
+* <b>winning_team</b> <small>(byte)</small>
+* <b>winreason</b> <small>(byte)</small> - the reason the team won
+
+== quest_map_data_changed ==
+* <b>igniter</b> <small>(short)</small> - entindex of the igniter
+* <b>douser</b> <small>(short)</small> - entindex of the douser
+* <b>victim</b> <small>(short)</small> - entindex of the victim
+
+== quest_objective_completed ==
+For prediction
+* <b>quest_item_id_low</b> <small>(long)</small>
+* <b>quest_item_id_hi</b> <small>(long)</small>
+* <b>quest_objective_id</b> <small>(long)</small>
+* <b>scorer_user_id</b> <small>(short)</small>
+
+== quest_progress ==
+* <b>owner</b> <small>(short)</small>
+* <b>scorer</b> <small>(short)</small>
+* <b>type</b> <small>(byte)</small>
+* <b>completed</b> <small>(bool)</small>
+* <b>quest_defindex</b> <small>(long)</small>
+
+== quest_request ==
+* <b>request</b> <small>(long)</small>
+* <b>msg</b> <small>(string)</small> - Protobuf serialized to a string
+
+== quest_response ==
+* <b>request</b> <small>(long)</small>
+* <b>success</b> <small>(bool)</small>
+* <b>msg</b> <small>(string)</small> - Protobuf serialized to a string
+
+== quest_turn_in_state ==
+* <b>state</b> <small>(short)</small> - Maps to EQuestTurnInState
+
+== questlog_opened ==
+
+== ragdoll_dissolved ==
+* <b>entindex</b> <small>(long)</small>
+
+== raid_spawn_mob ==
+
+== raid_spawn_squad ==
+
+== rd_player_score_points ==
+* <b>player</b> <small>(short)</small>
+* <b>method</b> <small>(short)</small>
+* <b>amount</b> <small>(short)</small>
+
+== rd_robot_impact ==
+* <b>entindex</b> <small>(short)</small>
+* <b>impulse_x</b> <small>(float)</small>
+* <b>impulse_y</b> <small>(float)</small>
+* <b>impulse_z</b> <small>(float)</small>
+
+== rd_robot_killed ==
+* <b>userid</b> <small>(short)</small> - user ID who died
+* <b>victim_entindex</b> <small>(long)</small>
+* <b>inflictor_entindex</b> <small>(long)</small> - ent index of inflictor (a sentry, for example)
+* <b>attacker</b> <small>(short)</small> - user ID who killed
+* <b>weapon</b> <small>(string)</small> - weapon name killer used
+* <b>weaponid</b> <small>(short)</small> - ID of weapon killed used
+* <b>damagebits</b> <small>(long)</small> - bits of type of damage
+* <b>customkill</b> <small>(short)</small> - type of custom kill
+* <b>weapon_logclassname</b> <small>(string)</small> - weapon name that should be printed on the log
+
+== rd_rules_state_changed ==
+
+== rd_team_points_changed ==
+* <b>points</b> <small>(short)</small>
+* <b>team</b> <small>(byte)</small>
+* <b>method</b> <small>(byte)</small>
+
+== recalculate_holidays ==
+
+== recalculate_truce ==
+
+== rematch_failed_to_create ==
+* <b>map_index</b> <small>(byte)</small> - what they voted for
+* <b>vote</b> <small>(byte)</small> - what the vote was
+
+== remove_nemesis_relationships ==
+* <b>player</b> <small>(short)</small> - entindex of the player who should reset
+
+== replay_endrecord ==
+
+== replay_replaysavailable ==
+
+== replay_saved ==
+
+== replay_servererror ==
+* <b>error</b> <small>(string)</small>
+
+== replay_sessioninfo ==
+Sent when the server begins recording, or when a client first connects - only sent once per recording session
+* <b>sn</b> <small>(string)</small> - session name
+* <b>di</b> <small>(byte)</small> - dump interval
+* <b>cb</b> <small>(long)</small> - current block
+* <b>st</b> <small>(long)</small> - session start tick
+
+== replay_startrecord ==
+Sent when the server begins recording - only used to display UI
+
+== replay_youtube_stats ==
+* <b>views</b> <small>(long)</small>
+* <b>likes</b> <small>(long)</small>
+* <b>favorited</b> <small>(long)</small>
+
+== respawn_ghost ==
+* <b>reviver</b> <small>(short)</small> - userid of the reviving player
+* <b>ghost</b> <small>(short)</small> - userid of the player that got revived
+
+== restart_timer_time ==
+* <b>time</b> <small>(byte)</small> - How much time is left
+
+== revive_player_complete ==
+* <b>entindex</b> <small>(short)</small> - entindex of the medic
+
+== revive_player_notify ==
+* <b>entindex</b> <small>(short)</small>
+* <b>marker_entindex</b> <small>(short)</small>
+
+== revive_player_stopped ==
+* <b>entindex</b> <small>(short)</small>
+
+== rocket_jump ==
+* <b>userid</b> <small>(short)</small>
+* <b>playsound</b> <small>(bool)</small>
+
+== rocket_jump_landed ==
+* <b>userid</b> <small>(short)</small>
+
+== rocketpack_landed ==
+* <b>userid</b> <small>(short)</small>
+
+== rocketpack_launch ==
+* <b>userid</b> <small>(short)</small>
+* <b>playsound</b> <small>(bool)</small>
+
+== round_end ==
+* <b>winner</b> <small>(byte)</small> - winner team/user i
+* <b>reason</b> <small>(byte)</small> - reson why team won
+* <b>message</b> <small>(string)</small> - end round message
+
+== round_start ==
+* <b>timelimit</b> <small>(long)</small> - round time limit in seconds
+* <b>fraglimit</b> <small>(long)</small> - frag limit in seconds
+* <b>objective</b> <small>(string)</small> - round objective
+
+== rps_taunt_event ==
+* <b>winner</b> <small>(short)</small> - entindex of the winning player
+* <b>winner_rps</b> <small>(byte)</small> - winner's selection
+* <b>loser</b> <small>(short)</small> - entindex of the losing player
+* <b>loser_rps</b> <small>(byte)</small> - loser's selection
+
+== schema_updated ==
+
+== scorestats_accumulated_reset ==
+Fired when round resets due to <code>mp_restartgame</code>.
+
+== scorestats_accumulated_update ==
+Fired right before map entities are cleaned up for a round restart.
+
+This event is not fired in Mann Vs Machine mode. For MvM, use <code>recalculate_holidays</code> and check if <code>GetRoundState() == 3</code> is true, which indicates a mission reset.
+
+== scout_grand_slam ==
+* <b>scout_id</b> <small>(short)</small>
+* <b>target_id</b> <small>(short)</small>
+
+== scout_slamdoll_landed ==
+* <b>target_index</b> <small>(short)</small>
+* <b>x</b> <small>(float)</small>
+* <b>y</b> <small>(float)</small>
+* <b>z</b> <small>(float)</small>
+
+== sentry_on_go_active ==
+* <b>index</b> <small>(short)</small>
+
+== server_addban ==
+* <b>name</b> <small>(string)</small> - player name
+* <b>userid</b> <small>(short)</small> - user ID on server
+* <b>networkid</b> <small>(string)</small> - player network (i.e steam) id
+* <b>ip</b> <small>(string)</small> - IP address
+* <b>duration</b> <small>(string)</small> - length of the ban
+* <b>by</b> <small>(string)</small> - banned by...
+* <b>kicked</b> <small>(bool)</small> - whether the player was also kicked
+
+== server_changelevel_failed ==
+* <b>levelname</b> <small>(string)</small> - The level name that failed changelevel
+
+== server_cvar ==
+a server console var has changed
+* <b>cvarname</b> <small>(string)</small> - cvar name, eg "mp_roundtime"
+* <b>cvarvalue</b> <small>(string)</small> - new cvar value
+
+== server_message ==
+a generic server message
+* <b>text</b> <small>(string)</small> - the message text
+
+== server_removeban ==
+* <b>networkid</b> <small>(string)</small> - player network (i.e steam) id
+* <b>ip</b> <small>(string)</small> - IP address
+* <b>by</b> <small>(string)</small> - removed by...
+
+== server_shutdown ==
+server shut down
+* <b>reason</b> <small>(string)</small> - reason why server was shut down
+
+== server_spawn ==
+send once a server starts
+* <b>hostname</b> <small>(string)</small> - public host name
+* <b>address</b> <small>(string)</small> - hostame, IP or DNS name
+* <b>ip</b> <small>(long)</small>
+* <b>port</b> <small>(short)</small> - server port
+* <b>game</b> <small>(string)</small> - game dir
+* <b>mapname</b> <small>(string)</small> - map name
+* <b>maxplayers</b> <small>(long)</small> - max players
+* <b>os</b> <small>(string)</small> - WIN32, LINUX
+* <b>dedicated</b> <small>(bool)</small> - true if dedicated server
+* <b>password</b> <small>(bool)</small> - true if password protected
+
+== show_annotation ==
+* <b>worldPosX</b> <small>(float)</small>
+* <b>worldPosY</b> <small>(float)</small>
+* <b>worldPosZ</b> <small>(float)</small>
+* <b>worldNormalX</b> <small>(float)</small>
+* <b>worldNormalY</b> <small>(float)</small>
+* <b>worldNormalZ</b> <small>(float)</small>
+* <b>id</b> <small>(long)</small>
+* <b>text</b> <small>(string)</small> - name (unlocalized)
+* <b>lifetime</b> <small>(float)</small>
+* <b>visibilityBitfield</b> <small>(long)</small> - bitfield of the players that can see this. If 0, everyone can see it
+{{warning|This was only intended for supporting 32 players, players above that index are not considered.}}
+* <b>follow_entindex</b> <small>(long)</small> - if this is set, follow this entity
+* <b>show_distance</b> <small>(bool)</small>
+* <b>play_sound</b> <small>(string)</small>
+* <b>show_effect</b> <small>(bool)</small>
+
+== show_class_layout ==
+* <b>show</b> <small>(bool)</small>
+
+== show_freezepanel ==
+* <b>killer</b> <small>(short)</small> - entindex of the killer entity
+
+== show_match_summary ==
+* <b>success</b> <small>(bool)</small>
+
+== show_vs_panel ==
+* <b>show</b> <small>(bool)</small>
+
+== single_player_death ==
+
+== skeleton_killed_quest ==
+* <b>player</b> <small>(short)</small> - userid of the player that killed the skeleton
+
+== skeleton_king_killed_quest ==
+* <b>player</b> <small>(short)</small> - userid of the player that killed the skeleton
+
+== slap_notice ==
+* <b>userid</b> <small>(short)</small> - user ID who died
+* <b>victim_entindex</b> <small>(long)</small>
+* <b>inflictor_entindex</b> <small>(long)</small> - ent index of inflictor (a sentry, for example)
+* <b>attacker</b> <small>(short)</small> - user ID who killed
+* <b>weapon</b> <small>(string)</small> - weapon name killer used
+* <b>weaponid</b> <small>(short)</small> - ID of weapon killed used
+* <b>damagebits</b> <small>(long)</small> - bits of type of damage
+* <b>customkill</b> <small>(short)</small> - type of custom kill
+* <b>assister</b> <small>(short)</small> - user ID of assister
+* <b>weapon_logclassname</b> <small>(string)</small> - weapon name that should be printed on the log
+* <b>stun_flags</b> <small>(short)</small> - victim's stun flags at the moment of death
+* <b>death_flags</b> <small>(short)</small> - [[Team_Fortress_2/Scripting/Script_Functions/Constants#TF_DEATH|death flags]].
+* <b>silent_kill</b> <small>(bool)</small>
+* <b>assister_fallback</b> <small>(string)</small> - contains a string to use if "assister" is -1
+
+== spec_target_updated ==
+
+== special_score ==
+* <b>player</b> <small>(byte)</small> - index of the scorer
+
+== spy_pda_reset ==
+
+== stats_resetround ==
+
+== sticky_jump ==
+* <b>userid</b> <small>(short)</small>
+* <b>playsound</b> <small>(bool)</small>
+
+== sticky_jump_landed ==
+* <b>userid</b> <small>(short)</small>
+
+== store_pricesheet_updated ==
+
+== tagged_player_as_it ==
+* <b>player</b> <small>(short)</small> - userid of the tagging player
+
+== take_armor ==
+* <b>amount</b> <small>(long)</small>
+* <b>total</b> <small>(long)</small>
+
+== take_health ==
+* <b>amount</b> <small>(long)</small>
+* <b>total</b> <small>(long)</small>
+
+== team_info ==
+info about team
+* <b>teamid</b> <small>(byte)</small> - unique team id
+* <b>teamname</b> <small>(string)</small> - team name eg "Team Blue"
+
+== team_leader_killed ==
+* <b>killer</b> <small>(byte)</small> - index of the killer
+* <b>victim</b> <small>(byte)</small> - index of the victim
+
+== team_score ==
+team score changed
+* <b>teamid</b> <small>(byte)</small> - team id
+* <b>score</b> <small>(short)</small> - total team score
+
+== teamplay_alert ==
+* <b>alert_type</b> <small>(short)</small> - which alert type is this (scramble, etc)?
+
+== teamplay_broadcast_audio ==
+* <b>team</b> <small>(byte)</small> - which team should hear the broadcast. 0 will make everyone hear it.
+* <b>sound</b> <small>(string)</small> - sound to play
+* <b>additional_flags</b> <small>(short)</small> - additional sound flags to pass through to sound system
+* <b>player</b> <small>(short)</small> - entindex of the player source or -1
+
+== teamplay_capture_blocked ==
+* <b>cp</b> <small>(byte)</small> - index of the point that was blocked
+* <b>cpname</b> <small>(string)</small> - name of the point
+* <b>blocker</b> <small>(byte)</small> - index of the player that blocked the cap
+* <b>victim</b> <small>(byte)</small> - index of the player that died, causing the block
+
+== teamplay_capture_broken ==
+* <b>cp</b> <small>(byte)</small>
+* <b>cpname</b> <small>(string)</small>
+* <b>time_remaining</b> <small>(float)</small>
+
+== teamplay_flag_event ==
+* <b>player</b> <small>(short)</small> - player this event involves
+* <b>carrier</b> <small>(short)</small> - the carrier if needed
+* <b>eventtype</b> <small>(short)</small> - pick up, capture, defend, dropped
+* <b>home</b> <small>(byte)</small> - whether or not the flag was home (only set for TF_FLAGEVENT_PICKUP)
+* <b>team</b> <small>(byte)</small> - which team the flag belongs to
+
+== teamplay_game_over ==
+* <b>reason</b> <small>(string)</small> - why the game is over ( timelimit, winlimit )
+
+== teamplay_map_time_remaining ==
+* <b>seconds</b> <small>(short)</small>
+
+== teamplay_overtime_begin ==
+
+== teamplay_overtime_end ==
+
+== teamplay_point_captured ==
+* <b>cp</b> <small>(byte)</small> - index of the point that was captured
+* <b>cpname</b> <small>(string)</small> - name of the point
+* <b>team</b> <small>(byte)</small> - which team capped
+* <b>cappers</b> <small>(string)</small> - string where each character is a player index of someone that capped
+
+== teamplay_point_locked ==
+* <b>cp</b> <small>(byte)</small> - index of the point being captured
+* <b>cpname</b> <small>(string)</small> - name of the point
+* <b>team</b> <small>(byte)</small> - which team currently owns the point
+
+== teamplay_point_startcapture ==
+* <b>cp</b> <small>(byte)</small> - index of the point being captured
+* <b>cpname</b> <small>(string)</small> - name of the point
+* <b>team</b> <small>(byte)</small> - which team currently owns the point
+* <b>capteam</b> <small>(byte)</small> - which team is capping
+* <b>cappers</b> <small>(string)</small> - string where each character is a player index of someone capping
+* <b>captime</b> <small>(float)</small> - time between when this cap started and when the point last changed hands
+
+== teamplay_point_unlocked ==
+* <b>cp</b> <small>(byte)</small> - index of the point being captured
+* <b>cpname</b> <small>(string)</small> - name of the point
+* <b>team</b> <small>(byte)</small> - which team currently owns the point
+
+== teamplay_pre_round_time_left ==
+* <b>time</b> <small>(short)</small>
+
+== teamplay_ready_restart ==
+
+== teamplay_restart_round ==
+
+== teamplay_round_active ==
+called when round is active, players can move
+
+== teamplay_round_restart_seconds ==
+* <b>seconds</b> <small>(short)</small>
+
+== teamplay_round_selected ==
+* <b>round</b> <small>(string)</small> - name of the round selected
+
+== teamplay_round_stalemate ==
+* <b>reason</b> <small>(byte)</small> - why the stalemate is occuring
+
+== teamplay_round_start ==
+round restart
+* <b>full_reset</b> <small>(bool)</small> - is this a full reset of the map
+
+== teamplay_round_win ==
+* <b>team</b> <small>(byte)</small> - which team won the round
+* <b>winreason</b> <small>(byte)</small> - the reason the team won
+* <b>flagcaplimit</b> <small>(short)</small> - if win reason was flag cap limit, the value of the flag cap limit
+* <b>full_round</b> <small>(short)</small> - was this a full round or a mini-round
+* <b>round_time</b> <small>(float)</small> - elapsed time of this round
+* <b>losing_team_num_caps</b> <small>(short)</small> - # of caps this round by losing team
+* <b>was_sudden_death</b> <small>(byte)</small> - did a team win this after entering sudden death
+
+== teamplay_setup_finished ==
+
+== teamplay_suddendeath_begin ==
+
+== teamplay_suddendeath_end ==
+
+== teamplay_team_ready ==
+* <b>team</b> <small>(byte)</small> - which team is ready
+
+== teamplay_teambalanced_player ==
+* <b>player</b> <small>(short)</small> - entindex of the player
+* <b>team</b> <small>(byte)</small> - which team the player is being moved to
+
+== teamplay_timer_flash ==
+* <b>time_remaining</b> <small>(short)</small> - how many seconds until the round ends
+
+== teamplay_timer_time_added ==
+* <b>timer</b> <small>(short)</small> - entindex of the timer
+* <b>seconds_added</b> <small>(short)</small> - how many seconds were added to the round timer
+
+== teamplay_update_timer ==
+
+== teamplay_waiting_abouttoend ==
+
+== teamplay_waiting_begins ==
+
+== teamplay_waiting_ends ==
+
+== teamplay_win_panel ==
+* <b>panel_style</b> <small>(byte)</small> - for client to determine layout
+* <b>winning_team</b> <small>(byte)</small>
+* <b>winreason</b> <small>(byte)</small> - the reason the team won
+* <b>cappers</b> <small>(string)</small> - string where each character is a player index of someone that capped
+* <b>flagcaplimit</b> <small>(short)</small> - if win reason was flag cap limit, the value of the flag cap limit
+* <b>blue_score</b> <small>(short)</small> - red team score
+* <b>red_score</b> <small>(short)</small> - blue team score
+* <b>blue_score_prev</b> <small>(short)</small> - previous red team score
+* <b>red_score_prev</b> <small>(short)</small> - previous blue team score
+* <b>round_complete</b> <small>(short)</small> - is this a complete round, or the end of a mini-round
+* <b>rounds_remaining</b> <small>(short)</small> - # of rounds remaining for wining team, if mini-round
+* <b>player_1</b> <small>(short)</small>
+* <b>player_1_points</b> <small>(short)</small>
+* <b>player_2</b> <small>(short)</small>
+* <b>player_2_points</b> <small>(short)</small>
+* <b>player_3</b> <small>(short)</small>
+* <b>player_3_points</b> <small>(short)</small>
+* <b>killstreak_player_1</b> <small>(short)</small>
+* <b>killstreak_player_1_count</b> <small>(short)</small>
+* <b>game_over</b> <small>(byte)</small>
+
+== teams_changed ==
+
+== tf_game_over ==
+* <b>reason</b> <small>(string)</small> - why the game is over ( timelimit, winlimit )
+
+== tf_map_time_remaining ==
+* <b>seconds</b> <small>(long)</small>
+
+== throwable_hit ==
+* <b>userid</b> <small>(short)</small> - user ID who died
+* <b>victim_entindex</b> <small>(long)</small>
+* <b>inflictor_entindex</b> <small>(long)</small> - ent index of inflictor (a sentry, for example)
+* <b>attacker</b> <small>(short)</small> - user ID who killed
+* <b>weapon</b> <small>(string)</small> - weapon name killer used
+* <b>weaponid</b> <small>(short)</small> - ID of weapon killed used
+* <b>damagebits</b> <small>(long)</small> - bits of type of damage
+* <b>customkill</b> <small>(short)</small> - type of custom kill
+* <b>assister</b> <small>(short)</small> - user ID of assister
+* <b>weapon_logclassname</b> <small>(string)</small> - weapon name that should be printed on the log
+* <b>stun_flags</b> <small>(short)</small> - victim's stun flags at the moment of death
+* <b>death_flags</b> <small>(short)</small> - [[Team_Fortress_2/Scripting/Script_Functions/Constants#TF_DEATH|death flags]].
+* <b>silent_kill</b> <small>(bool)</small>
+* <b>assister_fallback</b> <small>(string)</small> - contains a string to use if "assister" is -1
+* <b>totalhits</b> <small>(short)</small> - Number of hits his player has done
+
+== tournament_enablecountdown ==
+
+== tournament_stateupdate ==
+* <b>userid</b> <small>(short)</small> - user ID on server
+* <b>namechange</b> <small>(bool)</small>
+* <b>readystate</b> <small>(short)</small>
+* <b>newname</b> <small>(string)</small> - players new name
+
+== training_complete ==
+* <b>next_map</b> <small>(string)</small> - next map (if any)
+* <b>map</b> <small>(string)</small> - the name of the map this screen is on.
+* <b>text</b> <small>(string)</small> - text to show
+
+== update_status_item ==
+* <b>index</b> <small>(byte)</small>
+* <b>object</b> <small>(byte)</small>
+
+== upgrades_file_changed ==
+* <b>path</b> <small>(string)</small>
+
+== user_data_downloaded ==
+fired when achievements/stats are downloaded from Steam or XBox Live
+
+== vote_cast ==
+* <b>vote_option</b> <small>(byte)</small> - which option the player voted on
+* <b>team</b> <small>(short)</small>
+* <b>entityid</b> <small>(long)</small> - entity id of the voter
+* <b>voteidx</b> <small>(long)</small>
+
+== vote_changed ==
+* <b>vote_option1</b> <small>(byte)</small>
+* <b>vote_option2</b> <small>(byte)</small>
+* <b>vote_option3</b> <small>(byte)</small>
+* <b>vote_option4</b> <small>(byte)</small>
+* <b>vote_option5</b> <small>(byte)</small>
+* <b>potentialVotes</b> <small>(byte)</small>
+* <b>voteidx</b> <small>(long)</small>
+
+== vote_ended ==
+
+== vote_failed ==
+* <b>team</b> <small>(byte)</small>
+* <b>voteidx</b> <small>(long)</small>
+
+== vote_maps_changed ==
+* <b>type</b> <small>(byte)</small>
+* <b>defindex</b> <small>(long)</small>
+* <b>created</b> <small>(bool)</small>
+* <b>deleted</b> <small>(bool)</small>
+* <b>erase_history</b> <small>(bool)</small>
+
+== vote_options ==
+* <b>count</b> <small>(byte)</small> - Number of options - up to MAX_VOTE_OPTIONS
+* <b>option1</b> <small>(string)</small>
+* <b>option2</b> <small>(string)</small>
+* <b>option3</b> <small>(string)</small>
+* <b>option4</b> <small>(string)</small>
+* <b>option5</b> <small>(string)</small>
+* <b>voteidx</b> <small>(long)</small>
+
+== vote_passed ==
+* <b>details</b> <small>(string)</small>
+* <b>param1</b> <small>(string)</small>
+* <b>team</b> <small>(byte)</small>
+* <b>voteidx</b> <small>(long)</small>
+
+== vote_started ==
+* <b>issue</b> <small>(string)</small>
+* <b>param1</b> <small>(string)</small>
+* <b>team</b> <small>(byte)</small>
+* <b>initiator</b> <small>(long)</small> - entity id of the player who initiated the vote
+* <b>voteidx</b> <small>(long)</small>
+
+== weapon_equipped ==
+* <b>class</b> <small>(string)</small>
+* <b>entindex</b> <small>(long)</small>
+
+== winlimit_changed ==
+* <b>delay</b> <small>(float)</small>

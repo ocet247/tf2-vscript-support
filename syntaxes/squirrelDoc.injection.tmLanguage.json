@@ -1,0 +1,56 @@
+{
+    "injectionSelector": "L:comment.block.nut",
+    "patterns": [
+        {
+            "include": "#jsdocbody"
+        }
+    ],
+    "repository": {
+        "jsdocbody": {
+            "begin": "(?<=/\\*\\*)([^*]|\\*(?!/))*$",
+            "while": "(^|\\G)\\s*\\*(?!/)(?=([^*]|[*](?!/))*$)",
+            "patterns": [
+                {
+                    "include": "text.html.markdown#fenced_code_block_ts"
+                },
+                {
+                    "include": "text.html.markdown#fenced_code_block_html"
+                },
+                {
+                    "include": "text.html.markdown#fenced_code_block_scss"
+                },
+                {
+                    "include": "text.html.markdown#fenced_code_block"
+                },
+                {
+                    "include": "text.html.markdown#fenced_code_block_css"
+                },
+                {
+                    "include": "text.html.markdown#fenced_code_block_js"
+                },
+                {
+                    "include": "text.html.markdown#fenced_code_block_unknown"
+                },
+                {
+                    "include": "#example"
+                },
+                {
+                    "include": "source.ts#docblock"
+                },
+                {
+                    "include": "text.html.markdown#inline"
+                },
+                {
+                    "include": "text.html.markdown#heading"
+                },
+                {
+                    "include": "text.html.markdown#lists"
+                },
+                {
+                    "include": "text.html.markdown#blockquote"
+                }
+            ]
+        }
+    },
+    "scopeName": "documentation.injection.nut"
+}

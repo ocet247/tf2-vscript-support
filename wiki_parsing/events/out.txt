@@ -1,0 +1,2964 @@
+	OnGameEvent_achievement_earned: {
+		signature: "OnGameEvent_achievement_earned(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"player: int — entindex of the player": true,
+			"achievement: int — achievement ID": true
+		}
+	},
+	OnGameEvent_achievement_earned_local: {
+		signature: "OnGameEvent_achievement_earned_local(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"achievement: int": true
+		}
+	},
+	OnGameEvent_achievement_event: {
+		signature: "OnGameEvent_achievement_event(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"achievement_name: string — non-localized name of achievement": true,
+			"cur_val: int — # of steps toward achievement": true,
+			"max_val: int — total # of steps in achievement": true
+		}
+	},
+	OnGameEvent_achievement_increment: {
+		signature: "OnGameEvent_achievement_increment(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"achievement_id: int — ID of achievement that went up": true,
+			"cur_val: int — # of steps toward achievement": true,
+			"max_val: int — total # of steps in achievement": true
+		}
+	},
+	OnGameEvent_air_dash: {
+		signature: "OnGameEvent_air_dash(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"player: int": true
+		}
+	},
+	OnGameEvent_ammo_pickup: {
+		signature: "OnGameEvent_ammo_pickup(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"ammo_index: int": true,
+			"amount: int": true,
+			"total: int": true
+		}
+	},
+	OnGameEvent_arena_match_maxstreak: {
+		signature: "OnGameEvent_arena_match_maxstreak(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"team: int": true,
+			"streak: int": true
+		}
+	},
+	OnGameEvent_arena_player_notification: {
+		signature: "OnGameEvent_arena_player_notification(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"player: int": true,
+			"message: int": true
+		}
+	},
+	OnGameEvent_arena_round_start: {
+		signature: "OnGameEvent_arena_round_start(params: table) -> void",
+		description: "called when round is active, players can move"
+	},
+	OnGameEvent_arena_win_panel: {
+		signature: "OnGameEvent_arena_win_panel(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"panel_style: int — for client to determine layout": true,
+			"winning_team: int": true,
+			"winreason: int — the reason the team won": true,
+			"cappers: string — string where each character is a player index of someone that capped": true,
+			"flagcaplimit: int — if win reason was flag cap limit, the value of the flag cap limit": true,
+			"blue_score: int — red team score": true,
+			"red_score: int — blue team score": true,
+			"blue_score_prev: int — previous red team score": true,
+			"red_score_prev: int — previous blue team score": true,
+			"round_complete: int — is this a complete round, or the end of a mini-round": true,
+			"player_1: int": true,
+			"player_1_damage: int": true,
+			"player_1_healing: int": true,
+			"player_1_lifetime: int": true,
+			"player_1_kills: int": true,
+			"player_2: int": true,
+			"player_2_damage: int": true,
+			"player_2_healing: int": true,
+			"player_2_lifetime: int": true,
+			"player_2_kills: int": true,
+			"player_3: int": true,
+			"player_3_damage: int": true,
+			"player_3_healing: int": true,
+			"player_3_lifetime: int": true,
+			"player_3_kills: int": true,
+			"player_4: int": true,
+			"player_4_damage: int": true,
+			"player_4_healing: int": true,
+			"player_4_lifetime: int": true,
+			"player_4_kills: int": true,
+			"player_5: int": true,
+			"player_5_damage: int": true,
+			"player_5_healing: int": true,
+			"player_5_lifetime: int": true,
+			"player_5_kills: int": true,
+			"player_6: int": true,
+			"player_6_damage: int": true,
+			"player_6_healing: int": true,
+			"player_6_lifetime: int": true,
+			"player_6_kills: int": true
+		}
+	},
+	OnGameEvent_arrow_impact: {
+		signature: "OnGameEvent_arrow_impact(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"attachedEntity: int": true,
+			"shooter: int": true,
+			"boneIndexAttached: int": true,
+			"bonePositionX: float": true,
+			"bonePositionY: float": true,
+			"bonePositionZ: float": true,
+			"boneAnglesX: float": true,
+			"boneAnglesY: float": true,
+			"boneAnglesZ: float": true,
+			"projectileType: int": true,
+			"isCrit: bool": true
+		}
+	},
+	OnGameEvent_base_player_teleported: {
+		signature: "OnGameEvent_base_player_teleported(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"entindex: int": true
+		}
+	},
+	OnGameEvent_bonus_updated: {
+		signature: "OnGameEvent_bonus_updated(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"numadvanced: int": true,
+			"numbronze: int": true,
+			"numsilver: int": true,
+			"numgold: int": true
+		}
+	},
+	OnGameEvent_break_breakable: {
+		signature: "OnGameEvent_break_breakable(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"entindex: int": true,
+			"userid: int": true,
+			"material: int — BREAK_GLASS, BREAK_WOOD, etc": true
+		}
+	},
+	OnGameEvent_break_prop: {
+		signature: "OnGameEvent_break_prop(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"entindex: int": true,
+			"userid: int": true
+		}
+	},
+	OnGameEvent_browse_replays: {
+		signature: "OnGameEvent_browse_replays(params: table) -> void"
+	},
+	OnGameEvent_building_healed: {
+		signature: "OnGameEvent_building_healed(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"building: int": true,
+			"healer: int": true,
+			"amount: int": true
+		}
+	},
+	OnGameEvent_building_info_changed: {
+		signature: "OnGameEvent_building_info_changed(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"building_type: int": true,
+			"object_mode: int": true,
+			"remove: int": true
+		}
+	},
+	OnGameEvent_cart_updated: {
+		signature: "OnGameEvent_cart_updated(params: table) -> void"
+	},
+	OnGameEvent_christmas_gift_grab: {
+		signature: "OnGameEvent_christmas_gift_grab(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"userid: int": true
+		}
+	},
+	OnGameEvent_cl_drawline: {
+		signature: "OnGameEvent_cl_drawline(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"player: int — index of the player": true,
+			"panel: int — type of panel": true,
+			"line: int — type of line": true,
+			"x: float": true,
+			"y: float": true
+		}
+	},
+	OnGameEvent_client_beginconnect: {
+		signature: "OnGameEvent_client_beginconnect(params: table) -> void",
+		description: {
+			"client tries to connect to server": false,
+			"\n\n---\nVariables of the `params` table:": false,
+			"address: string — Name we used to connect to the server": true,
+			"ip: int": true,
+			"port: int — server port": true,
+			"source: string — what caused us to attempt this connection?  (blank for general command line, \"serverbrowser\", \"quickplay\", etc)": true
+		}
+	},
+	OnGameEvent_client_connected: {
+		signature: "OnGameEvent_client_connected(params: table) -> void",
+		description: {
+			"client has completed the challenge / handshake process and is in SIGNONSTATE_CONNECTED": false,
+			"\n\n---\nVariables of the `params` table:": false,
+			"address: string — Name we used to connect to the server": true,
+			"ip: int": true,
+			"port: int — server port": true
+		}
+	},
+	OnGameEvent_client_disconnect: {
+		signature: "OnGameEvent_client_disconnect(params: table) -> void",
+		description: {
+			"client side disconnect message": false,
+			"\n\n---\nVariables of the `params` table:": false,
+			"message: string — Why are we disconnecting?  This could be a localization token or an English-language string": true
+		}
+	},
+	OnGameEvent_client_fullconnect: {
+		signature: "OnGameEvent_client_fullconnect(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"address: string — Name we used to connect to the server": true,
+			"ip: int": true,
+			"port: int — server port": true
+		}
+	},
+	OnGameEvent_competitive_stats_update: {
+		signature: "OnGameEvent_competitive_stats_update(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"index: int — entindex of the player": true,
+			"kills_rank: int — num std deviations above": true,
+			"score_rank: int": true,
+			"damage_rank: int": true,
+			"healing_rank: int": true,
+			"support_rank: int": true
+		}
+	},
+	OnGameEvent_competitive_victory: {
+		signature: "OnGameEvent_competitive_victory(params: table) -> void"
+	},
+	OnGameEvent_conga_kill: {
+		signature: "OnGameEvent_conga_kill(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"index: int — entindex of the player": true
+		}
+	},
+	OnGameEvent_controlpoint_endtouch: {
+		signature: "OnGameEvent_controlpoint_endtouch(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"player: int — entindex of the player": true,
+			"area: int — index of the control point area": true
+		}
+	},
+	OnGameEvent_controlpoint_fake_capture: {
+		signature: "OnGameEvent_controlpoint_fake_capture(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"player: int — entindex of the player": true,
+			"int_data: int": true
+		}
+	},
+	OnGameEvent_controlpoint_fake_capture_mult: {
+		signature: "OnGameEvent_controlpoint_fake_capture_mult(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"player: int — entindex of the player": true,
+			"int_data: int": true
+		}
+	},
+	OnGameEvent_controlpoint_initialized: {
+		signature: "OnGameEvent_controlpoint_initialized(params: table) -> void"
+	},
+	OnGameEvent_controlpoint_pulse_element: {
+		signature: "OnGameEvent_controlpoint_pulse_element(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"player: int — entindex of the player": true
+		}
+	},
+	OnGameEvent_controlpoint_starttouch: {
+		signature: "OnGameEvent_controlpoint_starttouch(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"player: int — entindex of the player": true,
+			"area: int — index of the control point area": true
+		}
+	},
+	OnGameEvent_controlpoint_timer_updated: {
+		signature: "OnGameEvent_controlpoint_timer_updated(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"index: int — index of the cap being updated": true,
+			"time: float — time": true
+		}
+	},
+	OnGameEvent_controlpoint_unlock_updated: {
+		signature: "OnGameEvent_controlpoint_unlock_updated(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"index: int — index of the cap being updated": true,
+			"time: float — time": true
+		}
+	},
+	OnGameEvent_controlpoint_updatecapping: {
+		signature: "OnGameEvent_controlpoint_updatecapping(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"index: int — index of the cap being updated": true
+		}
+	},
+	OnGameEvent_controlpoint_updateimages: {
+		signature: "OnGameEvent_controlpoint_updateimages(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"index: int — index of the cap being updated": true
+		}
+	},
+	OnGameEvent_controlpoint_updatelayout: {
+		signature: "OnGameEvent_controlpoint_updatelayout(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"index: int — index of the cap being updated": true
+		}
+	},
+	OnGameEvent_controlpoint_updateowner: {
+		signature: "OnGameEvent_controlpoint_updateowner(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"index: int — index of the cap being updated": true
+		}
+	},
+	OnGameEvent_cross_spectral_bridge: {
+		signature: "OnGameEvent_cross_spectral_bridge(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"player: int — userid of the player that crossed": true
+		}
+	},
+	OnGameEvent_crossbow_heal: {
+		signature: "OnGameEvent_crossbow_heal(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"healer: int — userid of the Healer": true,
+			"target: int — userid of the player that got hit": true,
+			"amount: int — amount that was healed": true
+		}
+	},
+	OnGameEvent_ctf_flag_captured: {
+		signature: "OnGameEvent_ctf_flag_captured(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"capping_team: int": true,
+			"capping_team_score: int": true
+		}
+	},
+	OnGameEvent_damage_mitigated: {
+		signature: "OnGameEvent_damage_mitigated(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"mitigator: int — userid of the player who provided the mitigation": true,
+			"damaged: int — userid of the player who took the damage": true,
+			"amount: int — amount that was mitigated": true,
+			"itemdefindex: int — defindex of the item that provided the mitigation": true
+		}
+	},
+	OnGameEvent_damage_prevented: {
+		signature: "OnGameEvent_damage_prevented(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"preventor: int — Who prevented the damage": true,
+			"victim: int — Who took the damage that was prevented": true,
+			"amount: int — How much got prevented": true,
+			"condition: int — Which condition did the preventing": true
+		}
+	},
+	OnGameEvent_damage_resisted: {
+		signature: "OnGameEvent_damage_resisted(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"entindex: int": true
+		}
+	},
+	OnGameEvent_deadringer_cheat_death: {
+		signature: "OnGameEvent_deadringer_cheat_death(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"spy: int — userid of the Spy that cheat the death": true,
+			"attacker: int — userid of the player that caused the cheat death to happen": true
+		}
+	},
+	OnGameEvent_demoman_det_stickies: {
+		signature: "OnGameEvent_demoman_det_stickies(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"player: int — entindex of the detonating player": true
+		}
+	},
+	OnGameEvent_deploy_buff_banner: {
+		signature: "OnGameEvent_deploy_buff_banner(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"buff_type: int — type of buff (skin index)": true,
+			"buff_owner: int — user ID of the person who gets the banner": true
+		}
+	},
+	OnGameEvent_doomsday_rocket_open: {
+		signature: "OnGameEvent_doomsday_rocket_open(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"team: int — which team opened the rocket": true
+		}
+	},
+	OnGameEvent_duck_xp_level_up: {
+		signature: "OnGameEvent_duck_xp_level_up(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"level: int — leveled up to what": true
+		}
+	},
+	OnGameEvent_duel_status: {
+		signature: "OnGameEvent_duel_status(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"killer: int": true,
+			"score_type: int": true,
+			"initiator: int": true,
+			"target: int": true,
+			"initiator_score: int": true,
+			"target_score: int": true
+		}
+	},
+	OnGameEvent_econ_inventory_connected: {
+		signature: "OnGameEvent_econ_inventory_connected(params: table) -> void"
+	},
+	OnGameEvent_enter_vehicle: {
+		signature: "OnGameEvent_enter_vehicle(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"vehicle: int — entindex of the vehicle": true
+		}
+	},
+	OnGameEvent_entered_performance_mode: {
+		signature: "OnGameEvent_entered_performance_mode(params: table) -> void"
+	},
+	OnGameEvent_entity_killed: {
+		signature: "OnGameEvent_entity_killed(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"entindex_killed: int": true,
+			"entindex_attacker: int": true,
+			"entindex_inflictor: int": true,
+			"damagebits: int": true
+		}
+	},
+	OnGameEvent_environmental_death: {
+		signature: "OnGameEvent_environmental_death(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"killer: int — index of the killer": true,
+			"victim: int — index of the victim": true
+		}
+	},
+	OnGameEvent_escape_hell: {
+		signature: "OnGameEvent_escape_hell(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"player: int — userid of the player that escaped": true
+		}
+	},
+	OnGameEvent_escaped_loot_island: {
+		signature: "OnGameEvent_escaped_loot_island(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"player: int — userid of the escaping player": true
+		}
+	},
+	OnGameEvent_escort_progress: {
+		signature: "OnGameEvent_escort_progress(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"team: int — which team": true,
+			"progress: float": true,
+			"reset: bool": true
+		}
+	},
+	OnGameEvent_escort_recede: {
+		signature: "OnGameEvent_escort_recede(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"team: int — which team": true,
+			"recedetime: float": true
+		}
+	},
+	OnGameEvent_escort_speed: {
+		signature: "OnGameEvent_escort_speed(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"team: int — which team": true,
+			"speed: int": true,
+			"players: int": true
+		}
+	},
+	OnGameEvent_eyeball_boss_escape_imminent: {
+		signature: "OnGameEvent_eyeball_boss_escape_imminent(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"level: int": true,
+			"time_remaining: int": true
+		}
+	},
+	OnGameEvent_eyeball_boss_escaped: {
+		signature: "OnGameEvent_eyeball_boss_escaped(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"level: int": true
+		}
+	},
+	OnGameEvent_eyeball_boss_killed: {
+		signature: "OnGameEvent_eyeball_boss_killed(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"level: int": true
+		}
+	},
+	OnGameEvent_eyeball_boss_killer: {
+		signature: "OnGameEvent_eyeball_boss_killer(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"level: int": true,
+			"player_entindex: int": true
+		}
+	},
+	OnGameEvent_eyeball_boss_stunned: {
+		signature: "OnGameEvent_eyeball_boss_stunned(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"level: int": true,
+			"player_entindex: int": true
+		}
+	},
+	OnGameEvent_eyeball_boss_summoned: {
+		signature: "OnGameEvent_eyeball_boss_summoned(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"level: int": true
+		}
+	},
+	OnGameEvent_fish_notice: {
+		signature: "OnGameEvent_fish_notice(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"userid: int — user ID who died": true,
+			"victim_entindex: int": true,
+			"inflictor_entindex: int — ent index of inflictor (a sentry, for example)": true,
+			"attacker: int — user ID who killed": true,
+			"weapon: string — weapon name killer used": true,
+			"weaponid: int — ID of weapon killed used": true,
+			"damagebits: int — bits of type of damage": true,
+			"customkill: int — type of custom kill": true,
+			"assister: int — user ID of assister": true,
+			"weapon_logclassname: string — weapon name that should be printed on the log": true,
+			"stun_flags: int — victim's stun flags at the moment of death": true,
+			"death_flags: int — [[Team_Fortress_2/Scripting/Script_Functions/Constants#TF_DEATH|death flags]].": true,
+			"silent_kill: bool": true,
+			"assister_fallback: string — contains a string to use if \"assister\" is -1": true
+		}
+	},
+	OnGameEvent_fish_notice__arm: {
+		signature: "OnGameEvent_fish_notice__arm(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"userid: int — user ID who died": true,
+			"victim_entindex: int": true,
+			"inflictor_entindex: int — ent index of inflictor (a sentry, for example)": true,
+			"attacker: int — user ID who killed": true,
+			"weapon: string — weapon name killer used": true,
+			"weaponid: int — ID of weapon killed used": true,
+			"damagebits: int — bits of type of damage": true,
+			"customkill: int — type of custom kill": true,
+			"assister: int — user ID of assister": true,
+			"weapon_logclassname: string — weapon name that should be printed on the log": true,
+			"stun_flags: int — victim's stun flags at the moment of death": true,
+			"death_flags: int — [[Team_Fortress_2/Scripting/Script_Functions/Constants#TF_DEATH|death flags]].": true,
+			"silent_kill: bool": true,
+			"assister_fallback: string — contains a string to use if \"assister\" is -1": true
+		}
+	},
+	OnGameEvent_flag_carried_in_detection_zone: {
+		signature: "OnGameEvent_flag_carried_in_detection_zone(params: table) -> void"
+	},
+	OnGameEvent_flagstatus_update: {
+		signature: "OnGameEvent_flagstatus_update(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"userid: int — user ID of the player who now has the flag": true,
+			"entindex: int — ent index of flag": true
+		}
+	},
+	OnGameEvent_flare_ignite_npc: {
+		signature: "OnGameEvent_flare_ignite_npc(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"entindex: int — entity ignited": true
+		}
+	},
+	OnGameEvent_freezecam_started: {
+		signature: "OnGameEvent_freezecam_started(params: table) -> void"
+	},
+	OnGameEvent_game_end: {
+		signature: "OnGameEvent_game_end(params: table) -> void",
+		description: {
+			"a game ended": false,
+			"\n\n---\nVariables of the `params` table:": false,
+			"winner: int — winner team/user id": true
+		}
+	},
+	OnGameEvent_game_init: {
+		signature: "OnGameEvent_game_init(params: table) -> void",
+		description: "sent when a new game is started"
+	},
+	OnGameEvent_game_message: {
+		signature: "OnGameEvent_game_message(params: table) -> void",
+		description: {
+			"a message send by game logic to everyone": false,
+			"\n\n---\nVariables of the `params` table:": false,
+			"target: int — 0 = console, 1 = HUD": true,
+			"text: string — the message text": true
+		}
+	},
+	OnGameEvent_game_newmap: {
+		signature: "OnGameEvent_game_newmap(params: table) -> void",
+		description: {
+			"send when new map is completely loaded": false,
+			"\n\n---\nVariables of the `params` table:": false,
+			"mapname: string — map name": true
+		}
+	},
+	OnGameEvent_game_start: {
+		signature: "OnGameEvent_game_start(params: table) -> void",
+		description: {
+			"a new game starts": false,
+			"\n\n---\nVariables of the `params` table:": false,
+			"roundslimit: int — max round": true,
+			"timelimit: int — time limit": true,
+			"fraglimit: int — frag limit": true,
+			"objective: string — round objective": true
+		}
+	},
+	OnGameEvent_gameui_activate: {
+		signature: "OnGameEvent_gameui_activate(params: table) -> void"
+	},
+	OnGameEvent_gameui_activated: {
+		signature: "OnGameEvent_gameui_activated(params: table) -> void"
+	},
+	OnGameEvent_gameui_hidden: {
+		signature: "OnGameEvent_gameui_hidden(params: table) -> void"
+	},
+	OnGameEvent_gameui_hide: {
+		signature: "OnGameEvent_gameui_hide(params: table) -> void"
+	},
+	OnGameEvent_gc_lost_session: {
+		signature: "OnGameEvent_gc_lost_session(params: table) -> void"
+	},
+	OnGameEvent_gc_new_session: {
+		signature: "OnGameEvent_gc_new_session(params: table) -> void"
+	},
+	OnGameEvent_halloween_boss_killed: {
+		signature: "OnGameEvent_halloween_boss_killed(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"boss: int — 1=HHH 2=Monoculus 3=Merasmus": true,
+			"killer: int — userid of the killing player": true
+		}
+	},
+	OnGameEvent_halloween_duck_collected: {
+		signature: "OnGameEvent_halloween_duck_collected(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"collector: int — userid of the collecting player": true
+		}
+	},
+	OnGameEvent_halloween_pumpkin_grab: {
+		signature: "OnGameEvent_halloween_pumpkin_grab(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"userid: int": true
+		}
+	},
+	OnGameEvent_halloween_skeleton_killed: {
+		signature: "OnGameEvent_halloween_skeleton_killed(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"player: int — userid of the player that killed the skeleton": true
+		}
+	},
+	OnGameEvent_halloween_soul_collected: {
+		signature: "OnGameEvent_halloween_soul_collected(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"intended_target: int — userid of the intended target": true,
+			"collecting_player: int — userid of the player who picked up the soul": true,
+			"soul_count: int — number of souls collected (gift boxes)": true
+		}
+	},
+	OnGameEvent_helicopter_grenade_punt_miss: {
+		signature: "OnGameEvent_helicopter_grenade_punt_miss(params: table) -> void"
+	},
+	OnGameEvent_hide_annotation: {
+		signature: "OnGameEvent_hide_annotation(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"id: int": true
+		}
+	},
+	OnGameEvent_hide_freezepanel: {
+		signature: "OnGameEvent_hide_freezepanel(params: table) -> void"
+	},
+	OnGameEvent_hltv_changed_mode: {
+		signature: "OnGameEvent_hltv_changed_mode(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"oldmode: int": true,
+			"newmode: int": true,
+			"obs_target: int": true
+		}
+	},
+	OnGameEvent_hltv_changed_target: {
+		signature: "OnGameEvent_hltv_changed_target(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"mode: int": true,
+			"old_target: int": true,
+			"obs_target: int": true
+		}
+	},
+	OnGameEvent_host_quit: {
+		signature: "OnGameEvent_host_quit(params: table) -> void"
+	},
+	OnGameEvent_intro_finish: {
+		signature: "OnGameEvent_intro_finish(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"player: int — entindex of the player": true
+		}
+	},
+	OnGameEvent_intro_nextcamera: {
+		signature: "OnGameEvent_intro_nextcamera(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"player: int — entindex of the player": true
+		}
+	},
+	OnGameEvent_inventory_updated: {
+		signature: "OnGameEvent_inventory_updated(params: table) -> void"
+	},
+	OnGameEvent_item_found: {
+		signature: "OnGameEvent_item_found(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"player: int — entindex of the player": true,
+			"quality: int — quality of the item": true,
+			"method: int — method by which we acquired the item": true,
+			"itemdef: int — the item definition index": true,
+			"isstrange: int": true,
+			"isunusual: int": true,
+			"wear: float": true
+		}
+	},
+	OnGameEvent_item_pickup: {
+		signature: "OnGameEvent_item_pickup(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"userid: int": true,
+			"item: string": true
+		}
+	},
+	OnGameEvent_item_schema_initialized: {
+		signature: "OnGameEvent_item_schema_initialized(params: table) -> void"
+	},
+	OnGameEvent_items_acknowledged: {
+		signature: "OnGameEvent_items_acknowledged(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"blocker: int — entindex of the blocker": true,
+			"victim: int — entindex of the victim": true
+		}
+	},
+	OnGameEvent_kill_in_hell: {
+		signature: "OnGameEvent_kill_in_hell(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"killer: int — userid of the killer": true,
+			"victim: int — userid of the victim": true
+		}
+	},
+	OnGameEvent_kill_refills_meter: {
+		signature: "OnGameEvent_kill_refills_meter(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"index: int — entindex of the player": true
+		}
+	},
+	OnGameEvent_killed_capping_player: {
+		signature: "OnGameEvent_killed_capping_player(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"cp: int — index of the point": true,
+			"killer: int — index of the killer": true,
+			"victim: int — index of the victim": true,
+			"assister: int — index of the assister": true
+		}
+	},
+	OnGameEvent_landed: {
+		signature: "OnGameEvent_landed(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"player: int": true
+		}
+	},
+	OnGameEvent_leave_vehicle: {
+		signature: "OnGameEvent_leave_vehicle(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"vehicle: int — entindex of the vehicle": true
+		}
+	},
+	OnGameEvent_lobby_updated: {
+		signature: "OnGameEvent_lobby_updated(params: table) -> void"
+	},
+	OnGameEvent_localplayer_becameobserver: {
+		signature: "OnGameEvent_localplayer_becameobserver(params: table) -> void"
+	},
+	OnGameEvent_localplayer_builtobject: {
+		signature: "OnGameEvent_localplayer_builtobject(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"object: int — type of object built": true,
+			"object_mode: int — used for teleporters: entrance vs. exit": true,
+			"index: int — index of the object": true
+		}
+	},
+	OnGameEvent_localplayer_changeclass: {
+		signature: "OnGameEvent_localplayer_changeclass(params: table) -> void"
+	},
+	OnGameEvent_localplayer_changedisguise: {
+		signature: "OnGameEvent_localplayer_changedisguise(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"disguised: bool": true
+		}
+	},
+	OnGameEvent_localplayer_changeteam: {
+		signature: "OnGameEvent_localplayer_changeteam(params: table) -> void"
+	},
+	OnGameEvent_localplayer_chargeready: {
+		signature: "OnGameEvent_localplayer_chargeready(params: table) -> void",
+		description: "local player has full medic charge"
+	},
+	OnGameEvent_localplayer_healed: {
+		signature: "OnGameEvent_localplayer_healed(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"amount: int": true
+		}
+	},
+	OnGameEvent_localplayer_pickup_weapon: {
+		signature: "OnGameEvent_localplayer_pickup_weapon(params: table) -> void"
+	},
+	OnGameEvent_localplayer_respawn: {
+		signature: "OnGameEvent_localplayer_respawn(params: table) -> void"
+	},
+	OnGameEvent_localplayer_score_changed: {
+		signature: "OnGameEvent_localplayer_score_changed(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"score: int": true
+		}
+	},
+	OnGameEvent_localplayer_winddown: {
+		signature: "OnGameEvent_localplayer_winddown(params: table) -> void",
+		description: "local player minigun winddown"
+	},
+	OnGameEvent_mainmenu_stabilized: {
+		signature: "OnGameEvent_mainmenu_stabilized(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"attacker: int": true,
+			"victim: int": true,
+			"assister: int": true
+		}
+	},
+	OnGameEvent_match_invites_updated: {
+		signature: "OnGameEvent_match_invites_updated(params: table) -> void"
+	},
+	OnGameEvent_medic_death: {
+		signature: "OnGameEvent_medic_death(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"userid: int — user ID who died": true,
+			"attacker: int — user ID who killed": true,
+			"healing: int — amount healed in this life": true,
+			"charged: bool — had a full ubercharge?": true
+		}
+	},
+	OnGameEvent_medic_defended: {
+		signature: "OnGameEvent_medic_defended(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"userid: int": true,
+			"medic: int": true
+		}
+	},
+	OnGameEvent_medigun_shield_blocked_damage: {
+		signature: "OnGameEvent_medigun_shield_blocked_damage(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"userid: int — user ID of the player using the shield": true,
+			"damage: float — damage that was blocked": true
+		}
+	},
+	OnGameEvent_merasmus_escape_warning: {
+		signature: "OnGameEvent_merasmus_escape_warning(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"level: int": true,
+			"time_remaining: int": true
+		}
+	},
+	OnGameEvent_merasmus_escaped: {
+		signature: "OnGameEvent_merasmus_escaped(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"level: int": true
+		}
+	},
+	OnGameEvent_merasmus_killed: {
+		signature: "OnGameEvent_merasmus_killed(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"level: int": true
+		}
+	},
+	OnGameEvent_merasmus_prop_found: {
+		signature: "OnGameEvent_merasmus_prop_found(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"player: int — userid of the player that found the prop Merasmus was hiding in": true
+		}
+	},
+	OnGameEvent_merasmus_stunned: {
+		signature: "OnGameEvent_merasmus_stunned(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"player: int — userid of the stunning player": true
+		}
+	},
+	OnGameEvent_merasmus_summoned: {
+		signature: "OnGameEvent_merasmus_summoned(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"level: int": true
+		}
+	},
+	OnGameEvent_minigame_win: {
+		signature: "OnGameEvent_minigame_win(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"team: int — which team won the minigame": true,
+			"type: int — what type of minigame was won": true
+		}
+	},
+	OnGameEvent_minigame_won: {
+		signature: "OnGameEvent_minigame_won(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"player: int — userid of the winning player": true,
+			"game: int — index of the game": true
+		}
+	},
+	OnGameEvent_mvm_adv_wave_complete_no_gates: {
+		signature: "OnGameEvent_mvm_adv_wave_complete_no_gates(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"index: int — wave index": true
+		}
+	},
+	OnGameEvent_mvm_adv_wave_killed_stun_radio: {
+		signature: "OnGameEvent_mvm_adv_wave_killed_stun_radio(params: table) -> void"
+	},
+	OnGameEvent_mvm_begin_wave: {
+		signature: "OnGameEvent_mvm_begin_wave(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"wave_index: int": true,
+			"max_waves: int": true,
+			"advanced: int": true
+		}
+	},
+	OnGameEvent_mvm_bomb_alarm_triggered: {
+		signature: "OnGameEvent_mvm_bomb_alarm_triggered(params: table) -> void"
+	},
+	OnGameEvent_mvm_bomb_carrier_killed: {
+		signature: "OnGameEvent_mvm_bomb_carrier_killed(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"level: int — upgrade level of the carrier": true
+		}
+	},
+	OnGameEvent_mvm_bomb_deploy_reset_by_player: {
+		signature: "OnGameEvent_mvm_bomb_deploy_reset_by_player(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"player: int": true
+		}
+	},
+	OnGameEvent_mvm_bomb_reset_by_player: {
+		signature: "OnGameEvent_mvm_bomb_reset_by_player(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"player: int": true
+		}
+	},
+	OnGameEvent_mvm_creditbonus_all: {
+		signature: "OnGameEvent_mvm_creditbonus_all(params: table) -> void"
+	},
+	OnGameEvent_mvm_creditbonus_all_advanced: {
+		signature: "OnGameEvent_mvm_creditbonus_all_advanced(params: table) -> void"
+	},
+	OnGameEvent_mvm_creditbonus_wave: {
+		signature: "OnGameEvent_mvm_creditbonus_wave(params: table) -> void"
+	},
+	OnGameEvent_mvm_kill_robot_delivering_bomb: {
+		signature: "OnGameEvent_mvm_kill_robot_delivering_bomb(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"player: int — entindex of the player": true
+		}
+	},
+	OnGameEvent_mvm_mannhattan_pit: {
+		signature: "OnGameEvent_mvm_mannhattan_pit(params: table) -> void"
+	},
+	OnGameEvent_mvm_medic_powerup_shared: {
+		signature: "OnGameEvent_mvm_medic_powerup_shared(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"player: int — entindex of the player": true
+		}
+	},
+	OnGameEvent_mvm_mission_complete: {
+		signature: "OnGameEvent_mvm_mission_complete(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"mission: string": true
+		}
+	},
+	OnGameEvent_mvm_mission_update: {
+		signature: "OnGameEvent_mvm_mission_update(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"class: int": true,
+			"count: int": true
+		}
+	},
+	OnGameEvent_mvm_pickup_currency: {
+		signature: "OnGameEvent_mvm_pickup_currency(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"player: int — entindex of the player": true,
+			"currency: int": true
+		}
+	},
+	OnGameEvent_mvm_quick_sentry_upgrade: {
+		signature: "OnGameEvent_mvm_quick_sentry_upgrade(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"player: int — entindex of the player": true
+		}
+	},
+	OnGameEvent_mvm_reset_stats: {
+		signature: "OnGameEvent_mvm_reset_stats(params: table) -> void"
+	},
+	OnGameEvent_mvm_scout_marked_for_death: {
+		signature: "OnGameEvent_mvm_scout_marked_for_death(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"player: int — entindex of the player": true
+		}
+	},
+	OnGameEvent_mvm_sentrybuster_detonate: {
+		signature: "OnGameEvent_mvm_sentrybuster_detonate(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"player: int — entindex of the target player": true,
+			"det_x: float — origin of the sentry buster": true,
+			"det_y: float": true,
+			"det_z: float": true
+		}
+	},
+	OnGameEvent_mvm_sentrybuster_killed: {
+		signature: "OnGameEvent_mvm_sentrybuster_killed(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"sentry_buster: int — entindex": true
+		}
+	},
+	OnGameEvent_mvm_sniper_headshot_currency: {
+		signature: "OnGameEvent_mvm_sniper_headshot_currency(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"userid: int — user ID of the player": true,
+			"currency: int — currency collected": true
+		}
+	},
+	OnGameEvent_mvm_tank_destroyed_by_players: {
+		signature: "OnGameEvent_mvm_tank_destroyed_by_players(params: table) -> void"
+	},
+	OnGameEvent_mvm_wave_complete: {
+		signature: "OnGameEvent_mvm_wave_complete(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"advanced: bool — is this an advanced popfile": true
+		}
+	},
+	OnGameEvent_mvm_wave_failed: {
+		signature: "OnGameEvent_mvm_wave_failed(params: table) -> void"
+	},
+	OnGameEvent_nav_blocked: {
+		signature: "OnGameEvent_nav_blocked(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"area: int": true,
+			"blocked: bool": true
+		}
+	},
+	OnGameEvent_npc_hurt: {
+		signature: "OnGameEvent_npc_hurt(params: table) -> void",
+		description: {
+			"Fired when an Engineer building ([[obj_sentrygun]], [[obj_dispenser]], [[obj_teleporter]]), [[base_boss]], MvM tank ([[tank_boss]]) or Halloween enemy ([[headless_hatman]], [[eyeball_boss]], [[merasmus]], [[tf_zombie]]) is damaged.": false,
+			"\n\n---\nVariables of the `params` table:": false,
+			"entindex: int": true,
+			"health: int": true,
+			"attacker_player: int": true,
+			"weaponid: int": true,
+			"damageamount: int": true,
+			"crit: bool": true,
+			"boss: int — 1=HHH 2=Monoculus 3=Merasmus": true
+		}
+	},
+	OnGameEvent_num_cappers_changed: {
+		signature: "OnGameEvent_num_cappers_changed(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"index: int — index of the trigger": true,
+			"count: int — number of cappers (-1 for blocked)": true
+		}
+	},
+	OnGameEvent_object_deflected: {
+		signature: "OnGameEvent_object_deflected(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"userid: int — player who deflected the object": true,
+			"ownerid: int — owner of the object": true,
+			"weaponid: int — weapon id (0 means the player in ownerid was pushed)": true,
+			"object_entindex: int — entindex of the object that got deflected": true
+		}
+	},
+	OnGameEvent_object_destroyed: {
+		signature: "OnGameEvent_object_destroyed(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"userid: int — user ID who died": true,
+			"attacker: int — user ID who killed": true,
+			"assister: int — user ID of assister": true,
+			"weapon: string — weapon name killer used": true,
+			"weaponid: int — id of the weapon used": true,
+			"objecttype: int — type of object destroyed": true,
+			"index: int — index of the object destroyed": true,
+			"was_building: bool — object was being built when it died": true,
+			"team: int — building's team": true
+		}
+	},
+	OnGameEvent_object_detonated: {
+		signature: "OnGameEvent_object_detonated(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"userid: int — user ID of the object owner": true,
+			"objecttype: int — type of object removed": true,
+			"index: int — index of the object removed": true
+		}
+	},
+	OnGameEvent_object_removed: {
+		signature: "OnGameEvent_object_removed(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"userid: int — user ID of the object owner": true,
+			"objecttype: int — type of object removed": true,
+			"index: int — index of the object removed": true
+		}
+	},
+	OnGameEvent_overtime_nag: {
+		signature: "OnGameEvent_overtime_nag(params: table) -> void"
+	},
+	OnGameEvent_parachute_deploy: {
+		signature: "OnGameEvent_parachute_deploy(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"index: int — entindex of the player": true
+		}
+	},
+	OnGameEvent_parachute_holster: {
+		signature: "OnGameEvent_parachute_holster(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"index: int — entindex of the player": true
+		}
+	},
+	OnGameEvent_party_chat: {
+		signature: "OnGameEvent_party_chat(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"steamid: string — steamID (64-bit value converted to string) of user who said or did the thing.  May be": true,
+			"text: string — The message.  May have different meaning for some types": true,
+			"type: int — What sort of message?  ETFPartyChatType enum": true
+		}
+	},
+	OnGameEvent_party_criteria_changed: {
+		signature: "OnGameEvent_party_criteria_changed(params: table) -> void"
+	},
+	OnGameEvent_party_invites_changed: {
+		signature: "OnGameEvent_party_invites_changed(params: table) -> void"
+	},
+	OnGameEvent_party_member_join: {
+		signature: "OnGameEvent_party_member_join(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"steamid: string — steamID (64-bit value converted to string) of joined": true
+		}
+	},
+	OnGameEvent_party_member_leave: {
+		signature: "OnGameEvent_party_member_leave(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"steamid: string — steamID (64-bit value converted to string) of leaver": true
+		}
+	},
+	OnGameEvent_party_pref_changed: {
+		signature: "OnGameEvent_party_pref_changed(params: table) -> void"
+	},
+	OnGameEvent_party_queue_state_changed: {
+		signature: "OnGameEvent_party_queue_state_changed(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"matchgroup: int — ETFMatchGroup": true
+		}
+	},
+	OnGameEvent_party_updated: {
+		signature: "OnGameEvent_party_updated(params: table) -> void"
+	},
+	OnGameEvent_pass_ball_blocked: {
+		signature: "OnGameEvent_pass_ball_blocked(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"owner: int": true,
+			"blocker: int": true
+		}
+	},
+	OnGameEvent_pass_ball_stolen: {
+		signature: "OnGameEvent_pass_ball_stolen(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"victim: int": true,
+			"attacker: int": true
+		}
+	},
+	OnGameEvent_pass_free: {
+		signature: "OnGameEvent_pass_free(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"owner: int": true,
+			"attacker: int": true
+		}
+	},
+	OnGameEvent_pass_get: {
+		signature: "OnGameEvent_pass_get(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"owner: int": true,
+			"team: int": true
+		}
+	},
+	OnGameEvent_pass_pass_caught: {
+		signature: "OnGameEvent_pass_pass_caught(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"passer: int": true,
+			"catcher: int": true,
+			"dist: float": true,
+			"duration: float": true
+		}
+	},
+	OnGameEvent_pass_score: {
+		signature: "OnGameEvent_pass_score(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"scorer: int": true,
+			"assister: int": true,
+			"points: int": true
+		}
+	},
+	OnGameEvent_path_track_passed: {
+		signature: "OnGameEvent_path_track_passed(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"index: int — [[CHandle|entity handle]] of the node being passed (not the index!)": true
+		}
+	},
+	OnGameEvent_payload_pushed: {
+		signature: "OnGameEvent_payload_pushed(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"pusher: int — userid of the player who pushed": true,
+			"distance: int — how far they pushed": true
+		}
+	},
+	OnGameEvent_physgun_pickup: {
+		signature: "OnGameEvent_physgun_pickup(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"entindex: int — entity picked up": true
+		}
+	},
+	OnGameEvent_player_abandoned_match: {
+		signature: "OnGameEvent_player_abandoned_match(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"game_over: bool": true
+		}
+	},
+	OnGameEvent_player_account_changed: {
+		signature: "OnGameEvent_player_account_changed(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"old_value: int": true,
+			"new_value: int": true
+		}
+	},
+	OnGameEvent_player_activate: {
+		signature: "OnGameEvent_player_activate(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"userid: int — user ID on server": true
+		}
+	},
+	OnGameEvent_player_askedforball: {
+		signature: "OnGameEvent_player_askedforball(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"userid: int": true
+		}
+	},
+	OnGameEvent_player_bonuspoints: {
+		signature: "OnGameEvent_player_bonuspoints(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"points: int": true,
+			"player_entindex: int": true,
+			"source_entindex: int": true
+		}
+	},
+	OnGameEvent_player_buff: {
+		signature: "OnGameEvent_player_buff(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"userid: int — user ID of the player the buff is being applied to": true,
+			"buff_owner: int — user ID of the player with the banner": true,
+			"buff_type: int — type of buff": true
+		}
+	},
+	OnGameEvent_player_builtobject: {
+		signature: "OnGameEvent_player_builtobject(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"userid: int — user ID of the builder": true,
+			"object: int — type of object built": true,
+			"index: int — index of the object": true
+		}
+	},
+	OnGameEvent_player_buyback: {
+		signature: "OnGameEvent_player_buyback(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"player: int": true,
+			"cost: int": true
+		}
+	},
+	OnGameEvent_player_calledformedic: {
+		signature: "OnGameEvent_player_calledformedic(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"userid: int": true
+		}
+	},
+	OnGameEvent_player_carryobject: {
+		signature: "OnGameEvent_player_carryobject(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"userid: int — user ID of the builder": true,
+			"object: int — type of object built": true,
+			"index: int — index of the object": true
+		}
+	},
+	OnGameEvent_player_changeclass: {
+		signature: "OnGameEvent_player_changeclass(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"userid: int — user ID who changed class": true,
+			"class: int — class that they changed to": true
+		}
+	},
+	OnGameEvent_player_changename: {
+		signature: "OnGameEvent_player_changename(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"userid: int — user ID on server": true,
+			"oldname: string — players old (current) name": true,
+			"newname: string — players new name": true
+		}
+	},
+	OnGameEvent_player_chargedeployed: {
+		signature: "OnGameEvent_player_chargedeployed(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"userid: int — user ID of medic who deployed charge": true,
+			"targetid: int — user ID of who the medic charged": true
+		}
+	},
+	OnGameEvent_player_chat: {
+		signature: "OnGameEvent_player_chat(params: table) -> void",
+		description: {
+			"a public player chat": false,
+			"\n\n---\nVariables of the `params` table:": false,
+			"teamonly: bool — true if team only chat": true,
+			"userid: int — chatting player": true,
+			"text: string — chat text": true
+		}
+	},
+	OnGameEvent_player_class: {
+		signature: "OnGameEvent_player_class(params: table) -> void",
+		description: {
+			"a player changed his class": false,
+			"\n\n---\nVariables of the `params` table:": false,
+			"userid: int — user ID on server": true,
+			"class: string — new player class / model": true
+		}
+	},
+	OnGameEvent_player_connect: {
+		signature: "OnGameEvent_player_connect(params: table) -> void",
+		description: {
+			"A new client has connected. This does NOT fire between level changes as the player is already connected. Use `player_spawn` instead if you need to catch every player entity that is created.": false,
+			"\n\n---\nVariables of the `params` table:": false,
+			"name: string — player name": true,
+			"index: int — player slot (entity index-1)": true,
+			"userid: int — user ID on server (unique on server)": true,
+			"networkid: string — player network (i.e steam) id": true,
+			"address: string — ip:port": true,
+			"bot: int — is a bot": true
+		}
+	},
+	OnGameEvent_player_connect_client: {
+		signature: "OnGameEvent_player_connect_client(params: table) -> void",
+		description: {
+			"a new client connected": false,
+			"\n\n---\nVariables of the `params` table:": false,
+			"name: string — player name": true,
+			"index: int — player slot (entity index-1)": true,
+			"userid: int — user ID on server (unique on server)": true,
+			"networkid: string — player network (i.e steam) id": true,
+			"bot: int — is a bot": true
+		}
+	},
+	OnGameEvent_player_currency_changed: {
+		signature: "OnGameEvent_player_currency_changed(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"currency: int": true
+		}
+	},
+	OnGameEvent_player_damage_dodged: {
+		signature: "OnGameEvent_player_damage_dodged(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"damage: int": true
+		}
+	},
+	OnGameEvent_player_damaged: {
+		signature: "OnGameEvent_player_damaged(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"amount: int": true,
+			"type: int": true
+		}
+	},
+	OnGameEvent_player_death: {
+		signature: "OnGameEvent_player_death(params: table) -> void",
+		description: {
+			"Fired when a player dies. This shows up in the kill feed.": false,
+			"\n\n---\nVariables of the `params` table:": false,
+			"userid: int — user ID who died": true,
+			"victim_entindex: int": true,
+			"inflictor_entindex: int — ent index of inflictor (a sentry, for example)": true,
+			"attacker: int — user ID who killed": true,
+			"weapon: string — weapon name killer used": true,
+			"weaponid: int — ID of weapon killer used": true,
+			"damagebits: int — bits of type of damage": true,
+			"customkill: int — type of custom kill": true,
+			"assister: int — user ID of assister": true,
+			"weapon_logclassname: string — weapon name that should be printed on the log": true,
+			"stun_flags: int — victim's stun flags at the moment of death": true,
+			"death_flags: int — [[Team_Fortress_2/Scripting/Script_Functions/Constants#TF_DEATH|death flags]]": true,
+			"silent_kill: bool": true,
+			"playerpenetratecount: int": true,
+			"assister_fallback: string — contains a string to use if \"assister\" is -1": true,
+			"kill_streak_total: int — Kill streak count (level)": true,
+			"kill_streak_wep: int — Kill streak for killing weapon": true,
+			"kill_streak_assist: int — Kill streak for assister count": true,
+			"kill_streak_victim: int — Victims kill streak": true,
+			"ducks_streaked: int — Duck streak increment from this kill": true,
+			"duck_streak_total: int — Duck streak count for attacker": true,
+			"duck_streak_assist: int — Duck streak count for assister": true,
+			"duck_streak_victim: int — (former) duck streak count for victim": true,
+			"rocket_jump: bool — was the victim rocket jumping": true,
+			"weapon_def_index: int — item def index of weapon killer used": true,
+			"crit_type: int — Crit type of kill.  0: None 1: Mini 2: Full": true,
+			"dominated: int — did killer dominate victim with this kill": true,
+			"assister_dominated: int — did assister dominate victim with this kill": true,
+			"revenge: int — did killer get revenge on victim with this kill": true,
+			"assister_revenge: int — did assister get revenge on victim with this kill": true,
+			"first_blood: bool — was this a first blood kill": true,
+			"feign_death: bool — the victim is feign death": true
+		}
+	},
+	OnGameEvent_player_destroyed_pipebomb: {
+		signature: "OnGameEvent_player_destroyed_pipebomb(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"userid: int": true
+		}
+	},
+	OnGameEvent_player_directhit_stun: {
+		signature: "OnGameEvent_player_directhit_stun(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"attacker: int — entindex of the attacker": true,
+			"victim: int — entindex of the victim": true
+		}
+	},
+	OnGameEvent_player_disconnect: {
+		signature: "OnGameEvent_player_disconnect(params: table) -> void",
+		description: {
+			"A client has disconnected. The player handle and script scope still exists when this event fires, as it persists for a frame after disconnect.": false,
+			"\n\n---\nVariables of the `params` table:": false,
+			"userid: int — user ID on server": true,
+			"reason: string — \"self\", \"kick\", \"ban\", \"cheat\", \"error\"": true,
+			"name: string — player name": true,
+			"networkid: string — player network (i.e steam) id": true,
+			"bot: int — is a bot": true
+		}
+	},
+	OnGameEvent_player_domination: {
+		signature: "OnGameEvent_player_domination(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"dominator: int — userID of who gained domination": true,
+			"dominated: int — userID of who got dominated": true,
+			"dominations: int — Number of dominations this dominator has": true
+		}
+	},
+	OnGameEvent_player_dropobject: {
+		signature: "OnGameEvent_player_dropobject(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"userid: int — user ID of the builder": true,
+			"object: int — type of object built": true,
+			"index: int — index of the object": true
+		}
+	},
+	OnGameEvent_player_escort_score: {
+		signature: "OnGameEvent_player_escort_score(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"player: int": true,
+			"points: int": true
+		}
+	},
+	OnGameEvent_player_extinguished: {
+		signature: "OnGameEvent_player_extinguished(params: table) -> void",
+		description: {
+			"sent when a burning player is extinguished by a medic": false,
+			"\n\n---\nVariables of the `params` table:": false,
+			"victim: int — entindex of the player that was extinguished": true,
+			"healer: int — entindex of the player who did the extinguishing": true,
+			"itemdefindex: int — item defindex that did the extinguishing": true
+		}
+	},
+	OnGameEvent_player_healed: {
+		signature: "OnGameEvent_player_healed(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"patient: int": true,
+			"healer: int": true,
+			"amount: int": true
+		}
+	},
+	OnGameEvent_player_healedbymedic: {
+		signature: "OnGameEvent_player_healedbymedic(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"medic: int": true
+		}
+	},
+	OnGameEvent_player_healedmediccall: {
+		signature: "OnGameEvent_player_healedmediccall(params: table) -> void",
+		description: {
+			"local player heals someone who called for medic.": false,
+			"\n\n---\nVariables of the `params` table:": false,
+			"userid: int — userid of person who got healed": true
+		}
+	},
+	OnGameEvent_player_healonhit: {
+		signature: "OnGameEvent_player_healonhit(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"amount: int": true,
+			"entindex: int": true,
+			"weapon_def_index: int — item def index of the healing weapon": true
+		}
+	},
+	OnGameEvent_player_highfive_cancel: {
+		signature: "OnGameEvent_player_highfive_cancel(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"entindex: int": true
+		}
+	},
+	OnGameEvent_player_highfive_start: {
+		signature: "OnGameEvent_player_highfive_start(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"entindex: int": true
+		}
+	},
+	OnGameEvent_player_highfive_success: {
+		signature: "OnGameEvent_player_highfive_success(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"initiator_entindex: int": true,
+			"partner_entindex: int": true
+		}
+	},
+	OnGameEvent_player_hintmessage: {
+		signature: "OnGameEvent_player_hintmessage(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"hintmessage: string — localizable string of a hint": true
+		}
+	},
+	OnGameEvent_player_hurt: {
+		signature: "OnGameEvent_player_hurt(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"userid: int": true,
+			"health: int — if <= 0, then this will play the killsound": true,
+			"attacker: int": true,
+			"damageamount: int": true,
+			"custom: int": true,
+			"showdisguisedcrit: bool — if our attribute specifically crits disguised enemies we need to show it on the client": true,
+			"crit: bool — legacy only, use `bonuseffect`": true,
+			"minicrit: bool — legacy only, use `bonuseffect`": true,
+			"allseecrit: bool": true,
+			"weaponid: int": true,
+			"bonuseffect: int — type of damage effect, see [[Team_Fortress_2/Scripting/Script_Functions/Constants#kBonusEffect|constants page]].": true
+		}
+	},
+	OnGameEvent_player_ignited: {
+		signature: "OnGameEvent_player_ignited(params: table) -> void",
+		description: {
+			"sent when a player is ignited, only to the two players involved": false,
+			"\n\n---\nVariables of the `params` table:": false,
+			"pyro_entindex: int — entindex of the pyro who ignited the victim": true,
+			"victim_entindex: int — entindex of the player ignited by the pyro": true,
+			"weaponid: int — weaponid of the weapon used": true
+		}
+	},
+	OnGameEvent_player_ignited_inv: {
+		signature: "OnGameEvent_player_ignited_inv(params: table) -> void",
+		description: {
+			"sent when a player is ignited by a pyro who is being invulned, only to the medic who's doing the invulning": false,
+			"\n\n---\nVariables of the `params` table:": false,
+			"pyro_entindex: int — entindex of the pyro who ignited the victim": true,
+			"victim_entindex: int — entindex of the player ignited by the pyro": true,
+			"medic_entindex: int — entindex of the medic releasing the invuln": true
+		}
+	},
+	OnGameEvent_player_info: {
+		signature: "OnGameEvent_player_info(params: table) -> void",
+		description: {
+			"a player changed his name": false,
+			"\n\n---\nVariables of the `params` table:": false,
+			"name: string — player name": true,
+			"index: int — player slot (entity index-1)": true,
+			"userid: int — user ID on server (unique on server)": true,
+			"networkid: string — player network (i.e steam) id": true,
+			"bot: bool — true if player is a AI bot": true
+		}
+	},
+	OnGameEvent_player_initial_spawn: {
+		signature: "OnGameEvent_player_initial_spawn(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"index: int — entindex of the player": true
+		}
+	},
+	OnGameEvent_player_invulned: {
+		signature: "OnGameEvent_player_invulned(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"userid: int": true,
+			"medic_userid: int": true
+		}
+	},
+	OnGameEvent_player_jarated: {
+		signature: "OnGameEvent_player_jarated(params: table) -> void",
+		description: {
+			"sent when a player is jarated, only to the two players involved": false,
+			"\n\n---\nVariables of the `params` table:": false,
+			"thrower_entindex: int — entindex of the player who threw the jarate": true,
+			"victim_entindex: int — entindex of the player receiving it": true
+		}
+	},
+	OnGameEvent_player_jarated_fade: {
+		signature: "OnGameEvent_player_jarated_fade(params: table) -> void",
+		description: {
+			"sent when a player is jarated, only to the two players involved": false,
+			"\n\n---\nVariables of the `params` table:": false,
+			"thrower_entindex: int — entindex of the player who threw the jarate": true,
+			"victim_entindex: int — entindex of the player receiving it": true
+		}
+	},
+	OnGameEvent_player_killed_achievement_zone: {
+		signature: "OnGameEvent_player_killed_achievement_zone(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"attacker: int — entindex of the attacker": true,
+			"victim: int — entindex of the victim": true,
+			"zone_id: int — type of area (0 for general, 1 for capture zone)": true
+		}
+	},
+	OnGameEvent_player_mvp: {
+		signature: "OnGameEvent_player_mvp(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"player: int": true
+		}
+	},
+	OnGameEvent_player_pinned: {
+		signature: "OnGameEvent_player_pinned(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"pinned: int": true
+		}
+	},
+	OnGameEvent_player_regenerate: {
+		signature: "OnGameEvent_player_regenerate(params: table) -> void"
+	},
+	OnGameEvent_player_rocketpack_pushed: {
+		signature: "OnGameEvent_player_rocketpack_pushed(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"pusher: int — userID of who pushed": true,
+			"pushed: int — userID of who got pushed": true
+		}
+	},
+	OnGameEvent_player_sapped_object: {
+		signature: "OnGameEvent_player_sapped_object(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"userid: int — user ID of the spy": true,
+			"ownerid: int — user ID of the building owner": true,
+			"object: int": true,
+			"sapperid: int — index of the sapper": true
+		}
+	},
+	OnGameEvent_player_say: {
+		signature: "OnGameEvent_player_say(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"userid: int — user ID on server": true,
+			"text: string — the say text": true
+		}
+	},
+	OnGameEvent_player_score: {
+		signature: "OnGameEvent_player_score(params: table) -> void",
+		description: {
+			"players scores changed": false,
+			"\n\n---\nVariables of the `params` table:": false,
+			"userid: int — user ID on server": true,
+			"kills: int — # of kills": true,
+			"deaths: int — # of deaths": true,
+			"score: int — total game score": true
+		}
+	},
+	OnGameEvent_player_score_changed: {
+		signature: "OnGameEvent_player_score_changed(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"player: int": true,
+			"delta: int": true
+		}
+	},
+	OnGameEvent_player_shield_blocked: {
+		signature: "OnGameEvent_player_shield_blocked(params: table) -> void",
+		description: {
+			"sent when a player is jarated, only to the two players involved": false,
+			"\n\n---\nVariables of the `params` table:": false,
+			"attacker_entindex: int — entindex of the player who threw the jarate": true,
+			"blocker_entindex: int — entindex of the player receiving it": true
+		}
+	},
+	OnGameEvent_player_shoot: {
+		signature: "OnGameEvent_player_shoot(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"userid: int — user ID on server": true,
+			"weapon: int — weapon ID": true,
+			"mode: int — weapon mode": true
+		}
+	},
+	OnGameEvent_player_spawn: {
+		signature: "OnGameEvent_player_spawn(params: table) -> void",
+		description: {
+			"This event will be sent once when the player entity is created, i.e. they joined the server or they are loading in after a map change. In this case, `team` is equal to 0 (unassigned). Each time afterwards, the event will only be fired when the player spawns alive on red or blue team. This is also fired once when [[SourceTV]] is loaded in.": false,
+			"\n\n---\nVariables of the `params` table:": false,
+			"userid: int — user ID who spawned": true,
+			"team: int — team they spawned on": true,
+			"class: int — class they spawned as": true
+		}
+	},
+	OnGameEvent_player_stats_updated: {
+		signature: "OnGameEvent_player_stats_updated(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"forceupload: bool": true
+		}
+	},
+	OnGameEvent_player_stealsandvich: {
+		signature: "OnGameEvent_player_stealsandvich(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"owner: int": true,
+			"target: int": true
+		}
+	},
+	OnGameEvent_player_stunned: {
+		signature: "OnGameEvent_player_stunned(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"stunner: int": true,
+			"victim: int": true,
+			"victim_capping: bool": true,
+			"big_stun: bool": true
+		}
+	},
+	OnGameEvent_player_team: {
+		signature: "OnGameEvent_player_team(params: table) -> void",
+		description: {
+			"Fired when player joins a team.": false,
+			"\n\n---\nVariables of the `params` table:": false,
+			"userid: int — user ID on server": true,
+			"team: int — team id": true,
+			"oldteam: int — old team id": true,
+			"disconnect: bool — team change because player disconnects": true,
+			"autoteam: bool — true if the player was auto assigned to the team": true,
+			"silent: bool — if true wont print the team join messages": true,
+			"name: string — player's name": true
+		}
+	},
+	OnGameEvent_player_teleported: {
+		signature: "OnGameEvent_player_teleported(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"userid: int — userid of the player": true,
+			"builderid: int — userid of the player who built the teleporter": true,
+			"dist: float — distance the player was teleported": true
+		}
+	},
+	OnGameEvent_player_turned_to_ghost: {
+		signature: "OnGameEvent_player_turned_to_ghost(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"userid: int — user ID of the player who changed to a ghost": true
+		}
+	},
+	OnGameEvent_player_upgraded: {
+		signature: "OnGameEvent_player_upgraded(params: table) -> void"
+	},
+	OnGameEvent_player_upgradedobject: {
+		signature: "OnGameEvent_player_upgradedobject(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"userid: int — user ID of the builder": true,
+			"object: int — type of object built": true,
+			"index: int — index of the object": true,
+			"isbuilder: bool": true
+		}
+	},
+	OnGameEvent_player_use: {
+		signature: "OnGameEvent_player_use(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"userid: int — user ID on server": true,
+			"entity: int — entity used by player": true
+		}
+	},
+	OnGameEvent_player_used_powerup_bottle: {
+		signature: "OnGameEvent_player_used_powerup_bottle(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"player: int": true,
+			"type: int": true,
+			"time: float": true
+		}
+	},
+	OnGameEvent_playing_commentary: {
+		signature: "OnGameEvent_playing_commentary(params: table) -> void"
+	},
+	OnGameEvent_post_inventory_application: {
+		signature: "OnGameEvent_post_inventory_application(params: table) -> void",
+		description: {
+			"Fired when the player has items resupplied, i.e. when the player spawns or touches resupply ([[func_regenerate]]).": false,
+			"\n\n---\nVariables of the `params` table:": false,
+			"userid: int": true
+		}
+	},
+	OnGameEvent_projectile_direct_hit: {
+		signature: "OnGameEvent_projectile_direct_hit(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"attacker: int — index of the player who shot the projectile": true,
+			"victim: int — index of the player who got direct-ht": true,
+			"weapon_def_index: int — defindex of the direct hitting weapon": true
+		}
+	},
+	OnGameEvent_projectile_removed: {
+		signature: "OnGameEvent_projectile_removed(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"attacker: int": true,
+			"weapon_def_index: int": true,
+			"num_hit: int": true,
+			"num_direct_hit: int": true
+		}
+	},
+	OnGameEvent_pumpkin_lord_killed: {
+		signature: "OnGameEvent_pumpkin_lord_killed(params: table) -> void"
+	},
+	OnGameEvent_pumpkin_lord_summoned: {
+		signature: "OnGameEvent_pumpkin_lord_summoned(params: table) -> void"
+	},
+	OnGameEvent_pve_win_panel: {
+		signature: "OnGameEvent_pve_win_panel(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"panel_style: int — for client to determine layout": true,
+			"winning_team: int": true,
+			"winreason: int — the reason the team won": true
+		}
+	},
+	OnGameEvent_quest_map_data_changed: {
+		signature: "OnGameEvent_quest_map_data_changed(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"igniter: int — entindex of the igniter": true,
+			"douser: int — entindex of the douser": true,
+			"victim: int — entindex of the victim": true
+		}
+	},
+	OnGameEvent_quest_objective_completed: {
+		signature: "OnGameEvent_quest_objective_completed(params: table) -> void",
+		description: {
+			"For prediction": false,
+			"\n\n---\nVariables of the `params` table:": false,
+			"quest_item_id_low: int": true,
+			"quest_item_id_hi: int": true,
+			"quest_objective_id: int": true,
+			"scorer_user_id: int": true
+		}
+	},
+	OnGameEvent_quest_progress: {
+		signature: "OnGameEvent_quest_progress(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"owner: int": true,
+			"scorer: int": true,
+			"type: int": true,
+			"completed: bool": true,
+			"quest_defindex: int": true
+		}
+	},
+	OnGameEvent_quest_request: {
+		signature: "OnGameEvent_quest_request(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"request: int": true,
+			"msg: string — Protobuf serialized to a string": true
+		}
+	},
+	OnGameEvent_quest_response: {
+		signature: "OnGameEvent_quest_response(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"request: int": true,
+			"success: bool": true,
+			"msg: string — Protobuf serialized to a string": true
+		}
+	},
+	OnGameEvent_quest_turn_in_state: {
+		signature: "OnGameEvent_quest_turn_in_state(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"state: int — Maps to EQuestTurnInState": true
+		}
+	},
+	OnGameEvent_questlog_opened: {
+		signature: "OnGameEvent_questlog_opened(params: table) -> void"
+	},
+	OnGameEvent_ragdoll_dissolved: {
+		signature: "OnGameEvent_ragdoll_dissolved(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"entindex: int": true
+		}
+	},
+	OnGameEvent_raid_spawn_mob: {
+		signature: "OnGameEvent_raid_spawn_mob(params: table) -> void"
+	},
+	OnGameEvent_raid_spawn_squad: {
+		signature: "OnGameEvent_raid_spawn_squad(params: table) -> void"
+	},
+	OnGameEvent_rd_player_score_points: {
+		signature: "OnGameEvent_rd_player_score_points(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"player: int": true,
+			"method: int": true,
+			"amount: int": true
+		}
+	},
+	OnGameEvent_rd_robot_impact: {
+		signature: "OnGameEvent_rd_robot_impact(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"entindex: int": true,
+			"impulse_x: float": true,
+			"impulse_y: float": true,
+			"impulse_z: float": true
+		}
+	},
+	OnGameEvent_rd_robot_killed: {
+		signature: "OnGameEvent_rd_robot_killed(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"userid: int — user ID who died": true,
+			"victim_entindex: int": true,
+			"inflictor_entindex: int — ent index of inflictor (a sentry, for example)": true,
+			"attacker: int — user ID who killed": true,
+			"weapon: string — weapon name killer used": true,
+			"weaponid: int — ID of weapon killed used": true,
+			"damagebits: int — bits of type of damage": true,
+			"customkill: int — type of custom kill": true,
+			"weapon_logclassname: string — weapon name that should be printed on the log": true
+		}
+	},
+	OnGameEvent_rd_rules_state_changed: {
+		signature: "OnGameEvent_rd_rules_state_changed(params: table) -> void"
+	},
+	OnGameEvent_rd_team_points_changed: {
+		signature: "OnGameEvent_rd_team_points_changed(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"points: int": true,
+			"team: int": true,
+			"method: int": true
+		}
+	},
+	OnGameEvent_recalculate_holidays: {
+		signature: "OnGameEvent_recalculate_holidays(params: table) -> void"
+	},
+	OnGameEvent_recalculate_truce: {
+		signature: "OnGameEvent_recalculate_truce(params: table) -> void"
+	},
+	OnGameEvent_rematch_failed_to_create: {
+		signature: "OnGameEvent_rematch_failed_to_create(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"map_index: int — what they voted for": true,
+			"vote: int — what the vote was": true
+		}
+	},
+	OnGameEvent_remove_nemesis_relationships: {
+		signature: "OnGameEvent_remove_nemesis_relationships(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"player: int — entindex of the player who should reset": true
+		}
+	},
+	OnGameEvent_replay_endrecord: {
+		signature: "OnGameEvent_replay_endrecord(params: table) -> void"
+	},
+	OnGameEvent_replay_replaysavailable: {
+		signature: "OnGameEvent_replay_replaysavailable(params: table) -> void"
+	},
+	OnGameEvent_replay_saved: {
+		signature: "OnGameEvent_replay_saved(params: table) -> void"
+	},
+	OnGameEvent_replay_servererror: {
+		signature: "OnGameEvent_replay_servererror(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"error: string": true
+		}
+	},
+	OnGameEvent_replay_sessioninfo: {
+		signature: "OnGameEvent_replay_sessioninfo(params: table) -> void",
+		description: {
+			"Sent when the server begins recording, or when a client first connects - only sent once per recording session": false,
+			"\n\n---\nVariables of the `params` table:": false,
+			"sn: string — session name": true,
+			"di: int — dump interval": true,
+			"cb: int — current block": true,
+			"st: int — session start tick": true
+		}
+	},
+	OnGameEvent_replay_startrecord: {
+		signature: "OnGameEvent_replay_startrecord(params: table) -> void",
+		description: "Sent when the server begins recording - only used to display UI"
+	},
+	OnGameEvent_replay_youtube_stats: {
+		signature: "OnGameEvent_replay_youtube_stats(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"views: int": true,
+			"likes: int": true,
+			"favorited: int": true
+		}
+	},
+	OnGameEvent_respawn_ghost: {
+		signature: "OnGameEvent_respawn_ghost(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"reviver: int — userid of the reviving player": true,
+			"ghost: int — userid of the player that got revived": true
+		}
+	},
+	OnGameEvent_restart_timer_time: {
+		signature: "OnGameEvent_restart_timer_time(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"time: int — How much time is left": true
+		}
+	},
+	OnGameEvent_revive_player_complete: {
+		signature: "OnGameEvent_revive_player_complete(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"entindex: int — entindex of the medic": true
+		}
+	},
+	OnGameEvent_revive_player_notify: {
+		signature: "OnGameEvent_revive_player_notify(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"entindex: int": true,
+			"marker_entindex: int": true
+		}
+	},
+	OnGameEvent_revive_player_stopped: {
+		signature: "OnGameEvent_revive_player_stopped(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"entindex: int": true
+		}
+	},
+	OnGameEvent_rocket_jump: {
+		signature: "OnGameEvent_rocket_jump(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"userid: int": true,
+			"playsound: bool": true
+		}
+	},
+	OnGameEvent_rocket_jump_landed: {
+		signature: "OnGameEvent_rocket_jump_landed(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"userid: int": true
+		}
+	},
+	OnGameEvent_rocketpack_landed: {
+		signature: "OnGameEvent_rocketpack_landed(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"userid: int": true
+		}
+	},
+	OnGameEvent_rocketpack_launch: {
+		signature: "OnGameEvent_rocketpack_launch(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"userid: int": true,
+			"playsound: bool": true
+		}
+	},
+	OnGameEvent_round_end: {
+		signature: "OnGameEvent_round_end(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"winner: int — winner team/user i": true,
+			"reason: int — reson why team won": true,
+			"message: string — end round message": true
+		}
+	},
+	OnGameEvent_round_start: {
+		signature: "OnGameEvent_round_start(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"timelimit: int — round time limit in seconds": true,
+			"fraglimit: int — frag limit in seconds": true,
+			"objective: string — round objective": true
+		}
+	},
+	OnGameEvent_rps_taunt_event: {
+		signature: "OnGameEvent_rps_taunt_event(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"winner: int — entindex of the winning player": true,
+			"winner_rps: int — winner's selection": true,
+			"loser: int — entindex of the losing player": true,
+			"loser_rps: int — loser's selection": true
+		}
+	},
+	OnGameEvent_schema_updated: {
+		signature: "OnGameEvent_schema_updated(params: table) -> void"
+	},
+	OnGameEvent_scorestats_accumulated_reset: {
+		signature: "OnGameEvent_scorestats_accumulated_reset(params: table) -> void",
+		description: "Fired when round resets due to `mp_restartgame`."
+	},
+	OnGameEvent_scorestats_accumulated_update: {
+		signature: "OnGameEvent_scorestats_accumulated_update(params: table) -> void",
+		description: "Fired right before map entities are cleaned up for a round restart.\n\nThis event is not fired in Mann Vs Machine mode. For MvM, use `recalculate_holidays` and check if `GetRoundState() == 3` is true, which indicates a mission reset.\n\n"
+	},
+	OnGameEvent_scout_grand_slam: {
+		signature: "OnGameEvent_scout_grand_slam(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"scout_id: int": true,
+			"target_id: int": true
+		}
+	},
+	OnGameEvent_scout_slamdoll_landed: {
+		signature: "OnGameEvent_scout_slamdoll_landed(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"target_index: int": true,
+			"x: float": true,
+			"y: float": true,
+			"z: float": true
+		}
+	},
+	OnGameEvent_sentry_on_go_active: {
+		signature: "OnGameEvent_sentry_on_go_active(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"index: int": true
+		}
+	},
+	OnGameEvent_server_addban: {
+		signature: "OnGameEvent_server_addban(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"name: string — player name": true,
+			"userid: int — user ID on server": true,
+			"networkid: string — player network (i.e steam) id": true,
+			"ip: string — IP address": true,
+			"duration: string — length of the ban": true,
+			"by: string — banned by...": true,
+			"kicked: bool — whether the player was also kicked": true
+		}
+	},
+	OnGameEvent_server_changelevel_failed: {
+		signature: "OnGameEvent_server_changelevel_failed(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"levelname: string — The level name that failed changelevel": true
+		}
+	},
+	OnGameEvent_server_cvar: {
+		signature: "OnGameEvent_server_cvar(params: table) -> void",
+		description: {
+			"a server console var has changed": false,
+			"\n\n---\nVariables of the `params` table:": false,
+			"cvarname: string — cvar name, eg \"mp_roundtime\"": true,
+			"cvarvalue: string — new cvar value": true
+		}
+	},
+	OnGameEvent_server_message: {
+		signature: "OnGameEvent_server_message(params: table) -> void",
+		description: {
+			"a generic server message": false,
+			"\n\n---\nVariables of the `params` table:": false,
+			"text: string — the message text": true
+		}
+	},
+	OnGameEvent_server_removeban: {
+		signature: "OnGameEvent_server_removeban(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"networkid: string — player network (i.e steam) id": true,
+			"ip: string — IP address": true,
+			"by: string — removed by...": true
+		}
+	},
+	OnGameEvent_server_shutdown: {
+		signature: "OnGameEvent_server_shutdown(params: table) -> void",
+		description: {
+			"server shut down": false,
+			"\n\n---\nVariables of the `params` table:": false,
+			"reason: string — reason why server was shut down": true
+		}
+	},
+	OnGameEvent_server_spawn: {
+		signature: "OnGameEvent_server_spawn(params: table) -> void",
+		description: {
+			"send once a server starts": false,
+			"\n\n---\nVariables of the `params` table:": false,
+			"hostname: string — public host name": true,
+			"address: string — hostame, IP or DNS name": true,
+			"ip: int": true,
+			"port: int — server port": true,
+			"game: string — game dir": true,
+			"mapname: string — map name": true,
+			"maxplayers: int — max players": true,
+			"os: string — WIN32, LINUX": true,
+			"dedicated: bool — true if dedicated server": true,
+			"password: bool — true if password protected": true
+		}
+	},
+	OnGameEvent_show_annotation: {
+		signature: "OnGameEvent_show_annotation(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"worldPosX: float": true,
+			"worldPosY: float": true,
+			"worldPosZ: float": true,
+			"worldNormalX: float": true,
+			"worldNormalY: float": true,
+			"worldNormalZ: float": true,
+			"id: int": true,
+			"text: string — name (unlocalized)": true,
+			"lifetime: float": true,
+			"visibilityBitfield: int — bitfield of the players that can see this. If 0, everyone can see it": true,
+			"follow_entindex: int — if this is set, follow this entity": true,
+			"show_distance: bool": true,
+			"play_sound: string": true,
+			"show_effect: bool": true
+		}
+	},
+	OnGameEvent_show_class_layout: {
+		signature: "OnGameEvent_show_class_layout(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"show: bool": true
+		}
+	},
+	OnGameEvent_show_freezepanel: {
+		signature: "OnGameEvent_show_freezepanel(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"killer: int — entindex of the killer entity": true
+		}
+	},
+	OnGameEvent_show_match_summary: {
+		signature: "OnGameEvent_show_match_summary(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"success: bool": true
+		}
+	},
+	OnGameEvent_show_vs_panel: {
+		signature: "OnGameEvent_show_vs_panel(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"show: bool": true
+		}
+	},
+	OnGameEvent_single_player_death: {
+		signature: "OnGameEvent_single_player_death(params: table) -> void"
+	},
+	OnGameEvent_skeleton_killed_quest: {
+		signature: "OnGameEvent_skeleton_killed_quest(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"player: int — userid of the player that killed the skeleton": true
+		}
+	},
+	OnGameEvent_skeleton_king_killed_quest: {
+		signature: "OnGameEvent_skeleton_king_killed_quest(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"player: int — userid of the player that killed the skeleton": true
+		}
+	},
+	OnGameEvent_slap_notice: {
+		signature: "OnGameEvent_slap_notice(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"userid: int — user ID who died": true,
+			"victim_entindex: int": true,
+			"inflictor_entindex: int — ent index of inflictor (a sentry, for example)": true,
+			"attacker: int — user ID who killed": true,
+			"weapon: string — weapon name killer used": true,
+			"weaponid: int — ID of weapon killed used": true,
+			"damagebits: int — bits of type of damage": true,
+			"customkill: int — type of custom kill": true,
+			"assister: int — user ID of assister": true,
+			"weapon_logclassname: string — weapon name that should be printed on the log": true,
+			"stun_flags: int — victim's stun flags at the moment of death": true,
+			"death_flags: int — [[Team_Fortress_2/Scripting/Script_Functions/Constants#TF_DEATH|death flags]].": true,
+			"silent_kill: bool": true,
+			"assister_fallback: string — contains a string to use if \"assister\" is -1": true
+		}
+	},
+	OnGameEvent_spec_target_updated: {
+		signature: "OnGameEvent_spec_target_updated(params: table) -> void"
+	},
+	OnGameEvent_special_score: {
+		signature: "OnGameEvent_special_score(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"player: int — index of the scorer": true
+		}
+	},
+	OnGameEvent_spy_pda_reset: {
+		signature: "OnGameEvent_spy_pda_reset(params: table) -> void"
+	},
+	OnGameEvent_stats_resetround: {
+		signature: "OnGameEvent_stats_resetround(params: table) -> void"
+	},
+	OnGameEvent_sticky_jump: {
+		signature: "OnGameEvent_sticky_jump(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"userid: int": true,
+			"playsound: bool": true
+		}
+	},
+	OnGameEvent_sticky_jump_landed: {
+		signature: "OnGameEvent_sticky_jump_landed(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"userid: int": true
+		}
+	},
+	OnGameEvent_store_pricesheet_updated: {
+		signature: "OnGameEvent_store_pricesheet_updated(params: table) -> void"
+	},
+	OnGameEvent_tagged_player_as_it: {
+		signature: "OnGameEvent_tagged_player_as_it(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"player: int — userid of the tagging player": true
+		}
+	},
+	OnGameEvent_take_armor: {
+		signature: "OnGameEvent_take_armor(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"amount: int": true,
+			"total: int": true
+		}
+	},
+	OnGameEvent_take_health: {
+		signature: "OnGameEvent_take_health(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"amount: int": true,
+			"total: int": true
+		}
+	},
+	OnGameEvent_team_info: {
+		signature: "OnGameEvent_team_info(params: table) -> void",
+		description: {
+			"info about team": false,
+			"\n\n---\nVariables of the `params` table:": false,
+			"teamid: int — unique team id": true,
+			"teamname: string — team name eg \"Team Blue\"": true
+		}
+	},
+	OnGameEvent_team_leader_killed: {
+		signature: "OnGameEvent_team_leader_killed(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"killer: int — index of the killer": true,
+			"victim: int — index of the victim": true
+		}
+	},
+	OnGameEvent_team_score: {
+		signature: "OnGameEvent_team_score(params: table) -> void",
+		description: {
+			"team score changed": false,
+			"\n\n---\nVariables of the `params` table:": false,
+			"teamid: int — team id": true,
+			"score: int — total team score": true
+		}
+	},
+	OnGameEvent_teamplay_alert: {
+		signature: "OnGameEvent_teamplay_alert(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"alert_type: int — which alert type is this (scramble, etc)?": true
+		}
+	},
+	OnGameEvent_teamplay_broadcast_audio: {
+		signature: "OnGameEvent_teamplay_broadcast_audio(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"team: int — which team should hear the broadcast. 0 will make everyone hear it.": true,
+			"sound: string — sound to play": true,
+			"additional_flags: int — additional sound flags to pass through to sound system": true,
+			"player: int — entindex of the player source or -1": true
+		}
+	},
+	OnGameEvent_teamplay_capture_blocked: {
+		signature: "OnGameEvent_teamplay_capture_blocked(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"cp: int — index of the point that was blocked": true,
+			"cpname: string — name of the point": true,
+			"blocker: int — index of the player that blocked the cap": true,
+			"victim: int — index of the player that died, causing the block": true
+		}
+	},
+	OnGameEvent_teamplay_capture_broken: {
+		signature: "OnGameEvent_teamplay_capture_broken(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"cp: int": true,
+			"cpname: string": true,
+			"time_remaining: float": true
+		}
+	},
+	OnGameEvent_teamplay_flag_event: {
+		signature: "OnGameEvent_teamplay_flag_event(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"player: int — player this event involves": true,
+			"carrier: int — the carrier if needed": true,
+			"eventtype: int — pick up, capture, defend, dropped": true,
+			"home: int — whether or not the flag was home (only set for TF_FLAGEVENT_PICKUP)": true,
+			"team: int — which team the flag beints to": true
+		}
+	},
+	OnGameEvent_teamplay_game_over: {
+		signature: "OnGameEvent_teamplay_game_over(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"reason: string — why the game is over ( timelimit, winlimit )": true
+		}
+	},
+	OnGameEvent_teamplay_map_time_remaining: {
+		signature: "OnGameEvent_teamplay_map_time_remaining(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"seconds: int": true
+		}
+	},
+	OnGameEvent_teamplay_overtime_begin: {
+		signature: "OnGameEvent_teamplay_overtime_begin(params: table) -> void"
+	},
+	OnGameEvent_teamplay_overtime_end: {
+		signature: "OnGameEvent_teamplay_overtime_end(params: table) -> void"
+	},
+	OnGameEvent_teamplay_point_captured: {
+		signature: "OnGameEvent_teamplay_point_captured(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"cp: int — index of the point that was captured": true,
+			"cpname: string — name of the point": true,
+			"team: int — which team capped": true,
+			"cappers: string — string where each character is a player index of someone that capped": true
+		}
+	},
+	OnGameEvent_teamplay_point_locked: {
+		signature: "OnGameEvent_teamplay_point_locked(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"cp: int — index of the point being captured": true,
+			"cpname: string — name of the point": true,
+			"team: int — which team currently owns the point": true
+		}
+	},
+	OnGameEvent_teamplay_point_startcapture: {
+		signature: "OnGameEvent_teamplay_point_startcapture(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"cp: int — index of the point being captured": true,
+			"cpname: string — name of the point": true,
+			"team: int — which team currently owns the point": true,
+			"capteam: int — which team is capping": true,
+			"cappers: string — string where each character is a player index of someone capping": true,
+			"captime: float — time between when this cap started and when the point last changed hands": true
+		}
+	},
+	OnGameEvent_teamplay_point_unlocked: {
+		signature: "OnGameEvent_teamplay_point_unlocked(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"cp: int — index of the point being captured": true,
+			"cpname: string — name of the point": true,
+			"team: int — which team currently owns the point": true
+		}
+	},
+	OnGameEvent_teamplay_pre_round_time_left: {
+		signature: "OnGameEvent_teamplay_pre_round_time_left(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"time: int": true
+		}
+	},
+	OnGameEvent_teamplay_ready_restart: {
+		signature: "OnGameEvent_teamplay_ready_restart(params: table) -> void"
+	},
+	OnGameEvent_teamplay_restart_round: {
+		signature: "OnGameEvent_teamplay_restart_round(params: table) -> void"
+	},
+	OnGameEvent_teamplay_round_active: {
+		signature: "OnGameEvent_teamplay_round_active(params: table) -> void",
+		description: "called when round is active, players can move"
+	},
+	OnGameEvent_teamplay_round_restart_seconds: {
+		signature: "OnGameEvent_teamplay_round_restart_seconds(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"seconds: int": true
+		}
+	},
+	OnGameEvent_teamplay_round_selected: {
+		signature: "OnGameEvent_teamplay_round_selected(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"round: string — name of the round selected": true
+		}
+	},
+	OnGameEvent_teamplay_round_stalemate: {
+		signature: "OnGameEvent_teamplay_round_stalemate(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"reason: int — why the stalemate is occuring": true
+		}
+	},
+	OnGameEvent_teamplay_round_start: {
+		signature: "OnGameEvent_teamplay_round_start(params: table) -> void",
+		description: {
+			"round restart": false,
+			"\n\n---\nVariables of the `params` table:": false,
+			"full_reset: bool — is this a full reset of the map": true
+		}
+	},
+	OnGameEvent_teamplay_round_win: {
+		signature: "OnGameEvent_teamplay_round_win(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"team: int — which team won the round": true,
+			"winreason: int — the reason the team won": true,
+			"flagcaplimit: int — if win reason was flag cap limit, the value of the flag cap limit": true,
+			"full_round: int — was this a full round or a mini-round": true,
+			"round_time: float — elapsed time of this round": true,
+			"losing_team_num_caps: int — # of caps this round by losing team": true,
+			"was_sudden_death: int — did a team win this after entering sudden death": true
+		}
+	},
+	OnGameEvent_teamplay_setup_finished: {
+		signature: "OnGameEvent_teamplay_setup_finished(params: table) -> void"
+	},
+	OnGameEvent_teamplay_suddendeath_begin: {
+		signature: "OnGameEvent_teamplay_suddendeath_begin(params: table) -> void"
+	},
+	OnGameEvent_teamplay_suddendeath_end: {
+		signature: "OnGameEvent_teamplay_suddendeath_end(params: table) -> void"
+	},
+	OnGameEvent_teamplay_team_ready: {
+		signature: "OnGameEvent_teamplay_team_ready(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"team: int — which team is ready": true
+		}
+	},
+	OnGameEvent_teamplay_teambalanced_player: {
+		signature: "OnGameEvent_teamplay_teambalanced_player(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"player: int — entindex of the player": true,
+			"team: int — which team the player is being moved to": true
+		}
+	},
+	OnGameEvent_teamplay_timer_flash: {
+		signature: "OnGameEvent_teamplay_timer_flash(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"time_remaining: int — how many seconds until the round ends": true
+		}
+	},
+	OnGameEvent_teamplay_timer_time_added: {
+		signature: "OnGameEvent_teamplay_timer_time_added(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"timer: int — entindex of the timer": true,
+			"seconds_added: int — how many seconds were added to the round timer": true
+		}
+	},
+	OnGameEvent_teamplay_update_timer: {
+		signature: "OnGameEvent_teamplay_update_timer(params: table) -> void"
+	},
+	OnGameEvent_teamplay_waiting_abouttoend: {
+		signature: "OnGameEvent_teamplay_waiting_abouttoend(params: table) -> void"
+	},
+	OnGameEvent_teamplay_waiting_begins: {
+		signature: "OnGameEvent_teamplay_waiting_begins(params: table) -> void"
+	},
+	OnGameEvent_teamplay_waiting_ends: {
+		signature: "OnGameEvent_teamplay_waiting_ends(params: table) -> void"
+	},
+	OnGameEvent_teamplay_win_panel: {
+		signature: "OnGameEvent_teamplay_win_panel(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"panel_style: int — for client to determine layout": true,
+			"winning_team: int": true,
+			"winreason: int — the reason the team won": true,
+			"cappers: string — string where each character is a player index of someone that capped": true,
+			"flagcaplimit: int — if win reason was flag cap limit, the value of the flag cap limit": true,
+			"blue_score: int — red team score": true,
+			"red_score: int — blue team score": true,
+			"blue_score_prev: int — previous red team score": true,
+			"red_score_prev: int — previous blue team score": true,
+			"round_complete: int — is this a complete round, or the end of a mini-round": true,
+			"rounds_remaining: int — # of rounds remaining for wining team, if mini-round": true,
+			"player_1: int": true,
+			"player_1_points: int": true,
+			"player_2: int": true,
+			"player_2_points: int": true,
+			"player_3: int": true,
+			"player_3_points: int": true,
+			"killstreak_player_1: int": true,
+			"killstreak_player_1_count: int": true,
+			"game_over: int": true
+		}
+	},
+	OnGameEvent_teams_changed: {
+		signature: "OnGameEvent_teams_changed(params: table) -> void"
+	},
+	OnGameEvent_tf_game_over: {
+		signature: "OnGameEvent_tf_game_over(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"reason: string — why the game is over ( timelimit, winlimit )": true
+		}
+	},
+	OnGameEvent_tf_map_time_remaining: {
+		signature: "OnGameEvent_tf_map_time_remaining(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"seconds: int": true
+		}
+	},
+	OnGameEvent_throwable_hit: {
+		signature: "OnGameEvent_throwable_hit(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"userid: int — user ID who died": true,
+			"victim_entindex: int": true,
+			"inflictor_entindex: int — ent index of inflictor (a sentry, for example)": true,
+			"attacker: int — user ID who killed": true,
+			"weapon: string — weapon name killer used": true,
+			"weaponid: int — ID of weapon killed used": true,
+			"damagebits: int — bits of type of damage": true,
+			"customkill: int — type of custom kill": true,
+			"assister: int — user ID of assister": true,
+			"weapon_logclassname: string — weapon name that should be printed on the log": true,
+			"stun_flags: int — victim's stun flags at the moment of death": true,
+			"death_flags: int — [[Team_Fortress_2/Scripting/Script_Functions/Constants#TF_DEATH|death flags]].": true,
+			"silent_kill: bool": true,
+			"assister_fallback: string — contains a string to use if \"assister\" is -1": true,
+			"totalhits: int — Number of hits his player has done": true
+		}
+	},
+	OnGameEvent_tournament_enablecountdown: {
+		signature: "OnGameEvent_tournament_enablecountdown(params: table) -> void"
+	},
+	OnGameEvent_tournament_stateupdate: {
+		signature: "OnGameEvent_tournament_stateupdate(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"userid: int — user ID on server": true,
+			"namechange: bool": true,
+			"readystate: int": true,
+			"newname: string — players new name": true
+		}
+	},
+	OnGameEvent_training_complete: {
+		signature: "OnGameEvent_training_complete(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"next_map: string — next map (if any)": true,
+			"map: string — the name of the map this screen is on.": true,
+			"text: string — text to show": true
+		}
+	},
+	OnGameEvent_update_status_item: {
+		signature: "OnGameEvent_update_status_item(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"index: int": true,
+			"object: int": true
+		}
+	},
+	OnGameEvent_upgrades_file_changed: {
+		signature: "OnGameEvent_upgrades_file_changed(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"path: string": true
+		}
+	},
+	OnGameEvent_user_data_downloaded: {
+		signature: "OnGameEvent_user_data_downloaded(params: table) -> void",
+		description: "fired when achievements/stats are downloaded from Steam or XBox Live"
+	},
+	OnGameEvent_vote_cast: {
+		signature: "OnGameEvent_vote_cast(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"vote_option: int — which option the player voted on": true,
+			"team: int": true,
+			"entityid: int — entity id of the voter": true,
+			"voteidx: int": true
+		}
+	},
+	OnGameEvent_vote_changed: {
+		signature: "OnGameEvent_vote_changed(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"vote_option1: int": true,
+			"vote_option2: int": true,
+			"vote_option3: int": true,
+			"vote_option4: int": true,
+			"vote_option5: int": true,
+			"potentialVotes: int": true,
+			"voteidx: int": true
+		}
+	},
+	OnGameEvent_vote_ended: {
+		signature: "OnGameEvent_vote_ended(params: table) -> void"
+	},
+	OnGameEvent_vote_failed: {
+		signature: "OnGameEvent_vote_failed(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"team: int": true,
+			"voteidx: int": true
+		}
+	},
+	OnGameEvent_vote_maps_changed: {
+		signature: "OnGameEvent_vote_maps_changed(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"type: int": true,
+			"defindex: int": true,
+			"created: bool": true,
+			"deleted: bool": true,
+			"erase_history: bool": true
+		}
+	},
+	OnGameEvent_vote_options: {
+		signature: "OnGameEvent_vote_options(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"count: int — Number of options — up to MAX_VOTE_OPTIONS": true,
+			"option1: string": true,
+			"option2: string": true,
+			"option3: string": true,
+			"option4: string": true,
+			"option5: string": true,
+			"voteidx: int": true
+		}
+	},
+	OnGameEvent_vote_passed: {
+		signature: "OnGameEvent_vote_passed(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"details: string": true,
+			"param1: string": true,
+			"team: int": true,
+			"voteidx: int": true
+		}
+	},
+	OnGameEvent_vote_started: {
+		signature: "OnGameEvent_vote_started(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"issue: string": true,
+			"param1: string": true,
+			"team: int": true,
+			"initiator: int — entity id of the player who initiated the vote": true,
+			"voteidx: int": true
+		}
+	},
+	OnGameEvent_weapon_equipped: {
+		signature: "OnGameEvent_weapon_equipped(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"class: string": true,
+			"entindex: int": true
+		}
+	},
+	OnGameEvent_winlimit_changed: {
+		signature: "OnGameEvent_winlimit_changed(params: table) -> void",
+		description: {
+			"Variables of the `params` table:": false,
+			"delay: float": true
+		}
+	},

@@ -1,0 +1,7 @@
+out
+node_modules
+tsconfig.tsbuildinfo
+eslint.config.mjs
+.vscode/settings.json
+*.vsix
+.idea

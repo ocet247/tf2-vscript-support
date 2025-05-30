@@ -1,0 +1,43 @@
+	/* --------------------------- *
+	 * CBaseEntity                 *
+	 * --------------------------- */
+	__KeyValueFromFloat: {
+		signature: "CBaseEntity.__KeyValueFromFloat(key: string, value: float) -> bool",
+		description: "`(→ KeyValueFromFloat)`.\n\nBehaves the same as `KeyValueFromFloat`, use that instead."
+	},
+	__KeyValueFromInt: {
+		signature: "CBaseEntity.__KeyValueFromInt(key: string, value: int) -> bool",
+		description: "`(→ KeyValueFromInt)`.\n\nBehaves the same as `KeyValueFromInt`, use that instead."
+	},
+	__KeyValueFromString: {
+		signature: "CBaseEntity.__KeyValueFromString(key: string, value: string) -> bool",
+		description: "`(→ KeyValueFromString)`.\n\nBehaves the same as `KeyValueFromString`, use that instead."
+	},
+	__KeyValueFromVector: {
+		signature: "CBaseEntity.__KeyValueFromVector(key: string, value: Vector) -> bool",
+		description: "`(→ KeyValueFromVector)`.\n\nBehaves the same as `KeyValueFromVector`, use that instead."
+	},
+	GetAngles: {
+		signature: "CBaseEntity.GetAngles() -> Vector",
+		description: "`(→ GetAbsAngles)`.\n\nGet the entity's pitch, yaw, and roll as a **Vector**."
+	},
+	GetLeftVector: {
+		signature: "CBaseEntity.GetLeftVector() -> Vector",
+		description: "`(→ GetRightVector)`.\n\nGet the *right* vector of the entity. This is purely for compatibility."
+	},
+	GetVelocity: {
+		signature: "CBaseEntity.GetVelocity() -> Vector",
+		description: "`(→ GetAbsVelocity)`."
+	},
+	SetAngles: {
+		signature: "CBaseEntity.SetAngles(pitch: float, yaw: float, roll: float) -> void",
+		description: "`(→ SetAbsAngles)`.\n\nSet entity angles."
+	},
+	SetOrigin: {
+		signature: "CBaseEntity.SetOrigin(origin: Vector) -> void",
+		description: "`(→ SetAbsOrigin)`."
+	},
+	SetVelocity: {
+		signature: "CBaseEntity.SetVelocity(velocity: Vector) -> void",
+		description: "`(→ SetAbsVelocity)`."
+	},

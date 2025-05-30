@@ -1,0 +1,93 @@
+{
+	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"name": "squirrelDoc",
+	"patterns": [
+		{
+			"match": "(\")[^\"]*\"",
+			"captures": {
+				"0": {
+					"name": "string.quoted.double"
+				},
+				"1": {
+					"name": "punctuation.definition.string.begin.nut"
+				},
+				"2": {
+					"name": "punctuation.definition.string.end.nut"
+				}
+			}
+		},
+		{
+			"match": "—.*",
+			"name": ""
+		},
+		{
+			"match": "\\b(int|float|bool|number|handle|table|enum|any|array|string|function|ehandle|object|class|weakreference|Vector|QAngle|Vector2D|Vector4D|blob|Quaternion|Convars|Entities|EntityOutputs|NavMesh|NetProps|PlayerVoiceListener|CBaseEntity|CBaseAnimating|CBaseCombatWeapon|CBaseFlex|CBaseCombatCharacter|CBasePlayer|CBaseMultiplayerPlayer|CEconEntity|CTFPlayer|CTFBot|CTFBaseBoss|CEntities|CTFNavArea|CNavMesh|CNetPropManager|CScriptEntityOutputs|CScriptKeyValues|CPlayerVoiceListener|CEnvEntityMaker|CPointTemplate|CFuncTrackTrain|CPointScriptTemplate|CSceneEntity|CCallChainer|CSimpleCallChainer|NextBotCombatCharacter|INextBotComponent|ILocomotion|LateBinder|regexp)\\b",
+			"name": "entity.name.type.class.nut"
+		},
+		{
+			"match": "\\b(Constants|EBotType|ECollisionGroup|ECritType|EHitGroup|EHoliday|EHudNotify|EMoveCollide|EMoveType|ENavCornerType|ENavDirType|ENavRelativeDirType|ENavTraverseType|ERenderFx|ERenderMode|ERoundState|EScriptRecipientFilter|ESolidType|ESpectatorMode|EStopwatchState|ETFBotDifficultyType|ETFClass|ETFCond|ETFDmgCustom|ETFTeam|Math|Server|FButtons|FContents|FDmgType|FEntityEffects|FEntityEFlags|FHideHUD|FNavAttributeType|FPlayer|FSolid|FSurf|FTaunts|FTFBotAttributeType|FTFNavAttributeType)",
+			"name": "entity.name.type.enum.nut"
+		},
+		{
+			"match": "\\b(false|true|null|void)\\b",
+			"name": "variable.language"
+		},
+		{
+			"match": "(?<=(?:->|:)\\s*)\\w+",
+			"name": "entity.name.type.class.nut"
+		},
+		{
+			"match": "\\b-?\\d+(\\.)\\d*(?:[eE][+-]?\\d+)?\\b",
+			"captures": {
+				"0": {
+					"name": "constant.numeric.float.nut"
+				},
+				"1": {
+					"name": "meta.delimiter.decimal.period.nut"
+				}
+			}
+		},
+		{
+			"name": "constant.numeric.float.nut",
+			"match": "\\b-?\\d+[eE][+-]?\\d+\\b"
+		},
+		{
+			"name": "constant.numeric.integer.decimal.nut",
+			"match": "\\b-?(0|[1-9][0-9]*)\\b"
+		},
+		{
+			"name": "constant.numeric.integer.decimal.nut",
+			"match": "\\b-?0[89][0-9]*\\b"
+		},
+		{
+			"name": "constant.numeric.integer.octal.nut",
+			"match": "\\b-?0[0-7]+\\b"
+		},
+		{
+			"name": "constant.numeric.integer.hexadecimal.nut",
+			"match": "\\b-?0(x|X)[\\h]*\\b"
+			
+		},
+		{
+			"match": "\\b[_A-Za-z][\\w]*(?=\\()",
+			"name": "entity.name.function.nut"
+		},
+		{
+			"match": ",",
+			"name": "punctuation.separator.comma.nut"
+		},
+		{
+			"match": "\\.",
+			"name": "punctuation.accessor.nut"
+		},
+		{
+			"match": ":",
+			"name": "punctuation.colon.nut"
+		},
+		{
+			"match": "\\b[_A-Za-z][\\w]*\\b",
+			"name": "variable.other.nut"
+		}
+	],
+	"scopeName": "source.nutdoc"
+}

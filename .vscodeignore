@@ -1,0 +1,10 @@
+**
+
+!package.json
+!README.md
+!LICENSE
+!out/**.js
+!assets/nut_icon.png
+!language-configuration.json
+!snippets/
+!syntaxes/

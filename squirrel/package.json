@@ -1,0 +1,11 @@
+{
+  "name": "squirrel",
+  "publisher": "ocet247",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ocet247/tf2-vscript-support"
+  },
+  "version": "1.0.0",
+  "license": "MIT",
+  "main": "./src/index.ts"
+} 

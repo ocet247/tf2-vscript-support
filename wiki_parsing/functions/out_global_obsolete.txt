@@ -1,0 +1,8 @@
+	GetPhysAngularVelocity: {
+		signature: "GetPhysAngularVelocity(entity: handle) -> Vector",
+		description: "Returns the Angular velocity of the entity.  Deprecated, use the `GetPhysAngularVelocity` method on the entity instead."
+	},
+	GetPhysVelocity: {
+		signature: "GetPhysVelocity(entity: handle) -> Vector",
+		description: "Returns the velocity of the entity. Deprecated, use the `GetPhysVelocity` method on the entity instead."
+	},

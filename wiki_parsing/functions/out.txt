@@ -1,0 +1,2754 @@
+	/* --------------------------- *
+	 * CBaseEntity                 *
+	 * --------------------------- */
+	AcceptInput: {
+		signature: "CBaseEntity.AcceptInput(input: string, param: string, activator: handle, caller: handle) -> bool",
+		description: "Generate a synchronous I/O event. Unlike `EntFireByHandle`, this is processed immediately. Returns false if *input* is a null/empty string, or if the input wasn't handled."
+	},
+	AddEFlags: {
+		signature: "CBaseEntity.AddEFlags(flags: FEntityEFlags) -> void",
+		description: "Adds the supplied *flags* to the **Entity Flags** in the entity. *(m_iEFlags datamap)*\n\nSee [FEntityEFlags](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#FEntityEFlags)."
+	},
+	AddFlag: {
+		signature: "CBaseEntity.AddFlag(flags: FPlayer) -> void",
+		description: "Adds the supplied *flags* to another separate player-related entity flags system in the entity. *(m_fFlags datamap)*\n\nSee [FPlayer](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#FPlayer)."
+	},
+	AddSolidFlags: {
+		signature: "CBaseEntity.AddSolidFlags(flags: FSolid) -> void",
+		description: "Adds the supplied *flags* to the *Solid Flags* in the entity. *(m_Collision.m_usSolidFlags datamap)*\n\nSee [FSolid](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#FSolid)."
+	},
+	ApplyAbsVelocityImpulse: {
+		signature: "CBaseEntity.ApplyAbsVelocityImpulse(impulse: Vector) -> void",
+		description: "Apply a Velocity Impulse as a world space impulse vector. Works for most physics-based objects including dropped weapons and even dropped Sandviches."
+	},
+	ApplyLocalAngularVelocityImpulse: {
+		signature: "CBaseEntity.ApplyLocalAngularVelocityImpulse(impulse: Vector) -> void",
+		description: "Apply an Angular Velocity Impulse in entity local space. The direction of the input vector is the rotation axis, and the length is the magnitude of the impulse."
+	},
+	BecomeRagdollOnClient: {
+		signature: "CBaseEntity.BecomeRagdollOnClient(impulse: Vector) -> bool",
+		description: "Acts like the `BecomeRagdoll` input, with the required *impulse* value applied as a force on the ragdoll. Does NOT spawn a `[prop_ragdoll](https://developer.valvesoftware.com/wiki/prop_ragdoll)` or any other entity."
+	},
+	ClearFlags: {
+		signature: "CBaseEntity.ClearFlags() -> void",
+		description: "Sets the player-related entity flags to 0 on an entity, clearing them."
+	},
+	ClearSolidFlags: {
+		signature: "CBaseEntity.ClearSolidFlags() -> void",
+		description: "Sets *Solid Flags* to 0 on an entity, clearing them."
+	},
+	ConnectOutput: {
+		signature: "CBaseEntity.ConnectOutput(output_name: string, function_name: string) -> void",
+		description: "Adds an I/O connection that will call the named function when the specified output fires."
+	},
+	Destroy: {
+		signature: "CBaseEntity.Destroy() -> void",
+		description: "Removes the entity. Simply calls [UTIL_Remove](https://developer.valvesoftware.com/wiki/UTIL_Remove)."
+	},
+	DisableDraw: {
+		signature: "CBaseEntity.DisableDraw() -> void",
+		description: "Disable drawing and transmitting the entity to clients. *(adds EF_NODRAW)*"
+	},
+	DisconnectOutput: {
+		signature: "CBaseEntity.DisconnectOutput(output_name: string, function_name: string) -> void",
+		description: "Removes a connected script function from an I/O event."
+	},
+	DispatchSpawn: {
+		signature: "CBaseEntity.DispatchSpawn() -> void",
+		description: "Alternative dispatch spawn, same as the one in CEntities, for convenience."
+	},
+	EmitSound: {
+		signature: "CBaseEntity.EmitSound(sound_name: string) -> void",
+		description: "Plays a sound from this entity. The sound must be precached first for it to play (using `PrecacheSound` or `PrecacheScriptSound`)."
+	},
+	EnableDraw: {
+		signature: "CBaseEntity.EnableDraw() -> void",
+		description: "Enable drawing and transmitting the entity to clients. *(removes EF_NODRAW)*"
+	},
+	entindex: {
+		signature: "CBaseEntity.entindex() -> int",
+		description: "Returns the entity index."
+	},
+	EyeAngles: {
+		signature: "CBaseEntity.EyeAngles() -> QAngle",
+		description: "Returns the entity's eye angles. Acts like `GetAbsAngles` if the entity does not support it."
+	},
+	EyePosition: {
+		signature: "CBaseEntity.EyePosition() -> Vector",
+		description: "Get vector to eye position - absolute coords. Acts like `GetOrigin` if the entity does not support it."
+	},
+	FirstMoveChild: {
+		signature: "CBaseEntity.FirstMoveChild() -> handle",
+		description: "Returns the most-recent entity parented to this one."
+	},
+	GetAbsAngles: {
+		signature: "CBaseEntity.GetAbsAngles() -> QAngle",
+		description: "Get the entity's pitch, yaw, and roll as **QAngles**."
+	},
+	GetAbsVelocity: {
+		signature: "CBaseEntity.GetAbsVelocity() -> Vector",
+		description: "Returns the current absolute velocity of the entity."
+	},
+	GetAngularVelocity: {
+		signature: "CBaseEntity.GetAngularVelocity() -> Vector",
+		description: "Get the local angular velocity - returns a **Vector** of pitch, yaw, and roll."
+	},
+	GetBaseVelocity: {
+		signature: "CBaseEntity.GetBaseVelocity() -> Vector",
+		description: "Returns any constant velocity currently being imparted onto the entity. This includes being pushed by effects like"
+	},
+	GetBoundingMaxs: {
+		signature: "CBaseEntity.GetBoundingMaxs() -> Vector",
+		description: "Get a vector containing max bounds, centered on object."
+	},
+	GetBoundingMaxsOriented: {
+		signature: "CBaseEntity.GetBoundingMaxsOriented() -> Vector",
+		description: "Get a vector containing max bounds, centered on object, taking the object's orientation into account."
+	},
+	GetBoundingMins: {
+		signature: "CBaseEntity.GetBoundingMins() -> Vector",
+		description: "Get a vector containing min bounds, centered on object."
+	},
+	GetBoundingMinsOriented: {
+		signature: "CBaseEntity.GetBoundingMinsOriented() -> Vector",
+		description: "Get a vector containing min bounds, centered on object, taking the object's orientation into account."
+	},
+	GetCenter: {
+		signature: "CBaseEntity.GetCenter() -> Vector",
+		description: "Gets center point of the entity in world coordinates."
+	},
+	GetClassname: {
+		signature: "CBaseEntity.GetClassname() -> string"
+	},
+	GetCollisionGroup: {
+		signature: "CBaseEntity.GetCollisionGroup() -> int",
+		description: "Gets the current collision group of the entity."
+	},
+	GetEFlags: {
+		signature: "CBaseEntity.GetEFlags() -> int",
+		description: "Get the entity's engine flags."
+	},
+	GetFlags: {
+		signature: "CBaseEntity.GetFlags() -> int",
+		description: "Get the entity's flags."
+	},
+	GetEntityHandle: {
+		signature: "CBaseEntity.GetEntityHandle() -> ehandle",
+		description: "Get the entity as an EHANDLE."
+	},
+	GetEntityIndex: {
+		signature: "CBaseEntity.GetEntityIndex() -> int"
+	},
+	GetForwardVector: {
+		signature: "CBaseEntity.GetForwardVector() -> Vector",
+		description: "Get the forward vector of the entity."
+	},
+	GetFriction: {
+		signature: "CBaseEntity.GetFriction() -> float",
+		description: "Get PLAYER friction, ignored for objects."
+	},
+	GetGravity: {
+		signature: "CBaseEntity.GetGravity() -> float"
+	},
+	GetHealth: {
+		signature: "CBaseEntity.GetHealth() -> int"
+	},
+	GetLocalAngles: {
+		signature: "CBaseEntity.GetLocalAngles() -> QAngle"
+	},
+	GetLocalOrigin: {
+		signature: "CBaseEntity.GetLocalOrigin() -> Vector"
+	},
+	GetLocalVelocity: {
+		signature: "CBaseEntity.GetLocalVelocity() -> Vector",
+		description: "Get Entity relative velocity."
+	},
+	GetMaxHealth: {
+		signature: "CBaseEntity.GetMaxHealth() -> int"
+	},
+	GetModelKeyValues: {
+		signature: "CBaseEntity.GetModelKeyValues() -> handle",
+		description: "Get a KeyValue class instance on this entity's model."
+	},
+	GetModelName: {
+		signature: "CBaseEntity.GetModelName() -> string",
+		description: "Returns the name of the model."
+	},
+	GetMoveParent: {
+		signature: "CBaseEntity.GetMoveParent() -> handle",
+		description: "If in hierarchy, retrieves the entity's parent."
+	},
+	GetMoveType: {
+		signature: "CBaseEntity.GetMoveType() -> int"
+	},
+	GetName: {
+		signature: "CBaseEntity.GetName() -> string",
+		description: "Get entity's targetname."
+	},
+	GetOrigin: {
+		signature: "CBaseEntity.GetOrigin() -> Vector",
+		description: "This is `GetAbsOrigin` with a funny script name for some reason. Not changing it for legacy compat though."
+	},
+	GetOwner: {
+		signature: "CBaseEntity.GetOwner() -> handle",
+		description: "Gets this entity's owner."
+	},
+	GetPhysAngularVelocity: {
+		signature: "CBaseEntity.GetPhysAngularVelocity() -> Vector"
+	},
+	GetPhysVelocity: {
+		signature: "CBaseEntity.GetPhysVelocity() -> Vector"
+	},
+	GetPreTemplateName: {
+		signature: "CBaseEntity.GetPreTemplateName() -> string",
+		description: "Get the entity name stripped of template unique decoration."
+	},
+	GetRightVector: {
+		signature: "CBaseEntity.GetRightVector() -> Vector",
+		description: "Get the right vector of the entity."
+	},
+	GetRootMoveParent: {
+		signature: "CBaseEntity.GetRootMoveParent() -> handle",
+		description: "If in hierarchy, walks up the hierarchy to find the root parent."
+	},
+	GetScriptId: {
+		signature: "CBaseEntity.GetScriptId() -> string",
+		description: "Retrieve the unique identifier used to refer to the entity within the scripting system."
+	},
+	GetScriptScope: {
+		signature: "CBaseEntity.GetScriptScope() -> handle",
+		description: "Retrieve the script-side data associated with an entity."
+	},
+	GetScriptThinkFunc: {
+		signature: "CBaseEntity.GetScriptThinkFunc() -> string",
+		description: "Retrieve the name of the current script think func."
+	},
+	GetSolid: {
+		signature: "CBaseEntity.GetSolid() -> int",
+		description: "See [ESolidType](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ESolidType)."
+	},
+	GetSoundDuration: {
+		signature: "CBaseEntity.GetSoundDuration(sound_name: string, actor_model_name: string) -> float",
+		description: "Returns float duration of the sound. Actor model name is optional and can be left null."
+	},
+	GetTeam: {
+		signature: "CBaseEntity.GetTeam() -> int"
+	},
+	GetUpVector: {
+		signature: "CBaseEntity.GetUpVector() -> Vector",
+		description: "Get the up vector of the entity."
+	},
+	GetWaterLevel: {
+		signature: "CBaseEntity.GetWaterLevel() -> int",
+		description: "This function tells you how much of the entity is underwater. It returns a value of 0 if not underwater, 1 if the feet are (touching water brush), 2 if the waist is (center of the hull of the entity), and 3 if the head is (eyes position)."
+	},
+	GetWaterType: {
+		signature: "CBaseEntity.GetWaterType() -> int",
+		description: "It returns the type of water the entity is currently submerged in. 32 for water and 16 for slime."
+	},
+	IsAlive: {
+		signature: "CBaseEntity.IsAlive() -> bool",
+		description: "Am I alive?"
+	},
+	IsEFlagSet: {
+		signature: "CBaseEntity.IsEFlagSet(flag: FEntityEFlags) -> bool",
+		description: "See [FEntityEFlags](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#FEntityEFlags)."
+	},
+	IsPlayer: {
+		signature: "CBaseEntity.IsPlayer() -> bool",
+		description: "Checks whether the entity is a player or not."
+	},
+	IsSolid: {
+		signature: "CBaseEntity.IsSolid() -> bool"
+	},
+	IsSolidFlagSet: {
+		signature: "CBaseEntity.IsSolidFlagSet(flag: FSolid) -> bool",
+		description: "See [FSolid](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#FSolid)."
+	},
+	IsValid: {
+		signature: "CBaseEntity.IsValid() -> bool",
+		description: "Checks whether the entity still exists. Useful when storing entity handles and needing to check if the entity was not deleted."
+	},
+	KeyValueFromFloat: {
+		signature: "CBaseEntity.KeyValueFromFloat(key: string, value: float) -> bool",
+		description: "Executes KeyValue with a float."
+	},
+	KeyValueFromInt: {
+		signature: "CBaseEntity.KeyValueFromInt(key: string, value: int) -> bool",
+		description: "Executes KeyValue with an int."
+	},
+	KeyValueFromString: {
+		signature: "CBaseEntity.KeyValueFromString(key: string, value: string) -> bool",
+		description: "Executes KeyValue with a string."
+	},
+	KeyValueFromVector: {
+		signature: "CBaseEntity.KeyValueFromVector(key: string, value: Vector) -> bool",
+		description: "Executes KeyValue with a vector."
+	},
+	Kill: {
+		signature: "CBaseEntity.Kill() -> void",
+		description: "Removes the entity. Equivalent of firing the `Kill` I/O input, but instantaneous."
+	},
+	LocalEyeAngles: {
+		signature: "CBaseEntity.LocalEyeAngles() -> handle",
+		description: "Returns the entity's local eye angles."
+	},
+	NextMovePeer: {
+		signature: "CBaseEntity.NextMovePeer() -> handle",
+		description: "Returns the next entity parented *with* the entity. Intended for iteration use with `FirstMoveChild()`."
+	},
+	PrecacheModel: {
+		signature: "CBaseEntity.PrecacheModel(model_name: string) -> void",
+		description: "Precache a model (`.mdl`) or sprite (`.vmt`). The extension must be specified."
+	},
+	PrecacheScriptSound: {
+		signature: "CBaseEntity.PrecacheScriptSound(sound_script: string) -> void",
+		description: "Precache a sound script. Same as `PrecacheSoundScript`."
+	},
+	PrecacheSoundScript: {
+		signature: "CBaseEntity.PrecacheSoundScript(sound_script: string) -> void",
+		description: "Precache a sound script. Same as `PrecacheScriptSound`."
+	},
+	RemoveEFlags: {
+		signature: "CBaseEntity.RemoveEFlags(flags: FEntityEFlags) -> void",
+		description: "See [FEntityEFlags](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#FEntityEFlags)."
+	},
+	RemoveFlag: {
+		signature: "CBaseEntity.RemoveFlag(flags: FPlayer) -> void",
+		description: "See [FPlayer](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#FPlayer)."
+	},
+	RemoveSolidFlags: {
+		signature: "CBaseEntity.RemoveSolidFlags(flags: FSolid) -> void",
+		description: "See [FSolid](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#FSolid)."
+	},
+	SetAbsAngles: {
+		signature: "CBaseEntity.SetAbsAngles(angles: QAngle) -> void",
+		description: "Set entity pitch, yaw, roll as QAngles. Does not work on players, use `SnapEyeAngles` instead."
+	},
+	SetAbsVelocity: {
+		signature: "CBaseEntity.SetAbsVelocity(velocity: Vector) -> void",
+		description: "Sets the current absolute velocity of the entity. Does nothing on [VPhysics](https://developer.valvesoftware.com/wiki/VPhysics) objects (such as `prop_physics`). For those, use `SetPhysVelocity` instead."
+	},
+	SetAbsOrigin: {
+		signature: "CBaseEntity.SetAbsOrigin(origin: Vector) -> void",
+		description: "Sets the absolute origin of the entity."
+	},
+	SetAngularVelocity: {
+		signature: "CBaseEntity.SetAngularVelocity(pitch: float, yaw: float, roll: float) -> void",
+		description: "Set the local angular velocity."
+	},
+	SetCollisionGroup: {
+		signature: "CBaseEntity.SetCollisionGroup(group: ECollisionGroup) -> void",
+		description: "Set the current collision group of the entity.\n\nSee [ECollisionGroup](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ECollisionGroup)."
+	},
+	SetDrawEnabled: {
+		signature: "CBaseEntity.SetDrawEnabled(toggle: bool) -> void",
+		description: "Enables drawing if you pass true, disables drawing if you pass false."
+	},
+	SetEFlags: {
+		signature: "CBaseEntity.SetEFlags(flags: FEntityEFlags) -> void",
+		description: "See [FEntityEFlags](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#FEntityEFlags)."
+	},
+	SetForwardVector: {
+		signature: "CBaseEntity.SetForwardVector(forward: Vector) -> void",
+		description: "Set the orientation of the entity to have this forward vector."
+	},
+	SetFriction: {
+		signature: "CBaseEntity.SetFriction(friction: float) -> void"
+	},
+	SetGravity: {
+		signature: "CBaseEntity.SetGravity(gravity: float) -> void",
+		description: "Sets a multiplier for gravity. 1 is default gravity."
+	},
+	SetHealth: {
+		signature: "CBaseEntity.SetHealth(health: int) -> void"
+	},
+	SetLocalAngles: {
+		signature: "CBaseEntity.SetLocalAngles(angles: QAngle) -> void"
+	},
+	SetLocalOrigin: {
+		signature: "CBaseEntity.SetLocalOrigin(origin: Vector) -> void"
+	},
+	SetMaxHealth: {
+		signature: "CBaseEntity.SetMaxHealth(health: int) -> void",
+		description: "Sets the maximum health this entity can have. Does not update the current health, so `SetHealth` should be used afterwards."
+	},
+	SetModel: {
+		signature: "CBaseEntity.SetModel(model_name: string) -> void",
+		description: "Set a model for this entity."
+	},
+	SetMoveType: {
+		signature: "CBaseEntity.SetMoveType(movetype: EMoveType, movecollide: EMoveCollide) -> void",
+		description: "See [EMoveType](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#EMoveType) ,[EMoveCollide](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#EMoveCollide)."
+	},
+	SetOwner: {
+		signature: "CBaseEntity.SetOwner(entity: handle) -> void",
+		description: "Sets this entity's owner."
+	},
+	SetPhysAngularVelocity: {
+		signature: "CBaseEntity.SetPhysAngularVelocity(angular_velocity: Vector) -> void"
+	},
+	SetPhysVelocity: {
+		signature: "CBaseEntity.SetPhysVelocity(velocity: Vector) -> void"
+	},
+	SetSize: {
+		signature: "CBaseEntity.SetSize(mins: Vector, maxs: Vector) -> void",
+		description: "Sets the bounding box's scale for this entity."
+	},
+	SetSolid: {
+		signature: "CBaseEntity.SetSolid(solid: ESolidType) -> void",
+		description: "See [ESolidType](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ESolidType)."
+	},
+	SetSolidFlags: {
+		signature: "CBaseEntity.SetSolidFlags(flags: FSolid) -> void",
+		description: "See [FSolid](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#FSolid)."
+	},
+	SetTeam: {
+		signature: "CBaseEntity.SetTeam(team: ETFTeam) -> void",
+		description: "Sets entity team.\n\nSee [ETFTeam](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ETFTeam)."
+	},
+	SetWaterLevel: {
+		signature: "CBaseEntity.SetWaterLevel(water_level: int) -> void",
+		description: "This sets how much of the entity is underwater. Setting it to 0 means it is not underwater, 1 if the feet are (touching water brush), 2 if the waist is (center of the hull of the entity), and 3 if the head is (eyes position)."
+	},
+	SetWaterType: {
+		signature: "CBaseEntity.SetWaterType(water_type: int) -> void",
+		description: "Set the type of water the entity is currently submerged in. Generic values to use are 32 for water and 16 for slime."
+	},
+	StopSound: {
+		signature: "CBaseEntity.StopSound(sound_name: string) -> void",
+		description: "Stops a sound on this entity."
+	},
+	TakeDamage: {
+		signature: "CBaseEntity.TakeDamage(damage: float, damage_type: FDmgType, attacker: handle) -> void",
+		description: "Deals damage to the entity.\n\nSee [FDmgType](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#FDmgType)."
+	},
+	TakeDamageEx: {
+		signature: "CBaseEntity.TakeDamageEx(inflictor: handle, attacker: handle, weapon: handle, damage_force: Vector, damage_position: Vector, damage: float, damage_type: FDmgType) -> void",
+		description: "Extended version of `TakeDamage`.\n\nSee [FDmgType](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#FDmgType)."
+	},
+	TakeDamageCustom: {
+		signature: "CBaseEntity.TakeDamageCustom(inflictor: handle, attacker: handle, weapon: handle, damage_force: Vector, damage_position: Vector, damage: float, damage_type: FDmgType, custom_damage_type: ETFDmgCustom) -> void",
+		description: "Extended version of `TakeDamageEx` that can apply a custom damage type.\n\nSee [FDmgType](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#FDmgType) ,[ETFDmgCustom](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ETFDmgCustom)."
+	},
+	Teleport: {
+		signature: "CBaseEntity.Teleport(use_origin: bool, origin: Vector, use_angles: bool, angles: QAngle, use_velocity: bool, velocity: Vector) -> void",
+		description: "Teleports this entity. For this function, set the bools to false if you want that entity's property unchanged. (do not use null arguments!)"
+	},
+	TerminateScriptScope: {
+		signature: "CBaseEntity.TerminateScriptScope() -> void",
+		description: "Clear the current script scope for this entity."
+	},
+	ToggleFlag: {
+		signature: "CBaseEntity.ToggleFlag(flags: FPlayer) -> void",
+		description: "See [FPlayer](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#FPlayer)."
+	},
+	ValidateScriptScope: {
+		signature: "CBaseEntity.ValidateScriptScope() -> bool",
+		description: "Create a script scope for an entity if it doesn't already exist. The return value is always true, unless the script VM is disabled in launch options."
+	},
+	/* --------------------------- *
+	 * CBaseAnimating              *
+	 * --------------------------- */
+	DispatchAnimEvents: {
+		signature: "CBaseAnimating.DispatchAnimEvents(entity: handle) -> void",
+		description: "Dispatch animation events to a CBaseAnimating entity."
+	},
+	FindBodygroupByName: {
+		signature: "CBaseAnimating.FindBodygroupByName(name: string) -> int",
+		description: "Find a bodygroup ID by name. Returns -1 if the bodygroup does not exist."
+	},
+	GetAttachmentAngles: {
+		signature: "CBaseAnimating.GetAttachmentAngles(id: int) -> QAngle",
+		description: "Get an attachment's angles as a QAngle, by ID."
+	},
+	GetAttachmentBone: {
+		signature: "CBaseAnimating.GetAttachmentBone(id: int) -> int",
+		description: "Get an attachment's parent bone index by ID."
+	},
+	GetAttachmentOrigin: {
+		signature: "CBaseAnimating.GetAttachmentOrigin(id: int) -> Vector",
+		description: "Get an attachment's origin as a Vector, by ID."
+	},
+	GetBodygroup: {
+		signature: "CBaseAnimating.GetBodygroup(id: int) -> int",
+		description: "Get the bodygroup value by bodygroup ID."
+	},
+	GetBodygroupName: {
+		signature: "CBaseAnimating.GetBodygroupName(id: int) -> string",
+		description: "Get the bodygroup's name by ID."
+	},
+	GetBodygroupPartName: {
+		signature: "CBaseAnimating.GetBodygroupPartName(group: int, part: int) -> string",
+		description: "Get the bodygroup's name by group and part."
+	},
+	GetBoneAngles: {
+		signature: "CBaseAnimating.GetBoneAngles(id: int) -> QAngle",
+		description: "Get the bone's angles as a QAngle, by ID."
+	},
+	GetBoneOrigin: {
+		signature: "CBaseAnimating.GetBoneOrigin(id: int) -> Vector",
+		description: "Get the bone's origin Vector by ID."
+	},
+	GetCycle: {
+		signature: "CBaseAnimating.GetCycle() -> float",
+		description: "Gets the model's current animation cycle rate. Ranges from 0.0 to 1.0."
+	},
+	GetModelScale: {
+		signature: "CBaseAnimating.GetModelScale() -> float",
+		description: "Get the model's scale."
+	},
+	GetPlaybackRate: {
+		signature: "CBaseAnimating.GetPlaybackRate() -> float",
+		description: "Get the current animation's playback rate."
+	},
+	GetSequence: {
+		signature: "CBaseAnimating.GetSequence() -> int",
+		description: "Get the current-playing sequence's ID."
+	},
+	GetSequenceActivityName: {
+		signature: "CBaseAnimating.GetSequenceActivityName(id: int) -> string",
+		description: "Get the activity name for a sequence by sequence ID."
+	},
+	GetSequenceDuration: {
+		signature: "CBaseAnimating.GetSequenceDuration(id: int) -> float",
+		description: "Get a sequence duration in seconds by sequence ID."
+	},
+	GetSequenceName: {
+		signature: "CBaseAnimating.GetSequenceName(id: int) -> string",
+		description: "Get a sequence name by sequence ID. Returns \"Not Found!\" if ID is -1, \"Unknown\" if the sequence doesn't exist or \"No model!\" if no model is assigned."
+	},
+	GetSkin: {
+		signature: "CBaseAnimating.GetSkin() -> int",
+		description: "Gets the current skin index."
+	},
+	IsSequenceFinished: {
+		signature: "CBaseAnimating.IsSequenceFinished() -> bool",
+		description: "Ask whether the main sequence is done playing."
+	},
+	LookupActivity: {
+		signature: "CBaseAnimating.LookupActivity(activity: string) -> int",
+		description: "Get the named activity index. Returns -1 if the activity does not exist."
+	},
+	LookupAttachment: {
+		signature: "CBaseAnimating.LookupAttachment(name: string) -> int",
+		description: "Get the named attachment index. Returns 0 if the attachment does not exist."
+	},
+	LookupBone: {
+		signature: "CBaseAnimating.LookupBone(bone: string) -> int",
+		description: "Get the named bone index. Returns -1 if the bone does not exist."
+	},
+	LookupPoseParameter: {
+		signature: "CBaseAnimating.LookupPoseParameter(name: string) -> int",
+		description: "Gets the pose parameter's index. Returns -1 if the pose parameter does not exist."
+	},
+	LookupSequence: {
+		signature: "CBaseAnimating.LookupSequence(name: string) -> int",
+		description: "Looks up a sequence by names of sequences or activities. Returns -1 if the sequence does not exist."
+	},
+	ResetSequence: {
+		signature: "CBaseAnimating.ResetSequence(id: int) -> void",
+		description: "Reset a sequence by sequence ID. If the ID is different than the current sequence, switch to the new sequence."
+	},
+	SetBodygroup: {
+		signature: "CBaseAnimating.SetBodygroup(id: int, value: int) -> void",
+		description: "Set the bodygroup by ID."
+	},
+	SetCycle: {
+		signature: "CBaseAnimating.SetCycle(cycle: float) -> void",
+		description: "Sets the model's current animation cycle from 0 to 1."
+	},
+	SetModelSimple: {
+		signature: "CBaseAnimating.SetModelSimple(model_name: string) -> void",
+		description: "Set a model for this entity. Matches easier behaviour of the SetModel input, automatically precaches, maintains sequence/cycle if possible. Also clears the bone cache."
+	},
+	SetModelScale: {
+		signature: "CBaseAnimating.SetModelScale(scale: float, change_duration: float) -> void",
+		description: "Changes a model's scale over time. Set the change duration to 0.0 to change the scale instantly."
+	},
+	SetPlaybackRate: {
+		signature: "CBaseAnimating.SetPlaybackRate(rate: float) -> void",
+		description: "Set the current animation's playback rate."
+	},
+	SetPoseParameter: {
+		signature: "CBaseAnimating.SetPoseParameter(id: int, value: float) -> float",
+		description: "Sets a pose parameter value. Returns the effective value after clamping or looping."
+	},
+	SetSequence: {
+		signature: "CBaseAnimating.SetSequence(id: int) -> void",
+		description: "Plays a sequence by sequence ID."
+	},
+	SetSkin: {
+		signature: "CBaseAnimating.SetSkin(index: int) -> void",
+		description: "Sets the model's skin."
+	},
+	StopAnimation: {
+		signature: "CBaseAnimating.StopAnimation() -> void",
+		description: "Stop the current animation (same as SetPlaybackRate 0.0)."
+	},
+	StudioFrameAdvance: {
+		signature: "CBaseAnimating.StudioFrameAdvance() -> void",
+		description: "Advance animation frame to some time in the future with an automatically calculated interval."
+	},
+	StudioFrameAdvanceManual: {
+		signature: "CBaseAnimating.StudioFrameAdvanceManual(dt: float) -> void",
+		description: "Advance animation frame to some time in the future with a manual interval."
+	},
+	/* --------------------------- *
+	 * CBaseCombatWeapon           *
+	 * --------------------------- */
+	CanBeSelected: {
+		signature: "CBaseCombatWeapon.CanBeSelected() -> bool",
+		description: "Can this weapon be selected."
+	},
+	Clip1: {
+		signature: "CBaseCombatWeapon.Clip1() -> int",
+		description: "Current ammo in clip1."
+	},
+	Clip2: {
+		signature: "CBaseCombatWeapon.Clip2() -> int",
+		description: "Current ammo in clip2."
+	},
+	GetDefaultClip1: {
+		signature: "CBaseCombatWeapon.GetDefaultClip1() -> int",
+		description: "Default size of clip1."
+	},
+	GetDefaultClip2: {
+		signature: "CBaseCombatWeapon.GetDefaultClip2() -> int",
+		description: "Default size of clip2."
+	},
+	GetMaxClip1: {
+		signature: "CBaseCombatWeapon.GetMaxClip1() -> int",
+		description: "Max size of clip1."
+	},
+	GetMaxClip2: {
+		signature: "CBaseCombatWeapon.GetMaxClip2() -> int",
+		description: "Max size of clip2."
+	},
+	GetName: {
+		signature: "CBaseCombatWeapon.GetName() -> string",
+		description: "Gets the weapon's internal name (not the targetname!)"
+	},
+	GetPosition: {
+		signature: "CBaseCombatWeapon.GetPosition() -> int",
+		description: "Gets the weapon's current position."
+	},
+	GetPrimaryAmmoCount: {
+		signature: "CBaseCombatWeapon.GetPrimaryAmmoCount() -> int",
+		description: "Current primary ammo count if no clip is used or to give a player if they pick up this weapon legacy style (not TF)."
+	},
+	GetPrimaryAmmoType: {
+		signature: "CBaseCombatWeapon.GetPrimaryAmmoType() -> int",
+		description: "Returns the primary ammo type."
+	},
+	GetPrintName: {
+		signature: "CBaseCombatWeapon.GetPrintName() -> string",
+		description: "Gets the weapon's print name."
+	},
+	GetSecondaryAmmoCount: {
+		signature: "CBaseCombatWeapon.GetSecondaryAmmoCount() -> int",
+		description: "Current secondary ammo count if no clip is used or to give a player if they pick up this weapon legacy style (not TF)."
+	},
+	GetSecondaryAmmoType: {
+		signature: "CBaseCombatWeapon.GetSecondaryAmmoType() -> int",
+		description: "Returns the secondary ammo type."
+	},
+	GetSlot: {
+		signature: "CBaseCombatWeapon.GetSlot() -> int",
+		description: "Gets the weapon's current slot."
+	},
+	GetSubType: {
+		signature: "CBaseCombatWeapon.GetSubType() -> int",
+		description: "Get the weapon subtype."
+	},
+	GetWeaponFlags: {
+		signature: "CBaseCombatWeapon.GetWeaponFlags() -> int",
+		description: "Get the weapon flags."
+	},
+	GetWeight: {
+		signature: "CBaseCombatWeapon.GetWeight() -> int",
+		description: "Get the weapon weighting/importance."
+	},
+	HasAnyAmmo: {
+		signature: "CBaseCombatWeapon.HasAnyAmmo() -> bool",
+		description: "Do we have any ammo?"
+	},
+	HasPrimaryAmmo: {
+		signature: "CBaseCombatWeapon.HasPrimaryAmmo() -> bool",
+		description: "Do we have any primary ammo?"
+	},
+	HasSecondaryAmmo: {
+		signature: "CBaseCombatWeapon.HasSecondaryAmmo() -> bool",
+		description: "Do we have any secondary ammo?"
+	},
+	IsAllowedToSwitch: {
+		signature: "CBaseCombatWeapon.IsAllowedToSwitch() -> bool",
+		description: "Are we allowed to switch to this weapon?"
+	},
+	IsMeleeWeapon: {
+		signature: "CBaseCombatWeapon.IsMeleeWeapon() -> bool",
+		description: "Returns whether this is a melee weapon."
+	},
+	PrimaryAttack: {
+		signature: "CBaseCombatWeapon.PrimaryAttack() -> void",
+		description: "Force a primary attack."
+	},
+	SecondaryAttack: {
+		signature: "CBaseCombatWeapon.SecondaryAttack() -> void",
+		description: "Force a secondary attack."
+	},
+	SetClip1: {
+		signature: "CBaseCombatWeapon.SetClip1(amount: int) -> void",
+		description: "Set current ammo in clip1."
+	},
+	SetClip2: {
+		signature: "CBaseCombatWeapon.SetClip2(amount: int) -> void",
+		description: "Set current ammo in clip2."
+	},
+	SetCustomViewModel: {
+		signature: "CBaseCombatWeapon.SetCustomViewModel(model_name: string) -> void",
+		description: "Sets a custom view model for this weapon by model name."
+	},
+	SetCustomViewModelModelIndex: {
+		signature: "CBaseCombatWeapon.SetCustomViewModelModelIndex(model_index: int) -> void",
+		description: "Sets a custom view model for this weapon by modelindex."
+	},
+	SetSubType: {
+		signature: "CBaseCombatWeapon.SetSubType(subtype: int) -> void",
+		description: "Set the weapon subtype."
+	},
+	UsesClipsForAmmo1: {
+		signature: "CBaseCombatWeapon.UsesClipsForAmmo1() -> bool",
+		description: "Do we use clips for ammo 1?"
+	},
+	UsesClipsForAmmo2: {
+		signature: "CBaseCombatWeapon.UsesClipsForAmmo2() -> bool",
+		description: "Do we use clips for ammo 2?"
+	},
+	UsesPrimaryAmmo: {
+		signature: "CBaseCombatWeapon.UsesPrimaryAmmo() -> bool",
+		description: "Do we use primary ammo?"
+	},
+	UsesSecondaryAmmo: {
+		signature: "CBaseCombatWeapon.UsesSecondaryAmmo() -> bool",
+		description: "Do we use secondary ammo?"
+	},
+	VisibleInWeaponSelection: {
+		signature: "CBaseCombatWeapon.VisibleInWeaponSelection() -> bool",
+		description: "Is this weapon visible in weapon selection?"
+	},
+	/* --------------------------- *
+	 * CBaseFlex                   *
+	 * --------------------------- */
+	PlayScene: {
+		signature: "CBaseFlex.PlayScene(scene_file: string, delay: float) -> float",
+		description: "Play the specified .vcd file, causing the related characters to speak and subtitles to play."
+	},
+	/* --------------------------- *
+	 * CBaseCombatCharacter        *
+	 * --------------------------- */
+	GetLastKnownArea: {
+		signature: "CBaseCombatCharacter.GetLastKnownArea() -> handle",
+		description: "Return the last nav area occupied, NULL if unknown."
+	},
+	/* --------------------------- *
+	 * CBasePlayer                 *
+	 * --------------------------- */
+	GetForceLocalDraw: {
+		signature: "CBasePlayer.GetForceLocalDraw() -> bool",
+		description: "Whether the player is being forced by SetForceLocalDraw to be drawn."
+	},
+	GetPlayerMaxs: {
+		signature: "CBasePlayer.GetPlayerMaxs() -> Vector",
+		description: "Get a vector containing max bounds of the player in local space. The player's model scale will affect the result."
+	},
+	GetPlayerMins: {
+		signature: "CBasePlayer.GetPlayerMins() -> Vector",
+		description: "Get a vector containing min bounds of the player in local space. The player's model scale will affect the result."
+	},
+	GetScriptOverlayMaterial: {
+		signature: "CBasePlayer.GetScriptOverlayMaterial() -> string",
+		description: "Gets the current overlay material set by SetScriptOverlayMaterial."
+	},
+	IsNoclipping: {
+		signature: "CBasePlayer.IsNoclipping() -> bool",
+		description: "Returns true if the player is in noclip mode."
+	},
+	SetForceLocalDraw: {
+		signature: "CBasePlayer.SetForceLocalDraw(toggle: bool) -> void",
+		description: "Forces the player to be drawn as if they were in thirdperson."
+	},
+	SetScriptOverlayMaterial: {
+		signature: "CBasePlayer.SetScriptOverlayMaterial(material: string) -> void",
+		description: "Sets the overlay material that can't be overriden by other overlays. E.g. Jarate."
+	},
+	SnapEyeAngles: {
+		signature: "CBasePlayer.SnapEyeAngles(angles: QAngle) -> void",
+		description: "Snap the player's eye angles to this."
+	},
+	ViewPunch: {
+		signature: "CBasePlayer.ViewPunch(angle_offset: QAngle) -> void",
+		description: "Ow! Punches the player's view."
+	},
+	ViewPunchReset: {
+		signature: "CBasePlayer.ViewPunchReset(tolerance: float) -> void",
+		description: "Reset's the player's view punch if the offset stays below the given tolerance."
+	},
+	/* --------------------------- *
+	 * CBaseMultiplayerPlayer      *
+	 * --------------------------- */
+	AddAttribute: {
+		signature: "CBaseMultiplayerPlayer.AddAttribute(name: string, value: float, duration: float) -> void",
+		description: "Add an attribute to the entity. <s>Set duration to 0 or lower for the attribute to be applied forever</s> See the bug below. The attribute must be one that exists in the game, invalid ones will not be added."
+	},
+	GetAttribute: {
+		signature: "CBaseMultiplayerPlayer.GetAttribute(name: string, default_value: float) -> float",
+		description: "Get an attribute float from the entity. If the attribute does not exist, returns `default_value`."
+	},
+	RemoveAttribute: {
+		signature: "CBaseMultiplayerPlayer.RemoveAttribute(name: string) -> void",
+		description: "Remove an attribute from the entity."
+	},
+	ReapplyProvision: {
+		signature: "CBaseMultiplayerPlayer.ReapplyProvision() -> void",
+		description: "Relinks attributes to provisioners, e.g. calling this on a weapon will add it's attributes to the player."
+	},
+	/* --------------------------- *
+	 * CEconEntity                 *
+	 * --------------------------- */
+	AddAttribute: {
+		signature: "CEconEntity.AddAttribute(name: string, value: float, duration: float) -> void",
+		description: "Add an attribute to the entity. <s>Set duration to 0 or lower for the attribute to be applied forever</s> See the bug below. The attribute must be one that exists in the game, invalid ones will not be added."
+	},
+	GetAttribute: {
+		signature: "CEconEntity.GetAttribute(name: string, default_value: float) -> float",
+		description: "Get an attribute float from the entity. If the attribute does not exist, returns `default_value`."
+	},
+	RemoveAttribute: {
+		signature: "CEconEntity.RemoveAttribute(name: string) -> void",
+		description: "Remove an attribute from the entity."
+	},
+	ReapplyProvision: {
+		signature: "CEconEntity.ReapplyProvision() -> void",
+		description: "Relinks attributes to provisioners, e.g. calling this on a weapon will add it's attributes to the player."
+	},
+	/* --------------------------- *
+	 * CTFPlayer                   *
+	 * --------------------------- */
+	AddCond: {
+		signature: "CTFPlayer.AddCond(cond: ETFCond) -> void",
+		description: "See [ETFCond](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ETFCond)."
+	},
+	AddCondEx: {
+		signature: "CTFPlayer.AddCondEx(cond: ETFCond, duration: float, provider: handle) -> void",
+		description: "See [ETFCond](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ETFCond)."
+	},
+	AddCurrency: {
+		signature: "CTFPlayer.AddCurrency(amount: int) -> void",
+		description: "Kaching! Give the player some cash for game modes with upgrades, ie. MvM. The new value is bounded between 0-30000."
+	},
+	AddCustomAttribute: {
+		signature: "CTFPlayer.AddCustomAttribute(name: string, value: float, duration: float) -> void",
+		description: "Add a custom attribute to the player. Set duration to 0 or lower for the attribute to be applied forever. The attribute must be one that exists in the game, invalid ones will not be added."
+	},
+	AddHudHideFlags: {
+		signature: "CTFPlayer.AddHudHideFlags(flags: FHideHUD) -> void",
+		description: "Hides a hud element(-s).\n\nSee [FHideHUD](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#FHideHUD)."
+	},
+	ApplyPunchImpulseX: {
+		signature: "CTFPlayer.ApplyPunchImpulseX(impulse: float) -> bool",
+		description: "Apply a view punch along the pitch angle. Used to flinch players when hit. If the player is a fully charged scoped-in sniper and the weapon has the `aiming_no_flinch` attribute, the punch will not apply. Returns true if the punch was applied."
+	},
+	BleedPlayer: {
+		signature: "CTFPlayer.BleedPlayer(duration: float) -> void",
+		description: "Make a player bleed for a set duration of time."
+	},
+	BleedPlayerEx: {
+		signature: "CTFPlayer.BleedPlayerEx(duration: float, damage: int, endless: bool, custom_damage_type: ETFDmgCustom) -> void",
+		description: "Make a player bleed for a set duration of time, or forever, with specific damage per tick and damage_custom index.\n\nSee [ETFDmgCustom](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ETFDmgCustom)."
+	},
+	CancelTaunt: {
+		signature: "CTFPlayer.CancelTaunt() -> void",
+		description: "Cancels any taunt in progress."
+	},
+	CanAirDash: {
+		signature: "CTFPlayer.CanAirDash() -> bool",
+		description: "Can the player air dash/double jump?"
+	},
+	CanBeDebuffed: {
+		signature: "CTFPlayer.CanBeDebuffed() -> bool"
+	},
+	CanBreatheUnderwater: {
+		signature: "CTFPlayer.CanBreatheUnderwater() -> bool"
+	},
+	CanDuck: {
+		signature: "CTFPlayer.CanDuck() -> bool",
+		description: "Can the player duck?"
+	},
+	CanGetWet: {
+		signature: "CTFPlayer.CanGetWet() -> bool",
+		description: "Can the player get wet by jarate/milk?"
+	},
+	CanJump: {
+		signature: "CTFPlayer.CanJump() -> bool",
+		description: "Can the player jump? Returns false if the player is taunting or if the `no_jump` attribute is present and non-zero. There is other conditions that prevent jumping but this function by itself doesn't check those."
+	},
+	ClearCustomModelRotation: {
+		signature: "CTFPlayer.ClearCustomModelRotation() -> void"
+	},
+	ClearSpells: {
+		signature: "CTFPlayer.ClearSpells() -> void"
+	},
+	ClearTauntAttack: {
+		signature: "CTFPlayer.ClearTauntAttack() -> void",
+		description: "Stops active taunt from damaging or cancels Rock-Paper-Scissors result."
+	},
+	CanPlayerMove: {
+		signature: "CTFPlayer.CanPlayerMove() -> bool",
+		description: "Can the player move?"
+	},
+	DoTauntAttack: {
+		signature: "CTFPlayer.DoTauntAttack() -> void",
+		description: "Performs taunts attacks if available. Player must be already taunting and taunt must have a valid attack assigned (`taunt attack name` attribute)."
+	},
+	DropFlag: {
+		signature: "CTFPlayer.DropFlag(silent: bool) -> void",
+		description: "Force player to drop the flag (intelligence)."
+	},
+	DropRune: {
+		signature: "CTFPlayer.DropRune(apply_force: bool, team: ETFTeam) -> void",
+		description: "Force player to drop the rune.\n\nSee [ETFTeam](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ETFTeam)."
+	},
+	EndLongTaunt: {
+		signature: "CTFPlayer.EndLongTaunt() -> void",
+		description: "Stops a looping taunt (obeys minimum time rules and plays outro animation if available)."
+	},
+	EquipWearableViewModel: {
+		signature: "CTFPlayer.EquipWearableViewModel(entity: handle) -> void",
+		description: "Equips a wearable on the viewmodel. Intended to be used with [tf_wearable_vm](https://developer.valvesoftware.com/wiki/tf_wearable_vm) entities."
+	},
+	ExtinguishPlayerBurning: {
+		signature: "CTFPlayer.ExtinguishPlayerBurning() -> void"
+	},
+	FiringTalk: {
+		signature: "CTFPlayer.FiringTalk() -> void",
+		description: "Makes eg. a heavy go AAAAAAAAAAaAaa like they are firing their minigun."
+	},
+	ForceChangeTeam: {
+		signature: "CTFPlayer.ForceChangeTeam(team: ETFTeam, full_team_switch: bool) -> void",
+		description: "Force player to change their team. Setting the bool to true will not remove nemesis relationships or reset the player's class, as well as not slaying the player.\n\nSee [ETFTeam](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ETFTeam)."
+	},
+	ForceRegenerateAndRespawn: {
+		signature: "CTFPlayer.ForceRegenerateAndRespawn() -> void",
+		description: "Force regenerates and respawns the player."
+	},
+	ForceRespawn: {
+		signature: "CTFPlayer.ForceRespawn() -> void",
+		description: "Force respawns the player."
+	},
+	GetActiveWeapon: {
+		signature: "CTFPlayer.GetActiveWeapon() -> handle",
+		description: "Get the player's current weapon."
+	},
+	GetBackstabs: {
+		signature: "CTFPlayer.GetBackstabs() -> int"
+	},
+	GetBonusPoints: {
+		signature: "CTFPlayer.GetBonusPoints() -> int"
+	},
+	GetBotType: {
+		signature: "CTFPlayer.GetBotType() -> int"
+	},
+	GetBuildingsDestroyed: {
+		signature: "CTFPlayer.GetBuildingsDestroyed() -> int"
+	},
+	GetCaptures: {
+		signature: "CTFPlayer.GetCaptures() -> int"
+	},
+	GetClassEyeHeight: {
+		signature: "CTFPlayer.GetClassEyeHeight() -> Vector",
+		description: "Gets the eye height of the player."
+	},
+	GetCondDuration: {
+		signature: "CTFPlayer.GetCondDuration(cond: ETFCond) -> float",
+		description: "Returns duration of the condition. Returns 0 if the cond is not applied. Returns -1 if the cond is infinite.\n\nSee [ETFCond](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ETFCond)."
+	},
+	GetCustomAttribute: {
+		signature: "CTFPlayer.GetCustomAttribute(name: string, default_value: float) -> float",
+		description: "Get an attribute float from the player. If the attribute does not exist, returns `default_value`."
+	},
+	GetCurrency: {
+		signature: "CTFPlayer.GetCurrency() -> int",
+		description: "Get player's cash for game modes with upgrades, ie. MvM."
+	},
+	GetCurrentTauntMoveSpeed: {
+		signature: "CTFPlayer.GetCurrentTauntMoveSpeed() -> float"
+	},
+	GetDefenses: {
+		signature: "CTFPlayer.GetDefenses() -> int"
+	},
+	GetDisguiseAmmoCount: {
+		signature: "CTFPlayer.GetDisguiseAmmoCount() -> int"
+	},
+	GetDisguiseTarget: {
+		signature: "CTFPlayer.GetDisguiseTarget() -> handle"
+	},
+	GetDisguiseTeam: {
+		signature: "CTFPlayer.GetDisguiseTeam() -> int"
+	},
+	GetDominations: {
+		signature: "CTFPlayer.GetDominations() -> int"
+	},
+	GetGrapplingHookTarget: {
+		signature: "CTFPlayer.GetGrapplingHookTarget() -> handle",
+		description: "What entity is the player grappling?"
+	},
+	GetHeadshots: {
+		signature: "CTFPlayer.GetHeadshots() -> int"
+	},
+	GetHealPoints: {
+		signature: "CTFPlayer.GetHealPoints() -> int"
+	},
+	GetHealTarget: {
+		signature: "CTFPlayer.GetHealTarget() -> handle",
+		description: "Who is the medic healing?"
+	},
+	GetHudHideFlags: {
+		signature: "CTFPlayer.GetHudHideFlags() -> int",
+		description: "Gets current hidden hud elements."
+	},
+	GetInvulns: {
+		signature: "CTFPlayer.GetInvulns() -> int"
+	},
+	GetKillAssists: {
+		signature: "CTFPlayer.GetKillAssists() -> int"
+	},
+	GetLastWeapon: {
+		signature: "CTFPlayer.GetLastWeapon() -> handle"
+	},
+	GetNextChangeClassTime: {
+		signature: "CTFPlayer.GetNextChangeClassTime() -> float",
+		description: "Get next change class time."
+	},
+	GetNextChangeTeamTime: {
+		signature: "CTFPlayer.GetNextChangeTeamTime() -> float",
+		description: "Get next change team time."
+	},
+	GetNextRegenTime: {
+		signature: "CTFPlayer.GetNextRegenTime() -> float",
+		description: "Get next health regen time."
+	},
+	GetPlayerClass: {
+		signature: "CTFPlayer.GetPlayerClass() -> int"
+	},
+	GetRageMeter: {
+		signature: "CTFPlayer.GetRageMeter() -> float"
+	},
+	GetResupplyPoints: {
+		signature: "CTFPlayer.GetResupplyPoints() -> int"
+	},
+	GetRevenge: {
+		signature: "CTFPlayer.GetRevenge() -> int"
+	},
+	GetScoutHypeMeter: {
+		signature: "CTFPlayer.GetScoutHypeMeter() -> float"
+	},
+	GetSpyCloakMeter: {
+		signature: "CTFPlayer.GetSpyCloakMeter() -> float"
+	},
+	GetTeleports: {
+		signature: "CTFPlayer.GetTeleports() -> int"
+	},
+	GetTauntAttackTime: {
+		signature: "CTFPlayer.GetTauntAttackTime() -> float",
+		description: "Timestamp until a taunt attack \"lasts\". 0 if unavailable."
+	},
+	GetTauntRemoveTime: {
+		signature: "CTFPlayer.GetTauntRemoveTime() -> float",
+		description: "Timestamp until taunt is stopped."
+	},
+	GetVehicleReverseTime: {
+		signature: "CTFPlayer.GetVehicleReverseTime() -> float",
+		description: "Timestamp when kart was reversed."
+	},
+	GetTimeSinceCalledForMedic: {
+		signature: "CTFPlayer.GetTimeSinceCalledForMedic() -> float",
+		description: "When did the player last call medic."
+	},
+	GrantOrRemoveAllUpgrades: {
+		signature: "CTFPlayer.GrantOrRemoveAllUpgrades(remove: bool, refund: bool) -> void"
+	},
+	HasItem: {
+		signature: "CTFPlayer.HasItem() -> bool",
+		description: "Currently holding an item? Eg. capture flag."
+	},
+	HandleTauntCommand: {
+		signature: "CTFPlayer.HandleTauntCommand(taunt_slot: int) -> void",
+		description: "Spoofs a taunt command from the player, as if they selected this taunt. This can be abused to give the player any taunt, see the [examples page](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/VScript_Examples#Giving a taunt)."
+	},
+	IgnitePlayer: {
+		signature: "CTFPlayer.IgnitePlayer() -> void",
+		description: "Supposed to set the player on fire, but..."
+	},
+	InAirDueToExplosion: {
+		signature: "CTFPlayer.InAirDueToExplosion() -> bool"
+	},
+	InAirDueToKnockback: {
+		signature: "CTFPlayer.InAirDueToKnockback() -> bool"
+	},
+	InCond: {
+		signature: "CTFPlayer.InCond(cond: ETFCond) -> bool",
+		description: "See [ETFCond](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ETFCond)."
+	},
+	IsAirDashing: {
+		signature: "CTFPlayer.IsAirDashing() -> bool"
+	},
+	IsAllowedToRemoveTaunt: {
+		signature: "CTFPlayer.IsAllowedToRemoveTaunt() -> bool",
+		description: "Returns true if the taunt will be stopped."
+	},
+	IsAllowedToTaunt: {
+		signature: "CTFPlayer.IsAllowedToTaunt() -> bool"
+	},
+	IsBotOfType: {
+		signature: "CTFPlayer.IsBotOfType(type: EBotType) -> bool",
+		description: "Returns true if the player matches this bot type. Only one type of bot exists which is reserved for AI bots (not [https://wiki.teamfortress.com/wiki/Bots#Puppet_bots puppet bots]). 0 is used for real players or puppet bots. Use `IsFakeClient` to check for a puppet bot instead.\n\nSee [EBotType](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#EBotType)."
+	},
+	IsCallingForMedic: {
+		signature: "CTFPlayer.IsCallingForMedic() -> bool",
+		description: "Is this player calling for medic?"
+	},
+	IsCarryingRune: {
+		signature: "CTFPlayer.IsCarryingRune() -> bool"
+	},
+	IsControlStunned: {
+		signature: "CTFPlayer.IsControlStunned() -> bool"
+	},
+	IsCritBoosted: {
+		signature: "CTFPlayer.IsCritBoosted() -> bool"
+	},
+	IsFakeClient: {
+		signature: "CTFPlayer.IsFakeClient() -> bool",
+		description: "Returns true if the player is a puppet or AI bot. To check if the player is a AI bot (`CTFBot`) specifically, use `IsBotOfType` instead."
+	},
+	IsFireproof: {
+		signature: "CTFPlayer.IsFireproof() -> bool"
+	},
+	IsFullyInvisible: {
+		signature: "CTFPlayer.IsFullyInvisible() -> bool"
+	},
+	IsHypeBuffed: {
+		signature: "CTFPlayer.IsHypeBuffed() -> bool"
+	},
+	IsImmuneToPushback: {
+		signature: "CTFPlayer.IsImmuneToPushback() -> bool"
+	},
+	IsInspecting: {
+		signature: "CTFPlayer.IsInspecting() -> bool"
+	},
+	IsInvulnerable: {
+		signature: "CTFPlayer.IsInvulnerable() -> bool"
+	},
+	IsJumping: {
+		signature: "CTFPlayer.IsJumping() -> bool"
+	},
+	IsMiniBoss: {
+		signature: "CTFPlayer.IsMiniBoss() -> bool",
+		description: "Is this player an MvM mini-boss?"
+	},
+	IsParachuteEquipped: {
+		signature: "CTFPlayer.IsParachuteEquipped() -> bool"
+	},
+	IsPlacingSapper: {
+		signature: "CTFPlayer.IsPlacingSapper() -> bool",
+		description: "Returns true if we placed a sapper in the last few moments."
+	},
+	IsRageDraining: {
+		signature: "CTFPlayer.IsRageDraining() -> bool"
+	},
+	IsRegenerating: {
+		signature: "CTFPlayer.IsRegenerating() -> bool"
+	},
+	IsSapping: {
+		signature: "CTFPlayer.IsSapping() -> bool",
+		description: "Returns true if we are currently sapping."
+	},
+	IsSnared: {
+		signature: "CTFPlayer.IsSnared() -> bool"
+	},
+	IsStealthed: {
+		signature: "CTFPlayer.IsStealthed() -> bool"
+	},
+	IsTaunting: {
+		signature: "CTFPlayer.IsTaunting() -> bool"
+	},
+	IsUsingActionSlot: {
+		signature: "CTFPlayer.IsUsingActionSlot() -> bool"
+	},
+	IsViewingCYOAPDA: {
+		signature: "CTFPlayer.IsViewingCYOAPDA() -> bool"
+	},
+	Regenerate: {
+		signature: "CTFPlayer.Regenerate(refill_health_ammo: bool) -> void",
+		description: "Resupplies a player. If refill health/ammo is set, clears negative conds, gives back player health/ammo."
+	},
+	RemoveAllItems: {
+		signature: "CTFPlayer.RemoveAllItems(unused: bool) -> void"
+	},
+	RemoveAllObjects: {
+		signature: "CTFPlayer.RemoveAllObjects(explode: bool) -> void",
+		description: "Remove all player objects. Eg. dispensers/sentries."
+	},
+	RemoveCond: {
+		signature: "CTFPlayer.RemoveCond(cond: ETFCond) -> void",
+		description: "Removes a condition. Does not remove a condition if the minimum duration has not passed. Does nothing if the condition isn't added (interally does `InCond` check).\n\nSee [ETFCond](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ETFCond)."
+	},
+	RemoveCondEx: {
+		signature: "CTFPlayer.RemoveCondEx(cond: ETFCond, ignore_duration: bool) -> void",
+		description: "Extended version of above function. Allows forcefully removing the condition even if minimum duration is not met.\n\nSee [ETFCond](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ETFCond)."
+	},
+	RemoveCurrency: {
+		signature: "CTFPlayer.RemoveCurrency(amount: int) -> void",
+		description: "Take away money from a player for reasons such as ie. spending. Lower bounded to 0."
+	},
+	RemoveCustomAttribute: {
+		signature: "CTFPlayer.RemoveCustomAttribute(name: string) -> void",
+		description: "Remove a custom attribute to the player."
+	},
+	RemoveDisguise: {
+		signature: "CTFPlayer.RemoveDisguise() -> void",
+		description: "Undisguise a spy."
+	},
+	RemoveHudHideFlags: {
+		signature: "CTFPlayer.RemoveHudHideFlags(flags: FHideHUD) -> void",
+		description: "Unhides a hud element(-s).\n\nSee [FHideHUD](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#FHideHUD)."
+	},
+	RemoveInvisibility: {
+		signature: "CTFPlayer.RemoveInvisibility() -> void",
+		description: "Un-invisible a spy."
+	},
+	RemoveTeleportEffect: {
+		signature: "CTFPlayer.RemoveTeleportEffect() -> void"
+	},
+	ResetScores: {
+		signature: "CTFPlayer.ResetScores() -> void"
+	},
+	RollRareSpell: {
+		signature: "CTFPlayer.RollRareSpell() -> void"
+	},
+	SetCondDuration: {
+		signature: "CTFPlayer.SetCondDuration(cond: ETFCond, duration: float) -> void",
+		description: "See [ETFCond](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ETFCond)."
+	},
+	SetCurrency: {
+		signature: "CTFPlayer.SetCurrency(amount: int) -> void",
+		description: "Set player's cash for game modes with upgrades, ie. MvM. Does not have any bounds checking."
+	},
+	SetCurrentTauntMoveSpeed: {
+		signature: "CTFPlayer.SetCurrentTauntMoveSpeed(speed: float) -> void"
+	},
+	SetCustomModel: {
+		signature: "CTFPlayer.SetCustomModel(model_name: string) -> void",
+		description: "Sets a custom player model without animations (model will T-pose). To enable animations, use `SetCustomModelWithClassAnimations` instead."
+	},
+	SetCustomModelOffset: {
+		signature: "CTFPlayer.SetCustomModelOffset(offset: Vector) -> void"
+	},
+	SetCustomModelRotates: {
+		signature: "CTFPlayer.SetCustomModelRotates(toggle: bool) -> void"
+	},
+	SetCustomModelRotation: {
+		signature: "CTFPlayer.SetCustomModelRotation(angles: QAngle) -> void"
+	},
+	SetCustomModelVisibleToSelf: {
+		signature: "CTFPlayer.SetCustomModelVisibleToSelf(toggle: bool) -> void"
+	},
+	SetCustomModelWithClassAnimations: {
+		signature: "CTFPlayer.SetCustomModelWithClassAnimations(model_name: string) -> void",
+		description: "Sets a custom player model with full animations."
+	},
+	SetDisguiseAmmoCount: {
+		signature: "CTFPlayer.SetDisguiseAmmoCount(count: int) -> void"
+	},
+	SetForcedTauntCam: {
+		signature: "CTFPlayer.SetForcedTauntCam(toggle: int) -> void"
+	},
+	SetGrapplingHookTarget: {
+		signature: "CTFPlayer.SetGrapplingHookTarget(entity: handle, bleed: bool) -> void",
+		description: "Set the player's target grapple entity."
+	},
+	SetHudHideFlags: {
+		signature: "CTFPlayer.SetHudHideFlags(flags: FHideHUD) -> void",
+		description: "Force hud hide flags to a value.\n\nSee [FHideHUD](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#FHideHUD)."
+	},
+	SetIsMiniBoss: {
+		signature: "CTFPlayer.SetIsMiniBoss(toggle: bool) -> void",
+		description: "Make this player an MvM mini-boss."
+	},
+	SetNextChangeClassTime: {
+		signature: "CTFPlayer.SetNextChangeClassTime(time: float) -> void",
+		description: "Set next change class time."
+	},
+	SetNextChangeTeamTime: {
+		signature: "CTFPlayer.SetNextChangeTeamTime(time: float) -> void",
+		description: "Set next change team time."
+	},
+	SetNextRegenTime: {
+		signature: "CTFPlayer.SetNextRegenTime(time: float) -> void",
+		description: "Set next available resupply time."
+	},
+	SetPlayerClass: {
+		signature: "CTFPlayer.SetPlayerClass(class_index: ETFClass) -> void",
+		description: "Sets the player class. Updates the player's visuals and model.\n\nSee [ETFClass](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ETFClass)."
+	},
+	SetRageMeter: {
+		signature: "CTFPlayer.SetRageMeter(percent: float) -> void",
+		description: "Sets rage meter from 0 - 100."
+	},
+	SetRPSResult: {
+		signature: "CTFPlayer.SetRPSResult(result: int) -> void",
+		description: "Rig the result of Rock-Paper-Scissors (0 - rock, 1 - paper, 2 - scissors)."
+	},
+	SetScoutHypeMeter: {
+		signature: "CTFPlayer.SetScoutHypeMeter(percent: float) -> void",
+		description: "Sets hype meter from 0 - 100."
+	},
+	SetSpyCloakMeter: {
+		signature: "CTFPlayer.SetSpyCloakMeter(float) -> void",
+		description: "Sets cloakmeter from 0 - 100."
+	},
+	SetVehicleReverseTime: {
+		signature: "CTFPlayer.SetVehicleReverseTime(time: float) -> void",
+		description: "Set the timestamp when kart was reversed."
+	},
+	SetUseBossHealthBar: {
+		signature: "CTFPlayer.SetUseBossHealthBar(toggle: bool) -> void"
+	},
+	StopTaunt: {
+		signature: "CTFPlayer.StopTaunt(remove_prop: bool) -> void",
+		description: "Stops current taunt. If *remove_prop* is true, the taunt prop will be immediately deleted instead of potentially delaying."
+	},
+	StunPlayer: {
+		signature: "CTFPlayer.StunPlayer(duration: float, move_speed_reduction: float, flags: TF_STUN, attacker: handle) -> void",
+		description: "Stuns the player for a specified duration. Move speed reduction is a fraction (0 = no reduction. 1 = total reduction, no movement). Flag combinations control the stun type and behavior.\n\nSee [TF_STUN](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#TF_STUN)."
+	},
+	Taunt: {
+		signature: "CTFPlayer.Taunt(taunt_index: FTaunts, taunt_concept: MP_CONCEPT) -> void",
+		description: "Performs a taunt if allowed. Concept is the \"voiceline\" index to use with the taunt. For `TAUNT_SHOW_ITEM` and `TAUNT_BASE_WEAPON` this is set automatically. `TAUNT_LONG` is not supported.\n\nSee [FTaunts](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#FTaunts) ,[MP_CONCEPT](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#MP_CONCEPT)."
+	},
+	TryToPickupBuilding: {
+		signature: "CTFPlayer.TryToPickupBuilding() -> bool",
+		description: "Make the player attempt to pick up a building in front of them."
+	},
+	UpdateSkin: {
+		signature: "CTFPlayer.UpdateSkin(skin: int) -> void"
+	},
+	WasInCond: {
+		signature: "CTFPlayer.WasInCond(cond: ETFCond) -> bool",
+		description: "See [ETFCond](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ETFCond)."
+	},
+	Weapon_CanUse: {
+		signature: "CTFPlayer.Weapon_CanUse(weapon: handle) -> bool"
+	},
+	Weapon_Drop: {
+		signature: "CTFPlayer.Weapon_Drop(weapon: handle) -> void",
+		description: "Does nothing!"
+	},
+	Weapon_DropEx: {
+		signature: "CTFPlayer.Weapon_DropEx(weapon: handle, target: Vector, velocity: Vector) -> void",
+		description: "Does nothing!"
+	},
+	Weapon_Equip: {
+		signature: "CTFPlayer.Weapon_Equip(weapon: handle) -> void",
+		description: "Equips a weapon in the player. This places it inside the `m_hMyWeapons` array."
+	},
+	Weapon_SetLast: {
+		signature: "CTFPlayer.Weapon_SetLast(weapon: handle) -> void"
+	},
+	Weapon_ShootPosition: {
+		signature: "CTFPlayer.Weapon_ShootPosition() -> Vector",
+		description: "The same as calling `EyePosition`."
+	},
+	Weapon_Switch: {
+		signature: "CTFPlayer.Weapon_Switch(weapon: handle) -> void",
+		description: "Attempts a switch to the given weapon, if present in the player's inventory (`m_hMyWeapons` array)."
+	},
+	/* --------------------------- *
+	 * CTFBot                      *
+	 * --------------------------- */
+	AddBotAttribute: {
+		signature: "CTFBot.AddBotAttribute(attribute: FTFBotAttributeType) -> void",
+		description: "Sets attribute flags on this TFBot.\n\nSee [FTFBotAttributeType](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#FTFBotAttributeType)."
+	},
+	AddBotTag: {
+		signature: "CTFBot.AddBotTag(tag: string) -> void",
+		description: "Adds a bot tag."
+	},
+	AddWeaponRestriction: {
+		signature: "CTFBot.AddWeaponRestriction(flags: TFBotWeaponRestrictionType) -> void",
+		description: "Adds weapon restriction flags.\n\nSee [TFBotWeaponRestrictionType](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#TFBotWeaponRestrictionType)."
+	},
+	ClearAllBotAttributes: {
+		signature: "CTFBot.ClearAllBotAttributes() -> void",
+		description: "Clears all attribute flags on this TFBot."
+	},
+	ClearAllBotTags: {
+		signature: "CTFBot.ClearAllBotTags() -> void",
+		description: "Clears bot tags."
+	},
+	ClearAllWeaponRestrictions: {
+		signature: "CTFBot.ClearAllWeaponRestrictions() -> void",
+		description: "Removes all weapon restriction flags."
+	},
+	ClearAttentionFocus: {
+		signature: "CTFBot.ClearAttentionFocus() -> void",
+		description: "Clear current focus."
+	},
+	ClearBehaviorFlag: {
+		signature: "CTFBot.ClearBehaviorFlag(flags: TFBOT_BEHAVIOR) -> void",
+		description: "Clear the given behavior flag(s) for this bot.\n\nSee [TFBOT_BEHAVIOR](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#TFBOT_BEHAVIOR)."
+	},
+	DelayedThreatNotice: {
+		signature: "CTFBot.DelayedThreatNotice(threat: handle, delay: float) -> void",
+		description: "Notice the threat after a delay in seconds."
+	},
+	DisbandCurrentSquad: {
+		signature: "CTFBot.DisbandCurrentSquad() -> void",
+		description: "Forces the current squad to be entirely disbanded by everyone."
+	},
+	FindVantagePoint: {
+		signature: "CTFBot.FindVantagePoint(max_distance: float) -> handle",
+		description: "Get the nav area of the closest vantage point (within distance)."
+	},
+	GenerateAndWearItem: {
+		signature: "CTFBot.GenerateAndWearItem(item_name: string) -> void",
+		description: "Give me an item!"
+	},
+	GetActionPoint: {
+		signature: "CTFBot.GetActionPoint() -> handle",
+		description: "Get the given action point for this bot."
+	},
+	GetAllBotTags: {
+		signature: "CTFBot.GetAllBotTags(result: table) -> void",
+		description: "Get all bot tags. The key is the index, and the value is the tag."
+	},
+	GetHomeArea: {
+		signature: "CTFBot.GetHomeArea() -> handle",
+		description: "Sets the home nav area of the bot."
+	},
+	GetDifficulty: {
+		signature: "CTFBot.GetDifficulty() -> int",
+		description: "Returns the bot's difficulty level. See [Constants.ETFBotDifficultyType](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ETFBotDifficultyType)."
+	},
+	GetMaxVisionRangeOverride: {
+		signature: "CTFBot.GetMaxVisionRangeOverride() -> float",
+		description: "Gets the max vision range override for the bot"
+	},
+	GetMission: {
+		signature: "CTFBot.GetMission() -> int",
+		description: "Get this bot's current mission. See [ETFBotMissionType](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ETFBotMissionType)."
+	},
+	GetMissionTarget: {
+		signature: "CTFBot.GetMissionTarget() -> handle",
+		description: "Get this bot's current mission target."
+	},
+	GetNearestKnownSappableTarget: {
+		signature: "CTFBot.GetNearestKnownSappableTarget() -> handle",
+		description: "Gets the nearest known sappable target."
+	},
+	GetPrevMission: {
+		signature: "CTFBot.GetPrevMission() -> int",
+		description: "Get this bot's previous mission. See [ETFBotMissionType](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ETFBotMissionType)."
+	},
+	GetSpawnArea: {
+		signature: "CTFBot.GetSpawnArea() -> handle",
+		description: "Return the nav area of where we spawned."
+	},
+	GetSquadFormationError: {
+		signature: "CTFBot.GetSquadFormationError() -> float",
+		description: "Gets our formation error coefficient."
+	},
+	HasBotAttribute: {
+		signature: "CTFBot.HasBotAttribute(attribute: FTFBotAttributeType) -> bool",
+		description: "Checks if this TFBot has the given attributes.\n\nSee [FTFBotAttributeType](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#FTFBotAttributeType)."
+	},
+	HasBotTag: {
+		signature: "CTFBot.HasBotTag(tag: string) -> bool",
+		description: "Checks if this TFBot has the given bot tag."
+	},
+	HasMission: {
+		signature: "CTFBot.HasMission(mission: ETFBotMissionType) -> bool",
+		description: "Return true if the given mission is this bot's current mission.\n\nSee [ETFBotMissionType](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ETFBotMissionType)."
+	},
+	HasWeaponRestriction: {
+		signature: "CTFBot.HasWeaponRestriction(flags: TFBotWeaponRestrictionType) -> bool",
+		description: "Checks if this TFBot has the given weapon restriction flags.\n\nSee [TFBotWeaponRestrictionType](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#TFBotWeaponRestrictionType)."
+	},
+	IsAmmoFull: {
+		signature: "CTFBot.IsAmmoFull() -> bool"
+	},
+	IsAmmoLow: {
+		signature: "CTFBot.IsAmmoLow() -> bool"
+	},
+	IsAttentionFocused: {
+		signature: "CTFBot.IsAttentionFocused() -> bool",
+		description: "Is our attention focused right now?"
+	},
+	IsAttentionFocusedOn: {
+		signature: "CTFBot.IsAttentionFocusedOn(entity: handle) -> bool",
+		description: "Is our attention focused on this entity."
+	},
+	IsBehaviorFlagSet: {
+		signature: "CTFBot.IsBehaviorFlagSet(flags: TFBOT_BEHAVIOR) -> bool",
+		description: "Return true if the given behavior flag(s) are set for this bot.\n\nSee [TFBOT_BEHAVIOR](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#TFBOT_BEHAVIOR)."
+	},
+	IsDifficulty: {
+		signature: "CTFBot.IsDifficulty(difficulty: ETFBotDifficultyType) -> bool",
+		description: "Returns true/false if the bot's difficulty level matches.\n\nSee [ETFBotDifficultyType](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ETFBotDifficultyType)."
+	},
+	IsInASquad: {
+		signature: "CTFBot.IsInASquad() -> bool",
+		description: "Checks if we are in a squad."
+	},
+	IsOnAnyMission: {
+		signature: "CTFBot.IsOnAnyMission() -> bool",
+		description: "Return true if this bot has a current mission."
+	},
+	IsWeaponRestricted: {
+		signature: "CTFBot.IsWeaponRestricted(weapon: handle) -> bool",
+		description: "Checks if the given weapon is restricted for use on the bot."
+	},
+	LeaveSquad: {
+		signature: "CTFBot.LeaveSquad() -> void",
+		description: "Makes us leave the current squad (if any)."
+	},
+	PressAltFireButton: {
+		signature: "CTFBot.PressAltFireButton(duration: float) -> void"
+	},
+	PressFireButton: {
+		signature: "CTFBot.PressFireButton(duration: float) -> void"
+	},
+	PressSpecialFireButton: {
+		signature: "CTFBot.PressSpecialFireButton(duration: float) -> void"
+	},
+	RemoveBotAttribute: {
+		signature: "CTFBot.RemoveBotAttribute(attribute: FTFBotAttributeType) -> void",
+		description: "Removes attribute flags on this TFBot.\n\nSee [FTFBotAttributeType](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#FTFBotAttributeType)."
+	},
+	RemoveBotTag: {
+		signature: "CTFBot.RemoveBotTag(tag: string) -> void",
+		description: "Removes a bot tag."
+	},
+	RemoveWeaponRestriction: {
+		signature: "CTFBot.RemoveWeaponRestriction(flags: TFBotWeaponRestrictionType) -> void",
+		description: "Removes weapon restriction flags.\n\nSee [TFBotWeaponRestrictionType](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#TFBotWeaponRestrictionType)."
+	},
+	SetActionPoint: {
+		signature: "CTFBot.SetActionPoint(entity: handle) -> void",
+		description: "Set the given action point for this bot."
+	},
+	SetAttentionFocus: {
+		signature: "CTFBot.SetAttentionFocus(entity: handle) -> void",
+		description: "Sets our current attention focus to this entity."
+	},
+	SetAutoJump: {
+		signature: "CTFBot.SetAutoJump(min_time: float, max_time: float) -> void",
+		description: "Sets if the bot should automatically jump, and how often."
+	},
+	SetBehaviorFlag: {
+		signature: "CTFBot.SetBehaviorFlag(flags: TFBOT_BEHAVIOR) -> void",
+		description: "Set the given behavior flag(s) for this bot.\n\nSee [TFBOT_BEHAVIOR](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#TFBOT_BEHAVIOR)."
+	},
+	SetDifficulty: {
+		signature: "CTFBot.SetDifficulty(difficulty: ETFBotDifficultyType) -> void",
+		description: "Sets the bots difficulty level.\n\nSee [ETFBotDifficultyType](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ETFBotDifficultyType)."
+	},
+	SetHomeArea: {
+		signature: "CTFBot.SetHomeArea(area: handle) -> void",
+		description: "Set the home nav area of the bot, may be null."
+	},
+	SetMaxVisionRangeOverride: {
+		signature: "CTFBot.SetMaxVisionRangeOverride(range: float) -> void",
+		description: "Sets max vision range override for the bot."
+	},
+	SetMission: {
+		signature: "CTFBot.SetMission(mission: ETFBotMissionType, reset_behavior: bool) -> void",
+		description: "Set this bot's current mission to the given mission.\n\nSee [ETFBotMissionType](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ETFBotMissionType)."
+	},
+	SetMissionTarget: {
+		signature: "CTFBot.SetMissionTarget(entity: handle) -> void",
+		description: "Set this bot's mission target to the given entity."
+	},
+	SetPrevMission: {
+		signature: "CTFBot.SetPrevMission(mission: ETFBotMissionType) -> void",
+		description: "Set this bot's previous mission to the given mission.\n\nSee [ETFBotMissionType](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ETFBotMissionType)."
+	},
+	SetScaleOverride: {
+		signature: "CTFBot.SetScaleOverride(scale: float) -> void",
+		description: "Sets the scale override for the bot."
+	},
+	SetShouldQuickBuild: {
+		signature: "CTFBot.SetShouldQuickBuild(toggle: bool) -> void",
+		description: "Sets if the bot should build instantly."
+	},
+	SetSquadFormationError: {
+		signature: "CTFBot.SetSquadFormationError(coefficient: float) -> void",
+		description: "Sets our formation error coefficient."
+	},
+	ShouldAutoJump: {
+		signature: "CTFBot.ShouldAutoJump() -> bool",
+		description: "Returns if the bot should automatically jump."
+	},
+	ShouldQuickBuild: {
+		signature: "CTFBot.ShouldQuickBuild() -> bool",
+		description: "Returns if the bot should build instantly."
+	},
+	UpdateDelayedThreatNotices: {
+		signature: "CTFBot.UpdateDelayedThreatNotices() -> void"
+	},
+	/* --------------------------- *
+	 * CTFBaseBoss                 *
+	 * --------------------------- */
+	SetResolvePlayerCollisions: {
+		signature: "CTFBaseBoss.SetResolvePlayerCollisions(toggle: bool) -> void",
+		description: "Sets whether the entity should push away players intersecting its bounding box. On by default."
+	},
+	/* --------------------------- *
+	 * Convars                     *
+	 * --------------------------- */
+	GetBool: {
+		signature: "Convars.GetBool(name: string) -> bool",
+		description: "Returns the convar as a bool. May return null if no such convar."
+	},
+	GetClientConvarValue: {
+		signature: "Convars.GetClientConvarValue(name: string, entindex: int) -> string",
+		description: "Returns the convar value for the entindex as a string. Only works on client convars with the FCVAR_USERINFO flag."
+	},
+	GetInt: {
+		signature: "Convars.GetInt(name: string) -> int",
+		description: "Returns the convar as an int. May return null if no such convar."
+	},
+	GetStr: {
+		signature: "Convars.GetStr(name: string) -> string",
+		description: "Returns the convar as a string. May return null if no such convar. Returns `hunter2` if a protected convar is accessed."
+	},
+	GetFloat: {
+		signature: "Convars.GetFloat(name: string) -> float",
+		description: "Returns the convar as a float. May return null if no such convar."
+	},
+	IsConVarOnAllowList: {
+		signature: "Convars.IsConVarOnAllowList(name: string) -> bool",
+		description: "Checks if the convar is allowed to be used and is in cfg/vscript_convar_allowlist.txt. Please be nice with this and use it for *compatibility* if you need check support and NOT to force server owners to allow hostname to be set... or else this will simply lie and return true in future. ;-) You have been warned!"
+	},
+	SetValue: {
+		signature: "Convars.SetValue(name: string, value: any) -> void",
+		description: "Sets the value of the convar. The convar must be in cfg/vscript_convar_allowlist.txt to be set. Convars marked as cheat-only can be set even if *sv_cheats* is off. Convars marked as dev-only (i.e. not visible in console) can also be set. Supported types are bool, int, float, string. The original value of the convar is saved and is reset on map change, in other words convar changes will not persist across maps."
+	},
+	/* --------------------------- *
+	 * CEntities                   *
+	 * --------------------------- */
+	CreateByClassname: {
+		signature: "CEntities.CreateByClassname(classname: string) -> handle",
+		description: "Creates an entity by classname."
+	},
+	DispatchSpawn: {
+		signature: "CEntities.DispatchSpawn(entity: handle) -> void",
+		description: "Dispatches spawn of an entity! Use this on entities created via `CreateByClassname` to actually spawn them into the world."
+	},
+	FindByClassname: {
+		signature: "CEntities.FindByClassname(previous: handle, classname: string) -> handle",
+		description: "Find entities by the string of their `classname` keyvalue. Pass 'null' value to start an iteration, or reference to a previously found entity to continue a search."
+	},
+	FindByClassnameNearest: {
+		signature: "CEntities.FindByClassnameNearest(classname: string, center: Vector, radius: float) -> handle",
+		description: "Find entities by classname nearest to a point within a radius."
+	},
+	FindByClassnameWithin: {
+		signature: "CEntities.FindByClassnameWithin(previous: handle, classname: string, center: Vector, radius: float) -> handle",
+		description: "Find entities by classname within a radius. Pass 'null' to start an iteration, or reference to a previously found entity to continue a search."
+	},
+	FindByModel: {
+		signature: "CEntities.FindByModel(previous: handle, model_name: string) -> handle",
+		description: "Find entities by the string of their `model` keyvalue. Pass 'null' to start an iteration, or reference to a previously found entity to continue a search."
+	},
+	FindByName: {
+		signature: "CEntities.FindByName(previous: handle, targetname: string) -> handle",
+		description: "Find entities by the string of their"
+	},
+	FindByNameNearest: {
+		signature: "CEntities.FindByNameNearest(targetname: string, center: Vector, radius: float) -> handle",
+		description: "Find entities by targetname nearest to a point within a radius."
+	},
+	FindByNameWithin: {
+		signature: "CEntities.FindByNameWithin(previous: handle, targetname: string, center: Vector, radius: float) -> handle",
+		description: "Find entities by targetname within a radius. Pass 'null' to start an iteration, or reference to a previously found entity to continue a search."
+	},
+	FindByTarget: {
+		signature: "CEntities.FindByTarget(previous: handle, target: string) -> handle",
+		description: "Find entities by the string of their `target` keyvalue."
+	},
+	FindInSphere: {
+		signature: "CEntities.FindInSphere(previous: handle, center: Vector, radius: float) -> handle",
+		description: "Find entities within a radius. Pass 'null' to start an iteration, or reference to a previously found entity to continue a search."
+	},
+	First: {
+		signature: "CEntities.First() -> handle",
+		description: "Begin an iteration over the list of entities. The first entity is always [worldspawn](https://developer.valvesoftware.com/wiki/worldspawn)."
+	},
+	Next: {
+		signature: "CEntities.Next(previous: handle) -> handle",
+		description: "At the given reference of a previously-found entity, returns the next one after it in the list."
+	},
+	/* --------------------------- *
+	 * CTFNavArea                  *
+	 * --------------------------- */
+	AddIncomingConnection: {
+		signature: "CTFNavArea.AddIncomingConnection(area: handle, dir: ENavDirType) -> void",
+		description: "Add areas that connect TO this area by a ONE-WAY link.\n\nSee [ENavDirType](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ENavDirType)."
+	},
+	ClearAttributeTF: {
+		signature: "CTFNavArea.ClearAttributeTF(bits: FTFNavAttributeType) -> void",
+		description: "Clear TF-specific area attribute bits.\n\nSee [FTFNavAttributeType](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#FTFNavAttributeType)."
+	},
+	ComputeClosestPointInPortal: {
+		signature: "CTFNavArea.ComputeClosestPointInPortal(to: handle, dir: ENavDirType, close_pos: Vector) -> Vector",
+		description: "Compute closest point within the \"portal\" between to an area's direction from the given position.\n\nSee [ENavDirType](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ENavDirType)."
+	},
+	ComputeDirection: {
+		signature: "CTFNavArea.ComputeDirection(point: Vector) -> int",
+		description: "Return direction from this area to the given point."
+	},
+	ConnectTo: {
+		signature: "CTFNavArea.ConnectTo(area: handle, dir: ENavDirType) -> void",
+		description: "Connect this area to given area in given direction.\n\nSee [ENavDirType](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ENavDirType)."
+	},
+	Contains: {
+		signature: "CTFNavArea.Contains(area: handle) -> bool",
+		description: "Return true if other area is on or above this area, but no others."
+	},
+	ContainsOrigin: {
+		signature: "CTFNavArea.ContainsOrigin(point: Vector) -> bool",
+		description: "Return true if given point is on or above this area, but no others."
+	},
+	DebugDrawFilled: {
+		signature: "CTFNavArea.DebugDrawFilled(r: int, g: int, b: int, a: int, duration: float, no_depth_test: bool, margin: float) -> void",
+		description: "Draw area as a filled rectangle of the given color."
+	},
+	Disconnect: {
+		signature: "CTFNavArea.Disconnect(area: handle) -> void",
+		description: "Disconnect this area from given area."
+	},
+	FindRandomSpot: {
+		signature: "CTFNavArea.FindRandomSpot() -> Vector",
+		description: "Get random origin within extent of area."
+	},
+	GetAdjacentArea: {
+		signature: "CTFNavArea.GetAdjacentArea(dir: ENavDirType, n: int) -> handle",
+		description: "Return the n'th adjacent area in the given direction.\n\nSee [ENavDirType](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ENavDirType)."
+	},
+	GetAdjacentAreas: {
+		signature: "CTFNavArea.GetAdjacentAreas(dir: ENavDirType, result: table) -> void",
+		description: "Fills a passed in table with all adjacent areas in the given direction.\n\nSee [ENavDirType](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ENavDirType)."
+	},
+	GetAdjacentCount: {
+		signature: "CTFNavArea.GetAdjacentCount(dir: ENavDirType) -> int",
+		description: "Get the number of adjacent areas in the given direction.\n\nSee [ENavDirType](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ENavDirType)."
+	},
+	GetAttributes: {
+		signature: "CTFNavArea.GetAttributes() -> int",
+		description: "Get area attribute bits."
+	},
+	GetAvoidanceObstacleHeight: {
+		signature: "CTFNavArea.GetAvoidanceObstacleHeight() -> float",
+		description: "Returns the maximum height of the obstruction above the ground."
+	},
+	GetCenter: {
+		signature: "CTFNavArea.GetCenter() -> Vector",
+		description: "Get center origin of area."
+	},
+	GetCorner: {
+		signature: "CTFNavArea.GetCorner(dir: ENavDirType) -> Vector",
+		description: "Get corner origin of area.\n\nSee [ENavDirType](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ENavDirType)."
+	},
+	GetDistanceSquaredToPoint: {
+		signature: "CTFNavArea.GetDistanceSquaredToPoint(pos: Vector) -> float",
+		description: "Return shortest distance between point and this area."
+	},
+	GetDoor: {
+		signature: "CTFNavArea.GetDoor() -> handle",
+		description: "Returns the door entity above the area."
+	},
+	GetElevator: {
+		signature: "CTFNavArea.GetElevator() -> handle",
+		description: "Returns the elevator if in an elevator's path."
+	},
+	GetElevatorAreas: {
+		signature: "CTFNavArea.GetElevatorAreas(result: table) -> void",
+		description: "Fills table with a collection of areas reachable via elevator from this area."
+	},
+	GetID: {
+		signature: "CTFNavArea.GetID() -> int",
+		description: "Get area ID."
+	},
+	GetIncomingConnections: {
+		signature: "CTFNavArea.GetIncomingConnections(dir: ENavDirType, result: table) -> void",
+		description: "Fills a passed in table with areas connected TO this area by a ONE-WAY link (ie: we have no connection back to them).\n\nSee [ENavDirType](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ENavDirType)."
+	},
+	GetParent: {
+		signature: "CTFNavArea.GetParent() -> handle",
+		description: "Returns the area just prior to this one in the search path."
+	},
+	GetParentHow: {
+		signature: "CTFNavArea.GetParentHow() -> int",
+		description: "Returns how we get from parent to us."
+	},
+	GetPlaceName: {
+		signature: "CTFNavArea.GetPlaceName() -> string",
+		description: "Get place name if it exists, null otherwise."
+	},
+	GetPlayerCount: {
+		signature: "CTFNavArea.GetPlayerCount(team: ETFTeam) -> int",
+		description: "Return number of players of given team currently within this area (team of zero means any/all).\n\nSee [ETFTeam](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ETFTeam)."
+	},
+	GetRandomAdjacentArea: {
+		signature: "CTFNavArea.GetRandomAdjacentArea(dir: ENavDirType) -> handle",
+		description: "Return a random adjacent area in the given direction.\n\nSee [ENavDirType](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ENavDirType)."
+	},
+	GetSizeX: {
+		signature: "CTFNavArea.GetSizeX() -> float",
+		description: "Return the area size along the X axis."
+	},
+	GetSizeY: {
+		signature: "CTFNavArea.GetSizeY() -> float",
+		description: "Return the area size along the Y axis."
+	},
+	GetTravelDistanceToBombTarget: {
+		signature: "CTFNavArea.GetTravelDistanceToBombTarget() -> float",
+		description: "Gets the travel distance to the MvM bomb target."
+	},
+	GetZ: {
+		signature: "CTFNavArea.GetZ(pos: Vector) -> float",
+		description: "Return Z of area at (x,y) of 'pos'."
+	},
+	HasAttributeTF: {
+		signature: "CTFNavArea.HasAttributeTF(bits: FTFNavAttributeType) -> bool",
+		description: "Has TF-specific area attribute bits of the given ones.\n\nSee [FTFNavAttributeType](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#FTFNavAttributeType)."
+	},
+	HasAttributes: {
+		signature: "CTFNavArea.HasAttributes(bits: FNavAttributeType) -> bool",
+		description: "Has area attribute bits of the given ones?.\n\nSee [FNavAttributeType](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#FNavAttributeType)."
+	},
+	HasAvoidanceObstacle: {
+		signature: "CTFNavArea.HasAvoidanceObstacle(maxheight: float) -> bool",
+		description: "Returns true if there's a large, immobile object obstructing this area."
+	},
+	IsBlocked: {
+		signature: "CTFNavArea.IsBlocked(team: ETFTeam, affects_flow: bool) -> bool",
+		description: "Return true if team is blocked in this area.\n\nSee [ETFTeam](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ETFTeam)."
+	},
+	IsBottleneck: {
+		signature: "CTFNavArea.IsBottleneck() -> bool",
+		description: "Returns true if area is a bottleneck. (tiny narrow areas with only one path)."
+	},
+	IsCompletelyVisibleToTeam: {
+		signature: "CTFNavArea.IsCompletelyVisibleToTeam(team: ETFTeam) -> bool",
+		description: "Return true if given area is completely visible from somewhere in this area by someone on the team.\n\nSee [ETFTeam](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ETFTeam)."
+	},
+	IsConnected: {
+		signature: "CTFNavArea.IsConnected(area: handle, dir: ENavDirType) -> bool",
+		description: "Return true if this area is connected to other area in given direction. (If you set direction to -1 or 4, it will automatically check all directions for a connection).\n\nSee [ENavDirType](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ENavDirType)."
+	},
+	IsCoplanar: {
+		signature: "CTFNavArea.IsCoplanar(area: handle) -> bool",
+		description: "Return true if this area and given. area are approximately co-planar."
+	},
+	IsDamaging: {
+		signature: "CTFNavArea.IsDamaging() -> bool",
+		description: "Return true if this area is marked to have continuous damage."
+	},
+	IsDegenerate: {
+		signature: "CTFNavArea.IsDegenerate() -> bool",
+		description: "Return true if this area is badly formed."
+	},
+	IsEdge: {
+		signature: "CTFNavArea.IsEdge(dir: ENavDirType) -> bool",
+		description: "Return true if there are no bi-directional links on the given side.\n\nSee [ENavDirType](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ENavDirType)."
+	},
+	IsFlat: {
+		signature: "CTFNavArea.IsFlat() -> bool",
+		description: "Return true if this area is approximately flat."
+	},
+	IsOverlapping: {
+		signature: "CTFNavArea.IsOverlapping(area: handle) -> bool",
+		description: "Return true if 'area' overlaps our 2D extents."
+	},
+	IsOverlappingOrigin: {
+		signature: "CTFNavArea.IsOverlappingOrigin(pos: Vector, tolerance: float) -> bool",
+		description: "Return true if 'pos' is within 2D extents of area."
+	},
+	IsPotentiallyVisibleToTeam: {
+		signature: "CTFNavArea.IsPotentiallyVisibleToTeam(team: ETFTeam) -> bool",
+		description: "Return true if any portion of this area is visible to anyone on the given team.\n\nSee [ETFTeam](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ETFTeam)."
+	},
+	IsReachableByTeam: {
+		signature: "CTFNavArea.IsReachableByTeam(team: ETFTeam) -> bool",
+		description: "Is this area reachable by the given team?\n\nSee [ETFTeam](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ETFTeam)."
+	},
+	IsRoughlySquare: {
+		signature: "CTFNavArea.IsRoughlySquare() -> bool",
+		description: "Return true if this area is approximately square."
+	},
+	IsTFMarked: {
+		signature: "CTFNavArea.IsTFMarked() -> bool",
+		description: "Is this nav area marked with the current marking scope?"
+	},
+	IsUnderwater: {
+		signature: "CTFNavArea.IsUnderwater() -> bool",
+		description: "Return true if area is underwater."
+	},
+	IsValidForWanderingPopulation: {
+		signature: "CTFNavArea.IsValidForWanderingPopulation() -> bool",
+		description: "Returns true if area is valid for wandering population."
+	},
+	IsVisible: {
+		signature: "CTFNavArea.IsVisible(point: Vector) -> bool",
+		description: "Return true if area is visible from the given eyepoint."
+	},
+	MarkAsBlocked: {
+		signature: "CTFNavArea.MarkAsBlocked(team: ETFTeam) -> void",
+		description: "Mark this area as blocked for team.\n\nSee [ETFTeam](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ETFTeam)."
+	},
+	MarkAsDamaging: {
+		signature: "CTFNavArea.MarkAsDamaging(duration: float) -> void",
+		description: "Mark this area is damaging for the next 'duration' seconds."
+	},
+	MarkObstacleToAvoid: {
+		signature: "CTFNavArea.MarkObstacleToAvoid(height: float) -> void",
+		description: "Marks the obstructed status of the nav area."
+	},
+	RemoveAttributes: {
+		signature: "CTFNavArea.RemoveAttributes(bits: FNavAttributeType) -> void",
+		description: "Removes area attribute bits.\n\nSee [FNavAttributeType](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#FNavAttributeType)."
+	},
+	RemoveOrthogonalConnections: {
+		signature: "CTFNavArea.RemoveOrthogonalConnections(dir: ENavDirType) -> void",
+		description: "Removes all connections in directions to left and right of specified direction.\n\nSee [ENavDirType](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ENavDirType)."
+	},
+	SetAttributeTF: {
+		signature: "CTFNavArea.SetAttributeTF(bits: FTFNavAttributeType) -> void",
+		description: "Set TF-specific area attributes.\n\nSee [FTFNavAttributeType](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#FTFNavAttributeType)."
+	},
+	SetAttributes: {
+		signature: "CTFNavArea.SetAttributes(bits: FNavAttributeType) -> void",
+		description: "Set area attribute bits.\n\nSee [FNavAttributeType](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#FNavAttributeType)."
+	},
+	SetPlaceName: {
+		signature: "CTFNavArea.SetPlaceName(name: string) -> void",
+		description: "Set place name. If you pass null, the place name will be set to nothing."
+	},
+	TFMark: {
+		signature: "CTFNavArea.TFMark() -> void",
+		description: "Mark this nav area with the current marking scope."
+	},
+	UnblockArea: {
+		signature: "CTFNavArea.UnblockArea() -> void",
+		description: "Unblocks this area."
+	},
+	/* --------------------------- *
+	 * CNavMesh                    *
+	 * --------------------------- */
+	FindNavAreaAlongRay: {
+		signature: "CNavMesh.FindNavAreaAlongRay(start_pos: Vector, end_pos: Vector, ignore_area: handle) -> handle",
+		description: "Get nav area from ray."
+	},
+	GetAllAreas: {
+		signature: "CNavMesh.GetAllAreas(result: table) -> void",
+		description: "Fills a passed in table of all nav areas."
+	},
+	GetAreasWithAttributes: {
+		signature: "CNavMesh.GetAreasWithAttributes(bits: FNavAttributeType, result: table) -> void",
+		description: "Fills a passed in table of all nav areas that have the specified attributes.\n\nSee [FNavAttributeType](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#FNavAttributeType)."
+	},
+	GetNavArea: {
+		signature: "CNavMesh.GetNavArea(origin: Vector, beneath: float) -> handle",
+		description: "Given a position in the world, return the nav area that is closest to or below that height."
+	},
+	GetNavAreaByID: {
+		signature: "CNavMesh.GetNavAreaByID(area_id: int) -> handle",
+		description: "Get nav area by ID."
+	},
+	GetNavAreaCount: {
+		signature: "CNavMesh.GetNavAreaCount() -> int",
+		description: "Return total number of nav areas."
+	},
+	GetNavAreasFromBuildPath: {
+		signature: "CNavMesh.GetNavAreasFromBuildPath(start_area: handle, end_area: handle, goal_pos: Vector, max_path_length: float, team: ETFTeam, ignore_nav_blockers: bool, result: table) -> bool",
+		description: "Fills the table with areas from a path. Returns whether a path was found. If 'end_area' is NULL, will compute a path as close as possible to 'goal_pos'.\n\nSee [ETFTeam](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ETFTeam)."
+	},
+	GetNavAreasInRadius: {
+		signature: "CNavMesh.GetNavAreasInRadius(origin: Vector, radius: float, result: table) -> void",
+		description: "Fills a passed in table of nav areas within radius."
+	},
+	GetNavAreasOverlappingEntityExtent: {
+		signature: "CNavMesh.GetNavAreasOverlappingEntityExtent(entity: handle, result: table) -> void",
+		description: "Fills passed in table with areas overlapping entity's extent."
+	},
+	GetNearestNavArea: {
+		signature: "CNavMesh.GetNearestNavArea(origin: Vector, max_distance: float, check_los: bool, check_ground: bool) -> handle",
+		description: "Given a position in the world, return the nav area that is closest to or below that height."
+	},
+	GetObstructingEntities: {
+		signature: "CNavMesh.GetObstructingEntities(result: table) -> void",
+		description: "Fills a passed in table of all obstructing entities."
+	},
+	NavAreaBuildPath: {
+		signature: "CNavMesh.NavAreaBuildPath(start_area: handle, end_erea: handle, goal_pos: Vector, max_path_length: float, team: ETFTeam, ignore_nav_blockers: bool) -> bool",
+		description: "Returns true if a path exists.\n\nSee [ETFTeam](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ETFTeam)."
+	},
+	NavAreaTravelDistance: {
+		signature: "CNavMesh.NavAreaTravelDistance(start_area: handle, end_area: handle, max_path_length: float) -> float",
+		description: "Compute distance between two areas. Return -1 if can't reach 'end_area' from 'start_area'."
+	},
+	RegisterAvoidanceObstacle: {
+		signature: "CNavMesh.RegisterAvoidanceObstacle(entity: handle) -> void",
+		description: "Registers avoidance obstacle."
+	},
+	UnregisterAvoidanceObstacle: {
+		signature: "CNavMesh.UnregisterAvoidanceObstacle(entity: handle) -> void",
+		description: "Unregisters avoidance obstacle."
+	},
+	/* --------------------------- *
+	 * CNetPropManager             *
+	 * --------------------------- */
+	GetPropArraySize: {
+		signature: "CNetPropManager.GetPropArraySize(entity: handle, property_name: string) -> int",
+		description: "Returns the size of an netprop array, or -1."
+	},
+	GetPropEntity: {
+		signature: "CNetPropManager.GetPropEntity(entity: handle, property_name: string) -> handle",
+		description: "Reads an EHANDLE-valued netprop (21 bit integer). Returns the script handle of the entity."
+	},
+	GetPropEntityArray: {
+		signature: "CNetPropManager.GetPropEntityArray(entity: handle, property_name: string, array_element: int) -> handle",
+		description: "Reads an EHANDLE-valued netprop (21 bit integer) from an array. Returns the script handle of the entity."
+	},
+	GetPropBool: {
+		signature: "CNetPropManager.GetPropBool(entity: handle, property_name: string) -> bool",
+		description: "Reads a boolean-valued netprop."
+	},
+	GetPropBoolArray: {
+		signature: "CNetPropManager.GetPropBoolArray(entity: handle, property_name: string, array_element: int) -> bool",
+		description: "Reads a boolean-valued netprop from an array."
+	},
+	GetPropFloat: {
+		signature: "CNetPropManager.GetPropFloat(entity: handle, property_name: string) -> float",
+		description: "Reads a float-valued netprop."
+	},
+	GetPropFloatArray: {
+		signature: "CNetPropManager.GetPropFloatArray(entity: handle, property_name: string, array_element: int) -> float",
+		description: "Reads a float-valued netprop from an array."
+	},
+	GetPropInfo: {
+		signature: "CNetPropManager.GetPropInfo(entity: handle, property_name: string, array_element: int, result: table) -> bool",
+		description: "Fills in a passed table with property info for the provided entity."
+	},
+	GetPropInt: {
+		signature: "CNetPropManager.GetPropInt(entity: handle, property_name: string) -> int",
+		description: "Reads an integer-valued netprop."
+	},
+	GetPropIntArray: {
+		signature: "CNetPropManager.GetPropIntArray(entity: handle, property_name: string, array_element: int) -> int",
+		description: "Reads an integer-valued netprop from an array."
+	},
+	GetPropString: {
+		signature: "CNetPropManager.GetPropString(entity: handle, property_name: string) -> string",
+		description: "Reads an string-valued netprop."
+	},
+	GetPropStringArray: {
+		signature: "CNetPropManager.GetPropStringArray(entity: handle, property_name: string, array_element: int) -> string",
+		description: "Reads an string-valued netprop from an array."
+	},
+	GetPropType: {
+		signature: "CNetPropManager.GetPropType(entity: handle, property_name: string) -> string",
+		description: "Returns the name of the netprop type as a string."
+	},
+	GetPropVector: {
+		signature: "CNetPropManager.GetPropVector(entity: handle, property_name: string) -> Vector",
+		description: "Reads a 3D vector-valued netprop."
+	},
+	GetPropVectorArray: {
+		signature: "CNetPropManager.GetPropVectorArray(entity: handle, property_name: string, array_element: int) -> Vector",
+		description: "Reads a 3D vector-valued netprop from an array."
+	},
+	GetTable: {
+		signature: "CNetPropManager.GetTable(entity: handle, prop_type: int, result: table) -> void",
+		description: "Fills in a passed table with all props of a specified type for the provided entity (set prop_type to 0 for SendTable or 1 for DataMap)."
+	},
+	HasProp: {
+		signature: "CNetPropManager.HasProp(entity: handle, property_name: string) -> bool",
+		description: "Checks if a netprop exists."
+	},
+	SetPropBool: {
+		signature: "CNetPropManager.SetPropBool(entity: handle, property_name: string, value: bool) -> void",
+		description: "Sets a netprop to the specified boolean."
+	},
+	SetPropBoolArray: {
+		signature: "CNetPropManager.SetPropBoolArray(entity: handle, property_name: string, value: bool, array_element: int) -> void",
+		description: "Sets a netprop from an array to the specified boolean."
+	},
+	SetPropEntity: {
+		signature: "CNetPropManager.SetPropEntity(entity: handle, property_name: string, value: handle) -> void",
+		description: "Sets an EHANDLE-valued netprop (21 bit integer) to reference the specified entity."
+	},
+	SetPropEntityArray: {
+		signature: "CNetPropManager.SetPropEntityArray(entity: handle, property_name: string, value: handle, array_element: int) -> void",
+		description: "Sets an EHANDLE-valued netprop (21 bit integer) from an array to reference the specified entity."
+	},
+	SetPropFloat: {
+		signature: "CNetPropManager.SetPropFloat(entity: handle, property_name: string, value: float) -> void",
+		description: "Sets a netprop to the specified float."
+	},
+	SetPropFloatArray: {
+		signature: "CNetPropManager.SetPropFloatArray(entity: handle, property_name: string, value: float, array_element: int) -> void",
+		description: "Sets a netprop from an array to the specified float."
+	},
+	SetPropInt: {
+		signature: "CNetPropManager.SetPropInt(entity: handle, property_name: string, value: int) -> void",
+		description: "Sets a netprop to the specified integer."
+	},
+	SetPropIntArray: {
+		signature: "CNetPropManager.SetPropIntArray(entity: handle, property_name: string, value: int, array_element: int) -> void",
+		description: "Sets a netprop from an array to the specified integer."
+	},
+	SetPropString: {
+		signature: "CNetPropManager.SetPropString(entity: handle, property_name: string, value: string) -> void",
+		description: "Sets a netprop to the specified string."
+	},
+	SetPropStringArray: {
+		signature: "CNetPropManager.SetPropStringArray(entity: handle, property_name: string, value: string, array_element: int) -> void",
+		description: "Sets a netprop from an array to the specified string."
+	},
+	SetPropVector: {
+		signature: "CNetPropManager.SetPropVector(entity: handle, property_name: string, value: Vector) -> void",
+		description: "Sets a netprop to the specified vector."
+	},
+	SetPropVectorArray: {
+		signature: "CNetPropManager.SetPropVectorArray(entity: handle, property_name: string, value: Vector, array_element: int) -> void",
+		description: "Sets a netprop from an array to the specified vector."
+	},
+	/* --------------------------- *
+	 * CScriptEntityOutputs        *
+	 * --------------------------- */
+	AddOutput: {
+		signature: "CScriptEntityOutputs.AddOutput(entity: handle, output_name: string, targetname: string, input_name: string, parameter: string, delay: float, times_to_fire: int) -> void",
+		description: "Adds a new output to the entity."
+	},
+	GetNumElements: {
+		signature: "CScriptEntityOutputs.GetNumElements(ntity: handle ''entity'', output_name: string) -> int",
+		description: "Returns the number of array elements."
+	},
+	GetOutputTable: {
+		signature: "CScriptEntityOutputs.GetOutputTable(entity: handle, output_name: string, table, array_element: int) -> void",
+		description: "Fills the passed table with output information."
+	},
+	HasAction: {
+		signature: "CScriptEntityOutputs.HasAction(entity: handle, output_name: string) -> bool",
+		description: "Returns true if an action exists for the output."
+	},
+	HasOutput: {
+		signature: "CScriptEntityOutputs.HasOutput(entity: handle, output_name: string) -> bool",
+		description: "Returns true if the output exists."
+	},
+	RemoveOutput: {
+		signature: "CScriptEntityOutputs.RemoveOutput(entity: handle, output_name: string, targetname: string, input_name: string, parameter: string) -> void",
+		description: "Removes an output from the entity."
+	},
+	/* --------------------------- *
+	 * CScriptKeyValues            *
+	 * --------------------------- */
+	FindKey: {
+		signature: "CScriptKeyValues.FindKey(key: string) -> CScriptKeyValues",
+		description: "Find a sub key by the key name."
+	},
+	GetFirstSubKey: {
+		signature: "CScriptKeyValues.GetFirstSubKey() -> CScriptKeyValues",
+		description: "Return the first sub key object."
+	},
+	GetKeyBool: {
+		signature: "CScriptKeyValues.GetKeyBool(key: string) -> bool",
+		description: "Return the key value as a bool."
+	},
+	GetKeyFloat: {
+		signature: "CScriptKeyValues.GetKeyFloat(key: string) -> float",
+		description: "Return the key value as a float."
+	},
+	GetKeyInt: {
+		signature: "CScriptKeyValues.GetKeyInt(key: string) -> int",
+		description: "Return the key value as an integer."
+	},
+	GetKeyString: {
+		signature: "CScriptKeyValues.GetKeyString(key: string) -> string",
+		description: "Return the key value as a string."
+	},
+	GetNextKey: {
+		signature: "CScriptKeyValues.GetNextKey() -> CScriptKeyValues",
+		description: "Return the next neighbor key object to the one the method is called on."
+	},
+	IsKeyEmpty: {
+		signature: "CScriptKeyValues.IsKeyEmpty(key: string) -> bool",
+		description: "Returns true if the named key has no value."
+	},
+	IsValid: {
+		signature: "CScriptKeyValues.IsValid() -> bool",
+		description: "Whether the handle belongs to a valid key."
+	},
+	ReleaseKeyValues: {
+		signature: "CScriptKeyValues.ReleaseKeyValues() -> void",
+		description: "Releases the contents of the instance."
+	},
+	/* --------------------------- *
+	 * CPlayerVoiceListener        *
+	 * --------------------------- */
+	GetPlayerSpeechDuration: {
+		signature: "CPlayerVoiceListener.GetPlayerSpeechDuration(player_index: int) -> float",
+		description: "Returns the number of seconds the player has been continuously speaking."
+	},
+	IsPlayerSpeaking: {
+		signature: "CPlayerVoiceListener.IsPlayerSpeaking(player_index: int) -> bool",
+		description: "Returns whether the player specified is speaking."
+	},
+	/* --------------------------- *
+	 * CEnvEntityMaker             *
+	 * --------------------------- */
+	SpawnEntity: {
+		signature: "CEnvEntityMaker.SpawnEntity() -> void",
+		description: "Create an entity at the location of the maker."
+	},
+	SpawnEntityAtEntityOrigin: {
+		signature: "CEnvEntityMaker.SpawnEntityAtEntityOrigin(entity: handle) -> void",
+		description: "Create an entity at the location of a specified entity instance."
+	},
+	SpawnEntityAtLocation: {
+		signature: "CEnvEntityMaker.SpawnEntityAtLocation(origin: Vector, orientation: Vector) -> void",
+		description: "Create an entity at a specified location and orientation, orientation is Euler angle in degrees (pitch, yaw, roll)."
+	},
+	SpawnEntityAtNamedEntityOrigin: {
+		signature: "CEnvEntityMaker.SpawnEntityAtNamedEntityOrigin(targetname: string) -> void",
+		description: "Create an entity at the location of a named entity. If multiple entities have the same name, only the one with the lowest entity index will be targeted."
+	},
+	/* --------------------------- *
+	 * CPointTemplate              *
+	 * --------------------------- */
+	GetFuturePosition: {
+		signature: "CPointTemplate.GetFuturePosition(x: float, speed: float) -> Vector",
+		description: "Get a position on the track X seconds in the future."
+	},
+	/* --------------------------- *
+	 * CFuncTrackTrain             *
+	 * --------------------------- */
+	GetFuturePosition: {
+		signature: "CFuncTrackTrain.GetFuturePosition(x: float, speed: float) -> Vector",
+		description: "Get a position on the track X seconds in the future."
+	},
+	/* --------------------------- *
+	 * CPointScriptTemplate        *
+	 * --------------------------- */
+	AddTemplate: {
+		signature: "CPointScriptTemplate.AddTemplate(classname: string, keyvalues: table) -> void",
+		description: "Add an entity with the given keyvalues to the template spawner, similar to `SpawnEntityFromTable`. The number of templates allowed is unlimited."
+	},
+	SetGroupSpawnTables: {
+		signature: "CPointScriptTemplate.SetGroupSpawnTables(group: table, spawn: table) -> void",
+		description: "Unused. This only stores a reference to the two tables which is removed when the"
+	},
+	/* --------------------------- *
+	 * CSceneEntity                *
+	 * --------------------------- */
+	AddBroadcastTeamTarget: {
+		signature: "CSceneEntity.AddBroadcastTeamTarget(index: int) -> void",
+		description: "Adds a team (by index) to the broadcast list."
+	},
+	EstimateLength: {
+		signature: "CSceneEntity.EstimateLength() -> float",
+		description: "Returns length of this scene in seconds."
+	},
+	FindNamedEntity: {
+		signature: "CSceneEntity.FindNamedEntity(reference: string) -> handle",
+		description: "Given an entity reference, such as !target, get actual entity from scene object."
+	},
+	IsPaused: {
+		signature: "CSceneEntity.IsPaused() -> bool",
+		description: "If this scene is currently paused."
+	},
+	IsPlayingBack: {
+		signature: "CSceneEntity.IsPlayingBack() -> bool",
+		description: "If this scene is currently playing."
+	},
+	LoadSceneFromString: {
+		signature: "CSceneEntity.LoadSceneFromString(scene_name: string, scene: string) -> bool",
+		description: "Given a dummy scene name and a vcd string, load the scene."
+	},
+	RemoveBroadcastTeamTarget: {
+		signature: "CSceneEntity.RemoveBroadcastTeamTarget(index: int) -> void",
+		description: "Removes a team (by index) from the broadcast list."
+	},
+	/* --------------------------- *
+	 * CCallChainer                *
+	 * --------------------------- */
+	CCallChainer: {
+		signature: "CCallChainer(function_prefix: string, scope: table = null) -> CCallChainer",
+		description: "Creates a CCallChainer object that'll collect functions that have a matching prefix in the given scope."
+	},
+	PostScriptExecute: {
+		signature: "CCallChainer.PostScriptExecute() -> void",
+		description: "Search for all non-native functions with matching prefixes, then push them into the `chains` table."
+	},
+	Call: {
+		signature: "CCallChainer.Call(event: string, any ...) -> bool",
+		description: "Find an unprefixed function name in the `chains` table and call it with the given arguments."
+	},
+	/* --------------------------- *
+	 * CSimpleCallChainer          *
+	 * --------------------------- */
+	CSimpleCallChainer: {
+		signature: "CSimpleCallChainer(prefix: string, scope: table = null, ''exactMatch'' = false) -> CSimpleCallChainer",
+		description: "Creates a CSimpleCallChainer object that'll collect functions that have a matching prefix in the given scope, unless it seek for an exact name match."
+	},
+	PostScriptExecute: {
+		signature: "CSimpleCallChainer.PostScriptExecute() -> void",
+		description: "Begin searching for all non-native functions with matching prefixes, then push them into the `chain` array."
+	},
+	Call: {
+		signature: "CSimpleCallChainer.Call(any ...) -> bool",
+		description: "Call all functions inside the `chain` array with the given arguments."
+	},
+	/* --------------------------- *
+	 * NextBotCombatCharacter      *
+	 * --------------------------- */
+	ClearImmobileStatus: {
+		signature: "NextBotCombatCharacter.ClearImmobileStatus() -> void",
+		description: "Clear immobile status."
+	},
+	FlagForUpdate: {
+		signature: "NextBotCombatCharacter.FlagForUpdate(toggle: bool) -> void",
+		description: "Flag this bot for update (or not to update if *toggle* is false)."
+	},
+	GetBodyInterface: {
+		signature: "NextBotCombatCharacter.GetBodyInterface() -> INextBotComponent",
+		description: "Get this bot's body interface."
+	},
+	GetBotId: {
+		signature: "NextBotCombatCharacter.GetBotId() -> int",
+		description: "Get this bot's id."
+	},
+	GetImmobileDuration: {
+		signature: "NextBotCombatCharacter.GetImmobileDuration() -> float",
+		description: "How long have we been immobile."
+	},
+	GetImmobileSpeedThreshold: {
+		signature: "NextBotCombatCharacter.GetImmobileSpeedThreshold() -> float",
+		description: "Return units/second below which this actor is considered immobile."
+	},
+	GetIntentionInterface: {
+		signature: "NextBotCombatCharacter.GetIntentionInterface() -> INextBotComponent",
+		description: "Get this bot's intention interface."
+	},
+	GetLocomotionInterface: {
+		signature: "NextBotCombatCharacter.GetLocomotionInterface() -> ILocomotion",
+		description: "Get this bot's locomotion interface."
+	},
+	GetTickLastUpdate: {
+		signature: "NextBotCombatCharacter.GetTickLastUpdate() -> int",
+		description: "Get last update tick."
+	},
+	GetVisionInterface: {
+		signature: "NextBotCombatCharacter.GetVisionInterface() -> INextBotComponent",
+		description: "Get this bot's vision interface."
+	},
+	IsEnemy: {
+		signature: "NextBotCombatCharacter.IsEnemy(entity: handle) -> bool",
+		description: "Return true if given entity is our enemy."
+	},
+	IsFlaggedForUpdate: {
+		signature: "NextBotCombatCharacter.IsFlaggedForUpdate() -> bool",
+		description: "Is this bot flagged for update."
+	},
+	IsFriend: {
+		signature: "NextBotCombatCharacter.IsFriend(entity: handle) -> bool",
+		description: "Return true if given entity is our friend."
+	},
+	IsImmobile: {
+		signature: "NextBotCombatCharacter.IsImmobile() -> bool",
+		description: "Return true if we haven't moved in awhile."
+	},
+	/* --------------------------- *
+	 * INextBotComponent           *
+	 * --------------------------- */
+	ComputeUpdateInterval: {
+		signature: "INextBotComponent.ComputeUpdateInterval() -> bool",
+		description: "Recomputes the component update interval."
+	},
+	GetUpdateInterval: {
+		signature: "INextBotComponent.GetUpdateInterval() -> float",
+		description: "Returns the component update interval."
+	},
+	Reset: {
+		signature: "INextBotComponent.Reset() -> void",
+		description: "Resets the internal update state"
+	},
+	/* --------------------------- *
+	 * ILocomotion                 *
+	 * --------------------------- */
+	Approach: {
+		signature: "ILocomotion.Approach(goal: Vector, goal_weight: float) -> void",
+		description: "The primary locomotive method. Goal determines the destination position to move towards. goal_weight determines the priority of this path, you can set this to 1.0 generally speaking."
+	},
+	ClearStuckStatus: {
+		signature: "ILocomotion.ClearStuckStatus(reason: string) -> void",
+		description: "Reset stuck status to un-stuck. Reason message is shown when debugging nextbots."
+	},
+	ClimbUpToLedge: {
+		signature: "ILocomotion.ClimbUpToLedge(goal_pos: Vector, goal_forward: Vector, obstacle: handle) -> bool",
+		description: "Initiate a jump to an adjacent high ledge, return false if climb can't start."
+	},
+	ComputeUpdateInterval: {
+		signature: "ILocomotion.ComputeUpdateInterval() -> bool",
+		description: "Returns false if no time has elapsed."
+	},
+	DriveTo: {
+		signature: "ILocomotion.DriveTo(pos: Vector) -> void",
+		description: "Move the bot to the precise given position immediately, updating internal state."
+	},
+	FaceTowards: {
+		signature: "ILocomotion.FaceTowards(target: Vector) -> void",
+		description: "Rotate body to face towards target."
+	},
+	FractionPotentialGap: {
+		signature: "ILocomotion.FractionPotentialGap(from: Vector, to: Vector) -> float",
+		description: "If the locomotor cannot jump over the gap, returns the fraction of the jumpable ray."
+	},
+	FractionPotentiallyTraversable: {
+		signature: "ILocomotion.FractionPotentiallyTraversable(from: Vector, to: Vector, immediately: bool) -> float",
+		description: "If the locomotor could not move along the line given, returns the fraction of the walkable ray. If *immediately* is true, breakables are considered non-traverseable."
+	},
+	GetDeathDropHeight: {
+		signature: "ILocomotion.GetDeathDropHeight() -> float",
+		description: "Distance at which we will die if we fall."
+	},
+	GetDesiredSpeed: {
+		signature: "ILocomotion.GetDesiredSpeed() -> float",
+		description: "Get desired speed for locomotor movement."
+	},
+	GetFeet: {
+		signature: "ILocomotion.GetFeet() -> Vector",
+		description: "Return position of feet - the driving point where the bot contacts the ground."
+	},
+	GetGround: {
+		signature: "ILocomotion.GetGround() -> handle",
+		description: "Return the current ground entity or NULL if not on the ground."
+	},
+	GetGroundMotionVector: {
+		signature: "ILocomotion.GetGroundMotionVector() -> Vector",
+		description: "Return unit vector in XY plane describing our direction of motion - even if we are currently not moving."
+	},
+	GetGroundNormal: {
+		signature: "ILocomotion.GetGroundNormal() -> Vector",
+		description: "Surface normal of the ground we are in contact with."
+	},
+	GetGroundSpeed: {
+		signature: "ILocomotion.GetGroundSpeed() -> float",
+		description: "Return current world space speed in XY plane."
+	},
+	GetMaxAcceleration: {
+		signature: "ILocomotion.GetMaxAcceleration() -> float",
+		description: "Return maximum acceleration of locomotor."
+	},
+	GetMaxDeceleration: {
+		signature: "ILocomotion.GetMaxDeceleration() -> float",
+		description: "Return maximum deceleration of locomotor."
+	},
+	GetMaxJumpHeight: {
+		signature: "ILocomotion.GetMaxJumpHeight() -> float",
+		description: "Return maximum height of a jump."
+	},
+	GetMotionVector: {
+		signature: "ILocomotion.GetMotionVector() -> Vector",
+		description: "Return unit vector describing our direction of motion - even if we are currently not moving."
+	},
+	GetRunSpeed: {
+		signature: "ILocomotion.GetRunSpeed() -> float",
+		description: "Get maximum running speed."
+	},
+	GetSpeed: {
+		signature: "ILocomotion.GetSpeed() -> float",
+		description: "Return current world space speed (magnitude of velocity)."
+	},
+	GetSpeedLimit: {
+		signature: "ILocomotion.GetSpeedLimit() -> float",
+		description: "Get maximum speed bot can reach, regardless of desired speed."
+	},
+	GetStepHeight: {
+		signature: "ILocomotion.GetStepHeight() -> float",
+		description: "If delta Z is lower than this, we can step up the surface (like a stair step), but if delta Z is greater than this, we have to jump to get up."
+	},
+	GetStuckDuration: {
+		signature: "ILocomotion.GetStuckDuration() -> float",
+		description: "Return how long we've been stuck."
+	},
+	GetTraversableSlopeLimit: {
+		signature: "ILocomotion.GetTraversableSlopeLimit() -> float",
+		description: "Return Z component of unit normal of steepest traversable slope."
+	},
+	GetUpdateInterval: {
+		signature: "ILocomotion.GetUpdateInterval() -> float",
+		description: "Returns time between updates."
+	},
+	GetVelocity: {
+		signature: "ILocomotion.GetVelocity() -> Vector",
+		description: "Return current world space velocity."
+	},
+	GetWalkSpeed: {
+		signature: "ILocomotion.GetWalkSpeed() -> float",
+		description: "Get maximum walking speed."
+	},
+	HasPotentialGap: {
+		signature: "ILocomotion.HasPotentialGap(from: Vector, to: Vector) -> float",
+		description: "Checks if there is a possible gap that will need to be jumped over. Returns fraction of ray from 0 to 1."
+	},
+	IsAbleToClimb: {
+		signature: "ILocomotion.IsAbleToClimb() -> bool",
+		description: "Return true if this bot can climb arbitrary geometry it encounters."
+	},
+	IsAbleToJumpAcrossGaps: {
+		signature: "ILocomotion.IsAbleToJumpAcrossGaps() -> bool",
+		description: "Return true if this bot can jump across gaps in its path."
+	},
+	IsAreaTraversable: {
+		signature: "ILocomotion.IsAreaTraversable(area: handle) -> bool",
+		description: "Return true if given area can be used for navigation."
+	},
+	IsAttemptingToMove: {
+		signature: "ILocomotion.IsAttemptingToMove() -> bool",
+		description: "Return true if we have tried to Approach() or DriveTo() very recently."
+	},
+	IsClimbingOrJumping: {
+		signature: "ILocomotion.IsClimbingOrJumping() -> bool",
+		description: "Is jumping in any form."
+	},
+	IsClimbingUpToLedge: {
+		signature: "ILocomotion.IsClimbingUpToLedge() -> bool",
+		description: "Is climbing up to a high ledge."
+	},
+	IsEntityTraversable: {
+		signature: "ILocomotion.IsEntityTraversable(entity: handle, immediately: bool) -> bool",
+		description: "Return true if the entity handle is traversable. If *immediately* is true, breakables are considered non-traverseable."
+	},
+	IsGap: {
+		signature: "ILocomotion.IsGap(pos: Vector, forward: Vector) -> bool",
+		description: "Return true if there is a gap at this position."
+	},
+	IsJumpingAcrossGap: {
+		signature: "ILocomotion.IsJumpingAcrossGap() -> bool",
+		description: "Is jumping across a gap to the far side."
+	},
+	IsOnGround: {
+		signature: "ILocomotion.IsOnGround() -> bool",
+		description: "Return true if standing on something."
+	},
+	IsPotentiallyTraversable: {
+		signature: "ILocomotion.IsPotentiallyTraversable(from: Vector, to: Vector, immediately: bool) -> float",
+		description: "Checks if this locomotor could potentially move along the line given. Returns fraction of trace result (1 = clear). If *immediately* is true, breakables are considered non-traverseable."
+	},
+	IsRunning: {
+		signature: "ILocomotion.IsRunning() -> bool",
+		description: "Is running?"
+	},
+	IsScrambling: {
+		signature: "ILocomotion.IsScrambling() -> bool",
+		description: "Is in the middle of a complex action (climbing a ladder, climbing a ledge, jumping, etc) that shouldn't be interrupted."
+	},
+	IsStuck: {
+		signature: "ILocomotion.IsStuck() -> bool",
+		description: "Return true if bot is stuck. If the locomotor cannot make progress, it becomes stuck and can only leave this stuck state by successfully movingand becoming un-stuck."
+	},
+	Jump: {
+		signature: "ILocomotion.Jump() -> void",
+		description: "Initiate a simple undirected jump in the air."
+	},
+	JumpAcrossGap: {
+		signature: "ILocomotion.JumpAcrossGap(goal_pos: Vector, goal_forward: Vector) -> void",
+		description: "Initiate a jump across an empty volume of space to far side."
+	},
+	OnLandOnGround: {
+		signature: "ILocomotion.OnLandOnGround(ground: handle) -> void",
+		description: "Manually run the OnLandOnGround callback. Typically invoked when bot lands on the ground after being in the air."
+	},
+	OnLeaveGround: {
+		signature: "ILocomotion.OnLeaveGround(ground: handle) -> void",
+		description: "Manually run the OnLeaveGround callback. Typically invoked when bot leaves ground for any reason."
+	},
+	Reset: {
+		signature: "ILocomotion.Reset() -> void",
+		description: "Resets motion, stuck state etc."
+	},
+	Run: {
+		signature: "ILocomotion.Run() -> void",
+		description: "Set desired movement speed to running."
+	},
+	SetDesiredSpeed: {
+		signature: "ILocomotion.SetDesiredSpeed(speed: float) -> void",
+		description: "Set desired speed for locomotor movement."
+	},
+	SetSpeedLimit: {
+		signature: "ILocomotion.SetSpeedLimit(limit: float) -> void",
+		description: "Set maximum speed bot can reach, regardless of desired speed."
+	},
+	Stop: {
+		signature: "ILocomotion.Stop() -> void",
+		description: "Set desired movement speed to stopped."
+	},
+	Walk: {
+		signature: "ILocomotion.Walk() -> void",
+		description: "Set desired movement speed to walking"
+	},
+	/* --------------------------- *
+	 * regexp                      *
+	 * --------------------------- */
+	regexp: {
+		signature: "regexp(pattern: string) -> regexp"
+	},
+	capture: {
+		signature: "regexp.capture(str: string, start: int = 0) -> table",
+		description: "Returns an array of tables containing two indexes (\"begin\" and \"end\") of the first match of the regular expression in the string str. An array entry is created for each captured sub expressions. If no match occurs returns null. The search starts from the index start of the string, if start is omitted the search starts from the beginning of the string."
+	},
+	match: {
+		signature: "regexp.match(str: string) -> bool",
+		description: "Returns a true if the regular expression matches the string str, otherwise returns false."
+	},
+	search: {
+		signature: "regexp.search(str: string, start: int = 0) -> table",
+		description: "Returns a table containing two indexes (\"begin\" and \"end\") of the first match of the regular expression in the string *str*, otherwise if no match occurs returns null. The search starts from the index start of the string, if start is omitted the search starts from the beginning of the string."
+	},
+	subexpcount: {
+		signature: "regexp.subexpcount()"
+	},
+	/* --------------------------- *
+	 * Vector                      *
+	 * --------------------------- */
+	Vector: {
+		signature: "Vector(x: float = 0, y: float = 0, z: float = 0) -> Vector",
+		description: "Creates a new vector with the specified Cartesian coordiantes."
+	},
+	Cross: {
+		signature: "Vector.Cross(factor: Vector) -> Vector",
+		description: "The vector product of two vectors. Returns a vector orthogonal to the input vectors."
+	},
+	Dot: {
+		signature: "Vector.Dot(factor: Vector) -> float",
+		description: "The scalar product of two vectors."
+	},
+	Length: {
+		signature: "Vector.Length() -> float",
+		description: "Magnitude of the vector."
+	},
+	LengthSqr: {
+		signature: "Vector.LengthSqr() -> float",
+		description: "The magnitude of the vector squared."
+	},
+	Length2D: {
+		signature: "Vector.Length2D() -> float",
+		description: "Returns the magnitude of the vector on the x-y plane."
+	},
+	Length2DSqr: {
+		signature: "Vector.Length2DSqr() -> float",
+		description: "Returns the square of the magnitude of the vector on the x-y plane."
+	},
+	Norm: {
+		signature: "Vector.Norm() -> float",
+		description: "Normalizes the vector in place and returns it's length."
+	},
+	Scale: {
+		signature: "Vector.Scale(factor: float) -> Vector",
+		description: "Scales the vector magnitude."
+	},
+	ToKVString: {
+		signature: "Vector.ToKVString() -> string",
+		description: "Returns a string without separations commas."
+	},
+	tostring: {
+		signature: "Vector.tostring() -> string",
+		description: "Returns a human-readable string."
+	},
+	/* --------------------------- *
+	 * QAngle                      *
+	 * --------------------------- */
+	QAngle: {
+		signature: "QAngle(pitch: float = 0, yaw: float = 0, roll: float = 0) -> QAngle",
+		description: "Creates a new QAngle."
+	},
+	Forward: {
+		signature: "QAngle.Forward() -> Vector",
+		description: "Returns the Forward Vector of the angles."
+	},
+	Left: {
+		signature: "QAngle.Left() -> Vector"
+	},
+	Pitch: {
+		signature: "QAngle.Pitch() -> float",
+		description: "Returns the pitch angle in degrees."
+	},
+	Roll: {
+		signature: "QAngle.Roll() -> float",
+		description: "Returns the roll angle in degrees."
+	},
+	ToKVString: {
+		signature: "QAngle.ToKVString() -> string",
+		description: "Returns a string with the values separated by one space."
+	},
+	ToQuat: {
+		signature: "QAngle.ToQuat() -> Quaternion",
+		description: "Returns a quaternion representaion of the orientation."
+	},
+	Up: {
+		signature: "QAngle.Up() -> Vector",
+		description: "Returns the Up Vector of the angles."
+	},
+	Yaw: {
+		signature: "QAngle.Yaw() -> float",
+		description: "Returns the yaw angle in degrees."
+	},
+	/* --------------------------- *
+	 * Quaternion                  *
+	 * --------------------------- */
+	Quaternion: {
+		signature: "Quaternion() -> Quaternion",
+		description: "Creates a new identity quaternion."
+	},
+	Quaternion: {
+		signature: "Quaternion(x: float, y: float, z: float, w: float) -> Quaternion",
+		description: "Creates a new quaternion of the form `*w* + *x***i** + *y***j** + *z***k**`."
+	},
+	Dot: {
+		signature: "Quaternion.Dot(factor: Quaternion) -> float",
+		description: "The 4D scalar product of two quaternions. represents the angle between the quaternions in the range [1, 0]."
+	},
+	Invert: {
+		signature: "Quaternion.Invert() -> Quaternion",
+		description: "Returns a quaternion with the complimentary rotation."
+	},
+	Norm: {
+		signature: "Quaternion.Norm() -> float",
+		description: "Normalizes the quaternion."
+	},
+	SetPitchYawRoll: {
+		signature: "Quaternion.SetPitchYawRoll(pitch: float, yaw: float, roll: float) -> void",
+		description: "Recomputes the quaternion from the supplied Euler angles."
+	},
+	ToKVString: {
+		signature: "Quaternion.ToKVString() -> string",
+		description: "Returns a string with the values separated by one space."
+	},
+	ToQAngle: {
+		signature: "Quaternion.ToQAngle() -> QAngle",
+		description: "Returns the angles resulting from the rotation."
+	},

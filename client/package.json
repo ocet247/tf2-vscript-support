@@ -1,0 +1,25 @@
+{
+  "name": "tf2-vscript-support-client",
+  "publisher": "ocet247",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ocet247/tf2-vscript-support"
+  },
+  "version": "1.0.0",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.75.0"
+  },
+  "dependencies": {
+    "glob": "^11.0.0",
+    "vscode-languageclient": "^9.0.1",
+    "squirrel": "file:../squirrel"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.75.1",
+    "@vscode/test-electron": "^2.3.9"
+  },
+  "scripts": {
+    "compile": "tsc -b"
+  }
+}

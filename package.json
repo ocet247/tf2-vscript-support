@@ -1,0 +1,123 @@
+{
+  "name": "tf2-vscript-support",
+  "displayName": "TF2 VScript Support",
+  "description": "Provides basic support for Team Fortress 2 VScript - Squirrel language (.nut).",
+  "publisher": "ocet247",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ocet247/tf2-vscript-support"
+  },
+  "version": "2.0.2",
+  "engines": {
+    "vscode": "^1.96.1"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "activationEvents": [
+    "onLanguage:squirrel"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "snippets": [
+      {
+        "language": "squirrel",
+        "path": "./snippets/squirrel.json"
+      }
+    ],
+    "configuration": {
+      "type": "object",
+      "title": "TF2 VScript Support",
+      "properties": {
+        "squirrel.enableSignatureHelp": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable signature help in Squirrel files"
+        },
+        "squirrel.enableDiagnostics": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable diagnostics (linting, syntax errors)"
+        },
+        "squirrel.enableCompletions": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable code completions"
+        },
+        "squirrel.completionAutoParantheses": {
+          "type": "boolean",
+          "default": true,
+          "description": "If enabled, the method and some keyword completions will also include writing '()' after the method/keyword name and putting the cursor in the correct position."
+        },
+        "squirrel.enableHover": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable hover documentation"
+        }
+      }
+    },
+    "languages": [
+      {
+        "id": "squirrel",
+        "aliases": [
+          "Squirrel",
+          "nut"
+        ],
+        "extensions": [
+          ".nut"
+        ],
+        "configuration": "./language-configuration.json",
+        "icon": {
+          "light": "./assets/nut_icon.png",
+          "dark": "./assets/nut_icon.png"
+        }
+      },
+      {
+        "id": "squirrelDoc",
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "squirrel",
+        "scopeName": "source.nut",
+        "path": "./syntaxes/squirrel.tmLanguage.json"
+      },
+      {
+        "scopeName": "documentation.injection.nut",
+        "path": "./syntaxes/squirrelDoc.injection.tmLanguage.json",
+        "injectTo": [
+          "source.nut"
+        ]
+      },
+      {
+        "language": "squirrelDoc",
+        "scopeName": "source.nutdoc",
+        "path": "./syntaxes/squirrelDoc.tmLanguage.json"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run bundle",
+    "bundle": "npm run bundle:server -- --minify && npm run bundle:client -- --minify",
+    "bundle-dev": "npm run bundle:server -- --sourcemap && npm run bundle:client -- --sourcemap",
+    "bundle:client": "esbuild ./client/src/extension.ts --bundle --outfile=./out/extension.js --external:vscode --format=cjs --platform=node --target=node20",
+    "bundle:server": "esbuild ./server/src/server.ts --bundle --outfile=./out/server.js --external:vscode --format=cjs --platform=node --target=node20",
+    "watch": "bundle:server -- --sourcemap --watch && bundle:client -- --sourcemap --watch",
+    "compile": "tsc -b",
+    "lint": "eslint",
+    "postinstall": "cd client && npm install && cd ../server && npm install && cd .."
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.13.0",
+    "@stylistic/eslint-plugin": "^2.9.0",
+    "@types/mocha": "^10.0.6",
+    "@types/node": "^20",
+    "esbuild": "^0.25.5",
+    "eslint": "^9.13.0",
+    "mocha": "^10.3.0",
+    "typescript": "^5.8.2",
+    "typescript-eslint": "^8.26.0"
+  }
+}
