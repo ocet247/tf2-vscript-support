@@ -1002,11 +1002,7 @@ impl DocComment {
                 && let Some(content) = desc.content()
             {
                 let content = content.trim();
-                if content.starts_with("```") {
-                    tag_str.push('\n');
-                } else {
-                    tag_str.push_str(" \u{2014} "); // em dash
-                }
+                tag_str.push_str(" \u{2014} \n"); // em dash
                 tag_str.push_str(content);
             }
 
