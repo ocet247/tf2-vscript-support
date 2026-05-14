@@ -9,7 +9,7 @@ use resolver::{
 };
 use sq_3_parser::{
     AstNode as _, SyntaxNode,
-    ast::{self, Expr, ExpressionWrapper, LiteralExpressionKind},
+    ast::{self, Expr, ExpressionWrapper, HasOperand, LiteralExpressionKind, PrefixUnaryOperator},
 };
 
 use crate::positions;
@@ -192,6 +192,33 @@ fn expr_obviously_has_type(ctx: &SourceCtx, expr: &Expr, typ: &Type) -> bool {
                         Primitive::Bool(_)
                     )
                     | (LiteralExpressionKind::Null, Primitive::Null)
+            )
+        }
+        Expr::PrefixUnary(prefix) => {
+            let Some((operator_kind, _)) = prefix.operator() else {
+                return false;
+            };
+
+            if operator_kind == PrefixUnaryOperator::LogicalNot {
+                return matches!(primitive, Primitive::Bool(_));
+            }
+
+            let Some(Expr::Literal(literal)) = prefix.operand() else {
+                return false;
+            };
+
+            let Some((kind, _)) = literal.token() else {
+                return false;
+            };
+
+            matches!(
+                (kind, primitive),
+                (
+                    LiteralExpressionKind::DecimalInteger
+                        | LiteralExpressionKind::HexInteger
+                        | LiteralExpressionKind::OctalInteger,
+                    Primitive::Integer(_)
+                ) | (LiteralExpressionKind::Float, Primitive::Float(_))
             )
         }
         Expr::Class(_) => {
