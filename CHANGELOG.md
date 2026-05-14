@@ -1,5 +1,9 @@
 # Changelog
 
+## [3.2.4]
+- Fix misleading arithmetic operator errors for union types
+- Don't show type hint for obvious unary expressions
+
 ## [3.2.3]
 - Improve stdlib documentation
 - Don't show inlay hints for obvious constructor call
