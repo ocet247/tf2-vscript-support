@@ -1554,7 +1554,7 @@ impl<'db> Resolver<'db> {
                 }
             })
         } else {
-            if !with_flags.intersects(TypeFlags::ANY) {
+            if should_error && !with_flags.intersects(TypeFlags::ANY) {
                 self.no_support(
                     &format!(
                         "{}' and '{}",
