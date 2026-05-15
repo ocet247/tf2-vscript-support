@@ -963,6 +963,8 @@ impl<'db> Resolver<'db> {
                             flags: doc.flags,
                         });
                     }
+
+                    result.push(*left);
                 }
 
                 if !doc.flags.intersects(TypeFlags::ANY)
@@ -1409,9 +1411,10 @@ impl<'db> Resolver<'db> {
     ) -> Option<Type> {
         match operand {
             Primitive::Class(_) => Some(Type::default()),
-            Primitive::Table(_) => {
+            Primitive::Table(_) => Some(
                 self.call_metamethod_primitive(operand, range, "_delslot", &[index], None)
-            }
+                    .unwrap_or(Type::ANY),
+            ),
             _ => self.call_metamethod_primitive(
                 operand,
                 range,
