@@ -5,15 +5,15 @@ use sq_3_parser::{
     ast::{
         self, ArrayLiteralExpression, BaseExpression, BinaryExpression, BinaryOperator,
         BlockStatement, BreakStatement, CallExpression, ClassExpression, ClassStatement,
-        CloneExpression, ConditionalExpression, ConstStatement, ContinueStatement,
+        CloneExpression, ConditionalExpression, ConstStatement, Constructor, ContinueStatement,
         DeleteExpression, DoWhileStatement, DocComment, DocType, ElementAccessExpression,
         EnumStatement, Expr, ExpressionStatement, ExpressionWrapper, ForEachStatement,
         ForInitialiserKind, ForStatement, FunctionBody, FunctionExpression, FunctionStatement,
         HasBody, HasDoc, HasDocDescription, HasDocName, HasDocType, HasDocTypes, HasName,
         HasOperand, IfStatement, IsClass, IsClassMember, IsFunction, LambdaExpression,
         LiteralExpression, LiteralExpressionKind, LocalFunctionDeclaration,
-        LocalVariableDeclaration, Member, MemberAccessExpression, MemberName, Name, Parameter,
-        ParenthesisedExpression, PostfixUpdateExpression, PostfixUpdateOperator,
+        LocalVariableDeclaration, Member, MemberAccessExpression, MemberName, Method, Name,
+        Parameter, ParenthesisedExpression, PostfixUpdateExpression, PostfixUpdateOperator,
         PrefixUnaryExpression, PrefixUnaryOperator, PrefixUpdateExpression, PrefixUpdateOperator,
         Property, QualifiedName, RawCallExpression, ResumeExpression, ReturnStatement,
         RootAccessExpression, SourceFile, Stmt, StringNameKind, SwitchClause, SwitchStatement,
@@ -221,6 +221,10 @@ pub struct Resolver<'db> {
     dead_code: bool,
 
     function: Option<Idx<FunctionData>>,
+    // At the last stage where we evaluate the bodies of functions that haven't been called
+    // once we make constructor have precedence over normal functions/methods so that
+    // the object is initalised and property types are inferred before running other methods
+    deferred_constructors: FxHashMap<Idx<FunctionData>, DeferredFunctionTrace>,
     deferred_functions: FxHashMap<Idx<FunctionData>, DeferredFunctionTrace>,
 
     range_to_expr: FxHashMap<TextRange, ExpressionKind>,
@@ -352,6 +356,7 @@ impl<'db> Resolver<'db> {
             root_table,
             function: None,
             deferred_functions: FxHashMap::default(),
+            deferred_constructors: FxHashMap::default(),
             range_to_expr: FxHashMap::default(),
             range_to_symbol: FxHashMap::default(),
             doc_to_symbol: FxHashMap::default(),
@@ -380,12 +385,28 @@ impl<'db> Resolver<'db> {
 
         // Resolve remaining functions
         let offset = node.syntax().text_range().end() + TextSize::new(1);
-        while let Some(idx) = this.deferred_functions.keys().next().copied() {
-            let trace = this
-                .deferred_functions
-                .remove(&idx)
-                .expect("We just got this index");
-            let entry = DeferredFunctionEntry { idx, trace };
+        loop {
+            // Violationg of DRY but I don't care
+            let entry = if let Some(idx) = this.deferred_constructors.keys().next().copied() {
+                DeferredFunctionEntry {
+                    trace: this
+                        .deferred_constructors
+                        .remove(&idx)
+                        .expect("We just got this index"),
+                    idx,
+                }
+            } else if let Some(idx) = this.deferred_functions.keys().next().copied() {
+                DeferredFunctionEntry {
+                    trace: this
+                        .deferred_functions
+                        .remove(&idx)
+                        .expect("We just got this index"),
+                    idx,
+                }
+            } else {
+                break;
+            };
+
             this.resolve_function_doc(&entry, offset);
             this.resolve_deferred_function_entry(&entry);
         }
@@ -1872,7 +1893,18 @@ impl<'db> Resolver<'db> {
             self.collect_params(id.idx(), param_list.parameters());
         }
 
-        self.deferred_functions.insert(
+        let map = if Constructor::can_cast(node.syntax().kind()) {
+            &mut self.deferred_constructors
+        } else if let Some(method) = Method::cast(node.syntax().clone())
+            && let Some(name) = get_name(&method)
+            && name.text() == "constructor"
+        {
+            &mut self.deferred_constructors
+        } else {
+            &mut self.deferred_functions
+        };
+
+        map.insert(
             id.idx(),
             DeferredFunctionTrace {
                 node: Box::new(node.clone()),
@@ -2222,7 +2254,10 @@ impl<'db> Resolver<'db> {
 
         let idx = id.idx();
         // If function is not in deferred_functions it is already resolved
-        let trace = self.deferred_functions.remove(&idx)?;
+        let trace = self
+            .deferred_constructors
+            .remove(&idx)
+            .or_else(|| self.deferred_functions.remove(&idx))?;
 
         Some(DeferredFunctionEntry { idx, trace })
     }
