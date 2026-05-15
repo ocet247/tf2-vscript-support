@@ -787,7 +787,7 @@ impl Parser {
 
                 self.bump();
                 if self.at_set(TokenSet::INIT_OPERATORS) {
-                    self.error_at_token("Expected '(' for constructor parameters, 'constructor' cannot be used as a plain property name here".to_owned());
+                    self.error_at_token("Expected '(' or '[', 'constructor' cannot be used as a plain property name here".to_owned());
                     self.parse_property_init(m, object_kind, None);
                 } else {
                     self.parse_function_signature();
