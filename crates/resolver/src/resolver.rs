@@ -1534,7 +1534,7 @@ impl<'db> Resolver<'db> {
         }
 
         if operand_flags.intersects(TypeFlags::NUMBER) && with_flags.intersects(TypeFlags::NUMBER) {
-            let ret = Type::Primitive(Primitive::Integer(None));
+            let ret = Type::Primitive(Primitive::Float(None));
             if TypeFlags::NUMBER.contains(operand_flags) {
                 return Some(ret);
             }
