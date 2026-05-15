@@ -786,9 +786,14 @@ impl Parser {
                 }
 
                 self.bump();
-                self.parse_function_signature();
-                self.parse_statement(ParseStatement::MethodBody);
-                self.finish(m, SyntaxKind::Constructor);
+                if self.at_set(TokenSet::INIT_OPERATORS) {
+                    self.error_at_token("Expected '(' for constructor parameters, 'constructor' cannot be used as a plain property name here".to_owned());
+                    self.parse_property_init(m, object_kind, None);
+                } else {
+                    self.parse_function_signature();
+                    self.parse_statement(ParseStatement::MethodBody);
+                    self.finish(m, SyntaxKind::Constructor);
+                }
             }
             SyntaxKind::FunctionKeyword => {
                 if matches!(
@@ -800,6 +805,7 @@ impl Parser {
                     );
                 }
                 self.bump();
+
                 self.parse_name("method's name", TokenSet::EVERYTHING);
                 self.parse_function_signature();
                 self.parse_statement(ParseStatement::MethodBody);
@@ -840,6 +846,15 @@ impl Parser {
             None
         };
 
+        self.parse_property_init(m, object_kind, name_range);
+    }
+
+    fn parse_property_init(
+        &mut self,
+        m: Marker,
+        object_kind: MemberObject,
+        name_range: Option<TextRange>,
+    ) {
         if self.at_set(TokenSet::INIT_OPERATORS) {
             self.parse_proper_or_error(
                 SyntaxKind::Equals,
