@@ -843,6 +843,49 @@ impl<'db> Resolver<'db> {
 
                 Some(prim)
             }
+            (Primitive::Instance(Some(original_id)), Primitive::Instance(Some(other_id))) => {
+                let mut class_id = Some(other_id);
+                while let Some(id) = class_id {
+                    if id == original_id {
+                        return Some(original);
+                    }
+                    let class = self.get(id);
+                    class_id = class.inherits;
+                }
+
+                // If we have a function that specifies return only as a mutual superclass
+                // instance rather than union of all possible instances we assume the user knows
+                // what they're doing by what normal language would describe as auto-casting
+                // the polymorphic superclass instance into the required instance as long as the
+                // class of the required instance has this superclass in it's inheritance tree
+                // E.g.
+                // ```
+                // class A {}
+                // class B extends A {}
+                // /** @returns {A} */
+                // local function get_class(get_b) { return get_b ? B() : A() }
+                // /** @type {B} */
+                // local b_holder = get_class(/* get_b: */ true)
+                // ```
+                //
+                // However this can also lead to an incorrect behaviour, e.g
+                // ```
+                // /** @type {B} */
+                // local b_holder = get_class(/* get_b: */ false)
+                // ```
+                // This will make `b_holder` actually hold A (so having no additional methods
+                // that were defined in B) while having no error denoting this
+                class_id = Some(original_id);
+                while let Some(id) = class_id {
+                    if id == other_id {
+                        return Some(original);
+                    }
+                    let class = self.get(id);
+                    class_id = class.inherits;
+                }
+
+                None
+            }
             // We have doc type of table but only the value assigned can have the shape of the table
             // so to not lose this information we use the assigned value type
             //
@@ -856,23 +899,6 @@ impl<'db> Resolver<'db> {
             // // error
             // a = regexp();
             // ```
-            (Primitive::Instance(Some(original_id)), Primitive::Instance(Some(other_id))) => {
-                let mut class_id = Some(other_id);
-                while let Some(id) = class_id {
-                    if id == original_id {
-                        return Some(original);
-                    }
-                    let class = self.get(id);
-                    class_id = class.inherits;
-                }
-
-                None
-                // Err(format!(
-                //     "Instance of class '{}' does not inherit from class '{}'",
-                //     self.primitive_to_str(&other),
-                //     self.primitive_to_str(&original)
-                // ))
-            }
             (Primitive::Table(None), Primitive::Table(Some(_)))
             | (Primitive::Class(None), Primitive::Class(Some(_)))
             | (Primitive::Array(None), Primitive::Array(Some(_)))
