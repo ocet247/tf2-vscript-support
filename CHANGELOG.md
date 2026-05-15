@@ -1,5 +1,10 @@
 # Changelog
 
+## [3.2.5]
+- Fix injecting a single type into a explicit union type not working properly
+- Fix float arithmetic operations outputing integer
+- Evaluate constructor bodies that were not called before method bodies that were not called
+
 ## [3.2.4]
 - Fix misleading arithmetic operator errors for union types
 - Don't show type hint for obvious unary expressions
