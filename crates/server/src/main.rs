@@ -198,12 +198,19 @@ fn on_notifications<Db: VScriptDatabase + Clone + RefUnwindSafe>(
             let mut text = file.text(&session.db).clone();
             let line_index = positions::line_index(&session.db, file);
 
-            for change in params.content_changes {
-                let range = change.range.expect("Incremental changes always have range");
-                let Some(text_range) = positions::text_range(line_index, range) else {
-                    continue;
-                };
-                text.replace_range(std::ops::Range::<usize>::from(text_range), &change.text);
+            let mut changes: Vec<_> = params
+                .content_changes
+                .into_iter()
+                .filter_map(|change| {
+                    let range = change.range.expect("Incremental changes always have range");
+                    let text_range = positions::text_range(line_index, range)?;
+                    Some((text_range, change.text))
+                })
+                .collect();
+
+            changes.sort_by_key(|(range, _)| range.start());
+            for (text_range, new_text) in changes.into_iter().rev() {
+                text.replace_range(std::ops::Range::<usize>::from(text_range), &new_text);
             }
 
             file.set_text(&mut session.db).to(text);
