@@ -3807,20 +3807,18 @@ impl<'db> Resolver<'db> {
                     }
                 }
 
-                if from.type_flags().intersects(TypeFlags::HAS_MEMBERS_OR_ANY) {
-                    return None;
+                if !from.type_flags().intersects(TypeFlags::HAS_MEMBERS_OR_ANY) {
+                    // All ANY indices are handled in the match statement above
+                    self.diagnostics.push(Diagnostic {
+                        message: format!(
+                            "Trying to index into '{}' using '{}'",
+                            self.type_to_str_generic(&from),
+                            self.type_to_str_generic(&typ)
+                        ),
+                        range: index.syntax().text_range(),
+                        severity: DiagnosticSeverity::Error,
+                    });
                 }
-
-                // ALl ANY's handled in the match statement above
-                self.diagnostics.push(Diagnostic {
-                    message: format!(
-                        "Trying to index into '{}' using '{}'",
-                        self.type_to_str_generic(&from),
-                        self.type_to_str_generic(&typ)
-                    ),
-                    range: index.syntax().text_range(),
-                    severity: DiagnosticSeverity::Error,
-                });
 
                 None
             }
