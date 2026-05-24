@@ -3782,17 +3782,27 @@ impl<'db> Resolver<'db> {
                         if index_flags.intersects(TypeFlags::NUMBER) {
                             return Some(ExpressionKind::Literal(self.get(id).kind.clone()));
                         }
+
+                        if index_flags.intersects(TypeFlags::ANY) {
+                            return Some(ExpressionKind::Literal(self.get(id).kind.add_any()));
+                        }
                     }
                     Err(ToPrimitiveError::NotSpecific) => {
-                        if index_flags.intersects(TypeFlags::NUMBER) {
+                        if index_flags.intersects(TypeFlags::NUMBER_OR_ANY) {
                             return None;
                         }
                     }
                     Err(ToPrimitiveError::WrongTypeWithAny | ToPrimitiveError::WrongType) => {
-                        if from.type_flags().intersects(TypeFlags::STRING)
-                            && index_flags.intersects(TypeFlags::NUMBER)
-                        {
-                            return Some(ExpressionKind::Literal(Type::INTEGER));
+                        if from.type_flags().intersects(TypeFlags::STRING) {
+                            if index_flags.intersects(TypeFlags::NUMBER) {
+                                return Some(ExpressionKind::Literal(Type::INTEGER));
+                            }
+
+                            if index_flags.intersects(TypeFlags::ANY) {
+                                return Some(ExpressionKind::Literal(Type::INTEGER.add_any()));
+                            }
+                        } else if index_flags.intersects(TypeFlags::ANY) {
+                            return None;
                         }
                     }
                 }
@@ -3801,17 +3811,16 @@ impl<'db> Resolver<'db> {
                     return None;
                 }
 
-                if !index_flags.intersects(TypeFlags::ANY) {
-                    self.diagnostics.push(Diagnostic {
-                        message: format!(
-                            "Trying to index into '{}' using '{}'",
-                            self.type_to_str_generic(&from),
-                            self.type_to_str_generic(&typ)
-                        ),
-                        range: index.syntax().text_range(),
-                        severity: DiagnosticSeverity::Error,
-                    });
-                }
+                // ALl ANY's handled in the match statement above
+                self.diagnostics.push(Diagnostic {
+                    message: format!(
+                        "Trying to index into '{}' using '{}'",
+                        self.type_to_str_generic(&from),
+                        self.type_to_str_generic(&typ)
+                    ),
+                    range: index.syntax().text_range(),
+                    severity: DiagnosticSeverity::Error,
+                });
 
                 None
             }
