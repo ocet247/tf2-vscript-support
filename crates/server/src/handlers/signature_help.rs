@@ -3,7 +3,7 @@ use lsp_types::{
     SignatureHelpParams, SignatureInformation,
 };
 use resolver::{
-    ExpressionKind, SourceCtx, FunctionIdResolution, FunctionMarkdown, Source, VScriptDatabase,
+    ExpressionKind, FunctionIdResolution, FunctionMarkdown, Source, SourceCtx, VScriptDatabase,
     parse,
 };
 use sq_3_parser::{AstNode, ast};
@@ -21,7 +21,7 @@ pub fn handle_signature_help<Db: VScriptDatabase>(
     let ctx = SourceCtx::new(db, file);
 
     let line_idx = positions::line_index(db, file);
-    let offset = positions::test_size(line_idx, params.text_document_position_params.position)
+    let offset = positions::text_size(line_idx, params.text_document_position_params.position)
         .ok_or_else(|| anyhow::format_err!("Position is out of bounds"))?;
 
     let syntax = parse(db, file).syntax();

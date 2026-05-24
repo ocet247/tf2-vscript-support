@@ -1,5 +1,5 @@
 use lsp_types::{PrepareRenameResponse, TextDocumentPositionParams};
-use resolver::{SourceCtx, Source, VScriptDatabase, parse, token_name_range};
+use resolver::{Source, SourceCtx, VScriptDatabase, parse, token_name_range};
 
 use crate::positions;
 
@@ -14,7 +14,7 @@ pub fn handle_prepare_rename<Db: VScriptDatabase>(
     let ctx = SourceCtx::new(db, file);
 
     let line_idx = positions::line_index(db, file);
-    let offset = positions::test_size(line_idx, params.position)
+    let offset = positions::text_size(line_idx, params.position)
         .ok_or_else(|| anyhow::format_err!("Position is out of bounds"))?;
 
     let syntax = parse(db, file).syntax();

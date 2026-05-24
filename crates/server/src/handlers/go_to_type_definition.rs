@@ -17,7 +17,7 @@ pub fn handle_go_to_type_definition<Db: VScriptDatabase>(
     let ctx = SourceCtx::new(db, file);
 
     let line_idx = positions::line_index(db, file);
-    let offset = positions::test_size(line_idx, params.text_document_position_params.position)
+    let offset = positions::text_size(line_idx, params.text_document_position_params.position)
         .ok_or_else(|| anyhow::format_err!("Position is out of bounds"))?;
 
     let syntax = parse(db, file).syntax();

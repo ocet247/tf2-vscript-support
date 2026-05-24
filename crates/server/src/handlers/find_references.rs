@@ -1,5 +1,5 @@
 use lsp_types::{Location, ReferenceParams};
-use resolver::{SourceCtx, Source, SymbolKind, VScriptDatabase, parse, token_name_range};
+use resolver::{Source, SourceCtx, SymbolKind, VScriptDatabase, parse, token_name_range};
 
 use crate::positions;
 
@@ -14,7 +14,7 @@ pub fn handle_references<Db: VScriptDatabase>(
     let ctx = SourceCtx::new(db, file);
 
     let line_idx = positions::line_index(db, file);
-    let offset = positions::test_size(line_idx, params.text_document_position.position)
+    let offset = positions::text_size(line_idx, params.text_document_position.position)
         .ok_or_else(|| anyhow::format_err!("Position is out of bounds"))?;
 
     let syntax = parse(db, file).syntax();

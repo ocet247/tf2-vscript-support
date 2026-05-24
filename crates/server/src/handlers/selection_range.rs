@@ -22,7 +22,7 @@ pub fn handle_selection_range<Db: VScriptDatabase>(
         .positions
         .into_iter()
         .filter_map(|position| {
-            let offset = positions::test_size(line_idx, position)?;
+            let offset = positions::text_size(line_idx, position)?;
             let range = TextRange::empty(offset);
             let mut current = syntax.child_or_token_at_range(range)?;
             let mut current_selection = SelectionRange {

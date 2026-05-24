@@ -3,7 +3,7 @@ use lsp_types::{Position, Range};
 
 use db::{BaseDatabase, File};
 
-pub fn test_size(line_idx: &LineIndex, position: Position) -> Option<TextSize> {
+pub fn text_size(line_idx: &LineIndex, position: Position) -> Option<TextSize> {
     let wide = WideLineCol {
         line: position.line,
         col: position.character,
@@ -21,8 +21,8 @@ pub fn test_size(line_idx: &LineIndex, position: Position) -> Option<TextSize> {
 
 pub fn text_range(line_idx: &LineIndex, range: Range) -> Option<TextRange> {
     Some(TextRange::new(
-        test_size(line_idx, range.start)?,
-        test_size(line_idx, range.end)?,
+        text_size(line_idx, range.start)?,
+        text_size(line_idx, range.end)?,
     ))
 }
 
