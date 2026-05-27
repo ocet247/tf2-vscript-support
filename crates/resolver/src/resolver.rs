@@ -51,6 +51,7 @@ macro_rules! dispatch_union {
             }
             Type::Primitive(prim) => $self.$single_method( prim.clone(), $operand.range, $($extra,)* true),
             Type::Union(union) =>  {
+                let mut merged: Option<Type> = None;
                 for prim in union.primitives.iter() {
                     if let Some(result) = $self.$single_method(
                         prim.clone(),
@@ -58,13 +59,16 @@ macro_rules! dispatch_union {
                         $($extra,)*
                         false,
                     ) {
-                        return Some(result);
+                        merged = Some(match merged {
+                            None => result,
+                            Some(existing) => merge_types(&existing, &result),
+                        });
                     }
                 }
-                if !union.flags.intersects(TypeFlags::ANY) {
+                if merged.is_none() && !union.flags.intersects(TypeFlags::ANY) {
                     $self.no_support(&$self.type_to_str(&$operand.kind), $error_keyword, $operand.range);
                 }
-                return None;
+                merged
             }
         }
     }};
@@ -1654,7 +1658,32 @@ impl<'db> Resolver<'db> {
     }
 
     fn iterable(&mut self, iterable: &TypeWithRange) -> Option<(Type, Type)> {
-        dispatch_union!(self, iterable, "iterating", iterable_primitive)
+        match &iterable.kind {
+            Type::Enum(_) => {
+                self.no_support("enum", "iterating", iterable.range);
+                None
+            }
+            Type::Primitive(prim) => self.iterable_primitive(*prim, iterable.range, true),
+            Type::Union(union) => {
+                let mut merged: Option<(Type, Type)> = None;
+                for prim in union.primitives.iter() {
+                    if let Some((k, v)) = self.iterable_primitive(*prim, iterable.range, false) {
+                        merged = Some(match merged {
+                            None => (k, v),
+                            Some((ek, ev)) => (merge_types(&ek, &k), merge_types(&ev, &v)),
+                        });
+                    }
+                }
+                if merged.is_none() && !union.flags.intersects(TypeFlags::ANY) {
+                    self.no_support(
+                        &self.type_to_str_generic(&iterable.kind),
+                        "iterating",
+                        iterable.range,
+                    );
+                }
+                merged
+            }
+        }
     }
 
     fn callable_primitive(
