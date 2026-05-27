@@ -788,44 +788,13 @@ impl<'db> Resolver<'db> {
                     text.to_lowercase()
                 };
 
-                let message = match kind {
-                    StringKind::Script => self.db().get_script(PathBuf::from(text)).err(),
-                    StringKind::ClassnameSearch if text.ends_with('*') => {
-                        // If prefix exists, so "tf_wearable*" we don't error
-                        None
-                        // Looking whether a single classname starts_with specified prefix can validate
-                        // this further but it's O(n) over 700 entries for little benefit: so skip
-                        // let prefix = text
-                        //     .strip_suffix('*')
-                        //     .expect("We did 'ends_with' before entering this branch");
-
-                        // kind.values()
-                        //     .is_some_and(|values| {
-                        //         !values
-                        //             .iter()
-                        //             .any(|set| set.1.iter().any(|txt| txt.starts_with(prefix)))
-                        //     })
-                        //     .then(|| {
-                        //         format!(
-                        //             "Text of string literal is not suitable for the kind '{kind}'"
-                        //         )
-                        //     })
-                    }
-                    // In non vanilla tf2 those 2 can have other values that are valid
-                    StringKind::Convar | StringKind::Input => None,
-                    _ => kind
-                        .values()
-                        .is_some_and(|values| !values.iter().any(|set| set.0.contains(&text)))
-                        .then(|| {
-                            format!("Text of string literal is not suitable for the kind '{kind}'")
-                        }),
-                };
-
-                if let Some(message) = message {
+                if kind == StringKind::Script
+                    && let Err(message) = self.db().get_script(PathBuf::from(text))
+                {
                     self.diagnostics.push(Diagnostic {
                         message,
                         range: error_range,
-                        severity: DiagnosticSeverity::Warning,
+                        severity: DiagnosticSeverity::Information,
                     });
                 }
 
