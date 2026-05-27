@@ -792,14 +792,31 @@ impl<'db> Resolver<'db> {
                     text.to_lowercase()
                 };
 
-                if kind == StringKind::Script
-                    && let Err(message) = self.db().get_script(PathBuf::from(text))
-                {
-                    self.diagnostics.push(Diagnostic {
-                        message,
-                        range: error_range,
-                        severity: DiagnosticSeverity::Information,
-                    });
+                match kind {
+                    StringKind::Script => {
+                        if let Err(message) = self.db().get_script(PathBuf::from(text)) {
+                            self.diagnostics.push(Diagnostic {
+                                message,
+                                range: error_range,
+                                severity: DiagnosticSeverity::Information,
+                            });
+                        }
+                    }
+
+                    StringKind::Classname => {
+                        if let Some(message) = kind
+                            .values()
+                            .is_some_and(|values| !values.iter().any(|set| set.0.contains(&text)))
+                            .then_some("Cannot use non-default classname")
+                        {
+                            self.diagnostics.push(Diagnostic {
+                                message: message.to_owned(),
+                                range: error_range,
+                                severity: DiagnosticSeverity::Warning,
+                            });
+                        }
+                    }
+                    _ => {}
                 }
 
                 let prim = Primitive::String {
