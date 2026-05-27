@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.2.6]
+- Drop all string literal warnings besides the script names and classnames
+- Add missing `CBaseEntity` methods
+- Allow assigning variables with class type to the children of that class
+
+
 ## [3.2.5]
 - Fix injecting a single type into a explicit union type not working properly
 - Fix float arithmetic operations outputing integer
