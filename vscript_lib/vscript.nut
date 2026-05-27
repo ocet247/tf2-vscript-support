@@ -2364,6 +2364,20 @@ class CTFPlayer extends CBasePlayer {
     function Regenerate(refill_health_ammo);
 
     /**
+     * Remove all conditions.
+     * @type {function}
+     */
+    function RemoveAllCond();
+
+    /**
+     * **Bug**: This does not actually remove all items.
+     * It only drops the passtime ball, intelligence, disables radius healing, and hides the Spy invis watch.
+     * @type {function}
+     * @param {bool} unused
+     */
+    function RemoveAllItems(unused);
+
+    /**
      * Remove all player objects (e.g. dispensers/sentries).
      * @type {function}
      * @param {bool} explode
