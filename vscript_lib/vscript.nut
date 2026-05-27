@@ -5839,7 +5839,7 @@ function Document(symbol_or_table, item_if_symbol = null, description_if_symbol 
 /**
  * Generate an entity I/O event.
  * @type {function}
- * @param {string} target
+ * @param {classname_search} target
  * @param {string} action
  * @param {string|null} value
  * @param {float} delay
@@ -5944,7 +5944,7 @@ function EmitSoundOnClient(sound_script, player);
 /**
  * Wrapper for `DoEntFire()` that sets activator to `null`. Negative delays are clamped to `0`.
  * @type {function}
- * @param {string} target
+ * @param {classname_search} target
  * @param {input} action
  * @param {string|null} value Defaults to `null`
  * @param {float} delay Defaults to `0.0`
