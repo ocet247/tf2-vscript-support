@@ -1,5 +1,6 @@
 mod completion;
 mod diagnostics;
+mod document_highlight;
 mod document_link;
 mod document_symbols;
 mod find_references;
@@ -16,6 +17,7 @@ mod workspace_symbol;
 
 pub use completion::handle_completion;
 pub use diagnostics::{handle_diagnostics, handle_workspace_diagnostics};
+pub use document_highlight::handle_document_highlight;
 pub use document_link::handle_document_link;
 pub use document_symbols::handle_document_symbol;
 pub use find_references::handle_references;

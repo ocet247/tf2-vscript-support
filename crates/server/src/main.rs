@@ -27,11 +27,12 @@ use lsp_types::{
         DidCloseTextDocument, DidOpenTextDocument, DidSaveTextDocument, LogTrace, SetTrace,
     },
     request::{
-        Completion, DocumentDiagnosticRequest, DocumentLinkRequest, DocumentSymbolRequest,
-        GotoDefinition, GotoTypeDefinition, HoverRequest, InlayHintRefreshRequest,
-        InlayHintRequest, PrepareRenameRequest, References, Rename, SelectionRangeRequest,
-        SemanticTokensFullRequest, SemanticTokensRangeRequest, SignatureHelpRequest,
-        WorkspaceDiagnosticRefresh, WorkspaceDiagnosticRequest, WorkspaceSymbolRequest,
+        Completion, DocumentDiagnosticRequest, DocumentHighlightRequest, DocumentLinkRequest,
+        DocumentSymbolRequest, GotoDefinition, GotoTypeDefinition, HoverRequest,
+        InlayHintRefreshRequest, InlayHintRequest, PrepareRenameRequest, References, Rename,
+        SelectionRangeRequest, SemanticTokensFullRequest, SemanticTokensRangeRequest,
+        SignatureHelpRequest, WorkspaceDiagnosticRefresh, WorkspaceDiagnosticRequest,
+        WorkspaceSymbolRequest,
     },
 };
 use resolver::{
@@ -126,6 +127,7 @@ fn main() -> Result<()> {
             work_done_progress_options: WorkDoneProgressOptions::default(),
         }),
         selection_range_provider: Some(SelectionRangeProviderCapability::Simple(true)),
+        document_highlight_provider: Some(OneOf::Left(true)),
         ..Default::default()
     };
 
@@ -171,6 +173,7 @@ fn on_requests<Db: VScriptDatabase + Clone + RefUnwindSafe>(
         .on::<InlayHintRequest>(handlers::handle_inlay_hint)
         .on::<Rename>(handlers::handle_rename)
         .on::<SelectionRangeRequest>(handlers::handle_selection_range)
+        .on::<DocumentHighlightRequest>(handlers::handle_document_highlight)
 }
 
 fn on_notifications<Db: VScriptDatabase + Clone + RefUnwindSafe>(

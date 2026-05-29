@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 use lsp_types::{RenameParams, TextEdit, Url, WorkspaceEdit};
 use resolver::{
-    SourceCtx, LocalKind, Source, SymbolKind, VScriptDatabase, parse, token_name_range,
+    LocalKind, Source, SourceCtx, SymbolKind, VScriptDatabase, parse, token_name_range,
 };
 
 use crate::positions;
@@ -74,9 +74,9 @@ pub fn handle_rename<Db: VScriptDatabase>(
             continue;
         }
 
-        let candidate = SourceCtx::new(db, candidate_file);
+        let candidate_ctx = SourceCtx::new(db, candidate_file);
 
-        let Some(ranges) = candidate.symbol_to_ranges().get(&symbol_id) else {
+        let Some(ranges) = candidate_ctx.symbol_to_ranges().get(&symbol_id) else {
             continue;
         };
 

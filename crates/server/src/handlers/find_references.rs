@@ -30,13 +30,13 @@ pub fn handle_references<Db: VScriptDatabase>(
     };
 
     // can't do token.text() if the token is a string that got unquoted
-    let reference_file = SourceCtx::new(db, ctx.file());
-    let reference = reference_file.get(reference_id);
+    let reference_ctx = SourceCtx::new(db, ctx.file());
+    let reference = reference_ctx.get(reference_id);
     let name = reference.name.as_ref();
     let name_range = reference.name_range;
     let mut all_locations = Vec::new();
 
-    if let Some(ranges) = reference_file.symbol_to_ranges().get(&reference_id) {
+    if let Some(ranges) = reference_ctx.symbol_to_ranges().get(&reference_id) {
         for text_range in ranges {
             if *text_range == name_range {
                 continue;
@@ -73,9 +73,9 @@ pub fn handle_references<Db: VScriptDatabase>(
             continue;
         }
 
-        let candidate = SourceCtx::new(db, candidate_file);
+        let candidate_ctx = SourceCtx::new(db, candidate_file);
 
-        let Some(ranges) = candidate.symbol_to_ranges().get(&reference_id) else {
+        let Some(ranges) = candidate_ctx.symbol_to_ranges().get(&reference_id) else {
             continue;
         };
 
