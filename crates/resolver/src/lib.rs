@@ -871,8 +871,7 @@ pub trait Source {
         let s = self.get(id);
         match Primitive::try_from(&s.typ) {
             Ok(Primitive::Function(Some(id))) => {
-                let (signature, _) = self.function_markdown(FunctionMarkdown::Anonymous, id);
-                signature
+                self.function_markdown(FunctionMarkdown::Anonymous, id)
             }
             _ => self.type_to_str(&s.typ).into_string(),
         }
@@ -987,8 +986,7 @@ pub trait Source {
 
         match Primitive::try_from(&s.typ) {
             Ok(Primitive::Function(Some(id))) => {
-                str.push_str("function ");
-                let (signature, _) = self.function_markdown(FunctionMarkdown::Full(&s.name), id);
+                let signature = self.function_markdown(FunctionMarkdown::Full(&s.name), id);
                 str.push_str(&signature);
             }
             Ok(Primitive::Function(None)) => {
@@ -1015,14 +1013,13 @@ pub trait Source {
         str
     }
 
-    fn function_markdown(&self, kind: FunctionMarkdown, id: FunctionId) -> (String, Vec<[u32; 2]>) {
+    fn function_markdown(&self, kind: FunctionMarkdown, id: FunctionId) -> String {
         let func = self.get(id);
         let mut label = match kind {
             FunctionMarkdown::Anonymous => "@(".to_owned(),
-            FunctionMarkdown::Full(name) => format!("{name}("),
+            FunctionMarkdown::Full(name) => format!("function {name}("),
         };
 
-        let mut param_ranges = Vec::new();
         let default_after = if let ParamsState::Default(after) = func.params_state {
             Some(after)
         } else {
@@ -1033,7 +1030,6 @@ pub trait Source {
             if i > 0 {
                 label.push_str(", ");
             }
-            let start = label.len();
             let param = self.get(param_id);
             match kind {
                 FunctionMarkdown::Anonymous => {
@@ -1049,19 +1045,12 @@ pub trait Source {
                     let _ = write!(label, ": {}", self.type_to_str(&param.typ));
                 }
             }
-            let end = label.len();
-            param_ranges.push([
-                u32::try_from(start).unwrap_or(u32::MAX),
-                u32::try_from(end).unwrap_or(u32::MAX),
-            ]);
         }
 
         if let ParamsState::VarArgs(_, id) = func.params_state {
             if !func.params.is_empty() {
                 label.push_str(", ");
             }
-            let start = label.len();
-
             match kind {
                 FunctionMarkdown::Anonymous => {
                     label.push_str("...");
@@ -1080,12 +1069,6 @@ pub trait Source {
                     }
                 }
             }
-
-            let end = label.len();
-            param_ranges.push([
-                u32::try_from(start).unwrap_or(u32::MAX),
-                u32::try_from(end).unwrap_or(u32::MAX),
-            ]);
         }
 
         label.push(')');
@@ -1103,7 +1086,7 @@ pub trait Source {
             }
         }
 
-        (label, param_ranges)
+        label
     }
 }
 
