@@ -1,6 +1,7 @@
 # Team Fortress 2 VScript Support
 
 ## Features
+- Syntax and semantic highlighting
 - Completions
   - Keywords
   - Symbols
@@ -16,13 +17,13 @@
 - Go to type definition
 - Find references
 - Rename
-- Semantic tokens
 - Inlay hints
 - Signature help
 - Document symbols
-- Document link for imports
+- Document links for imports
 - Workspace symbol
 - Selection range
+- Document highlight
 
 ## Diagnostics
 - Syntax checking
@@ -36,7 +37,7 @@
 - Type inference for both variables and functions
 - Documentation comments with simple types
 - Import resolution from `IncludeScript`
-- Standard library symbols included from both Squirrel and VScript
+- Standard library symbols included from both Squirrel and TF2 VScript API
 
 ## Possible future development (in order)
 - Handle events (like `OnScriptHook_OnTakeDamage` by using a preset signature for certain keys)
