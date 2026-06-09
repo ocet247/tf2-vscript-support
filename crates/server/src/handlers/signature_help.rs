@@ -3,8 +3,8 @@ use lsp_types::{
     SignatureHelpParams, SignatureInformation,
 };
 use resolver::{
-    ExpressionKind, FunctionIdResolution, FunctionMarkdown, ParamsState, Primitive, Source,
-    SourceCtx, Type, TypeState, VScriptDatabase, parse,
+    ExpressionKind, FunctionIdResolution, ParamsState, Primitive, Source, SourceCtx, Type,
+    TypeState, VScriptDatabase, parse,
 };
 use sq_3_parser::{AstNode, ast};
 use std::fmt::Write as _;
