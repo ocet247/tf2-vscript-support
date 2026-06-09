@@ -1913,20 +1913,22 @@ impl<'db> Resolver<'db> {
             None => TextRange::empty(node.syntax().text_range().end()),
         };
 
-        let id = FunctionId::new(
-            self.file,
-            self.arena.alloc(FunctionData {
-                symbol: None,
-                range,
-                container: self.container,
-                bindenv,
-                params: Vec::new(),
-                params_state: ParamsState::NoDefault,
-                ret: TypeState::Absent,
-                throws: TypeState::Absent,
-                yields: TypeState::Absent,
-            }),
-        );
+        let idx = self.arena.alloc(FunctionData {
+            symbol: None,
+            range,
+            container: self.container,
+            bindenv,
+            params: Vec::new(),
+            params_state: ParamsState::NoDefault,
+            ret: TypeState::Absent,
+            throws: TypeState::Absent,
+            yields: TypeState::Absent,
+        });
+
+        let id = FunctionId::new(self.file, idx);
+
+        let save_idx = self.function;
+        self.function = Some(idx);
 
         self.enter_scope(range);
 
@@ -1954,6 +1956,8 @@ impl<'db> Resolver<'db> {
         );
 
         self.exit_scope();
+
+        self.function = save_idx;
 
         id
     }
