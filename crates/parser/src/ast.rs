@@ -133,6 +133,10 @@ pub trait IsFunction: AstNode<Language = SquirrelLanguage> + HasDoc {
     fn body(&self) -> Option<FunctionBody> {
         support::child(self.syntax()).map(FunctionBody::Stmt)
     }
+
+    fn function_token(&self) -> Option<SyntaxToken> {
+        support::token(self.syntax(), SyntaxKind::FunctionKeyword)
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
@@ -449,6 +453,10 @@ ast_node!(LambdaExpression, LambdaExpression);
 impl IsFunction for LambdaExpression {
     fn body(&self) -> Option<FunctionBody> {
         support::child(self.syntax()).map(FunctionBody::Expr)
+    }
+
+    fn function_token(&self) -> Option<SyntaxToken> {
+        support::token(self.syntax(), SyntaxKind::At)
     }
 }
 impl HasDoc for LambdaExpression {}

@@ -10,7 +10,7 @@ use salsa::Setter;
 use sq_3_parser::Parse;
 
 use crate::{
-    SourceCtx, Primitive, Source, SourceSymbol, SymbolId, Type,
+    Primitive, Source, SourceCtx, SourceSymbol, SymbolId, Type,
     arena::{ArenaId, FunctionId},
     resolver::Resolver,
     symbol::{FlatSymbolTable, to_flat_symbol_table},
@@ -365,9 +365,10 @@ impl Database {
             .unwrap_or_else(|| panic!("Builtin '{name}' not found"));
 
         let source = source_symbol(self, file);
+        let typ = &source.arena[symbol.idx()].typ;
 
-        let Ok(id) = source.arena[symbol.idx()].typ.to_class() else {
-            panic!("'{name}' member is not of type 'class'");
+        let Ok(id) = typ.to_class() else {
+            panic!("'{name}' member is not of type 'class', {typ:?}");
         };
 
         Builtin {

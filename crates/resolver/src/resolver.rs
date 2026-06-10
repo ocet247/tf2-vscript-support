@@ -21,7 +21,7 @@ use sq_3_parser::{
         TypeOfExpression, VarTag, VariableDeclaration, WhileStatement, YieldStatement,
     },
 };
-use std::{collections::hash_map::Entry, path::PathBuf};
+use std::path::PathBuf;
 use string_literals::CLASSNAMES_TO_CLASSES;
 
 use crate::{
@@ -196,10 +196,12 @@ enum NewSlotResult {
     NotAllowed,
 }
 
-#[derive(Debug, Clone)]
-enum NewType {
-    NotExplicit(TypeWithRange),
-    Explicit { typ: Type, value_range: TextRange },
+#[derive(Debug, Default)]
+struct SymbolDocInfo {
+    description: Option<String>,
+    typ: Option<Type>,
+    flags: SymbolFlags,
+    range: TextRange,
 }
 
 pub struct Resolver<'db> {
@@ -1059,33 +1061,24 @@ impl<'db> Resolver<'db> {
         &mut self,
         current: &Type,
         is_type_explicit: bool,
-        new: NewType,
+        new: TypeWithRange,
         check: CheckTypeSource,
     ) -> Type {
         if is_type_explicit {
-            match new {
-                NewType::Explicit { typ, .. } => typ,
-                NewType::NotExplicit(new) => self.check_type(current, &new.kind, check, new.range),
-            }
+            self.check_type(current, &new.kind, check, new.range)
         } else {
-            match new {
-                NewType::NotExplicit(new) => {
-                    let flags = current.type_flags();
-                    if flags == TypeFlags::ANY_OR_NULL {
-                        new.kind.add_any()
-                    } else if flags == TypeFlags::NULL {
-                        new.kind
-                    } else {
-                        merge_types(current, &new.kind)
-                    }
-                }
-                NewType::Explicit { typ, value_range } => {
-                    self.check_type(&typ, current, check, value_range)
-                }
+            let flags = current.type_flags();
+            if flags == TypeFlags::ANY_OR_NULL {
+                new.kind.add_any()
+            } else if flags == TypeFlags::NULL {
+                new.kind
+            } else {
+                merge_types(current, &new.kind)
             }
         }
     }
 
+    #[allow(clippy::too_many_lines)]
     fn collect_params(
         &mut self,
         idx: Idx<FunctionData>,
@@ -1104,6 +1097,10 @@ impl<'db> Resolver<'db> {
                         self.collect_expr(&expr);
                         continue;
                     };
+
+                    let name_range = name.text_range();
+                    let kind = SymbolKind::Local(LocalKind::Parameter);
+                    let node = SyntaxNodePtr::new(var.syntax());
 
                     let Some(expr) = var.initialiser().and_then(|i| i.expression()) else {
                         match params_state {
@@ -1127,50 +1124,87 @@ impl<'db> Resolver<'db> {
                             ParamsState::NoDefault => {}
                         }
 
-                        let symbol = self.symbol(Symbol {
-                            name: name.text().into(),
-                            typ: Type::ANY,
-                            kind: SymbolKind::Local(LocalKind::Parameter),
-                            name_range: name.text_range(),
-                            node: SyntaxNodePtr::new(var.syntax()),
-                            description: None,
-                            flags: SymbolFlags::default(),
-                            is_type_explicit: false,
-                        });
+                        let id = if let Some(info) = self.resolve_variable_doc(&var) {
+                            let id = self.symbol(Symbol {
+                                name: name.text().into(),
+                                kind,
+                                name_range,
+                                node,
+                                is_type_explicit: info.typ.is_some(),
+                                typ: info.typ.unwrap_or(Type::ANY),
+                                description: info.description,
+                                flags: info.flags,
+                            });
+                            self.doc_to_symbol.insert(info.range, id);
+                            id
+                        } else {
+                            self.symbol(Symbol {
+                                name: name.text().into(),
+                                kind,
+                                name_range,
+                                node,
+                                is_type_explicit: false,
+                                typ: Type::ANY,
+                                description: None,
+                                flags: SymbolFlags::default(),
+                            })
+                        };
 
-                        self.resolve_variable_doc(symbol, &var);
-
-                        insert_symbol(&mut self.current_scope().locals, name.text().into(), symbol);
-                        self.arena[idx].params.push(symbol);
+                        insert_symbol(&mut self.current_scope().locals, name.text().into(), id);
+                        self.arena[idx].params.push(id);
                         continue;
                     };
 
-                    let typ = self.expr_to_type(&expr);
+                    let expr_type = self.expr_to_type(&expr);
 
-                    let symbol = self.symbol(Symbol {
-                        name: name.text().into(),
-                        // We don't know for sure whether default value is of the only type the parameter
-                        // can take. Even though we infer the parameter at the call site we're not guaranteed
-                        // to consider all types at the first call. So Unknown is added unless the type is
-                        // explicitly specified
-                        // ```
-                        // local function abc(wow = null) { wow.AcceptInput(...) };
-                        // abc(null) // This causes the function body to error
-                        // abc(GetListenServerHost())
-                        // ```
-                        typ: typ.add_any(),
-                        kind: SymbolKind::Local(LocalKind::Parameter),
-                        name_range: name.text_range(),
-                        node: SyntaxNodePtr::new(var.syntax()),
-                        description: None,
-                        flags: SymbolFlags::default(),
-                        is_type_explicit: false,
-                    });
+                    // We don't know for sure whether default value is of the only type the parameter
+                    // can take. Even though we infer the parameter at the call site we're not guaranteed
+                    // to consider all types at the first call. So Unknown is added unless the type is
+                    // explicitly specified
+                    // ```
+                    // local function abc(wow = null) { wow.AcceptInput(...) };
+                    // abc(null) // This causes the function body to error
+                    // abc(GetListenServerHost())
+                    // ```
+                    let typ = expr_type.add_any();
 
-                    self.resolve_variable_doc(symbol, &var);
+                    let id = if let Some(info) = self.resolve_variable_doc(&var) {
+                        let typ = info.typ.as_ref().map_or(typ, |doc_type| {
+                            self.check_type(
+                                doc_type,
+                                &expr_type,
+                                CheckTypeSource::Variable,
+                                var.syntax().text_range(),
+                            )
+                        });
 
-                    insert_symbol(&mut self.current_scope().locals, name.text().into(), symbol);
-                    self.arena[idx].params.push(symbol);
+                        let id = self.symbol(Symbol {
+                            name: name.text().into(),
+                            kind,
+                            name_range,
+                            node,
+                            is_type_explicit: info.typ.is_some(),
+                            typ,
+                            description: info.description,
+                            flags: info.flags,
+                        });
+                        self.doc_to_symbol.insert(info.range, id);
+                        id
+                    } else {
+                        self.symbol(Symbol {
+                            name: name.text().into(),
+                            kind,
+                            name_range,
+                            node,
+                            is_type_explicit: false,
+                            typ,
+                            description: None,
+                            flags: SymbolFlags::default(),
+                        })
+                    };
+
+                    insert_symbol(&mut self.current_scope().locals, name.text().into(), id);
+                    self.arena[idx].params.push(id);
 
                     match params_state {
                         ParamsState::NoDefault => {
@@ -1746,7 +1780,7 @@ impl<'db> Resolver<'db> {
                         let new_typ = self.update_type(
                             &self.get(id).kind.clone(),
                             self.get(vargv).is_type_explicit,
-                            NewType::NotExplicit(argument),
+                            argument,
                             CheckTypeSource::VarArgs,
                         );
 
@@ -1759,7 +1793,7 @@ impl<'db> Resolver<'db> {
                     let new = self.update_type(
                         &self.get(param).typ.clone(),
                         self.get(param).is_type_explicit,
-                        NewType::NotExplicit(argument),
+                        argument,
                         CheckTypeSource::Parameter,
                     );
 
@@ -1962,23 +1996,17 @@ impl<'db> Resolver<'db> {
         id
     }
 
-    fn resolve_variable_doc<T: HasDoc>(&mut self, symbol: SymbolId, node: &T) -> bool {
-        let Some(doc) = node.doc() else {
-            return false;
+    fn resolve_variable_doc<T: HasDoc>(&mut self, node: &T) -> Option<SymbolDocInfo> {
+        let doc = node.doc()?;
+        let range = doc.syntax().text_range();
+
+        let mut info = SymbolDocInfo {
+            range,
+            ..Default::default()
         };
 
-        let range = doc.syntax().text_range();
-        match self.doc_to_symbol.entry(range) {
-            Entry::Occupied(_) => return true,
-            Entry::Vacant(e) => {
-                e.insert(symbol);
-            }
-        }
-
-        if let Some(symbol) = self.get_mut(symbol)
-            && let Some(desc) = doc.full_description()
-        {
-            symbol.description = Some(desc);
+        if let Some(desc) = doc.full_description() {
+            info.description = Some(desc);
         }
 
         let offset = range.end();
@@ -1995,45 +2023,35 @@ impl<'db> Resolver<'db> {
 
                     let doc_type = doc_type.this_to_concrete(&self.execution_container().into());
 
-                    let typ = self.update_type(
-                        &self.get(symbol).typ.clone(),
-                        self.get(symbol).is_type_explicit,
-                        NewType::Explicit {
-                            typ: doc_type,
-                            value_range: self.get(symbol).node.text_range(),
-                        },
-                        CheckTypeSource::Variable,
-                    );
+                    // let typ = self.update_type(
+                    //     &self.get(symbol).typ.clone(),
+                    //     self.get(symbol).is_type_explicit,
+                    //     NewType::Explicit {
+                    //         typ: doc_type,
+                    //         value_range: self.get(symbol).node.text_range(),
+                    //     },
+                    //     CheckTypeSource::Variable,
+                    // );
 
-                    if let Some(symbol) = self.get_mut(symbol) {
-                        symbol.typ = typ;
-                        symbol.is_type_explicit = true;
-                    }
+                    info.typ = Some(doc_type);
                 }
                 Tag::Const(_) => {
-                    if let Some(symbol) = self.get_mut(symbol) {
-                        symbol.flags |= SymbolFlags::CONST;
-                    }
+                    info.flags |= SymbolFlags::CONST;
                 }
                 Tag::Hide(_) => {
-                    if let Some(symbol) = self.get_mut(symbol) {
-                        symbol.flags |= SymbolFlags::HIDE;
-                    }
+                    info.flags |= SymbolFlags::HIDE;
                 }
                 Tag::Deprecated(_) => {
-                    if let Some(symbol) = self.get_mut(symbol) {
-                        symbol.flags |= SymbolFlags::DEPRECATED;
-                    }
+                    info.flags |= SymbolFlags::DEPRECATED;
                 }
                 Tag::Static(_) => {
-                    if let Some(symbol) = self.get_mut(symbol) {
-                        symbol.flags |= SymbolFlags::STATIC;
-                    }
+                    info.flags |= SymbolFlags::STATIC;
                 }
                 _ => {}
             }
         }
-        true
+
+        Some(info)
     }
 
     fn resolve_function_doc(&mut self, entry: &DeferredFunctionEntry, offset: TextSize) {
@@ -2102,18 +2120,8 @@ impl<'db> Resolver<'db> {
 
                     let doc_type = doc_type.this_to_concrete(&self.execution_container().into());
 
-                    let typ = self.update_type(
-                        &self.get(param_id).typ.clone(),
-                        self.get(param_id).is_type_explicit,
-                        NewType::Explicit {
-                            typ: doc_type,
-                            value_range: self.get(param_id).node.text_range(),
-                        },
-                        CheckTypeSource::Variable,
-                    );
-
                     if let Some(param) = self.get_mut(param_id) {
-                        param.typ = typ;
+                        param.typ = doc_type;
                         param.is_type_explicit = true;
                     }
                 }
@@ -2272,12 +2280,7 @@ impl<'db> Resolver<'db> {
                     TypeState::NotExplicit(typ) => (typ, false),
                 };
 
-                let new = self.update_type(
-                    &ret,
-                    is_explicit,
-                    NewType::NotExplicit(new_ret),
-                    CheckTypeSource::Return,
-                );
+                let new = self.update_type(&ret, is_explicit, new_ret, CheckTypeSource::Return);
 
                 self.arena[idx].ret = TypeState::Explicit(new);
             }
@@ -2441,24 +2444,57 @@ impl<'db> Resolver<'db> {
                     return;
                 };
 
-                let symbol = self.symbol(Symbol {
-                    name: name.text().into(),
-                    typ: Type::Primitive(Primitive::Function(Some(id))),
-                    kind: SymbolKind::Property {
-                        show_inlay_hint: false,
-                    },
-                    name_range: name.text_range(),
-                    node: SyntaxNodePtr::new(method.syntax()),
-                    description: None,
-                    flags: SymbolFlags::default(),
-                    is_type_explicit: false,
-                });
+                let typ = Type::Primitive(Primitive::Function(Some(id)));
+                let kind = SymbolKind::Property {
+                    show_inlay_hint: false,
+                };
+                let name_range = name.text_range();
+                let node = SyntaxNodePtr::new(method.syntax());
+
+                let symbol = if let Some(info) = self.resolve_variable_doc(method) {
+                    let typ = info.typ.as_ref().map_or_else(
+                        || typ.clone(),
+                        |doc_type| {
+                            self.check_type(
+                                doc_type,
+                                &typ,
+                                CheckTypeSource::Variable,
+                                method.function_token().map_or_else(
+                                    || method.syntax().text_range(),
+                                    |t| t.text_range(),
+                                ),
+                            )
+                        },
+                    );
+
+                    let id = self.symbol(Symbol {
+                        name: name.text().into(),
+                        kind,
+                        name_range,
+                        node,
+                        is_type_explicit: info.typ.is_some(),
+                        typ,
+                        description: info.description,
+                        flags: info.flags,
+                    });
+                    self.doc_to_symbol.insert(info.range, id);
+                    id
+                } else {
+                    self.symbol(Symbol {
+                        name: name.text().into(),
+                        kind,
+                        name_range,
+                        node,
+                        is_type_explicit: false,
+                        typ,
+                        description: None,
+                        flags: SymbolFlags::default(),
+                    })
+                };
 
                 if let Some(function) = self.get_mut(id) {
                     function.symbol = Some(symbol);
                 }
-
-                self.resolve_variable_doc(symbol, method);
 
                 self.add_current_container_member(name.text().into(), symbol);
             }
@@ -2469,29 +2505,108 @@ impl<'db> Resolver<'db> {
                     return;
                 };
 
-                let symbol = self.symbol(Symbol {
-                    name: "constructor".into(),
-                    typ: Type::Primitive(Primitive::Function(Some(id))),
-                    kind: SymbolKind::Property {
-                        show_inlay_hint: false,
-                    },
-                    name_range: keyword.text_range(),
-                    node: SyntaxNodePtr::new(constructor.syntax()),
-                    description: None,
-                    flags: SymbolFlags::default(),
-                    is_type_explicit: false,
-                });
+                let typ = Type::Primitive(Primitive::Function(Some(id)));
+                let kind = SymbolKind::Property {
+                    show_inlay_hint: false,
+                };
+                let name_range = keyword.text_range();
+                let node = SyntaxNodePtr::new(constructor.syntax());
+
+                let symbol = if let Some(info) = self.resolve_variable_doc(constructor) {
+                    let typ = info.typ.as_ref().map_or_else(
+                        || typ.clone(),
+                        |doc_type| {
+                            self.check_type(
+                                doc_type,
+                                &typ,
+                                CheckTypeSource::Variable,
+                                constructor.function_token().map_or_else(
+                                    || constructor.syntax().text_range(),
+                                    |t| t.text_range(),
+                                ),
+                            )
+                        },
+                    );
+
+                    let id = self.symbol(Symbol {
+                        name: "constructor".into(),
+                        kind,
+                        name_range,
+                        node,
+                        is_type_explicit: info.typ.is_some(),
+                        typ,
+                        description: info.description,
+                        flags: info.flags,
+                    });
+                    self.doc_to_symbol.insert(info.range, id);
+                    id
+                } else {
+                    self.symbol(Symbol {
+                        name: "constructor".into(),
+                        kind,
+                        name_range,
+                        node,
+                        is_type_explicit: false,
+                        typ,
+                        description: None,
+                        flags: SymbolFlags::default(),
+                    })
+                };
 
                 if let Some(function) = self.get_mut(id) {
                     function.symbol = Some(symbol);
                 }
 
-                self.resolve_variable_doc(symbol, constructor);
-
                 self.add_current_container_member("constructor".into(), symbol);
             }
         }
     }
+
+    // fn symbol_with_info<T: HasDoc>(
+    //     &mut self,
+    //     whole_node: &T,
+    //     kind: SymbolKind,
+    //     name: &str,
+    //     name_range: TextRange,
+    //     flags: SymbolFlags,
+    //     fallback_type: Type,
+    //     check_type: Option<(TypeWithRange, CheckTypeSource)>,
+    // ) -> SymbolId {
+    //     let node = SyntaxNodePtr::new(whole_node.syntax());
+
+    //     if let Some(info) = self.resolve_variable_doc(whole_node) {
+    //         let typ = info.typ.as_ref().map_or(fallback_type.clone(), |doc_type| {
+    //             let Some((expr_type, source)) = check_type else {
+    //                 return doc_type.clone();
+    //             };
+    //             self.check_type(doc_type, &expr_type.kind, source, expr_type.range)
+    //         });
+
+    //         let id = self.symbol(Symbol {
+    //             name: name.into(),
+    //             kind,
+    //             name_range,
+    //             node,
+    //             is_type_explicit: info.typ.is_some(),
+    //             typ,
+    //             description: info.description,
+    //             flags: flags | info.flags,
+    //         });
+    //         self.doc_to_symbol.insert(info.range, id);
+    //         id
+    //     } else {
+    //         self.symbol(Symbol {
+    //             name: name.into(),
+    //             kind,
+    //             name_range,
+    //             node,
+    //             is_type_explicit: false,
+    //             typ: fallback_type,
+    //             description: None,
+    //             flags,
+    //         })
+    //     }
+    // }
 
     fn collect_class_member(&mut self, member: &Member) {
         match member {
@@ -2504,28 +2619,63 @@ impl<'db> Resolver<'db> {
                     return;
                 };
 
-                let symbol = self.symbol(Symbol {
-                    name: name.text().into(),
-                    typ: Type::Primitive(Primitive::Function(Some(id))),
-                    kind: SymbolKind::Property {
-                        show_inlay_hint: false,
-                    },
-                    flags: if did_swap {
-                        SymbolFlags::default()
-                    } else {
-                        SymbolFlags::STATIC
-                    },
-                    name_range: name.text_range(),
-                    node: SyntaxNodePtr::new(method.syntax()),
-                    description: None,
-                    is_type_explicit: false,
-                });
+                let typ = Type::Primitive(Primitive::Function(Some(id)));
+                let kind = SymbolKind::Property {
+                    show_inlay_hint: false,
+                };
+                let name_range = name.text_range();
+                let node = SyntaxNodePtr::new(method.syntax());
+
+                let flags = if did_swap {
+                    SymbolFlags::default()
+                } else {
+                    SymbolFlags::STATIC
+                };
+
+                let symbol = if let Some(info) = self.resolve_variable_doc(method) {
+                    let typ = info.typ.as_ref().map_or_else(
+                        || typ.clone(),
+                        |doc_type| {
+                            self.check_type(
+                                doc_type,
+                                &typ,
+                                CheckTypeSource::Variable,
+                                method.function_token().map_or_else(
+                                    || method.syntax().text_range(),
+                                    |t| t.text_range(),
+                                ),
+                            )
+                        },
+                    );
+
+                    let id = self.symbol(Symbol {
+                        name: name.text().into(),
+                        kind,
+                        name_range,
+                        node,
+                        is_type_explicit: info.typ.is_some(),
+                        typ,
+                        description: info.description,
+                        flags: flags | info.flags,
+                    });
+                    self.doc_to_symbol.insert(info.range, id);
+                    id
+                } else {
+                    self.symbol(Symbol {
+                        name: name.text().into(),
+                        kind,
+                        name_range,
+                        node,
+                        is_type_explicit: false,
+                        typ,
+                        description: None,
+                        flags,
+                    })
+                };
 
                 if let Some(function) = self.get_mut(id) {
                     function.symbol = Some(symbol);
                 }
-
-                self.resolve_variable_doc(symbol, method);
 
                 self.add_current_container_member(name.text().into(), symbol);
             }
@@ -2537,28 +2687,63 @@ impl<'db> Resolver<'db> {
                     return;
                 };
 
-                let symbol = self.symbol(Symbol {
-                    name: "constructor".into(),
-                    typ: Type::Primitive(Primitive::Function(Some(id))),
-                    kind: SymbolKind::Property {
-                        show_inlay_hint: false,
-                    },
-                    flags: if did_swap {
-                        SymbolFlags::default()
-                    } else {
-                        SymbolFlags::STATIC
-                    },
-                    name_range: keyword.text_range(),
-                    node: SyntaxNodePtr::new(constructor.syntax()),
-                    description: None,
-                    is_type_explicit: false,
-                });
+                let typ = Type::Primitive(Primitive::Function(Some(id)));
+                let kind = SymbolKind::Property {
+                    show_inlay_hint: false,
+                };
+                let name_range = keyword.text_range();
+                let node = SyntaxNodePtr::new(constructor.syntax());
+
+                let flags = if did_swap {
+                    SymbolFlags::default()
+                } else {
+                    SymbolFlags::STATIC
+                };
+
+                let symbol = if let Some(info) = self.resolve_variable_doc(constructor) {
+                    let typ = info.typ.as_ref().map_or_else(
+                        || typ.clone(),
+                        |doc_type| {
+                            self.check_type(
+                                doc_type,
+                                &typ,
+                                CheckTypeSource::Variable,
+                                constructor.function_token().map_or_else(
+                                    || constructor.syntax().text_range(),
+                                    |t| t.text_range(),
+                                ),
+                            )
+                        },
+                    );
+
+                    let id = self.symbol(Symbol {
+                        name: "constructor".into(),
+                        kind,
+                        name_range,
+                        node,
+                        is_type_explicit: info.typ.is_some(),
+                        typ,
+                        description: info.description,
+                        flags: flags | info.flags,
+                    });
+                    self.doc_to_symbol.insert(info.range, id);
+                    id
+                } else {
+                    self.symbol(Symbol {
+                        name: "constructor".into(),
+                        kind,
+                        name_range,
+                        node,
+                        is_type_explicit: false,
+                        typ,
+                        description: None,
+                        flags,
+                    })
+                };
 
                 if let Some(function) = self.get_mut(id) {
                     function.symbol = Some(symbol);
                 }
-
-                self.resolve_variable_doc(symbol, constructor);
 
                 self.add_current_container_member("constructor".into(), symbol);
             }
@@ -2566,7 +2751,7 @@ impl<'db> Resolver<'db> {
     }
 
     fn collect_table_property(&mut self, property: &Property) {
-        let typ = property
+        let expr_typ = property
             .value()
             .map_or(Type::ANY, |v| self.expr_to_type(&v));
 
@@ -2578,30 +2763,57 @@ impl<'db> Resolver<'db> {
             return;
         };
 
-        let symbol = self.symbol(Symbol {
-            name: text.clone(),
-            typ: typ.add_any(),
-            kind: SymbolKind::Property {
-                show_inlay_hint: true,
-            },
-            name_range,
-            node: SyntaxNodePtr::new(property.syntax()),
-            description: None,
-            flags: SymbolFlags::default(),
-            is_type_explicit: false,
-        });
+        let kind = SymbolKind::Property {
+            show_inlay_hint: true,
+        };
 
-        self.resolve_variable_doc(symbol, property);
+        let typ = expr_typ.add_any();
+        let node = SyntaxNodePtr::new(property.syntax());
+
+        let symbol = if let Some(info) = self.resolve_variable_doc(property) {
+            let error_range = property.value().map_or_else(
+                || property.syntax().text_range(),
+                |v| v.syntax().text_range(),
+            );
+
+            let typ = info.typ.as_ref().map_or(typ, |doc_type| {
+                self.check_type(doc_type, &expr_typ, CheckTypeSource::Variable, error_range)
+            });
+
+            let id = self.symbol(Symbol {
+                name: text.clone(),
+                kind,
+                name_range,
+                node,
+                is_type_explicit: info.typ.is_some(),
+                typ,
+                description: info.description,
+                flags: info.flags,
+            });
+            self.doc_to_symbol.insert(info.range, id);
+            id
+        } else {
+            self.symbol(Symbol {
+                name: text.clone(),
+                kind,
+                name_range,
+                node,
+                is_type_explicit: false,
+                typ,
+                description: None,
+                flags: SymbolFlags::default(),
+            })
+        };
 
         self.add_current_container_member(text, symbol);
     }
 
     fn collect_class_property(&mut self, property: &Property) {
-        let typ = property
+        let expr_typ = property
             .value()
             .map_or(Type::ANY, |v| self.expr_to_type(&v));
 
-        let did_swap = self.try_swap_to_instance(property, typ.to_function().ok());
+        let did_swap = self.try_swap_to_instance(property, expr_typ.to_function().ok());
 
         let Some(name) = property.name() else {
             return;
@@ -2611,31 +2823,59 @@ impl<'db> Resolver<'db> {
             return;
         };
 
-        let symbol = self.symbol(Symbol {
-            name: text.clone(),
-            typ: typ.add_any(),
-            kind: SymbolKind::Property {
-                show_inlay_hint: true,
-            },
-            flags: if did_swap {
-                SymbolFlags::default()
-            } else {
-                SymbolFlags::STATIC
-            },
-            name_range,
-            node: SyntaxNodePtr::new(property.syntax()),
-            description: None,
-            is_type_explicit: false,
-        });
+        let kind = SymbolKind::Property {
+            show_inlay_hint: true,
+        };
 
-        self.resolve_variable_doc(symbol, property);
+        let typ = expr_typ.add_any();
+        let flags = if did_swap {
+            SymbolFlags::default()
+        } else {
+            SymbolFlags::STATIC
+        };
+        let node = SyntaxNodePtr::new(property.syntax());
+
+        let symbol = if let Some(info) = self.resolve_variable_doc(property) {
+            let error_range = property.value().map_or_else(
+                || property.syntax().text_range(),
+                |v| v.syntax().text_range(),
+            );
+
+            let typ = info.typ.as_ref().map_or(typ, |doc_type| {
+                self.check_type(doc_type, &expr_typ, CheckTypeSource::Variable, error_range)
+            });
+
+            let id = self.symbol(Symbol {
+                name: text.clone(),
+                kind,
+                name_range,
+                node,
+                is_type_explicit: info.typ.is_some(),
+                typ,
+                description: info.description,
+                flags: flags | info.flags,
+            });
+            self.doc_to_symbol.insert(info.range, id);
+            id
+        } else {
+            self.symbol(Symbol {
+                name: text.clone(),
+                kind,
+                name_range,
+                node,
+                is_type_explicit: false,
+                typ,
+                description: None,
+                flags,
+            })
+        };
 
         self.add_current_container_member(text, symbol);
     }
 
     /// returns whether the value was assigned via '=' (used to increment the internal auto assign counter)
     fn collect_enum_property(&mut self, property: &Property, default_value: i32) -> bool {
-        let (has_value, typ) = property.value().map_or(
+        let (has_value, expr_typ) = property.value().map_or(
             (
                 false,
                 Type::Primitive(Primitive::Integer(Some(default_value))),
@@ -2655,20 +2895,48 @@ impl<'db> Resolver<'db> {
             return has_value;
         };
 
-        let symbol = self.symbol(Symbol {
-            name: text.clone(),
-            typ,
-            kind: SymbolKind::EnumMember,
-            name_range,
-            node: SyntaxNodePtr::new(property.syntax()),
-            description: None,
-            flags: SymbolFlags::default(),
-            is_type_explicit: false,
-        });
+        let kind = SymbolKind::EnumMember;
 
-        self.resolve_variable_doc(symbol, property);
+        let typ = expr_typ.add_any();
+        let node = SyntaxNodePtr::new(property.syntax());
+
+        let symbol = if let Some(info) = self.resolve_variable_doc(property) {
+            let error_range = property.value().map_or_else(
+                || property.syntax().text_range(),
+                |v| v.syntax().text_range(),
+            );
+
+            let typ = info.typ.as_ref().map_or(typ, |doc_type| {
+                self.check_type(doc_type, &expr_typ, CheckTypeSource::Variable, error_range)
+            });
+
+            let id = self.symbol(Symbol {
+                name: text.clone(),
+                kind,
+                name_range,
+                node,
+                is_type_explicit: info.typ.is_some(),
+                typ,
+                description: info.description,
+                flags: info.flags,
+            });
+            self.doc_to_symbol.insert(info.range, id);
+            id
+        } else {
+            self.symbol(Symbol {
+                name: text.clone(),
+                kind,
+                name_range,
+                node,
+                is_type_explicit: false,
+                typ,
+                description: None,
+                flags: SymbolFlags::default(),
+            })
+        };
 
         self.add_current_container_member(text, symbol);
+
         has_value
     }
 
@@ -2732,41 +3000,85 @@ impl<'db> Resolver<'db> {
                 continue;
             };
 
+            let kind = SymbolKind::Local(LocalKind::Variable);
+            let name_range = name.text_range();
+            let node = SyntaxNodePtr::new(var.syntax());
             let Some(expr) = var.initialiser().and_then(|i| i.expression()) else {
-                let id = self.symbol(Symbol {
-                    name: name.text().into(),
-                    typ: Type::NULL.add_any(),
-                    kind: SymbolKind::Local(LocalKind::Variable),
-                    name_range: name.text_range(),
-                    node: SyntaxNodePtr::new(var.syntax()),
-                    description: None,
-                    flags: SymbolFlags::default(),
-                    is_type_explicit: false,
-                });
+                let typ = Type::NULL.add_any();
 
-                if !self.resolve_variable_doc(id, &var) {
-                    self.resolve_variable_doc(id, decl);
-                }
+                let id = if let Some(info) = self
+                    .resolve_variable_doc(&var)
+                    .or_else(|| self.resolve_variable_doc(decl))
+                {
+                    let id = self.symbol(Symbol {
+                        name: name.text().into(),
+                        node,
+                        name_range,
+                        kind,
+                        is_type_explicit: info.typ.is_some(),
+                        typ: info.typ.unwrap_or(typ),
+                        description: info.description,
+                        flags: info.flags,
+                    });
+                    self.doc_to_symbol.insert(info.range, id);
+                    id
+                } else {
+                    self.symbol(Symbol {
+                        name: name.text().into(),
+                        node,
+                        name_range,
+                        kind,
+                        is_type_explicit: false,
+                        typ,
+                        description: None,
+                        flags: SymbolFlags::default(),
+                    })
+                };
 
                 insert_symbol(&mut self.current_scope().locals, name.text().into(), id);
                 continue;
             };
 
-            let typ = self.expr_to_type(&expr);
-            let id = self.symbol(Symbol {
-                name: name.text().into(),
-                typ: typ.add_any(),
-                kind: SymbolKind::Local(LocalKind::Variable),
-                name_range: name.text_range(),
-                node: SyntaxNodePtr::new(var.syntax()),
-                description: None,
-                flags: SymbolFlags::default(),
-                is_type_explicit: false,
-            });
+            let expr_type = self.expr_to_type(&expr);
 
-            if !self.resolve_variable_doc(id, &var) {
-                self.resolve_variable_doc(id, decl);
-            }
+            let typ = expr_type.add_any();
+            let id = if let Some(info) = self
+                .resolve_variable_doc(&var)
+                .or_else(|| self.resolve_variable_doc(decl))
+            {
+                let typ = info.typ.as_ref().map_or(typ, |doc_type| {
+                    self.check_type(
+                        doc_type,
+                        &expr_type,
+                        CheckTypeSource::Variable,
+                        expr.syntax().text_range(),
+                    )
+                });
+
+                let id = self.symbol(Symbol {
+                    name: name.text().into(),
+                    node,
+                    name_range,
+                    kind,
+                    is_type_explicit: info.typ.is_some(),
+                    typ: info.typ.unwrap_or(typ),
+                    description: info.description,
+                    flags: info.flags,
+                });
+                self.doc_to_symbol.insert(info.range, id);
+                id
+            } else {
+                self.symbol(Symbol {
+                    name: name.text().into(),
+                    node,
+                    name_range,
+                    kind,
+                    is_type_explicit: false,
+                    typ,
+                    description: None,
+                    flags: SymbolFlags::default(),
+                })
+            };
 
             insert_symbol(&mut self.current_scope().locals, name.text().into(), id);
         }
@@ -2778,22 +3090,52 @@ impl<'db> Resolver<'db> {
             return;
         };
 
-        let symbol = self.symbol(Symbol {
-            name: name.text().into(),
-            typ: Type::Primitive(Primitive::Function(Some(id))),
-            kind: SymbolKind::Local(LocalKind::Function),
-            name_range: name.text_range(),
-            node: SyntaxNodePtr::new(decl.syntax()),
-            description: None,
-            flags: SymbolFlags::default(),
-            is_type_explicit: false,
-        });
+        let typ = Type::Primitive(Primitive::Function(Some(id)));
+        let kind = SymbolKind::Local(LocalKind::Function);
+        let name_range = name.text_range();
+        let node = SyntaxNodePtr::new(decl.syntax());
+        let symbol = if let Some(info) = self.resolve_variable_doc(decl) {
+            let typ = info.typ.as_ref().map_or_else(
+                || typ.clone(),
+                |doc_type| {
+                    self.check_type(
+                        doc_type,
+                        &typ,
+                        CheckTypeSource::Variable,
+                        decl.function_token()
+                            .map_or_else(|| decl.syntax().text_range(), |t| t.text_range()),
+                    )
+                },
+            );
+
+            let id = self.symbol(Symbol {
+                name: name.text().into(),
+                node,
+                name_range,
+                kind,
+                is_type_explicit: info.typ.is_some(),
+                typ,
+                description: info.description,
+                flags: info.flags,
+            });
+            self.doc_to_symbol.insert(info.range, id);
+            id
+        } else {
+            self.symbol(Symbol {
+                name: name.text().into(),
+                node,
+                name_range,
+                kind,
+                is_type_explicit: false,
+                typ,
+                description: None,
+                flags: SymbolFlags::default(),
+            })
+        };
 
         if let Some(function) = self.get_mut(id) {
             function.symbol = Some(symbol);
         }
-
-        self.resolve_variable_doc(symbol, decl);
 
         insert_symbol(&mut self.current_scope().locals, name.text().into(), symbol);
     }
@@ -2820,18 +3162,50 @@ impl<'db> Resolver<'db> {
             return;
         };
 
-        let symbol = self.symbol(Symbol {
-            name: name.text().into(),
-            typ,
-            kind: SymbolKind::Constant,
-            name_range: name.text_range(),
-            node: SyntaxNodePtr::new(stmt.syntax()),
-            description: None,
-            flags: SymbolFlags::default(),
-            is_type_explicit: false,
-        });
+        let kind = SymbolKind::Constant;
+        let name_range = name.text_range();
+        let node = SyntaxNodePtr::new(stmt.syntax());
+        let symbol = if let Some(info) = self.resolve_variable_doc(stmt) {
+            let typ = info.typ.as_ref().map_or_else(
+                || typ.clone(),
+                |doc_type| {
+                    self.check_type(
+                        doc_type,
+                        &typ,
+                        CheckTypeSource::Variable,
+                        stmt.value().and_then(|v| v.expression()).map_or_else(
+                            || stmt.syntax().text_range(),
+                            |v| v.syntax().text_range(),
+                        ),
+                    )
+                },
+            );
 
-        self.resolve_variable_doc(symbol, stmt);
+            let id = self.symbol(Symbol {
+                name: name.text().into(),
+                node,
+                name_range,
+                kind,
+                is_type_explicit: info.typ.is_some(),
+                typ,
+                description: info.description,
+                flags: SymbolFlags::CONST | info.flags,
+            });
+
+            self.doc_to_symbol.insert(info.range, id);
+            id
+        } else {
+            self.symbol(Symbol {
+                name: name.text().into(),
+                node,
+                name_range,
+                kind,
+                is_type_explicit: false,
+                typ,
+                description: None,
+                flags: SymbolFlags::CONST,
+            })
+        };
 
         insert_symbol(
             &mut self.arena[self.const_table].members,
@@ -2861,18 +3235,46 @@ impl<'db> Resolver<'db> {
         if let Some(key) = stmt.key()
             && let Some(name) = get_name(&key)
         {
-            let symbol = self.symbol(Symbol {
-                name: name.text().into(),
-                typ: key_type,
-                kind: SymbolKind::Local(LocalKind::Variable),
-                name_range: name.text_range(),
-                node: SyntaxNodePtr::new(key.syntax()),
-                description: None,
-                flags: SymbolFlags::default(),
-                is_type_explicit: false,
-            });
+            let kind = SymbolKind::Local(LocalKind::Variable);
+            let name_range = name.text_range();
+            let node = SyntaxNodePtr::new(key.syntax());
+            let symbol = if let Some(info) = self.resolve_variable_doc(&key) {
+                let typ = info.typ.as_ref().map_or_else(
+                    || key_type.clone(),
+                    |doc_type| {
+                        self.check_type(
+                            doc_type,
+                            &key_type,
+                            CheckTypeSource::Variable,
+                            stmt.syntax().text_range(),
+                        )
+                    },
+                );
+                let id = self.symbol(Symbol {
+                    name: name.text().into(),
+                    node,
+                    name_range,
+                    kind,
+                    is_type_explicit: info.typ.is_some(),
+                    typ,
+                    description: info.description,
+                    flags: info.flags,
+                });
 
-            self.resolve_variable_doc(symbol, &key);
+                self.doc_to_symbol.insert(info.range, id);
+                id
+            } else {
+                self.symbol(Symbol {
+                    name: name.text().into(),
+                    node,
+                    name_range,
+                    kind,
+                    is_type_explicit: false,
+                    typ: key_type,
+                    description: None,
+                    flags: SymbolFlags::default(),
+                })
+            };
 
             insert_symbol(&mut self.current_scope().locals, name.text().into(), symbol);
         }
@@ -2880,18 +3282,46 @@ impl<'db> Resolver<'db> {
         if let Some(value) = stmt.value()
             && let Some(name) = get_name(&value)
         {
-            let symbol = self.symbol(Symbol {
-                name: name.text().into(),
-                typ: value_type,
-                kind: SymbolKind::Local(LocalKind::Variable),
-                name_range: name.text_range(),
-                node: SyntaxNodePtr::new(value.syntax()),
-                description: None,
-                flags: SymbolFlags::default(),
-                is_type_explicit: false,
-            });
+            let kind = SymbolKind::Local(LocalKind::Variable);
+            let name_range = name.text_range();
+            let node = SyntaxNodePtr::new(value.syntax());
+            let symbol = if let Some(info) = self.resolve_variable_doc(&value) {
+                let typ = info.typ.as_ref().map_or_else(
+                    || value_type.clone(),
+                    |doc_type| {
+                        self.check_type(
+                            doc_type,
+                            &value_type,
+                            CheckTypeSource::Variable,
+                            stmt.syntax().text_range(),
+                        )
+                    },
+                );
+                let id = self.symbol(Symbol {
+                    name: name.text().into(),
+                    node,
+                    name_range,
+                    kind,
+                    is_type_explicit: info.typ.is_some(),
+                    typ,
+                    description: info.description,
+                    flags: info.flags,
+                });
 
-            self.resolve_variable_doc(symbol, &value);
+                self.doc_to_symbol.insert(info.range, id);
+                id
+            } else {
+                self.symbol(Symbol {
+                    name: name.text().into(),
+                    node,
+                    name_range,
+                    kind,
+                    is_type_explicit: false,
+                    typ: value_type,
+                    description: None,
+                    flags: SymbolFlags::default(),
+                })
+            };
 
             insert_symbol(&mut self.current_scope().locals, name.text().into(), symbol);
         }
@@ -3092,20 +3522,50 @@ impl<'db> Resolver<'db> {
             return;
         };
 
-        let symbol = self.symbol(Symbol {
-            name: final_name.text().into(),
-            typ: Type::Primitive(Primitive::Function(Some(id))),
-            kind: SymbolKind::Property {
-                show_inlay_hint: false,
-            },
-            name_range: final_name.text_range(),
-            node: SyntaxNodePtr::new(stmt.syntax()),
-            description: None,
-            flags: SymbolFlags::default(),
-            is_type_explicit: false,
-        });
+        let typ = Type::Primitive(Primitive::Function(Some(id)));
+        let kind = SymbolKind::Property {
+            show_inlay_hint: false,
+        };
+        let name_range = final_name.text_range();
+        let node = SyntaxNodePtr::new(stmt.syntax());
+        let symbol = if let Some(info) = self.resolve_variable_doc(stmt) {
+            let typ = info.typ.as_ref().map_or_else(
+                || typ.clone(),
+                |doc_type| {
+                    self.check_type(
+                        doc_type,
+                        &typ,
+                        CheckTypeSource::Variable,
+                        stmt.function_token()
+                            .map_or_else(|| stmt.syntax().text_range(), |t| t.text_range()),
+                    )
+                },
+            );
 
-        self.resolve_variable_doc(symbol, stmt);
+            let id = self.symbol(Symbol {
+                name: final_name.text().into(),
+                node,
+                name_range,
+                kind,
+                is_type_explicit: info.typ.is_some(),
+                typ,
+                description: info.description,
+                flags: info.flags,
+            });
+            self.doc_to_symbol.insert(info.range, id);
+            id
+        } else {
+            self.symbol(Symbol {
+                name: final_name.text().into(),
+                node,
+                name_range,
+                kind,
+                is_type_explicit: false,
+                typ,
+                description: None,
+                flags: SymbolFlags::default(),
+            })
+        };
 
         if let Some(container) = container {
             self.add_container_member(container, final_name.text().into(), symbol);
@@ -3122,23 +3582,52 @@ impl<'db> Resolver<'db> {
     }
 
     fn enum_statement(&mut self, stmt: &EnumStatement) {
-        let enum_ = EnumId::new(self.file, self.arena.alloc(EnumData::default()));
+        let id = EnumId::new(self.file, self.arena.alloc(EnumData::default()));
 
         if let Some(name) = get_name(stmt) {
-            let symbol = self.symbol(Symbol {
-                name: name.text().into(),
-                typ: Type::Enum(enum_),
-                kind: SymbolKind::Constant,
-                name_range: name.text_range(),
-                node: SyntaxNodePtr::new(stmt.syntax()),
-                description: None,
-                flags: SymbolFlags::default(),
-                is_type_explicit: false,
-            });
+            let typ = Type::Enum(id);
+            let kind = SymbolKind::Constant;
+            let name_range = name.text_range();
+            let node = SyntaxNodePtr::new(stmt.syntax());
+            let symbol = if let Some(info) = self.resolve_variable_doc(stmt) {
+                let typ = info.typ.as_ref().map_or_else(
+                    || typ.clone(),
+                    |doc_type| {
+                        self.check_type(
+                            doc_type,
+                            &typ,
+                            CheckTypeSource::Variable,
+                            stmt.syntax().text_range(),
+                        )
+                    },
+                );
 
-            self.resolve_variable_doc(symbol, stmt);
+                let id = self.symbol(Symbol {
+                    name: name.text().into(),
+                    node,
+                    name_range,
+                    kind,
+                    is_type_explicit: info.typ.is_some(),
+                    typ,
+                    description: info.description,
+                    flags: info.flags,
+                });
+                self.doc_to_symbol.insert(info.range, id);
+                id
+            } else {
+                self.symbol(Symbol {
+                    name: name.text().into(),
+                    node,
+                    name_range,
+                    kind,
+                    is_type_explicit: false,
+                    typ,
+                    description: None,
+                    flags: SymbolFlags::default(),
+                })
+            };
 
-            self.arena[enum_.idx()].symbol = Some(symbol);
+            self.arena[id.idx()].symbol = Some(symbol);
 
             insert_symbol(
                 &mut self.arena[self.const_table].members,
@@ -3148,7 +3637,7 @@ impl<'db> Resolver<'db> {
         }
 
         let save_symbol = self.container;
-        self.container = Container::Enum(enum_);
+        self.container = Container::Enum(id);
         let mut value = 0;
         for property in stmt.members() {
             if !self.collect_enum_property(&property, value) {
@@ -3319,10 +3808,10 @@ impl<'db> Resolver<'db> {
         let new = self.update_type(
             &ret,
             is_explicit,
-            NewType::NotExplicit(TypeWithRange {
+            TypeWithRange {
                 kind: value.kind,
                 range: stmt.syntax().text_range(),
-            }),
+            },
             CheckTypeSource::Return,
         );
 
@@ -3356,12 +3845,7 @@ impl<'db> Resolver<'db> {
             TypeState::NotExplicit(typ) => (typ, false),
         };
 
-        let new = self.update_type(
-            &yields,
-            is_explicit,
-            NewType::NotExplicit(value),
-            CheckTypeSource::Yield,
-        );
+        let new = self.update_type(&yields, is_explicit, value, CheckTypeSource::Yield);
 
         self.arena[function].yields = TypeState::NotExplicit(new);
     }
@@ -3407,18 +3891,47 @@ impl<'db> Resolver<'db> {
         if let Some(binding) = catch.binding()
             && let Some(name) = get_name(&binding)
         {
-            let symbol = self.symbol(Symbol {
-                typ: Type::STRING.add_any(),
-                name: name.text().into(),
-                kind: SymbolKind::Local(LocalKind::Exception),
-                name_range: name.text_range(),
-                node: SyntaxNodePtr::new(binding.syntax()),
-                description: None,
-                flags: SymbolFlags::default(),
-                is_type_explicit: false,
-            });
+            let typ = Type::STRING.add_any();
+            let kind = SymbolKind::Local(LocalKind::Exception);
+            let name_range = name.text_range();
+            let node = SyntaxNodePtr::new(binding.syntax());
+            let symbol = if let Some(info) = self.resolve_variable_doc(&binding) {
+                let typ = info.typ.as_ref().map_or_else(
+                    || typ.clone(),
+                    |doc_type| {
+                        self.check_type(
+                            doc_type,
+                            &typ,
+                            CheckTypeSource::Variable,
+                            stmt.syntax().text_range(),
+                        )
+                    },
+                );
 
-            self.resolve_variable_doc(symbol, &binding);
+                let id = self.symbol(Symbol {
+                    name: name.text().into(),
+                    node,
+                    name_range,
+                    kind,
+                    is_type_explicit: info.typ.is_some(),
+                    typ,
+                    description: info.description,
+                    flags: info.flags,
+                });
+                self.doc_to_symbol.insert(info.range, id);
+                id
+            } else {
+                self.symbol(Symbol {
+                    name: name.text().into(),
+                    node,
+                    name_range,
+                    kind,
+                    is_type_explicit: false,
+                    typ,
+                    description: None,
+                    flags: SymbolFlags::default(),
+                })
+            };
 
             insert_symbol(&mut self.current_scope().locals, name.text().into(), symbol);
         }
@@ -3451,10 +3964,10 @@ impl<'db> Resolver<'db> {
         let new = self.update_type(
             &throws,
             is_explicit,
-            NewType::NotExplicit(TypeWithRange {
+            TypeWithRange {
                 kind: value,
                 range: stmt.syntax().text_range(),
-            }),
+            },
             CheckTypeSource::Throw,
         );
 
@@ -4181,6 +4694,7 @@ impl<'db> Resolver<'db> {
     }
 
     // Also used by class statement
+    #[allow(clippy::too_many_lines)]
     fn expr_new_symbol<T: HasDoc>(
         &mut self,
         expr: &T,
@@ -4203,18 +4717,41 @@ impl<'db> Resolver<'db> {
                     return;
                 }
 
-                let symbol = self.symbol(Symbol {
-                    name: new_key.clone(),
-                    typ: value.kind.clone(),
-                    kind: SymbolKind::Property { show_inlay_hint },
-                    name_range,
-                    node: SyntaxNodePtr::new(expr.syntax()),
-                    description: None,
-                    flags: SymbolFlags::default(),
-                    is_type_explicit: false,
-                });
+                let typ = value.kind.clone();
+                let kind = SymbolKind::Property { show_inlay_hint };
+                let node = SyntaxNodePtr::new(expr.syntax());
+                let symbol = if let Some(info) = self.resolve_variable_doc(expr) {
+                    let typ = info.typ.as_ref().map_or_else(
+                        || typ.clone(),
+                        |doc_type| {
+                            self.check_type(doc_type, &typ, CheckTypeSource::Variable, expr_range)
+                        },
+                    );
 
-                self.resolve_variable_doc(symbol, expr);
+                    let id = self.symbol(Symbol {
+                        name: new_key.clone(),
+                        node,
+                        name_range,
+                        kind,
+                        is_type_explicit: info.typ.is_some(),
+                        typ,
+                        description: info.description,
+                        flags: info.flags,
+                    });
+                    self.doc_to_symbol.insert(info.range, id);
+                    id
+                } else {
+                    self.symbol(Symbol {
+                        name: new_key.clone(),
+                        node,
+                        name_range,
+                        kind,
+                        is_type_explicit: false,
+                        typ,
+                        description: None,
+                        flags: SymbolFlags::default(),
+                    })
+                };
 
                 self.set_symbol(&value.kind, symbol);
 
@@ -4261,19 +4798,46 @@ impl<'db> Resolver<'db> {
                     }
 
                     let name = self.get(symbol).name.clone();
+                    let typ = value.kind.clone();
+                    let kind = SymbolKind::Property { show_inlay_hint };
+                    let node = SyntaxNodePtr::new(expr.syntax());
+                    let symbol = if let Some(info) = self.resolve_variable_doc(expr) {
+                        let typ = info.typ.as_ref().map_or_else(
+                            || typ.clone(),
+                            |doc_type| {
+                                self.check_type(
+                                    doc_type,
+                                    &typ,
+                                    CheckTypeSource::Variable,
+                                    expr_range,
+                                )
+                            },
+                        );
 
-                    let symbol = self.symbol(Symbol {
-                        name: name.clone(),
-                        typ: value.kind.clone(),
-                        kind: SymbolKind::Property { show_inlay_hint },
-                        name_range,
-                        node: SyntaxNodePtr::new(expr.syntax()),
-                        description: None,
-                        flags: SymbolFlags::default(),
-                        is_type_explicit: false,
-                    });
-
-                    self.resolve_variable_doc(symbol, expr);
+                        let id = self.symbol(Symbol {
+                            name: name.clone(),
+                            node,
+                            name_range,
+                            kind,
+                            is_type_explicit: info.typ.is_some(),
+                            typ,
+                            description: info.description,
+                            flags: info.flags,
+                        });
+                        self.doc_to_symbol.insert(info.range, id);
+                        id
+                    } else {
+                        self.symbol(Symbol {
+                            name: name.clone(),
+                            node,
+                            name_range,
+                            kind,
+                            is_type_explicit: false,
+                            typ,
+                            description: None,
+                            flags: SymbolFlags::default(),
+                        })
+                    };
 
                     if let NewSlotResult::CanAdd(container) = result {
                         self.add_container_member(container, name, symbol);
@@ -4423,7 +4987,7 @@ impl<'db> Resolver<'db> {
                 let new = self.update_type(
                     &self.get(symbol).typ.clone(),
                     self.get(symbol).is_type_explicit,
-                    NewType::NotExplicit(right),
+                    right,
                     CheckTypeSource::Variable,
                 );
 
@@ -4755,7 +5319,7 @@ impl<'db> Resolver<'db> {
                 let new = self.update_type(
                     &self.get(symbol).typ.clone(),
                     self.get(symbol).is_type_explicit,
-                    NewType::NotExplicit(type_with_range),
+                    type_with_range,
                     CheckTypeSource::Variable,
                 );
 
