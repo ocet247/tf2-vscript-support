@@ -119,31 +119,39 @@ pub fn handle_completion<Db: VScriptDatabase>(
     let trigger_char = params.context.and_then(|c| c.trigger_character);
 
     Ok(Some(CompletionResponse::Array(
-        match context_completions(&syntax, offset, trigger_char.as_deref(), &ctx) {
+        match context_completions(&ctx, &syntax, offset, trigger_char.as_deref()) {
             Some(ContextCompletions::Statement) => {
-                let mut completions = completions_flat(offset, &ctx);
+                let mut completions = completions_flat(&ctx, &syntax, offset);
                 completions.extend(statement_keywords());
                 completions
             }
             Some(ContextCompletions::Expression) => {
-                let mut completions = completions_flat(offset, &ctx);
+                let mut completions = completions_flat(&ctx, &syntax, offset);
                 completions.extend(expression_keywords());
                 completions
             }
             Some(ContextCompletions::FromObject { typ, prefix_range }) => {
-                completions_from_object(line_idx, offset, &ctx, scope, typ, prefix_range)
+                completions_from_object(line_idx, &ctx, &syntax, offset, scope, typ, prefix_range)
             }
             Some(ContextCompletions::FromQualifiedName { typ }) => {
-                completions_from_qualified_name(offset, &ctx, scope, typ)
+                completions_from_qualified_name(&ctx, offset, scope, typ)
             }
             Some(ContextCompletions::FromObjectAsString { typ, replace_range }) => {
-                completions_from_object_as_string(line_idx, offset, &ctx, scope, typ, replace_range)
+                completions_from_object_as_string(
+                    line_idx,
+                    &ctx,
+                    &syntax,
+                    offset,
+                    scope,
+                    typ,
+                    replace_range,
+                )
             }
             Some(ContextCompletions::InsideString {
                 kind,
                 replace_range,
             }) => completions_inside_string(line_idx, &ctx, kind, replace_range),
-            Some(ContextCompletions::Root) => completions_root(offset, &ctx, scope),
+            Some(ContextCompletions::Root) => completions_root(&ctx, &syntax, offset, scope),
             Some(ContextCompletions::AfterLocal | ContextCompletions::Table) => {
                 vec![keyword_completion!("function", Space)]
             }
@@ -151,7 +159,7 @@ pub fn handle_completion<Db: VScriptDatabase>(
                 vec![keyword_completion!("in", Space)]
             }
             Some(ContextCompletions::ForInitialiser) => {
-                let mut completions = completions_flat(offset, &ctx);
+                let mut completions = completions_flat(&ctx, &syntax, offset);
                 completions.extend(expression_keywords());
                 completions.push(keyword_completion!("local", Space));
                 completions
@@ -170,7 +178,7 @@ pub fn handle_completion<Db: VScriptDatabase>(
                 ]
             }
             Some(ContextCompletions::Switch) => {
-                let mut completions = completions_flat(offset, &ctx);
+                let mut completions = completions_flat(&ctx, &syntax, offset);
                 completions.extend(statement_keywords());
                 completions.push(keyword_completion!("case", Space));
                 completions.push(keyword_completion!("default"));
@@ -179,7 +187,7 @@ pub fn handle_completion<Db: VScriptDatabase>(
             Some(ContextCompletions::DocTag { replace_range }) => {
                 completion_doc_tag(line_idx, replace_range)
             }
-            Some(ContextCompletions::DocType) => completions_doc_type(offset, &ctx),
+            Some(ContextCompletions::DocType) => completions_doc_type(&ctx, offset),
             Some(ContextCompletions::DocParamNames { id }) => completions_doc_param_names(id, &ctx),
             Some(ContextCompletions::DocVarNames) => {
                 let names = ["self", "activator", "caller"];
@@ -275,10 +283,10 @@ fn doc_tag_name(ctx: &SourceCtx<'_>, parent: &SyntaxNode) -> Option<ContextCompl
 
 #[allow(clippy::too_many_lines)]
 fn context_completions(
+    ctx: &SourceCtx,
     syntax: &SyntaxNode,
     offset: TextSize,
     trigger_char: Option<&str>,
-    ctx: &SourceCtx,
 ) -> Option<ContextCompletions> {
     let Some(mut token) = syntax.token_at_offset(offset).left_biased() else {
         return Some(ContextCompletions::Statement);
@@ -754,42 +762,102 @@ fn context_completions(
     }
 }
 
+#[derive(Debug, Default)]
+struct FunctionCompletion {
+    label: String,
+    insert_text: Option<String>,
+    insert_text_format: Option<InsertTextFormat>,
+    command: Option<Command>,
+}
+
 fn modify_if_function(
     ctx: &SourceCtx,
+    syntax: &SyntaxNode,
+    offset: TextSize,
     symbol: &Symbol,
-    label: &mut String,
-    insert_text: &mut Option<String>,
-) -> Option<(InsertTextFormat, Command)> {
+    label: String,
+    insert_text: Option<String>,
+) -> FunctionCompletion {
+    if has_parentheses_after(syntax, offset) {
+        return FunctionCompletion {
+            label,
+            insert_text,
+            ..Default::default()
+        };
+    }
     // we don't use ctx.to_function_id since
     // we don't want () autocompletion on classes and such
     let Ok(Primitive::Function(id)) = Primitive::try_from(&symbol.typ) else {
-        return None;
+        return FunctionCompletion {
+            label,
+            insert_text,
+            ..Default::default()
+        };
     };
 
-    let text = insert_text
-        .as_mut()
-        .map_or(label.as_str(), |text| text.as_str());
+    let modify = |mut label: String,
+                  mut insert_text: Option<String>,
+                  label_addition,
+                  insert_text_addition| {
+        if let Some(mut insert_text) = insert_text {
+            label.push_str(label_addition);
+            insert_text.push_str(insert_text_addition);
+            (label, Some(insert_text))
+        } else {
+            insert_text = Some(format!("{label}{insert_text_addition}"));
+            label.push_str(label_addition);
+            (label, insert_text)
+        }
+    };
 
     if let Some(id) = id {
         let func = ctx.get(id);
 
         if func.params.is_empty() && !matches!(func.params_state, ParamsState::VarArgs(_, _)) {
-            *insert_text = Some(format!("{text}()"));
-            *label = format!("{label}()");
-            return None;
+            let (label, insert_text) = modify(label, insert_text, "()", "()");
+            return FunctionCompletion {
+                label,
+                insert_text,
+                ..Default::default()
+            };
         }
     }
 
-    *insert_text = Some(format!("{text}($1)"));
-    *label = format!("{label}(…)");
-    Some((
-        InsertTextFormat::SNIPPET,
-        Command {
+    let (label, insert_text) = modify(label, insert_text, "(…)", "($1)");
+
+    FunctionCompletion {
+        label,
+        insert_text,
+        insert_text_format: Some(InsertTextFormat::SNIPPET),
+        // VSChode only
+        command: Some(Command {
             title: "Trigger Signature Help".to_owned(),
             command: "editor.action.triggerParameterHints".to_owned(),
             arguments: None,
-        },
-    ))
+        }),
+    }
+}
+
+fn has_parentheses_after(syntax: &SyntaxNode, offset: TextSize) -> bool {
+    let Some(token) = syntax.token_at_offset(offset).left_biased() else {
+        return false;
+    };
+
+    let Some(token) = token.next_token() else {
+        return false;
+    };
+
+    match token.kind() {
+        SyntaxKind::OpenParenthesis => true,
+        SyntaxKind::Whitespace => {
+            let Some(token) = token.next_token() else {
+                return false;
+            };
+
+            token.kind() == SyntaxKind::OpenParenthesis
+        }
+        _ => false,
+    }
 }
 
 fn can_use_identifier(name: &str) -> bool {
@@ -834,17 +902,24 @@ fn to_completion_kind(symbol: &Symbol) -> CompletionItemKind {
     }
 }
 
-fn completions_flat(offset: TextSize, ctx: &SourceCtx<'_>) -> Vec<CompletionItem> {
+fn completions_flat(
+    ctx: &SourceCtx<'_>,
+    syntax: &SyntaxNode,
+    offset: TextSize,
+) -> Vec<CompletionItem> {
     ctx.symbols_at(offset, true)
         .into_iter()
         .map(|(name, id)| {
-            let mut label = name.into_string();
+            let label = name.into_string();
             let symbol = ctx.get(id);
             let kind = Some(to_completion_kind(symbol));
-            let mut insert_text = None;
-            let (insert_text_format, command) =
-                modify_if_function(ctx, symbol, &mut label, &mut insert_text)
-                    .map_or((None, None), |(a, b)| (Some(a), Some(b)));
+            let insert_text = None;
+            let FunctionCompletion {
+                label,
+                insert_text,
+                insert_text_format,
+                command,
+            } = modify_if_function(ctx, syntax, offset, symbol, label, insert_text);
 
             CompletionItem {
                 label,
@@ -866,8 +941,9 @@ fn completions_flat(offset: TextSize, ctx: &SourceCtx<'_>) -> Vec<CompletionItem
 
 fn completions_from_object(
     line_idx: &LineIndex,
-    offset: TextSize,
     ctx: &SourceCtx<'_>,
+    syntax: &SyntaxNode,
+    offset: TextSize,
     scope: ScopeId,
     typ: Type,
     prefix_range: TextRange,
@@ -879,7 +955,7 @@ fn completions_from_object(
     )
     .into_iter()
     .filter_map(|(name, id)| {
-        let mut label = name.into_string();
+        let label = name.into_string();
         let symbol = ctx.get(id);
         let kind = Some(to_completion_kind(symbol));
         let tags = symbol_tags(symbol);
@@ -890,10 +966,13 @@ fn completions_from_object(
         let detail = Some(ctx.symbol_detail(id));
 
         if can_use_identifier(&label) {
-            let mut insert_text = None;
-            let (insert_text_format, command) =
-                modify_if_function(ctx, symbol, &mut label, &mut insert_text)
-                    .map_or((None, None), |(a, b)| (Some(a), Some(b)));
+            let insert_text = None;
+            let FunctionCompletion {
+                label,
+                insert_text,
+                insert_text_format,
+                command,
+            } = modify_if_function(ctx, syntax, offset, symbol, label, insert_text);
 
             return Some(CompletionItem {
                 label,
@@ -908,15 +987,18 @@ fn completions_from_object(
             });
         }
 
-        let mut insert_text = Some(format!("[\"{label}\"]"));
+        let insert_text = Some(format!("[\"{label}\"]"));
         let additional_text_edits = Some(vec![TextEdit {
             range: positions::range(line_idx, prefix_range)?,
             new_text: String::new(),
         }]);
 
-        let (insert_text_format, command) =
-            modify_if_function(ctx, symbol, &mut label, &mut insert_text)
-                .map_or((None, None), |(a, b)| (Some(a), Some(b)));
+        let FunctionCompletion {
+            label,
+            insert_text,
+            insert_text_format,
+            command,
+        } = modify_if_function(ctx, syntax, offset, symbol, label, insert_text);
 
         Some(CompletionItem {
             label,
@@ -935,8 +1017,8 @@ fn completions_from_object(
 }
 
 fn completions_from_qualified_name(
-    offset: TextSize,
     ctx: &SourceCtx<'_>,
+    offset: TextSize,
     scope: ScopeId,
     typ: Option<Type>,
 ) -> Vec<CompletionItem> {
@@ -977,8 +1059,9 @@ fn completions_from_qualified_name(
 
 fn completions_from_object_as_string(
     line_idx: &LineIndex,
-    offset: TextSize,
     ctx: &SourceCtx<'_>,
+    syntax: &SyntaxNode,
+    offset: TextSize,
     scope: ScopeId,
     typ: Type,
     replace_range: TextRange,
@@ -990,14 +1073,17 @@ fn completions_from_object_as_string(
     )
     .into_iter()
     .filter_map(|(name, id)| {
-        let mut label = name.into_string();
+        let label = name.into_string();
         let symbol = ctx.get(id);
         let kind = Some(to_completion_kind(symbol));
 
-        let mut insert_text = Some(format!("{label}\"]"));
-        let (insert_text_format, command) =
-            modify_if_function(ctx, symbol, &mut label, &mut insert_text)
-                .map_or((None, None), |(a, b)| (Some(a), Some(b)));
+        let insert_text = Some(format!("{label}\"]"));
+        let FunctionCompletion {
+            label,
+            insert_text,
+            insert_text_format,
+            command,
+        } = modify_if_function(ctx, syntax, offset, symbol, label, insert_text);
 
         let text_edit = Some(CompletionTextEdit::Edit(TextEdit {
             range: positions::range(line_idx, replace_range)?,
@@ -1065,7 +1151,12 @@ fn completions_inside_string(
     }
 }
 
-fn completions_root(offset: TextSize, ctx: &SourceCtx<'_>, scope: ScopeId) -> Vec<CompletionItem> {
+fn completions_root(
+    ctx: &SourceCtx<'_>,
+    syntax: &SyntaxNode,
+    offset: TextSize,
+    scope: ScopeId,
+) -> Vec<CompletionItem> {
     ctx.members_of_table(
         ctx.root_table(),
         FindSymbol::BeforeIfInExecutionRange(offset, scope),
@@ -1074,13 +1165,16 @@ fn completions_root(offset: TextSize, ctx: &SourceCtx<'_>, scope: ScopeId) -> Ve
     )
     .into_iter()
     .map(|(name, id)| {
-        let mut label = name.into_string();
+        let label = name.into_string();
         let symbol = ctx.get(id);
         let kind = Some(to_completion_kind(symbol));
-        let mut insert_text = None;
-        let (insert_text_format, command) =
-            modify_if_function(ctx, symbol, &mut label, &mut insert_text)
-                .map_or((None, None), |(a, b)| (Some(a), Some(b)));
+        let insert_text = None;
+        let FunctionCompletion {
+            label,
+            insert_text,
+            insert_text_format,
+            command,
+        } = modify_if_function(ctx, syntax, offset, symbol, label, insert_text);
 
         CompletionItem {
             label,
@@ -1136,7 +1230,7 @@ fn completion_doc_tag(
         .collect()
 }
 
-fn completions_doc_type(offset: TextSize, ctx: &SourceCtx<'_>) -> Vec<CompletionItem> {
+fn completions_doc_type(ctx: &SourceCtx<'_>, offset: TextSize) -> Vec<CompletionItem> {
     let tags = [
         "any",
         "integer",
