@@ -211,6 +211,10 @@ pub trait Source {
         self.arena().all_symbols()
     }
 
+    fn all_functions(&self) -> impl Iterator<Item = (Idx<FunctionData>, &FunctionData)> {
+        self.arena().all_functions()
+    }
+
     fn to_function_id(&self, typ: &Type, offset: TextSize) -> Option<FunctionIdResolution> {
         typ.find(|p| match p {
             Primitive::Class(id) => {

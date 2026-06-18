@@ -322,7 +322,7 @@ fn extract_config(options: Option<&Value>) -> VScriptDbConfig {
             .and_then(|o| o.get("typeHints"))
             .and_then(serde_json::Value::as_bool)
             .unwrap_or(true),
-        enum_member_value: options
+        enum_member_value_hints: options
             .and_then(|o| o.get("inlayHints"))
             .and_then(|o| o.get("enumMemberValue"))
             .and_then(serde_json::Value::as_bool)
@@ -330,6 +330,11 @@ fn extract_config(options: Option<&Value>) -> VScriptDbConfig {
         parameter_hints: options
             .and_then(|o| o.get("inlayHints"))
             .and_then(|o| o.get("parameterHints"))
+            .and_then(serde_json::Value::as_bool)
+            .unwrap_or(true),
+        return_value_hints: options
+            .and_then(|o| o.get("inlayHints"))
+            .and_then(|o| o.get("returnValueHints"))
             .and_then(serde_json::Value::as_bool)
             .unwrap_or(true),
         workspace_diagnostics: options

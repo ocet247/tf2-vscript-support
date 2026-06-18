@@ -1950,6 +1950,7 @@ impl<'db> Resolver<'db> {
         let idx = self.arena.alloc(FunctionData {
             symbol: None,
             range,
+            params_end: node.parameter_list().map(|p| p.syntax().text_range().end()),
             container: self.container,
             bindenv,
             params: Vec::new(),

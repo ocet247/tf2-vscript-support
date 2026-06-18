@@ -5,7 +5,7 @@ use lsp_types::{
 };
 use resolver::{
     ExpressionKind, FunctionIdResolution, LocalKind, Primitive, Source, SourceCtx, SymbolKind,
-    Type, TypeFlags, VScriptDatabase, parse,
+    Type, TypeFlags, TypeState, VScriptDatabase, parse,
 };
 use sq_3_parser::{
     AstNode as _, SyntaxNode,
@@ -40,12 +40,16 @@ pub fn handle_inlay_hint<Db: VScriptDatabase>(
             &ctx,
             &range,
             &syntax,
-            db.config().enum_member_value,
+            db.config().enum_member_value_hints,
         ));
     }
 
     if db.config().parameter_hints {
         hints.extend(parameter_hints(line_idx, &ctx, &range, &syntax));
+    }
+
+    if db.config().return_value_hints {
+        hints.extend(return_value_hints(line_idx, &ctx));
     }
 
     if hints.is_empty() {
@@ -342,4 +346,32 @@ fn parameter_hints(
             )
         })
         .flatten()
+}
+
+fn return_value_hints(line_idx: &LineIndex, ctx: &SourceCtx) -> impl Iterator<Item = InlayHint> {
+    ctx.all_functions().filter_map(|(_, func)| {
+        let position = positions::position(line_idx, func.params_end?)?;
+
+        let text = match &func.ret {
+            TypeState::Absent => return None,
+            TypeState::NotExplicit(typ) | TypeState::Explicit(typ) => {
+                if *typ == Type::NULL {
+                    return None;
+                }
+
+                format!("-> {}", ctx.type_to_str(typ))
+            }
+        };
+
+        Some(InlayHint {
+            position,
+            label: InlayHintLabel::String(text),
+            kind: Some(InlayHintKind::PARAMETER),
+            text_edits: None,
+            tooltip: None,
+            padding_left: Some(true),
+            padding_right: Some(false),
+            data: None,
+        })
+    })
 }

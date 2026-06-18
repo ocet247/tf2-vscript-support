@@ -269,7 +269,8 @@ pub struct VScriptDbConfig {
     pub unreachable_code: UnreachableCode,
     pub type_hints: bool,
     pub parameter_hints: bool,
-    pub enum_member_value: bool,
+    pub enum_member_value_hints: bool,
+    pub return_value_hints: bool,
     pub workspace_diagnostics: bool,
 }
 

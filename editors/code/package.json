@@ -132,6 +132,11 @@
             "default": true,
             "description": "Show parameter name hints on function calls."
           },
+          "tf2vscript.inlayHints.returnValueHints": {
+            "type": "boolean",
+            "default": true,
+            "description": "Show inferred return value hints on function declarations."
+          },
           "tf2vscript.workspaceDiagnostics": {
             "type": "boolean",
             "default": false,

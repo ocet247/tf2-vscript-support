@@ -75,6 +75,7 @@ export function activate(context: vscode.ExtensionContext) {
     const typeHints = config.get<boolean>('inlayHints.typeHints') ?? true;
     const parameterHints = config.get<boolean>('inlayHints.parameterHints') ?? true;
     const enumMemberValue = config.get<boolean>('inlayHints.enumMemberValue') ?? true;
+    const returnValueHints = config.get<boolean>('inlayHints.returnValueHints') ?? true;
     const workspaceDiagnostics = config.get<boolean>('workspaceDiagnostics') ?? false;
 
     const stdlibPath = inDebug() ?
@@ -99,6 +100,7 @@ export function activate(context: vscode.ExtensionContext) {
                 typeHints,
                 enumMemberValue,
                 parameterHints,
+                returnValueHints,
             },
             workspaceDiagnostics,
         }

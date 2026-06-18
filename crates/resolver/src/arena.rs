@@ -2,6 +2,7 @@ use std::cmp::Reverse;
 
 use la_arena::{Arena, Idx};
 use line_index::{TextRange, TextSize};
+use sq_3_parser::SyntaxNodePtr;
 
 use crate::{
     File, VScriptDatabase,
@@ -190,6 +191,8 @@ pub struct EnumData {
 pub struct FunctionData {
     pub symbol: Option<SymbolId>,
     pub range: TextRange,
+    // For inlay hints
+    pub params_end: Option<TextSize>,
     pub ret: TypeState,
     pub container: Container,
     pub bindenv: Option<Container>,
@@ -199,8 +202,9 @@ pub struct FunctionData {
     pub throws: TypeState,
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Default, Clone, PartialEq)]
 pub enum TypeState {
+    #[default]
     Absent,
     NotExplicit(Type),
     Explicit(Type),
@@ -297,5 +301,9 @@ impl SourceArena {
 
     pub fn all_symbols(&self) -> impl Iterator<Item = (Idx<Symbol>, &Symbol)> {
         self.symbols.iter()
+    }
+
+    pub fn all_functions(&self) -> impl Iterator<Item = (Idx<FunctionData>, &FunctionData)> {
+        self.functions.iter()
     }
 }
