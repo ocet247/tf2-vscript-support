@@ -4,7 +4,7 @@
 - Add function return type inlay hint
 - Add folded constants, netprops etc. into the file by default due to its ubiquity
 - Fix type annotations not working properly at the initial assignment
-- Fix non-block functions working inproperly
+- Fix non-block statment functions working improperly
 - If the parantheses are already present in a function call don't insert new ones when user triggers a completion
 
 ## [3.2.7]
