@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.3.0]
+- Add function return type inlay hint
+- Add folded constants, netprops etc. into the file by default due to its ubiquity
+- Fix type annotations not working properly at the initial assignment
+- Fix non-block functions working inproperly
+- If the parantheses are already present in a function call don't insert new ones when user triggers a completion
+
 ## [3.2.7]
 - Add document highlight
 - Fix signature help not working properly with variable parameters
