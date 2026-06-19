@@ -172,6 +172,7 @@ impl TryFrom<AssignmentLeftHandSide> for Container {
 struct DeferredFunctionTrace {
     node: Box<dyn IsFunction>,
     scope: ScopeId,
+    raw_param_types: Vec<Option<TypeWithRange>>,
 }
 
 struct DeferredFunctionEntry {
@@ -1090,7 +1091,8 @@ impl<'db> Resolver<'db> {
         &mut self,
         idx: Idx<FunctionData>,
         parameters: impl Iterator<Item = Parameter>,
-    ) {
+    ) -> Vec<Option<TypeWithRange>> {
+        let mut raw_param_types = Vec::new();
         let mut params_state = ParamsState::NoDefault;
 
         for (count, param) in parameters.enumerate() {
@@ -1159,29 +1161,31 @@ impl<'db> Resolver<'db> {
 
                         insert_symbol(&mut self.current_scope().locals, name.text().into(), id);
                         self.arena[idx].params.push(id);
+                        raw_param_types.push(None);
                         continue;
                     };
 
-                    let expr_type = self.expr_to_type(&expr);
+                    let expr_type = self.expr_to_type_with_range(&expr);
+                    raw_param_types.push(Some(expr_type.clone()));
 
                     // We don't know for sure whether default value is of the only type the parameter
                     // can take. Even though we infer the parameter at the call site we're not guaranteed
                     // to consider all types at the first call. So Unknown is added unless the type is
                     // explicitly specified
                     // ```
-                    // local function abc(wow = null) { wow.AcceptInput(...) };
+                    // local function abc(wow = null) { if (wow) wow.AcceptInput(...) };
                     // abc(null) // This causes the function body to error
                     // abc(GetListenServerHost())
                     // ```
-                    let typ = expr_type.add_any();
+                    let typ = expr_type.kind.add_any();
 
                     let id = if let Some(info) = self.resolve_variable_doc(&var) {
                         let typ = info.typ.as_ref().map_or(typ, |doc_type| {
                             self.check_type(
                                 doc_type,
-                                &expr_type,
+                                &expr_type.kind,
                                 CheckTypeSource::Variable,
-                                var.syntax().text_range(),
+                                expr_type.range,
                             )
                         });
 
@@ -1268,6 +1272,7 @@ impl<'db> Resolver<'db> {
         }
 
         self.arena[idx].params_state = params_state;
+        raw_param_types
     }
 
     fn call_metamethod_primitive(
@@ -1974,9 +1979,9 @@ impl<'db> Resolver<'db> {
 
         self.enter_scope(range);
 
-        if let Some(param_list) = node.parameter_list() {
-            self.collect_params(id.idx(), param_list.parameters());
-        }
+        let raw_param_types = node.parameter_list().map_or_else(Vec::new, |param_list| {
+            self.collect_params(id.idx(), param_list.parameters())
+        });
 
         let map = if Constructor::can_cast(node.syntax().kind()) {
             &mut self.deferred_constructors
@@ -1994,6 +1999,7 @@ impl<'db> Resolver<'db> {
             DeferredFunctionTrace {
                 node: Box::new(node.clone()),
                 scope: self.scope,
+                raw_param_types,
             },
         );
 
@@ -2095,12 +2101,12 @@ impl<'db> Resolver<'db> {
                     };
                     let text = param_name.text();
 
-                    let Some(param_id) = self.arena[entry.idx]
+                    let Some((idx, &param_id)) = self.arena[entry.idx]
                         .params
                         .iter()
+                        .enumerate()
                         .rev()
-                        .find(|id| self.get(**id).name.as_ref() == text)
-                        .copied()
+                        .find(|(_, id)| self.get(**id).name.as_ref() == text)
                     else {
                         self.diagnostics.push(Diagnostic {
                             message: format!("Couldn't find param '{text}'"),
@@ -2128,8 +2134,19 @@ impl<'db> Resolver<'db> {
 
                     let doc_type = doc_type.this_to_concrete(&self.execution_container().into());
 
+                    let new_type = if let Some(param_type) = &entry.trace.raw_param_types[idx] {
+                        self.check_type(
+                            &doc_type,
+                            &param_type.kind,
+                            CheckTypeSource::Parameter,
+                            param_type.range,
+                        )
+                    } else {
+                        doc_type
+                    };
+
                     if let Some(param) = self.get_mut(param_id) {
-                        param.typ = doc_type;
+                        param.typ = new_type;
                         param.is_type_explicit = true;
                     }
                 }
@@ -3047,9 +3064,9 @@ impl<'db> Resolver<'db> {
                 continue;
             };
 
-            let expr_type = self.expr_to_type(&expr);
+            let expr_type = self.expr_to_type_with_range(&expr);
 
-            let typ = expr_type.add_any();
+            let typ = expr_type.kind.add_any();
             let id = if let Some(info) = self
                 .resolve_variable_doc(&var)
                 .or_else(|| self.resolve_variable_doc(decl))
@@ -3057,9 +3074,9 @@ impl<'db> Resolver<'db> {
                 let typ = info.typ.as_ref().map_or(typ, |doc_type| {
                     self.check_type(
                         doc_type,
-                        &expr_type,
+                        &expr_type.kind,
                         CheckTypeSource::Variable,
-                        expr.syntax().text_range(),
+                        expr_type.range,
                     )
                 });
 
