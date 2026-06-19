@@ -28,6 +28,7 @@ pub struct Database {
     scripts_url: Option<Url>,
     squirrel_lib: Option<File>,
     vscript_lib: Option<File>,
+    folded_lib: Option<File>,
     native_functions: Arc<FxHashMap<FunctionId, NativeFunction>>,
 }
 
@@ -91,6 +92,8 @@ pub trait VScriptDatabase: BaseDatabase {
     fn builtins(&self) -> Option<&Builtins>;
     fn squirrel_lib(&self) -> Option<File>;
     fn vscript_lib(&self) -> Option<File>;
+    fn folded_lib(&self) -> Option<File>;
+
     fn check_native(&self, id: FunctionId) -> Option<NativeFunction>;
     fn instance_from_vscript_lib(&self, text: &str) -> Option<Type>;
 
@@ -117,6 +120,10 @@ impl VScriptDatabase for Database {
 
     fn vscript_lib(&self) -> Option<File> {
         self.vscript_lib
+    }
+
+    fn folded_lib(&self) -> Option<File> {
+        self.folded_lib
     }
 
     fn check_native(&self, id: FunctionId) -> Option<NativeFunction> {
@@ -240,9 +247,7 @@ impl VScriptDatabase for Database {
 
 #[derive(Debug, Default, Clone)]
 pub struct VScriptDbInitConfig {
-    pub builtins_path: Option<PathBuf>,
-    pub squirrel_lib_path: Option<PathBuf>,
-    pub vscript_lib_path: Option<PathBuf>,
+    pub std_lib_path: Option<PathBuf>,
 }
 
 #[derive(Debug, Default, Clone, Copy, PartialEq, Eq)]
@@ -280,19 +285,46 @@ impl Database {
         let mut this = Self::default();
 
         let mut native_functions = FxHashMap::default();
-        if let Some(builtins) = config.builtins_path.and_then(|p| this.init_builtins(&p)) {
-            this.fill_builtins_native_functions(builtins, &mut native_functions);
+        let Some(path) = config.std_lib_path else {
+            log::error!("Missing stdLibPath initialization option");
+            return this;
+        };
+
+        let Ok(path) = path.canonicalize() else {
+            log::error!(
+                "Standard library directory '{}' couldn't be resolved",
+                path.display()
+            );
+            return this;
+        };
+
+        match this.init_builtins(&path.join("builtins.nut")) {
+            Some(builtins) => this.fill_builtins_native_functions(builtins, &mut native_functions),
+            None => log::error!("Missing 'builtins.nut' in the standard library directory"),
         }
-        if let Some(lib) = config.squirrel_lib_path.and_then(|p| this.init_stdlib(&p)) {
-            this.squirrel_lib = Some(lib);
-            this.fill_squirrel_native_functions(lib, &mut native_functions);
+
+        match this.init_stdlib_file(&path.join("squirrel.nut")) {
+            Some(lib) => {
+                this.squirrel_lib = Some(lib);
+                this.fill_squirrel_native_functions(lib, &mut native_functions);
+            }
+            None => log::error!("Missing 'squirrel.nut' in the standard library directory"),
         }
-        if let Some(lib) = config.vscript_lib_path.and_then(|p| this.init_stdlib(&p)) {
-            this.vscript_lib = Some(lib);
-            this.fill_vscript_native_functions(lib, &mut native_functions);
+
+        match this.init_stdlib_file(&path.join("vscript.nut")) {
+            Some(lib) => {
+                this.vscript_lib = Some(lib);
+                this.fill_vscript_native_functions(lib, &mut native_functions);
+            }
+            None => log::error!("Missing 'vscript.nut' in the standard library directory"),
         }
 
         this.native_functions = Arc::new(native_functions);
+
+        match this.init_stdlib_file(&path.join("folded.nut")) {
+            Some(file) => this.folded_lib = Some(file),
+            None => log::error!("Missing 'folded.nut' in the standard library directory"),
+        }
 
         this
     }
@@ -417,7 +449,7 @@ impl Database {
         }
     }
 
-    fn init_stdlib(&mut self, path: &Path) -> Option<File> {
+    fn init_stdlib_file(&mut self, path: &Path) -> Option<File> {
         let lib = self.open_file_from_path(path)?;
         lib.set_text(self).with_durability(salsa::Durability::HIGH);
         Some(lib)

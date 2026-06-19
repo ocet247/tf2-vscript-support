@@ -78,7 +78,7 @@ export function activate(context: vscode.ExtensionContext) {
     const returnValueHints = config.get<boolean>('inlayHints.returnValueHints') ?? true;
     const workspaceDiagnostics = config.get<boolean>('workspaceDiagnostics') ?? false;
 
-    const stdlibPath = inDebug() ?
+    const stdLibPath = inDebug() ?
         path.join(context.extensionPath, "..", "..", "vscript_lib") :
         path.join(context.extensionPath, "vscript_lib");
 
@@ -90,9 +90,7 @@ export function activate(context: vscode.ExtensionContext) {
             fileEvents: workspace.createFileSystemWatcher('**/*.nut')
         },
         initializationOptions: {
-            builtinsPath: path.join(stdlibPath, "builtins.nut"),
-            squirrelLibPath: path.join(stdlibPath, "squirrel.nut"),
-            vscriptLibPath: path.join(stdlibPath, "vscript.nut"),
+            stdLibPath,
             tf2RootPath,
             unusedVariables,
             unreachableCode,

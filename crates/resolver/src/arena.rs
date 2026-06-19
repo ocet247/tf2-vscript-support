@@ -2,7 +2,6 @@ use std::cmp::Reverse;
 
 use la_arena::{Arena, Idx};
 use line_index::{TextRange, TextSize};
-use sq_3_parser::SyntaxNodePtr;
 
 use crate::{
     File, VScriptDatabase,

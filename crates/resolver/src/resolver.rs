@@ -343,6 +343,13 @@ impl<'db> Resolver<'db> {
             libs.push(vscript_lib);
         }
 
+        // Include by default for now
+        if let Some(folded_lib) = db.folded_lib()
+            && folded_lib != file
+        {
+            libs.push(folded_lib);
+        }
+
         if !libs.is_empty() {
             imports.insert(ImportTarget::Table(TableId::new(file, root_table)), libs);
         }

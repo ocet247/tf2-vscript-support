@@ -278,16 +278,8 @@ fn extract_init_config(params: &InitializeParams) -> VScriptDbInitConfig {
     let options = params.initialization_options.as_ref();
 
     VScriptDbInitConfig {
-        builtins_path: options
-            .and_then(|o| o.get("builtinsPath"))
-            .and_then(|v| v.as_str())
-            .map(PathBuf::from),
-        squirrel_lib_path: options
-            .and_then(|o| o.get("squirrelLibPath"))
-            .and_then(|v| v.as_str())
-            .map(PathBuf::from),
-        vscript_lib_path: options
-            .and_then(|o| o.get("vscriptLibPath"))
+        std_lib_path: options
+            .and_then(|o| o.get("stdLibPath"))
             .and_then(|v| v.as_str())
             .map(PathBuf::from),
     }
