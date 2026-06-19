@@ -45,11 +45,11 @@ pub fn handle_inlay_hint<Db: VScriptDatabase>(
     }
 
     if db.config().parameter_hints {
-        hints.extend(parameter_hints(line_idx, &ctx, &range, &syntax));
+        hints.extend(parameter_hints(line_idx, &ctx, range, &syntax));
     }
 
     if db.config().return_value_hints {
-        hints.extend(return_value_hints(line_idx, &ctx));
+        hints.extend(return_value_hints(line_idx, &ctx, range));
     }
 
     if hints.is_empty() {
@@ -263,7 +263,7 @@ fn expr_obviously_has_type(ctx: &SourceCtx, expr: &Expr, typ: &Type) -> bool {
 fn parameter_hints(
     line_idx: &LineIndex,
     ctx: &SourceCtx,
-    range: &TextRange,
+    range: TextRange,
     syntax: &SyntaxNode,
 ) -> impl Iterator<Item = InlayHint> {
     syntax
@@ -348,9 +348,18 @@ fn parameter_hints(
         .flatten()
 }
 
-fn return_value_hints(line_idx: &LineIndex, ctx: &SourceCtx) -> impl Iterator<Item = InlayHint> {
-    ctx.all_functions().filter_map(|(_, func)| {
-        let position = positions::position(line_idx, func.params_end?)?;
+fn return_value_hints(
+    line_idx: &LineIndex,
+    ctx: &SourceCtx,
+    range: TextRange,
+) -> impl Iterator<Item = InlayHint> {
+    ctx.all_functions().filter_map(move |(_, func)| {
+        let offset = func.params_end?;
+        if !range.contains(offset) {
+            return None;
+        }
+
+        let position = positions::position(line_idx, offset)?;
 
         let text = match &func.ret {
             TypeState::Absent => return None,
