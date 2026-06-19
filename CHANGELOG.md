@@ -5,7 +5,7 @@
 - Add folded constants, netprops etc. into the file by default due to its ubiquity
 - Fix type annotations not working properly at the initial assignment
 - Fix non-block statement functions working improperly
-- If the parantheses are already present in a function call don't insert new ones when user triggers a completion
+- If the parentheses are already present in a function call don't insert new ones when user triggers a completion
 
 ## [3.2.7]
 - Add document highlight
