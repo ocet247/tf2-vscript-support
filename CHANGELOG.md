@@ -1,5 +1,9 @@
 # Changelog
 
+## [3.3.1]
+- Don't resolve return type inlay hint if outside of the screen
+- Fix enum member auto value not working properly after 3.3.0
+
 ## [3.3.0]
 - Add function return type inlay hint
 - Add folded constants, netprops etc. into the file by default due to its ubiquity
