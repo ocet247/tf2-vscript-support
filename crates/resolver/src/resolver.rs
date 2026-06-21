@@ -2900,7 +2900,7 @@ impl<'db> Resolver<'db> {
 
     /// returns whether the value was assigned via '=' (used to increment the internal auto assign counter)
     fn collect_enum_property(&mut self, property: &Property, default_value: i32) -> bool {
-        let (has_value, expr_typ) = property.value().map_or(
+        let (has_value, typ) = property.value().map_or(
             (
                 false,
                 Type::Primitive(Primitive::Integer(Some(default_value))),
@@ -2922,7 +2922,6 @@ impl<'db> Resolver<'db> {
 
         let kind = SymbolKind::EnumMember;
 
-        let typ = expr_typ.add_any();
         let node = SyntaxNodePtr::new(property.syntax());
 
         let symbol = if let Some(info) = self.resolve_variable_doc(property) {
@@ -2931,9 +2930,10 @@ impl<'db> Resolver<'db> {
                 |v| v.syntax().text_range(),
             );
 
-            let typ = info.typ.as_ref().map_or(typ, |doc_type| {
-                self.check_type(doc_type, &expr_typ, CheckTypeSource::Variable, error_range)
-            });
+            let typ = info.typ.as_ref().map_or_else(
+                || typ.clone(),
+                |doc_type| self.check_type(doc_type, &typ, CheckTypeSource::Variable, error_range),
+            );
 
             let id = self.symbol(Symbol {
                 name: text.clone(),
