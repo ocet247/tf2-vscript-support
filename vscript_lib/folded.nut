@@ -1,4 +1,4 @@
-// Folded contants. can be achieved by running the following
+// Folded Constants, can be achieved by running the following:
 local CONST = getconsttable()
 local ROOT = getroottable()
 if (!("ConstantNamingConvention" in ROOT)) // make sure folding is only done once
@@ -15,9 +15,8 @@ if (!("ConstantNamingConvention" in ROOT)) // make sure folding is only done onc
 		}
 	}
 }
-
-
 const TF_BOT_TYPE = 1337
+
 const COLLISION_GROUP_NONE = 0
 const COLLISION_GROUP_DEBRIS = 1
 const COLLISION_GROUP_DEBRIS_TRIGGER = 2
@@ -39,9 +38,11 @@ const COLLISION_GROUP_PUSHAWAY = 17
 const COLLISION_GROUP_NPC_ACTOR = 18
 const COLLISION_GROUP_NPC_SCRIPTED = 19
 const LAST_SHARED_COLLISION_GROUP = 20
+
 const CRIT_NONE = 0
 const CRIT_MINI = 1
 const CRIT_FULL = 2
+
 const HITGROUP_GENERIC = 0
 const HITGROUP_HEAD = 1
 const HITGROUP_CHEST = 2
@@ -51,6 +52,7 @@ const HITGROUP_RIGHTARM = 5
 const HITGROUP_LEFTLEG = 6
 const HITGROUP_RIGHTLEG = 7
 const HITGROUP_GEAR = 10
+
 const kHoliday_None = 0
 const kHoliday_TFBirthday = 1
 const kHoliday_Halloween = 2
@@ -66,16 +68,19 @@ const kHoliday_AprilFools = 11
 const kHoliday_Soldier = 12
 const kHoliday_Summer = 13
 const kHolidayCount = 14
+
 const HUD_PRINTNOTIFY = 1
 const HUD_PRINTCONSOLE = 2
 const HUD_PRINTTALK = 3
 const HUD_PRINTCENTER = 4
+
 const MOVECOLLIDE_DEFAULT = 0
 const MOVECOLLIDE_FLY_BOUNCE = 1
 const MOVECOLLIDE_FLY_CUSTOM = 2
 const MOVECOLLIDE_FLY_SLIDE = 3
 const MOVECOLLIDE_MAX_BITS = 3
 const MOVECOLLIDE_COUNT = 4
+
 const MOVETYPE_NONE = 0
 const MOVETYPE_ISOMETRIC = 1
 const MOVETYPE_WALK = 2
@@ -89,16 +94,19 @@ const MOVETYPE_LADDER = 9
 const MOVETYPE_OBSERVER = 10
 const MOVETYPE_CUSTOM = 11
 const MOVETYPE_LAST = 11
+
 const NORTH_WEST = 0
 const NORTH_EAST = 1
 const SOUTH_EAST = 2
 const SOUTH_WEST = 3
 const NUM_CORNERS = 4
+
 const NORTH = 0
 const EAST = 1
 const SOUTH = 2
 const WEST = 3
 const NUM_DIRECTIONS = 4
+
 const FORWARD = 0
 const RIGHT = 1
 const BACKWARD = 2
@@ -106,6 +114,7 @@ const LEFT = 3
 const UP = 4
 const DOWN = 5
 const NUM_RELATIVE_DIRECTIONS = 6
+
 const GO_NORTH = 0
 const GO_EAST = 1
 const GO_SOUTH = 2
@@ -116,6 +125,7 @@ const GO_JUMP = 6
 const GO_ELEVATOR_UP = 7
 const GO_ELEVATOR_DOWN = 8
 const NUM_TRAVERSE_TYPES = 9
+
 const kRenderFxNone = 0
 const kRenderFxPulseSlow = 1
 const kRenderFxPulseFast = 2
@@ -142,6 +152,7 @@ const kRenderFxSpotlight = 22
 const kRenderFxRagdoll = 23
 const kRenderFxPulseFastWider = 24
 const kRenderFxMax = 25
+
 const kRenderNormal = 0
 const kRenderTransColor = 1
 const kRenderTransTexture = 2
@@ -154,6 +165,7 @@ const kRenderTransAlphaAdd = 8
 const kRenderWorldGlow = 9
 const kRenderNone = 10
 const kRenderModeCount = 11
+
 const GR_STATE_INIT = 0
 const GR_STATE_PREGAME = 1
 const GR_STATE_STARTGAME = 2
@@ -164,6 +176,7 @@ const GR_STATE_RESTART = 6
 const GR_STATE_STALEMATE = 7
 const GR_STATE_GAME_OVER = 8
 const GR_NUM_ROUND_STATES = 11
+
 const RECIPIENT_FILTER_DEFAULT = 0
 const RECIPIENT_FILTER_PAS_ATTENUATION = 1
 const RECIPIENT_FILTER_PAS = 2
@@ -171,6 +184,7 @@ const RECIPIENT_FILTER_PVS = 3
 const RECIPIENT_FILTER_SINGLE_PLAYER = 4
 const RECIPIENT_FILTER_GLOBAL = 5
 const RECIPIENT_FILTER_TEAM = 6
+
 const SOLID_NONE = 0
 const SOLID_BSP = 1
 const SOLID_BBOX = 2
@@ -179,6 +193,7 @@ const SOLID_OBB_YAW = 4
 const SOLID_CUSTOM = 5
 const SOLID_VPHYSICS = 6
 const SOLID_LAST = 7
+
 const OBS_MODE_NONE = 0
 const OBS_MODE_DEATHCAM = 1
 const OBS_MODE_FREEZECAM = 2
@@ -188,15 +203,18 @@ const OBS_MODE_CHASE = 5
 const OBS_MODE_POI = 6
 const OBS_MODE_ROAMING = 7
 const NUM_OBSERVER_MODES = 8
+
 const STOPWATCH_CAPTURE_TIME_NOT_SET = 0
 const STOPWATCH_RUNNING = 1
 const STOPWATCH_OVERTIME = 2
+
 const EASY = 0
 const NORMAL = 1
 const HARD = 2
 const EXPERT = 3
 const NUM_DIFFICULTY_LEVELS = 4
 const UNDEFINED = -1
+
 const TF_CLASS_UNDEFINED = 0
 const TF_CLASS_SCOUT = 1
 const TF_CLASS_SNIPER = 2
@@ -210,6 +228,7 @@ const TF_CLASS_ENGINEER = 9
 const TF_CLASS_CIVILIAN = 10
 const TF_CLASS_COUNT_ALL = 11
 const TF_CLASS_RANDOM = 12
+
 const TF_COND_AIMING = 0
 const TF_COND_ZOOMED = 1
 const TF_COND_DISGUISING = 2
@@ -342,6 +361,7 @@ const TF_COND_HALLOWEEN_HELL_HEAL = 128
 const TF_COND_POWERUPMODE_DOMINANT = 129
 const TF_COND_IMMUNE_TO_PUSHBACK = 130
 const TF_COND_INVALID = -1
+
 const TF_DMG_CUSTOM_NONE = 0
 const TF_DMG_CUSTOM_HEADSHOT = 1
 const TF_DMG_CUSTOM_BACKSTAB = 2
@@ -431,6 +451,7 @@ const TF_DMG_CUSTOM_KRAMPUS_RANGED = 85
 const TF_DMG_CUSTOM_TAUNTATK_TRICKSHOT = 86
 const TF_DMG_CUSTOM_NUTCRACKER = 87
 const TF_DMG_CUSTOM_END = 88
+
 const TEAM_UNASSIGNED = 0
 const TEAM_SPECTATOR = 1
 const TF_TEAM_PVE_DEFENDERS = 2
@@ -441,9 +462,23 @@ const TF_TEAM_COUNT = 4
 const TF_TEAM_PVE_INVADERS_GIANTS = 4
 const TEAM_ANY = -2
 const TEAM_INVALID = -1
+
+const Zero = 0
+const Epsilon = 1.19209e-07
+const GoldenRatio = 1.61803
+const One = 1
+const Sqrt2 = 1.41421
+const Sqrt3 = 1.73205
+const E = 2.71828
+const Pi = 3.14159
+const Tau = 6.28319
+
+// useless
+// const ConstantNamingConvention = "Constants are named as follows: F -> flags, E -> enums, (nothing) -> random values/constants"
 const DIST_EPSILON = 0.03125
 const MAX_PLAYERS = 101
 const MAX_EDICTS = 2048
+
 const IN_ATTACK = 1
 const IN_JUMP = 2
 const IN_DUCK = 4
@@ -470,6 +505,7 @@ const IN_BULLRUSH = 4194304
 const IN_GRENADE1 = 8388608
 const IN_GRENADE2 = 16777216
 const IN_ATTACK3 = 33554432
+
 const CONTENTS_EMPTY = 0
 const CONTENTS_SOLID = 1
 const CONTENTS_WINDOW = 2
@@ -504,6 +540,7 @@ const CONTENTS_DETAIL = 134217728
 const CONTENTS_TRANSLUCENT = 268435456
 const CONTENTS_LADDER = 536870912
 const CONTENTS_HITBOX = 1073741824
+
 const DMG_GENERIC = 0
 const DMG_CRUSH = 1
 const DMG_BULLET = 2
@@ -535,6 +572,7 @@ const DMG_DISSOLVE = 67108864
 const DMG_BLAST_SURFACE = 134217728
 const DMG_DIRECT = 268435456
 const DMG_BUCKSHOT = 536870912
+
 const EF_BONEMERGE = 1
 const EF_BRIGHTLIGHT = 2
 const EF_DIMLIGHT = 4
@@ -546,6 +584,7 @@ const EF_NORECEIVESHADOW = 64
 const EF_BONEMERGE_FASTCULL = 128
 const EF_ITEM_BLINK = 256
 const EF_PARENT_ANIMATES = 512
+
 const EFL_KILLME = 1
 const EFL_DORMANT = 2
 const EFL_NOCLIP_ACTIVE = 4
@@ -579,6 +618,7 @@ const EFL_NO_MEGAPHYSCANNON_RAGDOLL = 268435456
 const EFL_NO_WATER_VELOCITY_CHANGE = 536870912
 const EFL_NO_PHYSCANNON_INTERACTION = 1073741824
 const EFL_NO_DAMAGE_FORCES = 2147483648
+
 const HIDEHUD_WEAPONSELECTION = 1
 const HIDEHUD_FLASHLIGHT = 2
 const HIDEHUD_ALL = 4
@@ -598,6 +638,7 @@ const HIDEHUD_PIPES_AND_CHARGE = 16384
 const HIDEHUD_METAL = 32768
 const HIDEHUD_TARGET_ID = 65536
 const HIDEHUD_MATCH_STATUS = 131072
+
 const NAV_MESH_INVALID = 0
 const NAV_MESH_CROUCH = 1
 const NAV_MESH_JUMP = 2
@@ -620,6 +661,7 @@ const NAV_MESH_LAST_CUSTOM = 67108864
 const NAV_MESH_FUNC_COST = 536870912
 const NAV_MESH_HAS_ELEVATOR = 1073741824
 const NAV_MESH_NAV_BLOCKER = 2147483648
+
 const FL_ONGROUND = 1
 const FL_DUCKING = 2
 const FL_ANIMDUCKING = 4
@@ -653,6 +695,7 @@ const FL_ONFIRE = 268435456
 const FL_DISSOLVING = 536870912
 const FL_TRANSRAGDOLL = 1073741824
 const FL_UNBLOCKABLE_BY_PLAYER = 2147483648
+
 const FSOLID_CUSTOMRAYTEST = 1
 const FSOLID_CUSTOMBOXTEST = 2
 const FSOLID_NOT_SOLID = 4
@@ -664,6 +707,7 @@ const FSOLID_FORCE_WORLD_ALIGNED = 64
 const FSOLID_USE_TRIGGER_BOUNDS = 128
 const FSOLID_ROOT_PARENT_ALIGNED = 256
 const FSOLID_TRIGGER_TOUCH_DEBRIS = 512
+
 const SURF_LIGHT = 1
 const SURF_SKY2D = 2
 const SURF_SKY = 4
@@ -680,11 +724,13 @@ const SURF_NOSHADOWS = 4096
 const SURF_NODECALS = 8192
 const SURF_NOCHOP = 16384
 const SURF_HITBOX = 32768
+
 const TAUNT_BASE_WEAPON = 0
 const TAUNT_MISC_ITEM = 1
 const TAUNT_SHOW_ITEM = 2
 const TAUNT_LONG = 3
 const TAUNT_SPECIAL = 4
+
 const REMOVE_ON_DEATH = 1
 const AGGRESSIVE = 2
 const IS_NPC = 4
@@ -713,6 +759,7 @@ const BLAST_IMMUNE = 16777216
 const FIRE_IMMUNE = 33554432
 const PARACHUTE = 67108864
 const PROJECTILE_SHIELD = 134217728
+
 const TF_NAV_INVALID = 0
 const TF_NAV_BLOCKED = 1
 const TF_NAV_SPAWN_ROOM_RED = 2
@@ -744,7 +791,6 @@ const TF_NAV_DOOR_NEVER_BLOCKS = 268435456
 const TF_NAV_DOOR_ALWAYS_BLOCKS = 536870912
 const TF_NAV_UNBLOCKABLE = 1073741824
 const TF_NAV_PERSISTENT_ATTRIBUTES = 1988098048
-
 
 
 // Comments are per-symbol so they're unfortunately need to be duplicated
@@ -1246,7 +1292,7 @@ IsConVarOnAllowList <- Convars.IsConVarOnAllowList
 SetValue <- Convars.SetValue
 
 
-// Folded Convars methods, can be achieved by running the following:
+// Folded Entities methods, can be achieved by running the following:
 foreach (name, method in ::CEntities)
 	if (name != "IsValid")
 		getroottable()[name] <- method.bindenv(::Entities)
