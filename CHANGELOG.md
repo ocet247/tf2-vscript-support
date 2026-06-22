@@ -1,7 +1,7 @@
 # Changelog
 
 ## [3.3.2]
-- Fix non-number element assigning not working properly
+- Fix non-string table/array element assigning not working properly
 - Improve `folded.nut`
 
 ## [3.3.1]
