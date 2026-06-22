@@ -5393,7 +5393,7 @@ impl<'db> Resolver<'db> {
                 };
 
                 let (operand, arguments) =
-                    to_operand_and_arguments(name.kind, expr_range, name.range, type_with_range);
+                    to_operand_and_arguments(parent, expr_range, name.range, type_with_range);
                 self.set(&operand, &arguments);
                 Some(typ)
             }
