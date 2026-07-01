@@ -14,6 +14,125 @@
       }
     },
     {
+      "begin": "^\\s*(\")",
+      "beginCaptures": {
+        "1": {
+          "name": "string.quoted.double punctuation.definition.string.begin.squirrel"
+        }
+      },
+      "end": "\"|\n",
+      "endCaptures": {
+        "0": {
+          "name": "string.quoted.double string.punctuation.definition.string.end.squirrel"
+        }
+      },
+      "contentName": "string.quoted.double variable.other.squirrel",
+      "patterns": [
+        {
+          "include": "#string-name-escape-sequences"
+        }
+      ]
+    },
+    {
+      "match": "(?<![_A-Za-z])(function)\\s+(\\w+)\\b",
+      "captures": {
+        "1": {
+          "name": "storage.type.function.squirrel"
+        },
+        "2": {
+          "name": "entity.name.function.squirrel"
+        }
+      }
+    },
+    {
+      "begin": "(?<![_A-Za-z])(function)\\s+(\")",
+      "beginCaptures": {
+        "1": {
+          "name": "storage.type.function.squirrel"
+        },
+        "2": {
+          "name": "string.quoted.double punctuation.definition.string.begin.squirrel"
+        }
+      },
+      "end": "\"|\n",
+      "endCaptures": {
+        "0": {
+          "name": "string.quoted.double string.punctuation.definition.string.end.squirrel"
+        }
+      },
+      "contentName": "string.quoted.double entity.name.function.squirrel",
+      "patterns": [
+        {
+          "include": "#string-name-escape-sequences"
+        }
+      ]
+    },
+    {
+      "match": "(?<![_A-Za-z])(class)\\s+(\\w+)\\b",
+      "captures": {
+        "1": {
+          "name": "storage.type.class.squirrel"
+        },
+        "2": {
+          "name": "entity.name.class.squirrel"
+        }
+      }
+    },
+    {
+      "begin": "(?<![_A-Za-z])(class)\\s+(\")",
+      "beginCaptures": {
+        "1": {
+          "name": "storage.type.class.squirrel"
+        },
+        "2": {
+          "name": "string.quoted.double punctuation.definition.string.begin.squirrel"
+        }
+      },
+      "end": "\"|\n",
+      "endCaptures": {
+        "0": {
+          "name": "string.quoted.double string.punctuation.definition.string.end.squirrel"
+        }
+      },
+      "contentName": "string.quoted.double entity.name.class.squirrel",
+      "patterns": [
+        {
+          "include": "#string-name-escape-sequences"
+        }
+      ]
+    },
+    {
+      "match": "(?<![_A-Za-z])(enum)\\s+(\\w+)\\b",
+      "captures": {
+        "1": {
+          "name": "storage.type.enum.squirrel"
+        },
+        "2": {
+          "name": "entity.name.type.enum.squirrel"
+        }
+      }
+    },
+    {
+      "begin": "\"",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.begin.squirrel"
+        }
+      },
+      "end": "\"|\n",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.end.squirrel"
+        }
+      },
+      "name": "string.quoted",
+      "patterns": [
+        {
+          "include": "#string-escape-sequences"
+        }
+      ]
+    },
+    {
       "name": "constant.numeric.integer.octal.squirrel",
       "match": "0[0-7](\\d*)",
       "captures": {
@@ -76,6 +195,26 @@
       }
     },
     {
+      "match": "(?<=\\??:\\s*)[A-Za-z_\\[][\\w\\s\\|\\[\\]]*",
+      "name": "support.type.squirrel"
+    },
+    {
+      "match": "(?<=->\\s*)[\\w\\s\\|\\[\\]]*",
+      "name": "support.type.squirrel"
+    },
+    {
+      "name": "constant.language.boolean.true.squirrel",
+      "match": "(?<![_A-Za-z])true\\b"
+    },
+    {
+      "name": "constant.language.boolean.false.squirrel",
+      "match": "(?<![_A-Za-z])false\\b"
+    },
+    {
+      "name": "constant.language.null.squirrel",
+      "match": "(?<![_A-Za-z])null\\b"
+    },
+    {
       "match": "(?<![_A-Za-z])(const)(?:\\s+([_A-Za-z]\\w*))?\\b",
       "captures": {
         "1": {
@@ -95,107 +234,8 @@
       "match": "(?<![_A-Za-z])static\\b"
     },
     {
-      "match": "(?<![_A-Za-z])(function)\\s+(\\w+)\\b",
-      "captures": {
-        "1": {
-          "name": "storage.type.function.squirrel"
-        },
-        "2": {
-          "name": "entity.name.function.squirrel"
-        }
-      }
-    },
-    {
-      "begin": "(?<![_A-Za-z])(function)\\s+(\")",
-      "beginCaptures": {
-        "1": {
-          "name": "storage.type.function.squirrel"
-        },
-        "2": {
-          "name": "string.quoted.double punctuation.definition.string.begin.squirrel"
-        }
-      },
-      "end": "\"|\n",
-      "endCaptures": {
-        "0": {
-          "name": "string.quoted.double string.punctuation.definition.string.end.squirrel"
-        }
-      },
-      "contentName": "string.quoted.double entity.name.function.squirrel",
-      "patterns": [
-        {
-          "include": "#string-escape-sequences"
-        }
-      ]
-    },
-    {
-      "match": "(?<![_A-Za-z])(class)\\s+(\\w+)\\b",
-      "captures": {
-        "1": {
-          "name": "storage.type.class.squirrel"
-        },
-        "2": {
-          "name": "entity.name.class.squirrel"
-        }
-      }
-    },
-    {
-      "begin": "(?<![_A-Za-z])(class)\\s+(\")",
-      "beginCaptures": {
-        "1": {
-          "name": "storage.type.class.squirrel"
-        },
-        "2": {
-          "name": "string.quoted.double punctuation.definition.string.begin.squirrel"
-        }
-      },
-      "end": "\"|\n",
-      "endCaptures": {
-        "0": {
-          "name": "string.quoted.double string.punctuation.definition.string.end.squirrel"
-        }
-      },
-      "contentName": "string.quoted.double entity.name.class.squirrel",
-      "patterns": [
-        {
-          "include": "#string-escape-sequences"
-        }
-      ]
-    },
-    {
-      "match": "(?<![_A-Za-z])(enum)\\s+(\\w+)\\b",
-      "captures": {
-        "1": {
-          "name": "storage.type.enum.squirrel"
-        },
-        "2": {
-          "name": "entity.name.type.enum.squirrel"
-        }
-      }
-    },
-    {
-      "match": "\\s*\\??:\\s*([\\w\\s\\|\\[\\]]*)",
-      "captures": {
-        "1": {
-          "name": "support.type.squirrel"
-        }
-      }
-    },
-    {
-      "match": "(?<=->\\s*)[\\w\\s\\|\\[\\]]*",
-      "name": "support.type.squirrel"
-    },
-    {
-      "name": "constant.language.boolean.true.squirrel",
-      "match": "(?<![_A-Za-z])true\\b"
-    },
-    {
-      "name": "constant.language.boolean.false.squirrel",
-      "match": "(?<![_A-Za-z])false\\b"
-    },
-    {
-      "name": "constant.language.null.squirrel",
-      "match": "(?<![_A-Za-z])null\\b"
+      "name": "variable.other.squirrel",
+      "match": "\\w+"
     },
     {
       "match": "\\(|\\)",
@@ -208,52 +248,16 @@
     {
       "name": "punctuation.colon.squirrel",
       "match": ":"
-    },
-    {
-      "begin": "^\\s*(\")",
-      "beginCaptures": {
-        "1": {
-          "name": "string.quoted.double punctuation.definition.string.begin.squirrel"
-        }
-      },
-      "end": "\"|\n",
-      "endCaptures": {
-        "0": {
-          "name": "string.quoted.double string.punctuation.definition.string.end.squirrel"
-        }
-      },
-      "contentName": "string.quoted.double variable.other.squirrel",
-      "patterns": [
-        {
-          "include": "#string-escape-sequences"
-        }
-      ]
-    },
-    {
-      "begin": "\"",
-      "beginCaptures": {
-        "0": {
-          "name": "punctuation.definition.string.begin.squirrel string.quoted.double"
-        }
-      },
-      "end": "\"|\n",
-      "endCaptures": {
-        "0": {
-          "name": "punctuation.definition.string.end.squirrel string.quoted.double"
-        }
-      },
-      "patterns": [
-        {
-          "include": "#string-escape-sequences"
-        }
-      ]
-    },
-    {
-      "name": "variable.other.squirrel",
-      "match": "\\w+"
     }
   ],
   "repository": {
+    "string-name-escape-sequences": {
+      "patterns": [
+        {
+          "match": "\\\\\""
+        }
+      ]
+    },
     "string-escape-sequences": {
       "patterns": [
         {
