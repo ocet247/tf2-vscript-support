@@ -7,10 +7,10 @@ use lsp_types::{
 use resolver::{
     DisplayType, ExpressionKind, FindSymbol, FunctionId, ImportMembers, ParamsState, Primitive,
     ScopeId, Source, SourceCtx, StringKind, Symbol, SymbolFlags, SymbolKind, Type, TypeFlags,
-    TypeState, VScriptDatabase, parse,
+    TypeState, VScriptDatabase, can_use_identifier, parse,
 };
 use sq_3_parser::{
-    AstNode, KEYWORDS, SyntaxKind, SyntaxNode, TextRange, TextSize,
+    AstNode, SyntaxKind, SyntaxNode, TextRange, TextSize,
     ast::{self, HasName, IsClassMember},
 };
 use std::fmt::Write as _;
@@ -858,29 +858,6 @@ fn has_parentheses_after(syntax: &SyntaxNode, offset: TextSize) -> bool {
         }
         _ => false,
     }
-}
-
-fn can_use_identifier(name: &str) -> bool {
-    let mut chars = name.chars();
-    let Some(first) = chars.next() else {
-        return false;
-    };
-
-    if KEYWORDS.contains_key(name) {
-        return name == "constructor";
-    }
-
-    if !first.is_ascii_alphabetic() && first != '_' {
-        return false;
-    }
-
-    for char in chars {
-        if !char.is_alphanumeric() && char != '_' {
-            return false;
-        }
-    }
-
-    true
 }
 
 fn symbol_tags(symbol: &Symbol) -> Option<Vec<CompletionItemTag>> {

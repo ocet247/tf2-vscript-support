@@ -11,6 +11,7 @@ string_literals = { path = "../string_literals" }
 db = { path = "../db" }
 la-arena = "0.3.1"
 walkdir = "2"
+phf = { workspace = true }
 rustc-hash = { workspace = true }
 salsa = { workspace = true }
 line-index = { workspace = true }

@@ -128,6 +128,39 @@ pub enum FunctionMarkdown<'a> {
     Anonymous,
 }
 
+#[must_use]
+pub fn can_use_identifier(name: &str) -> bool {
+    static HARD_KEYWORDS: phf::Set<&'static str> = phf::phf_set! {
+        "base", "break", "case", "catch", "class", "clone", "const",
+        "constructor", "continue", "default", "delete", "do", "else",
+        "enum", "extends", "false", "foreach", "for", "function",
+        "if", "in", "instanceof", "local", "null", "rawcall", "resume",
+        "return", "static", "switch", "this", "throw", "true", "try",
+        "typeof", "while", "yield", "__FILE__", "__LINE__",
+    };
+
+    let mut chars = name.chars();
+    let Some(first) = chars.next() else {
+        return false;
+    };
+
+    if HARD_KEYWORDS.contains(name) {
+        return false;
+    }
+
+    if !first.is_ascii_alphabetic() && first != '_' {
+        return false;
+    }
+
+    for char in chars {
+        if !char.is_alphanumeric() && char != '_' {
+            return false;
+        }
+    }
+
+    true
+}
+
 fn import_members_inner(
     db: &dyn VScriptDatabase,
     import: File,
@@ -410,6 +443,10 @@ pub trait Source {
             FindSymbol::BeforeIfInExecutionRange(offset, scope),
             hide_unnecessary,
         ) {
+            if !can_use_identifier(name.as_ref()) {
+                continue;
+            }
+
             items.entry(name).or_insert(id);
         }
 
@@ -419,6 +456,10 @@ pub trait Source {
             ImportMembers::Root,
             hide_unnecessary,
         ) {
+            if !can_use_identifier(name.as_ref()) {
+                continue;
+            }
+
             items.entry(name).or_insert(id);
         }
 

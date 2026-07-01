@@ -736,6 +736,7 @@ dependencies = [
  "la-arena",
  "line-index",
  "log",
+ "phf",
  "rustc-hash 2.1.1",
  "salsa",
  "sq-3-parser",

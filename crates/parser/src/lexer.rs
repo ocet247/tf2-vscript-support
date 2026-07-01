@@ -4,47 +4,6 @@ use crate::cst::SyntaxKind;
 use phf::phf_map;
 use rowan::{TextRange, TextSize};
 
-pub static KEYWORDS: phf::Map<&'static str, SyntaxKind> = phf_map! {
-    "base" => SyntaxKind::BaseKeyword,
-    "break" => SyntaxKind::BreakKeyword,
-    "case" => SyntaxKind::CaseKeyword,
-    "catch" => SyntaxKind::CatchKeyword,
-    "class" => SyntaxKind::ClassKeyword,
-    "clone" => SyntaxKind::CloneKeyword,
-    "const" => SyntaxKind::ConstKeyword,
-    "constructor" => SyntaxKind::ConstructorKeyword,
-    "continue" => SyntaxKind::ContinueKeyword,
-    "default" => SyntaxKind::DefaultKeyword,
-    "delete" => SyntaxKind::DeleteKeyword,
-    "do" => SyntaxKind::DoKeyword,
-    "else" => SyntaxKind::ElseKeyword,
-    "enum" => SyntaxKind::EnumKeyword,
-    "extends" => SyntaxKind::ExtendsKeyword,
-    "false" => SyntaxKind::FalseKeyword,
-    "foreach" => SyntaxKind::ForEachKeyword,
-    "for" => SyntaxKind::ForKeyword,
-    "function" => SyntaxKind::FunctionKeyword,
-    "if" => SyntaxKind::IfKeyword,
-    "in" => SyntaxKind::InKeyword,
-    "instanceof" => SyntaxKind::InstanceOfKeyword,
-    "local" => SyntaxKind::LocalKeyword,
-    "null" => SyntaxKind::NullKeyword,
-    "rawcall" => SyntaxKind::RawCallKeyword,
-    "resume" => SyntaxKind::ResumeKeyword,
-    "return" => SyntaxKind::ReturnKeyword,
-    "static" => SyntaxKind::StaticKeyword,
-    "switch" => SyntaxKind::SwitchKeyword,
-    "this" => SyntaxKind::ThisKeyword,
-    "throw" => SyntaxKind::ThrowKeyword,
-    "true" => SyntaxKind::TrueKeyword,
-    "try" => SyntaxKind::TryKeyword,
-    "typeof" => SyntaxKind::TypeOfKeyword,
-    "while" => SyntaxKind::WhileKeyword,
-    "yield" => SyntaxKind::YieldKeyword,
-    "__FILE__" => SyntaxKind::FileKeyword,
-    "__LINE__" => SyntaxKind::LineKeyword,
-};
-
 #[derive(Debug, Default, Clone, Copy)]
 pub struct Token {
     pub kind: SyntaxKind,
@@ -714,6 +673,47 @@ impl<'a> Lexer<'a> {
 
     // wow, local, function, yes
     fn identifier_or_keyword(&mut self) -> SyntaxKind {
+        static KEYWORDS: phf::Map<&'static str, SyntaxKind> = phf_map! {
+            "base" => SyntaxKind::BaseKeyword,
+            "break" => SyntaxKind::BreakKeyword,
+            "case" => SyntaxKind::CaseKeyword,
+            "catch" => SyntaxKind::CatchKeyword,
+            "class" => SyntaxKind::ClassKeyword,
+            "clone" => SyntaxKind::CloneKeyword,
+            "const" => SyntaxKind::ConstKeyword,
+            "constructor" => SyntaxKind::ConstructorKeyword,
+            "continue" => SyntaxKind::ContinueKeyword,
+            "default" => SyntaxKind::DefaultKeyword,
+            "delete" => SyntaxKind::DeleteKeyword,
+            "do" => SyntaxKind::DoKeyword,
+            "else" => SyntaxKind::ElseKeyword,
+            "enum" => SyntaxKind::EnumKeyword,
+            "extends" => SyntaxKind::ExtendsKeyword,
+            "false" => SyntaxKind::FalseKeyword,
+            "foreach" => SyntaxKind::ForEachKeyword,
+            "for" => SyntaxKind::ForKeyword,
+            "function" => SyntaxKind::FunctionKeyword,
+            "if" => SyntaxKind::IfKeyword,
+            "in" => SyntaxKind::InKeyword,
+            "instanceof" => SyntaxKind::InstanceOfKeyword,
+            "local" => SyntaxKind::LocalKeyword,
+            "null" => SyntaxKind::NullKeyword,
+            "rawcall" => SyntaxKind::RawCallKeyword,
+            "resume" => SyntaxKind::ResumeKeyword,
+            "return" => SyntaxKind::ReturnKeyword,
+            "static" => SyntaxKind::StaticKeyword,
+            "switch" => SyntaxKind::SwitchKeyword,
+            "this" => SyntaxKind::ThisKeyword,
+            "throw" => SyntaxKind::ThrowKeyword,
+            "true" => SyntaxKind::TrueKeyword,
+            "try" => SyntaxKind::TryKeyword,
+            "typeof" => SyntaxKind::TypeOfKeyword,
+            "while" => SyntaxKind::WhileKeyword,
+            "yield" => SyntaxKind::YieldKeyword,
+            "__FILE__" => SyntaxKind::FileKeyword,
+            "__LINE__" => SyntaxKind::LineKeyword,
+        };
+
         while let Some(chr) = self.peek() {
             if chr.is_ascii_alphanumeric() || chr == '_' {
                 self.next();
