@@ -1815,15 +1815,17 @@ impl Parser {
         if self.at(SyntaxKind::FunctionKeyword) {
             self.expect_or_panic(SyntaxKind::FunctionKeyword);
 
-            self.parse_name("function's name", TokenSet::FUNCTION_NAME_RECOVERY);
+            let name = self.parse_name("function's name", TokenSet::EVERYTHING);
             if self.at_set(TokenSet::NAME_QUALIFIER) {
                 self.error_and_advance(
                     "Name qualification is only allowed for function statements.".to_owned(),
                 );
             }
 
-            self.parse_function_signature();
-            self.parse_statement(ParseStatement::FunctionBody);
+            if name.is_some() || !self.has_preceding_new_line {
+                self.parse_function_signature();
+                self.parse_statement(ParseStatement::FunctionBody);
+            }
 
             self.finish(m, SyntaxKind::LocalFunctionDeclaration);
             return;
@@ -1934,10 +1936,11 @@ impl Parser {
         let m = self.start();
         self.expect_or_panic(SyntaxKind::FunctionKeyword);
 
-        self.parse_qualified_name();
-        self.parse_function_signature();
-
-        self.parse_statement(ParseStatement::FunctionBody);
+        let name = self.parse_qualified_name();
+        if self.is_marker_valid(name) || !self.has_preceding_new_line {
+            self.parse_function_signature();
+            self.parse_statement(ParseStatement::FunctionBody);
+        }
 
         self.finish(m, SyntaxKind::FunctionStatement);
     }
