@@ -1414,3 +1414,69 @@ First <- Entities.First
  * @returns {CBaseEntity|null}
  */
 Next <- Entities.Next
+
+// Folded EntityOutputs methods, can be achieved by running the following:
+foreach (name, method in ::CScriptEntityOutputs)
+	if (name != "IsValid")
+		getroottable()[name] <- method.bindenv(::EntityOutputs)
+
+/**
+ * Adds a new output to the entity.
+ * @type {function}
+ * @param {CBaseEntity} entity
+ * @param {string} output_name
+ * @param {string} targetname
+ * @param {output} input_name
+ * @param {string|null} parameter
+ * @param {float} delay
+ * @param {integer} times_to_fire
+ */
+AddOutput <- EntityOutputs.AddOutput
+
+/**
+ * Returns the number of array elements.
+ * @type {function}
+ * @param {CBaseEntity} entity
+ * @param {output} output_name
+ * @returns {integer}
+ */
+GetNumElements <- EntityOutputs.GetNumElements
+
+/**
+ * Fills the passed table with output information.
+ * @type {function}
+ * @param {CBaseEntity} entity
+ * @param {output} output_name
+ * @param {table} result
+ * @param {integer} array_element
+ */
+GetOutputTable <- EntityOutputs.GetOutputTable
+
+/**
+ * Returns `true` if an action exists for the output.
+ * @type {function}
+ * @param {CBaseEntity} entity
+ * @param {output} output_name
+ * @returns {bool}
+ */
+HasAction <- EntityOutputs.HasAction
+
+/**
+ * Returns `true` if the output exists.
+ * @type {function}
+ * @param {CBaseEntity} entity
+ * @param {output} output_name
+ * @returns {bool}
+ */
+HasOutput <- EntityOutputs.HasOutput
+
+/**
+ * Removes an output from the entity.
+ * @type {function}
+ * @param {CBaseEntity} entity
+ * @param {string} output_name
+ * @param {string} targetname
+ * @param {output} input_name
+ * @param {string|null} parameter
+ */
+RemoveOutput <- EntityOutputs.RemoveOutput

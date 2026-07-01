@@ -1903,7 +1903,7 @@ class CTFPlayer extends CBasePlayer {
     /**
      * Get the player's current weapon.
      * @type {function}
-     * @returns {CTFWeaponBase}
+     * @returns {CTFWeaponBase|null}
      */
     function GetActiveWeapon();
 
