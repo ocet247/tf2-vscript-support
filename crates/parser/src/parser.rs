@@ -1793,7 +1793,10 @@ impl Parser {
                 self.parse_expression(recovery);
                 self.finish(m, SyntaxKind::Initialiser);
             }
-        } else if !self.has_preceding_new_line && self.at_set(TokenSet::EXPRESSIONS) {
+        } else if (kind == VariableDeclaration::Parameter
+            || kind == VariableDeclaration::Local && !self.has_preceding_new_line)
+            && self.at_set(TokenSet::EXPRESSIONS)
+        {
             let m = self.start();
             self.error_at_token("Expected '=' before expression".to_owned());
             self.parse_expression(recovery);
