@@ -161,6 +161,15 @@ pub fn can_use_identifier(name: &str) -> bool {
     true
 }
 
+#[must_use]
+fn quote_if_cant_use_identifier(old: &str) -> String {
+    if can_use_identifier(old) {
+        old.to_owned()
+    } else {
+        format!("\"{old}\"")
+    }
+}
+
 fn import_members_inner(
     db: &dyn VScriptDatabase,
     import: File,
@@ -941,7 +950,7 @@ pub trait Source {
                     if matches!(Primitive::try_from(typ), Ok(Primitive::Function(_))) {
                         return None;
                     }
-                    Some((name, typ))
+                    Some((quote_if_cant_use_identifier(name.as_ref()), typ))
                 })
                 .collect();
 
@@ -970,6 +979,8 @@ pub trait Source {
             true
         };
 
+        let name = quote_if_cant_use_identifier(&s.name);
+
         match s.kind {
             SymbolKind::Local(_) => str.push_str("local "),
             SymbolKind::Property { .. } => {
@@ -980,7 +991,7 @@ pub trait Source {
             SymbolKind::Constant | SymbolKind::EnumMember => {
                 let type_text = match s.typ {
                     Type::Enum(id) => {
-                        let _ = write!(str, "enum {}", s.name);
+                        let _ = write!(str, "enum {name}");
 
                         let members = self.enum_members(id);
                         let total = members.len();
@@ -1017,13 +1028,13 @@ pub trait Source {
                         format!("\"{}\"", self.get(literal).text)
                     }
                     _ => {
-                        let _ = write!(str, "const {}", s.name);
+                        let _ = write!(str, "const {name}");
                         finish(&mut str);
                         return str;
                     }
                 };
 
-                let _ = write!(&mut str, "const {}: {}", s.name, type_text);
+                let _ = write!(&mut str, "const {name}: {type_text}");
                 finish(&mut str);
                 return str;
             }
@@ -1031,26 +1042,26 @@ pub trait Source {
 
         match Primitive::try_from(&s.typ) {
             Ok(Primitive::Function(Some(id))) => {
-                let signature = self.function_markdown(FunctionMarkdown::Full(&s.name), id);
+                let signature = self.function_markdown(FunctionMarkdown::Full(&name), id);
                 str.push_str(&signature);
             }
             Ok(Primitive::Function(None)) => {
-                let _ = write!(str, "function {}()", s.name);
+                let _ = write!(str, "function {name}()");
             }
             Ok(Primitive::Class(id)) => {
-                let _ = write!(str, "class {}", s.name);
+                let _ = write!(str, "class {name}");
                 if let Some(id) = id {
                     class_or_table_members(&mut str, self.additional_class_members(id));
                 }
             }
             Ok(Primitive::Table(Some(id))) => {
-                let _ = write!(str, "{}:", s.name);
+                let _ = write!(str, "{name}:");
                 if !class_or_table_members(&mut str, self.additional_table_members(id)) {
                     str.push_str(" table");
                 }
             }
             _ => {
-                let _ = write!(str, "{}: {}", s.name, self.type_to_str(&s.typ));
+                let _ = write!(str, "{}: {}", name, self.type_to_str(&s.typ));
             }
         }
 

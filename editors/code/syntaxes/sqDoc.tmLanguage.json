@@ -14,20 +14,6 @@
       }
     },
     {
-      "match": "(\")[^\"]*\"",
-      "captures": {
-        "0": {
-          "name": "string.quoted.double"
-        },
-        "1": {
-          "name": "punctuation.definition.string.begin.squirrel"
-        },
-        "2": {
-          "name": "punctuation.definition.string.end.squirrel"
-        }
-      }
-    },
-    {
       "name": "constant.numeric.integer.octal.squirrel",
       "match": "0[0-7](\\d*)",
       "captures": {
@@ -120,6 +106,29 @@
       }
     },
     {
+      "begin": "(?<![_A-Za-z])(function)\\s+(\")",
+      "beginCaptures": {
+        "1": {
+          "name": "storage.type.function.squirrel"
+        },
+        "2": {
+          "name": "string.quoted.double punctuation.definition.string.begin.squirrel"
+        }
+      },
+      "end": "\"|\n",
+      "endCaptures": {
+        "0": {
+          "name": "string.quoted.double string.punctuation.definition.string.end.squirrel"
+        }
+      },
+      "contentName": "string.quoted.double entity.name.function.squirrel",
+      "patterns": [
+        {
+          "include": "#string-escape-sequences"
+        }
+      ]
+    },
+    {
       "match": "(?<![_A-Za-z])(class)\\s+(\\w+)\\b",
       "captures": {
         "1": {
@@ -129,6 +138,29 @@
           "name": "entity.name.class.squirrel"
         }
       }
+    },
+    {
+      "begin": "(?<![_A-Za-z])(class)\\s+(\")",
+      "beginCaptures": {
+        "1": {
+          "name": "storage.type.class.squirrel"
+        },
+        "2": {
+          "name": "string.quoted.double punctuation.definition.string.begin.squirrel"
+        }
+      },
+      "end": "\"|\n",
+      "endCaptures": {
+        "0": {
+          "name": "string.quoted.double string.punctuation.definition.string.end.squirrel"
+        }
+      },
+      "contentName": "string.quoted.double entity.name.class.squirrel",
+      "patterns": [
+        {
+          "include": "#string-escape-sequences"
+        }
+      ]
     },
     {
       "match": "(?<![_A-Za-z])(enum)\\s+(\\w+)\\b",
@@ -142,12 +174,9 @@
       }
     },
     {
-      "match": "(\\w+)\\s*\\??:\\s*([\\w\\s\\|\\[\\]]*)",
+      "match": "\\s*\\??:\\s*([\\w\\s\\|\\[\\]]*)",
       "captures": {
         "1": {
-          "name": "variable.other.squirrel"
-        },
-        "2": {
           "name": "support.type.squirrel"
         }
       }
@@ -181,9 +210,86 @@
       "match": ":"
     },
     {
+      "begin": "^\\s*(\")",
+      "beginCaptures": {
+        "1": {
+          "name": "string.quoted.double punctuation.definition.string.begin.squirrel"
+        }
+      },
+      "end": "\"|\n",
+      "endCaptures": {
+        "0": {
+          "name": "string.quoted.double string.punctuation.definition.string.end.squirrel"
+        }
+      },
+      "contentName": "string.quoted.double variable.other.squirrel",
+      "patterns": [
+        {
+          "include": "#string-escape-sequences"
+        }
+      ]
+    },
+    {
+      "begin": "\"",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.begin.squirrel string.quoted.double"
+        }
+      },
+      "end": "\"|\n",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.end.squirrel string.quoted.double"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#string-escape-sequences"
+        }
+      ]
+    },
+    {
       "name": "variable.other.squirrel",
       "match": "\\w+"
     }
   ],
+  "repository": {
+    "string-escape-sequences": {
+      "patterns": [
+        {
+          "name": "constant.character.escape.squirrel",
+          "match": "\\\\x\\h{1,2}"
+        },
+        {
+          "name": "invalid.illegal.escape.squirrel",
+          "match": "\\\\x\\w?"
+        },
+        {
+          "name": "constant.character.escape.squirrel",
+          "match": "\\\\u\\h{1,4}"
+        },
+        {
+          "name": "invalid.illegal.escape.squirrel",
+          "match": "\\\\u\\w?"
+        },
+        {
+          "name": "constant.character.escape.squirrel",
+          "match": "\\\\U\\h{1,8}"
+        },
+        {
+          "name": "invalid.illegal.escape.squirrel",
+          "match": "\\\\U\\w?"
+        },
+        {
+          "name": "constant.character.escape.squirrel",
+          "match": "\\\\[0tabnrvf\"\\\\'`]"
+        },
+        {
+          "name": "invalid.illegal.escape.squirrel",
+          "match": "\\\\."
+        }
+      ]
+    }
+  },
   "scopeName": "source.sqDoc"
 }
