@@ -199,6 +199,7 @@ pub struct FunctionData {
     pub params_state: ParamsState,
     pub yields: TypeState,
     pub throws: TypeState,
+    pub is_no_discard: bool,
 }
 
 #[derive(Debug, Default, Clone, PartialEq)]

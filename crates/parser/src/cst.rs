@@ -250,6 +250,8 @@ pub enum SyntaxKind {
     ReturnTag,
     ThrowTag,
     YieldTag,
+    OverrideTag,
+    NoDiscardTag,
     NativeTag,
     VarTag,
     HideTag,

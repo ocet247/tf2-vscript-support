@@ -25,9 +25,9 @@ use std::path::PathBuf;
 use string_literals::CLASSNAMES_TO_CLASSES;
 
 use crate::{
-    Diagnostic, DiagnosticSeverity, ExpressionKind, File, FindSymbol, ImportMembers,
-    NullableExprKind, Source, SourceSymbol, TypeWithRange, UnreachableCode, UnusedVariables,
-    VScriptDatabase,
+    Diagnostic, DiagnosticSeverity, ExpressionKind, File, FindSymbol, FunctionIdResolution,
+    ImportMembers, NullableExprKind, Source, SourceSymbol, TypeWithRange, UnreachableCode,
+    UnusedVariables, VScriptDatabase,
     arena::{
         ArenaAlloc, ArenaId, ArrayData, ArrayId, ClassData, ClassId, Container, EnumData, EnumId,
         FunctionData, FunctionId, ImportTarget, ParamsState, Scope, ScopeId, SourceArena,
@@ -143,9 +143,10 @@ impl From<&AssignmentLeftHandSide> for NullableExprKind {
     }
 }
 
-fn get_name<T: HasName>(node: &T) -> Option<SyntaxToken> {
+fn get_name<T: HasName>(node: &T) -> Option<(TextRange, Box<str>)> {
     let name = node.name()?;
-    name.identifier()
+    let token = name.identifier()?;
+    Some((token.text_range(), token.text().into()))
 }
 
 impl TryFrom<AssignmentLeftHandSide> for Type {
@@ -651,13 +652,7 @@ impl<'db> Resolver<'db> {
     }
 
     fn resolve_name(&self, text: &str, offset: TextSize) -> Option<SymbolId> {
-        let filter = |(name, id): (Box<str>, SymbolId)| {
-            if name.as_ref() == text {
-                Some(id)
-            } else {
-                None
-            }
-        };
+        let filter = |(name, id): (Box<str>, SymbolId)| (name.as_ref() == text).then_some(id);
 
         let locals = self.local_members(offset).into_iter().find_map(filter);
 
@@ -1098,7 +1093,7 @@ impl<'db> Resolver<'db> {
         for (count, param) in parameters.enumerate() {
             match param {
                 Parameter::Variable(var) => {
-                    let Some(name) = get_name(&var) else {
+                    let Some((name_range, name)) = get_name(&var) else {
                         let Some(expr) = var.initialiser().and_then(|i| i.expression()) else {
                             continue;
                         };
@@ -1107,7 +1102,6 @@ impl<'db> Resolver<'db> {
                         continue;
                     };
 
-                    let name_range = name.text_range();
                     let kind = SymbolKind::Local(LocalKind::Parameter);
                     let node = SyntaxNodePtr::new(var.syntax());
 
@@ -1133,9 +1127,11 @@ impl<'db> Resolver<'db> {
                             ParamsState::NoDefault => {}
                         }
 
-                        let id = if let Some(info) = self.resolve_variable_doc(&var) {
+                        let id = if let Some(info) =
+                            self.resolve_variable_doc(&var, &name, name_range)
+                        {
                             let id = self.symbol(Symbol {
-                                name: name.text().into(),
+                                name: name.clone(),
                                 kind,
                                 name_range,
                                 node,
@@ -1148,7 +1144,7 @@ impl<'db> Resolver<'db> {
                             id
                         } else {
                             self.symbol(Symbol {
-                                name: name.text().into(),
+                                name: name.clone(),
                                 kind,
                                 name_range,
                                 node,
@@ -1159,7 +1155,7 @@ impl<'db> Resolver<'db> {
                             })
                         };
 
-                        insert_symbol(&mut self.current_scope().locals, name.text().into(), id);
+                        insert_symbol(&mut self.current_scope().locals, name, id);
                         self.arena[idx].params.push(id);
                         raw_param_types.push(None);
                         continue;
@@ -1179,7 +1175,8 @@ impl<'db> Resolver<'db> {
                     // ```
                     let typ = expr_type.kind.add_any();
 
-                    let id = if let Some(info) = self.resolve_variable_doc(&var) {
+                    let id = if let Some(info) = self.resolve_variable_doc(&var, &name, name_range)
+                    {
                         let typ = info.typ.as_ref().map_or(typ, |doc_type| {
                             self.check_type(
                                 doc_type,
@@ -1190,7 +1187,7 @@ impl<'db> Resolver<'db> {
                         });
 
                         let id = self.symbol(Symbol {
-                            name: name.text().into(),
+                            name: name.clone(),
                             kind,
                             name_range,
                             node,
@@ -1203,7 +1200,7 @@ impl<'db> Resolver<'db> {
                         id
                     } else {
                         self.symbol(Symbol {
-                            name: name.text().into(),
+                            name: name.clone(),
                             kind,
                             name_range,
                             node,
@@ -1214,7 +1211,7 @@ impl<'db> Resolver<'db> {
                         })
                     };
 
-                    insert_symbol(&mut self.current_scope().locals, name.text().into(), id);
+                    insert_symbol(&mut self.current_scope().locals, name, id);
                     self.arena[idx].params.push(id);
 
                     match params_state {
@@ -1970,6 +1967,7 @@ impl<'db> Resolver<'db> {
             ret: TypeState::Absent,
             throws: TypeState::Absent,
             yields: TypeState::Absent,
+            is_no_discard: false,
         });
 
         let id = FunctionId::new(self.file, idx);
@@ -1986,8 +1984,8 @@ impl<'db> Resolver<'db> {
         let map = if Constructor::can_cast(node.syntax().kind()) {
             &mut self.deferred_constructors
         } else if let Some(method) = Method::cast(node.syntax().clone())
-            && let Some(name) = get_name(&method)
-            && name.text() == "constructor"
+            && let Some(name_token) = method.name().and_then(|n| n.identifier())
+            && name_token.text() == "constructor"
         {
             &mut self.deferred_constructors
         } else {
@@ -2010,7 +2008,12 @@ impl<'db> Resolver<'db> {
         id
     }
 
-    fn resolve_variable_doc<T: HasDoc>(&mut self, node: &T) -> Option<SymbolDocInfo> {
+    fn resolve_variable_doc<T: HasDoc>(
+        &mut self,
+        node: &T,
+        name: &str,
+        name_range: TextRange,
+    ) -> Option<SymbolDocInfo> {
         let doc = node.doc()?;
         let range = doc.syntax().text_range();
 
@@ -2060,6 +2063,9 @@ impl<'db> Resolver<'db> {
                 }
                 Tag::Static(_) => {
                     info.flags |= SymbolFlags::STATIC;
+                }
+                Tag::Override(_) => {
+                    self.check_override_tag(name, name_range);
                 }
                 _ => {}
             }
@@ -2223,6 +2229,9 @@ impl<'db> Resolver<'db> {
                     if let Container::Instance(id) = self.arena[entry.idx].container {
                         self.arena[entry.idx].container = Container::Class(id);
                     }
+                }
+                Tag::NoDiscard(_) => {
+                    self.arena[entry.idx].is_no_discard = true;
                 }
                 Tag::Var(tag) => {
                     self.var_tag(&tag);
@@ -2459,13 +2468,50 @@ impl<'db> Resolver<'db> {
         }
     }
 
+    fn check_override_tag(&mut self, name: &str, name_range: TextRange) {
+        let Container::Class(class_id) = self.container else {
+            self.diagnostics.push(Diagnostic {
+                message: "'@override' can only be used inside class declarations".to_owned(),
+                range: name_range,
+                severity: DiagnosticSeverity::Warning,
+            });
+            return;
+        };
+
+        let Some(base_id) = self.get(class_id).inherits else {
+            self.diagnostics.push(Diagnostic {
+                message: "Current class does have a base class to use '@override'".to_owned(),
+                range: name_range,
+                severity: DiagnosticSeverity::Warning,
+            });
+            return;
+        };
+
+        let found = self
+            .find_member(Container::Class(base_id), name, name_range.start())
+            .is_some()
+            || self
+                .find_member(Container::Instance(base_id), name, name_range.start())
+                .is_some();
+
+        if !found {
+            self.diagnostics.push(Diagnostic {
+            message: format!(
+                "Member '{name}' is marked as '@override' but does not override any base class member"
+            ),
+            range: name_range,
+            severity: DiagnosticSeverity::Warning,
+        });
+        }
+    }
+
     fn collect_table_member(&mut self, member: &Member) {
         match member {
             Member::Property(property) => self.collect_table_property(property),
             Member::Method(method) => {
                 let id = self.collect_function(method);
 
-                let Some(name) = get_name(method) else {
+                let Some((name_range, name)) = get_name(method) else {
                     return;
                 };
 
@@ -2473,55 +2519,55 @@ impl<'db> Resolver<'db> {
                 let kind = SymbolKind::Property {
                     show_inlay_hint: false,
                 };
-                let name_range = name.text_range();
                 let node = SyntaxNodePtr::new(method.syntax());
 
-                let symbol = if let Some(info) = self.resolve_variable_doc(method) {
-                    let typ = info.typ.as_ref().map_or_else(
-                        || typ.clone(),
-                        |doc_type| {
-                            self.check_type(
-                                doc_type,
-                                &typ,
-                                CheckTypeSource::Variable,
-                                method.function_token().map_or_else(
-                                    || method.syntax().text_range(),
-                                    |t| t.text_range(),
-                                ),
-                            )
-                        },
-                    );
+                let symbol =
+                    if let Some(info) = self.resolve_variable_doc(method, &name, name_range) {
+                        let typ = info.typ.as_ref().map_or_else(
+                            || typ.clone(),
+                            |doc_type| {
+                                self.check_type(
+                                    doc_type,
+                                    &typ,
+                                    CheckTypeSource::Variable,
+                                    method.function_token().map_or_else(
+                                        || method.syntax().text_range(),
+                                        |t| t.text_range(),
+                                    ),
+                                )
+                            },
+                        );
 
-                    let id = self.symbol(Symbol {
-                        name: name.text().into(),
-                        kind,
-                        name_range,
-                        node,
-                        is_type_explicit: info.typ.is_some(),
-                        typ,
-                        description: info.description,
-                        flags: info.flags,
-                    });
-                    self.doc_to_symbol.insert(info.range, id);
-                    id
-                } else {
-                    self.symbol(Symbol {
-                        name: name.text().into(),
-                        kind,
-                        name_range,
-                        node,
-                        is_type_explicit: false,
-                        typ,
-                        description: None,
-                        flags: SymbolFlags::default(),
-                    })
-                };
+                        let id = self.symbol(Symbol {
+                            name: name.clone(),
+                            kind,
+                            name_range,
+                            node,
+                            is_type_explicit: info.typ.is_some(),
+                            typ,
+                            description: info.description,
+                            flags: info.flags,
+                        });
+                        self.doc_to_symbol.insert(info.range, id);
+                        id
+                    } else {
+                        self.symbol(Symbol {
+                            name: name.clone(),
+                            kind,
+                            name_range,
+                            node,
+                            is_type_explicit: false,
+                            typ,
+                            description: None,
+                            flags: SymbolFlags::default(),
+                        })
+                    };
 
                 if let Some(function) = self.get_mut(id) {
                     function.symbol = Some(symbol);
                 }
 
-                self.add_current_container_member(name.text().into(), symbol);
+                self.add_current_container_member(name, symbol);
             }
             Member::Constructor(constructor) => {
                 let id = self.collect_function(constructor);
@@ -2537,7 +2583,9 @@ impl<'db> Resolver<'db> {
                 let name_range = keyword.text_range();
                 let node = SyntaxNodePtr::new(constructor.syntax());
 
-                let symbol = if let Some(info) = self.resolve_variable_doc(constructor) {
+                let symbol = if let Some(info) =
+                    self.resolve_variable_doc(constructor, "constructor", name_range)
+                {
                     let typ = info.typ.as_ref().map_or_else(
                         || typ.clone(),
                         |doc_type| {
@@ -2640,7 +2688,7 @@ impl<'db> Resolver<'db> {
                 let id = self.collect_function(method);
                 let did_swap = self.try_swap_to_instance(method, Some(id));
 
-                let Some(name) = get_name(method) else {
+                let Some((name_range, name)) = get_name(method) else {
                     return;
                 };
 
@@ -2648,7 +2696,6 @@ impl<'db> Resolver<'db> {
                 let kind = SymbolKind::Property {
                     show_inlay_hint: false,
                 };
-                let name_range = name.text_range();
                 let node = SyntaxNodePtr::new(method.syntax());
 
                 let flags = if did_swap {
@@ -2657,52 +2704,53 @@ impl<'db> Resolver<'db> {
                     SymbolFlags::STATIC
                 };
 
-                let symbol = if let Some(info) = self.resolve_variable_doc(method) {
-                    let typ = info.typ.as_ref().map_or_else(
-                        || typ.clone(),
-                        |doc_type| {
-                            self.check_type(
-                                doc_type,
-                                &typ,
-                                CheckTypeSource::Variable,
-                                method.function_token().map_or_else(
-                                    || method.syntax().text_range(),
-                                    |t| t.text_range(),
-                                ),
-                            )
-                        },
-                    );
+                let symbol =
+                    if let Some(info) = self.resolve_variable_doc(method, &name, name_range) {
+                        let typ = info.typ.as_ref().map_or_else(
+                            || typ.clone(),
+                            |doc_type| {
+                                self.check_type(
+                                    doc_type,
+                                    &typ,
+                                    CheckTypeSource::Variable,
+                                    method.function_token().map_or_else(
+                                        || method.syntax().text_range(),
+                                        |t| t.text_range(),
+                                    ),
+                                )
+                            },
+                        );
 
-                    let id = self.symbol(Symbol {
-                        name: name.text().into(),
-                        kind,
-                        name_range,
-                        node,
-                        is_type_explicit: info.typ.is_some(),
-                        typ,
-                        description: info.description,
-                        flags: flags | info.flags,
-                    });
-                    self.doc_to_symbol.insert(info.range, id);
-                    id
-                } else {
-                    self.symbol(Symbol {
-                        name: name.text().into(),
-                        kind,
-                        name_range,
-                        node,
-                        is_type_explicit: false,
-                        typ,
-                        description: None,
-                        flags,
-                    })
-                };
+                        let id = self.symbol(Symbol {
+                            name: name.clone(),
+                            kind,
+                            name_range,
+                            node,
+                            is_type_explicit: info.typ.is_some(),
+                            typ,
+                            description: info.description,
+                            flags: flags | info.flags,
+                        });
+                        self.doc_to_symbol.insert(info.range, id);
+                        id
+                    } else {
+                        self.symbol(Symbol {
+                            name: name.clone(),
+                            kind,
+                            name_range,
+                            node,
+                            is_type_explicit: false,
+                            typ,
+                            description: None,
+                            flags,
+                        })
+                    };
 
                 if let Some(function) = self.get_mut(id) {
                     function.symbol = Some(symbol);
                 }
 
-                self.add_current_container_member(name.text().into(), symbol);
+                self.add_current_container_member(name, symbol);
             }
             Member::Constructor(constructor) => {
                 let id = self.collect_function(constructor);
@@ -2725,7 +2773,9 @@ impl<'db> Resolver<'db> {
                     SymbolFlags::STATIC
                 };
 
-                let symbol = if let Some(info) = self.resolve_variable_doc(constructor) {
+                let symbol = if let Some(info) =
+                    self.resolve_variable_doc(constructor, "constructor", name_range)
+                {
                     let typ = info.typ.as_ref().map_or_else(
                         || typ.clone(),
                         |doc_type| {
@@ -2780,22 +2830,21 @@ impl<'db> Resolver<'db> {
             .value()
             .map_or(Type::ANY, |v| self.expr_to_type(&v));
 
-        let Some(name) = property.name() else {
+        let Some(name_node) = property.name() else {
             return;
         };
 
-        let Some((name_range, text)) = self.get_member_name(name) else {
+        let Some((name_range, name)) = self.get_member_name(name_node) else {
             return;
         };
 
         let kind = SymbolKind::Property {
             show_inlay_hint: true,
         };
-
         let typ = expr_typ.add_any();
         let node = SyntaxNodePtr::new(property.syntax());
 
-        let symbol = if let Some(info) = self.resolve_variable_doc(property) {
+        let symbol = if let Some(info) = self.resolve_variable_doc(property, &name, name_range) {
             let error_range = property.value().map_or_else(
                 || property.syntax().text_range(),
                 |v| v.syntax().text_range(),
@@ -2806,7 +2855,7 @@ impl<'db> Resolver<'db> {
             });
 
             let id = self.symbol(Symbol {
-                name: text.clone(),
+                name: name.clone(),
                 kind,
                 name_range,
                 node,
@@ -2819,7 +2868,7 @@ impl<'db> Resolver<'db> {
             id
         } else {
             self.symbol(Symbol {
-                name: text.clone(),
+                name: name.clone(),
                 kind,
                 name_range,
                 node,
@@ -2830,7 +2879,7 @@ impl<'db> Resolver<'db> {
             })
         };
 
-        self.add_current_container_member(text, symbol);
+        self.add_current_container_member(name, symbol);
     }
 
     fn collect_class_property(&mut self, property: &Property) {
@@ -2840,18 +2889,17 @@ impl<'db> Resolver<'db> {
 
         let did_swap = self.try_swap_to_instance(property, expr_typ.to_function().ok());
 
-        let Some(name) = property.name() else {
+        let Some(name_node) = property.name() else {
             return;
         };
 
-        let Some((name_range, text)) = self.get_member_name(name) else {
+        let Some((name_range, name)) = self.get_member_name(name_node) else {
             return;
         };
 
         let kind = SymbolKind::Property {
             show_inlay_hint: true,
         };
-
         let typ = expr_typ.add_any();
         let flags = if did_swap {
             SymbolFlags::default()
@@ -2860,7 +2908,7 @@ impl<'db> Resolver<'db> {
         };
         let node = SyntaxNodePtr::new(property.syntax());
 
-        let symbol = if let Some(info) = self.resolve_variable_doc(property) {
+        let symbol = if let Some(info) = self.resolve_variable_doc(property, &name, name_range) {
             let error_range = property.value().map_or_else(
                 || property.syntax().text_range(),
                 |v| v.syntax().text_range(),
@@ -2871,7 +2919,7 @@ impl<'db> Resolver<'db> {
             });
 
             let id = self.symbol(Symbol {
-                name: text.clone(),
+                name: name.clone(),
                 kind,
                 name_range,
                 node,
@@ -2884,7 +2932,7 @@ impl<'db> Resolver<'db> {
             id
         } else {
             self.symbol(Symbol {
-                name: text.clone(),
+                name: name.clone(),
                 kind,
                 name_range,
                 node,
@@ -2895,7 +2943,7 @@ impl<'db> Resolver<'db> {
             })
         };
 
-        self.add_current_container_member(text, symbol);
+        self.add_current_container_member(name, symbol);
     }
 
     /// returns whether the value was assigned via '=' (used to increment the internal auto assign counter)
@@ -2912,19 +2960,18 @@ impl<'db> Resolver<'db> {
             },
         );
 
-        let Some(name) = property.name() else {
+        let Some(name_node) = property.name() else {
             return has_value;
         };
 
-        let Some((name_range, text)) = self.get_member_name(name) else {
+        let Some((name_range, name)) = self.get_member_name(name_node) else {
             return has_value;
         };
 
         let kind = SymbolKind::EnumMember;
-
         let node = SyntaxNodePtr::new(property.syntax());
 
-        let symbol = if let Some(info) = self.resolve_variable_doc(property) {
+        let symbol = if let Some(info) = self.resolve_variable_doc(property, &name, name_range) {
             let error_range = property.value().map_or_else(
                 || property.syntax().text_range(),
                 |v| v.syntax().text_range(),
@@ -2936,7 +2983,7 @@ impl<'db> Resolver<'db> {
             );
 
             let id = self.symbol(Symbol {
-                name: text.clone(),
+                name: name.clone(),
                 kind,
                 name_range,
                 node,
@@ -2949,7 +2996,7 @@ impl<'db> Resolver<'db> {
             id
         } else {
             self.symbol(Symbol {
-                name: text.clone(),
+                name: name.clone(),
                 kind,
                 name_range,
                 node,
@@ -2960,7 +3007,7 @@ impl<'db> Resolver<'db> {
             })
         };
 
-        self.add_current_container_member(text, symbol);
+        self.add_current_container_member(name, symbol);
 
         has_value
     }
@@ -3016,7 +3063,7 @@ impl<'db> Resolver<'db> {
 
     fn local_variable(&mut self, decl: &LocalVariableDeclaration) {
         for var in decl.declarations() {
-            let Some(name) = get_name(&var) else {
+            let Some((name_range, name)) = get_name(&var) else {
                 let Some(expr) = var.initialiser().and_then(|i| i.expression()) else {
                     continue;
                 };
@@ -3026,17 +3073,16 @@ impl<'db> Resolver<'db> {
             };
 
             let kind = SymbolKind::Local(LocalKind::Variable);
-            let name_range = name.text_range();
             let node = SyntaxNodePtr::new(var.syntax());
             let Some(expr) = var.initialiser().and_then(|i| i.expression()) else {
                 let typ = Type::NULL.add_any();
 
                 let id = if let Some(info) = self
-                    .resolve_variable_doc(&var)
-                    .or_else(|| self.resolve_variable_doc(decl))
+                    .resolve_variable_doc(&var, &name, name_range)
+                    .or_else(|| self.resolve_variable_doc(decl, &name, name_range))
                 {
                     let id = self.symbol(Symbol {
-                        name: name.text().into(),
+                        name: name.clone(),
                         node,
                         name_range,
                         kind,
@@ -3049,7 +3095,7 @@ impl<'db> Resolver<'db> {
                     id
                 } else {
                     self.symbol(Symbol {
-                        name: name.text().into(),
+                        name: name.clone(),
                         node,
                         name_range,
                         kind,
@@ -3060,16 +3106,15 @@ impl<'db> Resolver<'db> {
                     })
                 };
 
-                insert_symbol(&mut self.current_scope().locals, name.text().into(), id);
+                insert_symbol(&mut self.current_scope().locals, name, id);
                 continue;
             };
 
             let expr_type = self.expr_to_type_with_range(&expr);
-
             let typ = expr_type.kind.add_any();
             let id = if let Some(info) = self
-                .resolve_variable_doc(&var)
-                .or_else(|| self.resolve_variable_doc(decl))
+                .resolve_variable_doc(&var, &name, name_range)
+                .or_else(|| self.resolve_variable_doc(decl, &name, name_range))
             {
                 let typ = info.typ.as_ref().map_or(typ, |doc_type| {
                     self.check_type(
@@ -3081,7 +3126,7 @@ impl<'db> Resolver<'db> {
                 });
 
                 let id = self.symbol(Symbol {
-                    name: name.text().into(),
+                    name: name.clone(),
                     node,
                     name_range,
                     kind,
@@ -3094,7 +3139,7 @@ impl<'db> Resolver<'db> {
                 id
             } else {
                 self.symbol(Symbol {
-                    name: name.text().into(),
+                    name: name.clone(),
                     node,
                     name_range,
                     kind,
@@ -3105,21 +3150,20 @@ impl<'db> Resolver<'db> {
                 })
             };
 
-            insert_symbol(&mut self.current_scope().locals, name.text().into(), id);
+            insert_symbol(&mut self.current_scope().locals, name, id);
         }
     }
 
     fn local_function(&mut self, decl: &LocalFunctionDeclaration) {
         let id = self.collect_function(decl);
-        let Some(name) = get_name(decl) else {
+        let Some((name_range, name)) = get_name(decl) else {
             return;
         };
 
         let typ = Type::Primitive(Primitive::Function(Some(id)));
         let kind = SymbolKind::Local(LocalKind::Function);
-        let name_range = name.text_range();
         let node = SyntaxNodePtr::new(decl.syntax());
-        let symbol = if let Some(info) = self.resolve_variable_doc(decl) {
+        let symbol = if let Some(info) = self.resolve_variable_doc(decl, &name, name_range) {
             let typ = info.typ.as_ref().map_or_else(
                 || typ.clone(),
                 |doc_type| {
@@ -3134,7 +3178,7 @@ impl<'db> Resolver<'db> {
             );
 
             let id = self.symbol(Symbol {
-                name: name.text().into(),
+                name: name.clone(),
                 node,
                 name_range,
                 kind,
@@ -3147,7 +3191,7 @@ impl<'db> Resolver<'db> {
             id
         } else {
             self.symbol(Symbol {
-                name: name.text().into(),
+                name: name.clone(),
                 node,
                 name_range,
                 kind,
@@ -3162,7 +3206,7 @@ impl<'db> Resolver<'db> {
             function.symbol = Some(symbol);
         }
 
-        insert_symbol(&mut self.current_scope().locals, name.text().into(), symbol);
+        insert_symbol(&mut self.current_scope().locals, name, symbol);
     }
 
     fn block_statement(&mut self, stmt: &BlockStatement) {
@@ -3183,14 +3227,13 @@ impl<'db> Resolver<'db> {
                 self.expr_kind_to_type(value.as_ref())
             });
 
-        let Some(name) = get_name(stmt) else {
+        let Some((name_range, name)) = get_name(stmt) else {
             return;
         };
 
         let kind = SymbolKind::Constant;
-        let name_range = name.text_range();
         let node = SyntaxNodePtr::new(stmt.syntax());
-        let symbol = if let Some(info) = self.resolve_variable_doc(stmt) {
+        let symbol = if let Some(info) = self.resolve_variable_doc(stmt, &name, name_range) {
             let typ = info.typ.as_ref().map_or_else(
                 || typ.clone(),
                 |doc_type| {
@@ -3207,7 +3250,7 @@ impl<'db> Resolver<'db> {
             );
 
             let id = self.symbol(Symbol {
-                name: name.text().into(),
+                name: name.clone(),
                 node,
                 name_range,
                 kind,
@@ -3221,7 +3264,7 @@ impl<'db> Resolver<'db> {
             id
         } else {
             self.symbol(Symbol {
-                name: name.text().into(),
+                name: name.clone(),
                 node,
                 name_range,
                 kind,
@@ -3232,11 +3275,7 @@ impl<'db> Resolver<'db> {
             })
         };
 
-        insert_symbol(
-            &mut self.arena[self.const_table].members,
-            name.text().into(),
-            symbol,
-        );
+        insert_symbol(&mut self.arena[self.const_table].members, name, symbol);
     }
 
     fn for_each_statement(&mut self, stmt: &ForEachStatement) {
@@ -3258,12 +3297,11 @@ impl<'db> Resolver<'db> {
             .unwrap_or_else(|| (Type::STRING.add_any(), Type::ANY));
 
         if let Some(key) = stmt.key()
-            && let Some(name) = get_name(&key)
+            && let Some((name_range, name)) = get_name(&key)
         {
             let kind = SymbolKind::Local(LocalKind::Variable);
-            let name_range = name.text_range();
             let node = SyntaxNodePtr::new(key.syntax());
-            let symbol = if let Some(info) = self.resolve_variable_doc(&key) {
+            let symbol = if let Some(info) = self.resolve_variable_doc(&key, &name, name_range) {
                 let typ = info.typ.as_ref().map_or_else(
                     || key_type.clone(),
                     |doc_type| {
@@ -3276,7 +3314,7 @@ impl<'db> Resolver<'db> {
                     },
                 );
                 let id = self.symbol(Symbol {
-                    name: name.text().into(),
+                    name: name.clone(),
                     node,
                     name_range,
                     kind,
@@ -3290,7 +3328,7 @@ impl<'db> Resolver<'db> {
                 id
             } else {
                 self.symbol(Symbol {
-                    name: name.text().into(),
+                    name: name.clone(),
                     node,
                     name_range,
                     kind,
@@ -3301,16 +3339,15 @@ impl<'db> Resolver<'db> {
                 })
             };
 
-            insert_symbol(&mut self.current_scope().locals, name.text().into(), symbol);
+            insert_symbol(&mut self.current_scope().locals, name, symbol);
         }
 
         if let Some(value) = stmt.value()
-            && let Some(name) = get_name(&value)
+            && let Some((name_range, name)) = get_name(&value)
         {
             let kind = SymbolKind::Local(LocalKind::Variable);
-            let name_range = name.text_range();
             let node = SyntaxNodePtr::new(value.syntax());
-            let symbol = if let Some(info) = self.resolve_variable_doc(&value) {
+            let symbol = if let Some(info) = self.resolve_variable_doc(&value, &name, name_range) {
                 let typ = info.typ.as_ref().map_or_else(
                     || value_type.clone(),
                     |doc_type| {
@@ -3323,7 +3360,7 @@ impl<'db> Resolver<'db> {
                     },
                 );
                 let id = self.symbol(Symbol {
-                    name: name.text().into(),
+                    name: name.clone(),
                     node,
                     name_range,
                     kind,
@@ -3337,7 +3374,7 @@ impl<'db> Resolver<'db> {
                 id
             } else {
                 self.symbol(Symbol {
-                    name: name.text().into(),
+                    name: name.clone(),
                     node,
                     name_range,
                     kind,
@@ -3348,7 +3385,7 @@ impl<'db> Resolver<'db> {
                 })
             };
 
-            insert_symbol(&mut self.current_scope().locals, name.text().into(), symbol);
+            insert_symbol(&mut self.current_scope().locals, name, symbol);
         }
 
         if let Some(body) = stmt.body() {
@@ -3413,9 +3450,7 @@ impl<'db> Resolver<'db> {
         name: &QualifiedName,
     ) -> Option<Container> {
         let mut parts = name.parts();
-        let first = get_name(&parts.next()?)?;
-
-        let text = first.text();
+        let (range, first_name) = get_name(&parts.next()?)?;
 
         let offset = name.syntax().text_range().end();
 
@@ -3426,13 +3461,7 @@ impl<'db> Resolver<'db> {
                 false,
             )
             .into_iter()
-            .find_map(|(name, id)| {
-                if text == name.as_ref() {
-                    Some(id)
-                } else {
-                    None
-                }
-            });
+            .find_map(|(name, id)| (first_name == name).then_some(id));
 
         let root = || {
             self.members_of_table(
@@ -3442,21 +3471,14 @@ impl<'db> Resolver<'db> {
                 false,
             )
             .into_iter()
-            .find_map(|(name, id)| {
-                if text == name.as_ref() {
-                    Some(id)
-                } else {
-                    None
-                }
-            })
+            .find_map(|(name, id)| (first_name == name).then_some(id))
         };
 
-        let range = first.text_range();
         let Some(symbol_id) = members.or_else(root) else {
             if self
                 .local_members(offset)
                 .into_iter()
-                .any(|(name, _)| text == name.as_ref())
+                .any(|(name, _)| first_name == name)
             {
                 self.diagnostics.push(Diagnostic {
                     message: "Function statement does not lookup locals. Initial symbol not found"
@@ -3490,7 +3512,7 @@ impl<'db> Resolver<'db> {
                 return None;
             };
 
-            let name_token = get_name(&segment)?;
+            let (range, name) = get_name(&segment)?;
 
             let id = self
                 .members_of_container(
@@ -3499,15 +3521,8 @@ impl<'db> Resolver<'db> {
                     false,
                 )
                 .into_iter()
-                .find_map(|(name, id)| {
-                    if name.as_ref() == name_token.text() {
-                        Some(id)
-                    } else {
-                        None
-                    }
-                })?;
+                .find_map(|(member_name, id)| (member_name == name).then_some(id))?;
 
-            let range = name_token.text_range();
             typ = TypeWithRange {
                 kind: self.get(id).typ.clone(),
                 range,
@@ -3515,7 +3530,7 @@ impl<'db> Resolver<'db> {
             self.new_reference(range, id);
         }
 
-        let final_name = get_name(name)?;
+        let range = name.name()?.identifier()?.text_range();
 
         let arguments = [
             TypeWithRange {
@@ -3524,7 +3539,7 @@ impl<'db> Resolver<'db> {
             },
             TypeWithRange {
                 kind: Type::Primitive(Primitive::Function(Some(id))),
-                range: final_name.text_range(),
+                range,
             },
         ];
 
@@ -3543,7 +3558,7 @@ impl<'db> Resolver<'db> {
         };
 
         let container = self.function_statement_container(id, &qualified_name);
-        let Some(final_name) = get_name(&qualified_name) else {
+        let Some((name_range, name)) = get_name(&qualified_name) else {
             return;
         };
 
@@ -3551,9 +3566,8 @@ impl<'db> Resolver<'db> {
         let kind = SymbolKind::Property {
             show_inlay_hint: false,
         };
-        let name_range = final_name.text_range();
         let node = SyntaxNodePtr::new(stmt.syntax());
-        let symbol = if let Some(info) = self.resolve_variable_doc(stmt) {
+        let symbol = if let Some(info) = self.resolve_variable_doc(stmt, &name, name_range) {
             let typ = info.typ.as_ref().map_or_else(
                 || typ.clone(),
                 |doc_type| {
@@ -3568,7 +3582,7 @@ impl<'db> Resolver<'db> {
             );
 
             let id = self.symbol(Symbol {
-                name: final_name.text().into(),
+                name: name.clone(),
                 node,
                 name_range,
                 kind,
@@ -3581,7 +3595,7 @@ impl<'db> Resolver<'db> {
             id
         } else {
             self.symbol(Symbol {
-                name: final_name.text().into(),
+                name: name.clone(),
                 node,
                 name_range,
                 kind,
@@ -3593,13 +3607,13 @@ impl<'db> Resolver<'db> {
         };
 
         if let Some(container) = container {
-            self.add_container_member(container, final_name.text().into(), symbol);
+            self.add_container_member(container, name, symbol);
             if let Some(function) = self.get_mut(id) {
                 function.container = container;
                 function.symbol = Some(symbol);
             }
         } else {
-            self.add_current_container_member(final_name.text().into(), symbol);
+            self.add_current_container_member(name, symbol);
             if let Some(function) = self.get_mut(id) {
                 function.symbol = Some(symbol);
             }
@@ -3609,12 +3623,11 @@ impl<'db> Resolver<'db> {
     fn enum_statement(&mut self, stmt: &EnumStatement) {
         let id = EnumId::new(self.file, self.arena.alloc(EnumData::default()));
 
-        if let Some(name) = get_name(stmt) {
+        if let Some((name_range, name)) = get_name(stmt) {
             let typ = Type::Enum(id);
             let kind = SymbolKind::Constant;
-            let name_range = name.text_range();
             let node = SyntaxNodePtr::new(stmt.syntax());
-            let symbol = if let Some(info) = self.resolve_variable_doc(stmt) {
+            let symbol = if let Some(info) = self.resolve_variable_doc(stmt, &name, name_range) {
                 let typ = info.typ.as_ref().map_or_else(
                     || typ.clone(),
                     |doc_type| {
@@ -3628,7 +3641,7 @@ impl<'db> Resolver<'db> {
                 );
 
                 let id = self.symbol(Symbol {
-                    name: name.text().into(),
+                    name: name.clone(),
                     node,
                     name_range,
                     kind,
@@ -3641,7 +3654,7 @@ impl<'db> Resolver<'db> {
                 id
             } else {
                 self.symbol(Symbol {
-                    name: name.text().into(),
+                    name: name.clone(),
                     node,
                     name_range,
                     kind,
@@ -3654,11 +3667,7 @@ impl<'db> Resolver<'db> {
 
             self.arena[id.idx()].symbol = Some(symbol);
 
-            insert_symbol(
-                &mut self.arena[self.const_table].members,
-                name.text().into(),
-                symbol,
-            );
+            insert_symbol(&mut self.arena[self.const_table].members, name, symbol);
         }
 
         let save_symbol = self.container;
@@ -3678,6 +3687,50 @@ impl<'db> Resolver<'db> {
         };
 
         self.collect_expr(&expr);
+        self.check_no_discard(&expr);
+    }
+
+    fn check_no_discard(&mut self, expr: &Expr) {
+        let Expr::Call(call) = expr else { return };
+        let Some(callee) = call.callee().and_then(|c| c.expression()) else {
+            return;
+        };
+
+        let typ = self.type_at(callee.syntax().text_range());
+        let Some(resolution) = self.to_function_id(&typ, callee.syntax().text_range().start())
+        else {
+            return;
+        };
+
+        let message = match resolution {
+            FunctionIdResolution::DefaultConstructor => {
+                "Default constructor produces no side effects so returned object should not be ignored".to_owned()
+            }
+            FunctionIdResolution::Function(id) => {
+                if !self.get(id).is_no_discard {
+                    return;
+                }
+
+                self.get(id).symbol.map_or_else(
+                || {
+                    "Return value of this function is marked '@nodiscard' and should not be ignored"
+                        .to_owned()
+                },
+                |s| {
+                    format!(
+                        "Return value of '{}' is marked '@nodiscard' and should not be ignored",
+                        &self.get(s).name
+                    )
+                },
+            )
+            }
+        };
+
+        self.diagnostics.push(Diagnostic {
+            message,
+            range: expr.syntax().text_range(),
+            severity: DiagnosticSeverity::Warning,
+        });
     }
 
     fn if_statement(&mut self, stmt: &IfStatement) {
@@ -3914,13 +3967,13 @@ impl<'db> Resolver<'db> {
         ));
 
         if let Some(binding) = catch.binding()
-            && let Some(name) = get_name(&binding)
+            && let Some((name_range, name)) = get_name(&binding)
         {
             let typ = Type::STRING.add_any();
             let kind = SymbolKind::Local(LocalKind::Exception);
-            let name_range = name.text_range();
             let node = SyntaxNodePtr::new(binding.syntax());
-            let symbol = if let Some(info) = self.resolve_variable_doc(&binding) {
+            let symbol = if let Some(info) = self.resolve_variable_doc(&binding, &name, name_range)
+            {
                 let typ = info.typ.as_ref().map_or_else(
                     || typ.clone(),
                     |doc_type| {
@@ -3934,7 +3987,7 @@ impl<'db> Resolver<'db> {
                 );
 
                 let id = self.symbol(Symbol {
-                    name: name.text().into(),
+                    name: name.clone(),
                     node,
                     name_range,
                     kind,
@@ -3947,7 +4000,7 @@ impl<'db> Resolver<'db> {
                 id
             } else {
                 self.symbol(Symbol {
-                    name: name.text().into(),
+                    name: name.clone(),
                     node,
                     name_range,
                     kind,
@@ -3958,7 +4011,7 @@ impl<'db> Resolver<'db> {
                 })
             };
 
-            insert_symbol(&mut self.current_scope().locals, name.text().into(), symbol);
+            insert_symbol(&mut self.current_scope().locals, name, symbol);
         }
 
         if let Some(body) = catch.body() {
@@ -4213,7 +4266,7 @@ impl<'db> Resolver<'db> {
     }
 
     fn root_access_expression(&mut self, expr: &RootAccessExpression) -> NullableExprKind {
-        let name_token = get_name(expr)?;
+        let (name_range, name) = get_name(expr)?;
         let offset = expr.syntax().text_range().end();
 
         self.members_of_table(
@@ -4223,9 +4276,9 @@ impl<'db> Resolver<'db> {
             false,
         )
         .into_iter()
-        .find_map(|(name, id)| {
-            if name_token.text() == name.as_ref() {
-                self.new_reference(name_token.text_range(), id);
+        .find_map(|(member_name, id)| {
+            if name == member_name {
+                self.new_reference(name_range, id);
                 Some(ExpressionKind::Symbol(id))
             } else {
                 None
@@ -4260,7 +4313,7 @@ impl<'db> Resolver<'db> {
     fn member_access_expression(&mut self, expr: &MemberAccessExpression) -> NullableExprKind {
         let from = self.expr_to_type(&expr.object()?);
         let member_part = expr.member_part()?;
-        let name_token = get_name(&member_part)?;
+        let (name_range, name) = get_name(&member_part)?;
 
         let offset = expr.syntax().text_range().end();
 
@@ -4271,9 +4324,9 @@ impl<'db> Resolver<'db> {
                 false,
             )
             .into_iter()
-            .find_map(|(name, id)| {
-                if name_token.text() == name.as_ref() {
-                    self.new_reference(name_token.text_range(), id);
+            .find_map(|(member_name, id)| {
+                if name == member_name {
+                    self.new_reference(name_range, id);
                     Some(ExpressionKind::Symbol(id))
                 } else {
                     None
@@ -4281,7 +4334,7 @@ impl<'db> Resolver<'db> {
             });
 
         if result.is_none() {
-            self.no_member_error(&from, name_token.text(), expr.syntax().text_range());
+            self.no_member_error(&from, &name, expr.syntax().text_range());
         }
         result
     }
@@ -4440,11 +4493,7 @@ impl<'db> Resolver<'db> {
                 let offset = expr_range.end();
 
                 let filter = |(name, id): (Box<str>, SymbolId)| {
-                    if name_token.text() == name.as_ref() {
-                        Some(id)
-                    } else {
-                        None
-                    }
+                    (name_token.text() == name.as_ref()).then_some(id)
                 };
 
                 let locals = self.local_members(offset).into_iter().find_map(filter);
@@ -4525,9 +4574,8 @@ impl<'db> Resolver<'db> {
                 let obj = self.expr_to_type(&expr.object()?);
                 let member_part = expr.member_part()?;
 
-                let name_token = get_name(&member_part)?;
+                let (name_range, name) = get_name(&member_part)?;
                 let expr_range = expr.syntax().text_range();
-                let name_range = name_token.text_range();
                 let offset = expr_range.end();
 
                 Some(
@@ -4537,17 +4585,11 @@ impl<'db> Resolver<'db> {
                         false,
                     )
                     .into_iter()
-                    .find_map(|(name, id)| {
-                        if name_token.text() == name.as_ref() {
-                            Some(id)
-                        } else {
-                            None
-                        }
-                    })
+                    .find_map(|(member_name, id)| (name == member_name).then_some(id))
                     .map_or_else(
                         || AssignmentLeftHandSide::CanCreate {
                             parent: obj.clone(),
-                            new_key: name_token.text().into(),
+                            new_key: name,
                             name_range,
                             expr_range,
                         },
@@ -4592,7 +4634,7 @@ impl<'db> Resolver<'db> {
                         false,
                     )
                     .into_iter()
-                    .find_map(|(name, id)| if name == text { Some(id) } else { None })
+                    .find_map(|(name, id)| (name == text).then_some(id))
                     .map_or_else(
                         || AssignmentLeftHandSide::CanCreate {
                             parent: obj.clone(),
@@ -4610,9 +4652,8 @@ impl<'db> Resolver<'db> {
                 )
             }
             Expr::RootAccess(expr) => {
-                let name_token = get_name(expr)?;
+                let (name_range, name) = get_name(expr)?;
                 let expr_range = expr.syntax().text_range();
-                let name_range = name_token.text_range();
                 let offset = expr_range.end();
 
                 let root = self.root_table();
@@ -4624,17 +4665,11 @@ impl<'db> Resolver<'db> {
                         false,
                     )
                     .into_iter()
-                    .find_map(|(name, id)| {
-                        if name_token.text() == name.as_ref() {
-                            Some(id)
-                        } else {
-                            None
-                        }
-                    })
+                    .find_map(|(member_name, id)| (name == member_name).then_some(id))
                     .map_or_else(
                         || AssignmentLeftHandSide::CanCreate {
                             parent: Type::Primitive(Primitive::Table(Some(root))),
-                            new_key: name_token.text().into(),
+                            new_key: name,
                             name_range,
                             expr_range,
                         },
@@ -4745,7 +4780,9 @@ impl<'db> Resolver<'db> {
                 let typ = value.kind.clone();
                 let kind = SymbolKind::Property { show_inlay_hint };
                 let node = SyntaxNodePtr::new(expr.syntax());
-                let symbol = if let Some(info) = self.resolve_variable_doc(expr) {
+                let symbol = if let Some(info) =
+                    self.resolve_variable_doc(expr, &new_key, name_range)
+                {
                     let typ = info.typ.as_ref().map_or_else(
                         || typ.clone(),
                         |doc_type| {
@@ -4826,43 +4863,44 @@ impl<'db> Resolver<'db> {
                     let typ = value.kind.clone();
                     let kind = SymbolKind::Property { show_inlay_hint };
                     let node = SyntaxNodePtr::new(expr.syntax());
-                    let symbol = if let Some(info) = self.resolve_variable_doc(expr) {
-                        let typ = info.typ.as_ref().map_or_else(
-                            || typ.clone(),
-                            |doc_type| {
-                                self.check_type(
-                                    doc_type,
-                                    &typ,
-                                    CheckTypeSource::Variable,
-                                    expr_range,
-                                )
-                            },
-                        );
+                    let symbol =
+                        if let Some(info) = self.resolve_variable_doc(expr, &name, name_range) {
+                            let typ = info.typ.as_ref().map_or_else(
+                                || typ.clone(),
+                                |doc_type| {
+                                    self.check_type(
+                                        doc_type,
+                                        &typ,
+                                        CheckTypeSource::Variable,
+                                        expr_range,
+                                    )
+                                },
+                            );
 
-                        let id = self.symbol(Symbol {
-                            name: name.clone(),
-                            node,
-                            name_range,
-                            kind,
-                            is_type_explicit: info.typ.is_some(),
-                            typ,
-                            description: info.description,
-                            flags: info.flags,
-                        });
-                        self.doc_to_symbol.insert(info.range, id);
-                        id
-                    } else {
-                        self.symbol(Symbol {
-                            name: name.clone(),
-                            node,
-                            name_range,
-                            kind,
-                            is_type_explicit: false,
-                            typ,
-                            description: None,
-                            flags: SymbolFlags::default(),
-                        })
-                    };
+                            let id = self.symbol(Symbol {
+                                name: name.clone(),
+                                node,
+                                name_range,
+                                kind,
+                                is_type_explicit: info.typ.is_some(),
+                                typ,
+                                description: info.description,
+                                flags: info.flags,
+                            });
+                            self.doc_to_symbol.insert(info.range, id);
+                            id
+                        } else {
+                            self.symbol(Symbol {
+                                name: name.clone(),
+                                node,
+                                name_range,
+                                kind,
+                                is_type_explicit: false,
+                                typ,
+                                description: None,
+                                flags: SymbolFlags::default(),
+                            })
+                        };
 
                     if let NewSlotResult::CanAdd(container) = result {
                         self.add_container_member(container, name, symbol);

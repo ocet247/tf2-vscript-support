@@ -1190,6 +1190,8 @@ fn completion_doc_tag(
         "@extends ",
         "@static",
         "@this ",
+        "@override",
+        "@nodiscard",
     ];
     let range = replace_range.and_then(|r| positions::range(line_idx, r));
     tags.into_iter()

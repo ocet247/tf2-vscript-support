@@ -940,6 +940,8 @@ ast_enum!(Member {
     Method(Method),
 });
 
+// DOC COMMENT
+
 pub trait HasDocDescription: AstNode<Language = SquirrelLanguage> {
     fn description(&self) -> Option<DocDescription> {
         support::child(self.syntax())
@@ -1090,6 +1092,8 @@ ast_enum!(Tag {
     Type(TypeTag),
     Throw(ThrowTag),
     Yield(YieldTag),
+    Override(OverrideTag),
+    NoDiscard(NoDiscardTag),
     Native(NativeTag),
     Var(VarTag),
     Hide(HideTag),
@@ -1142,6 +1146,14 @@ ast_node!(YieldTag, YieldTag);
 impl HasDocDescription for YieldTag {}
 impl IsTag for YieldTag {}
 impl HasDocType for YieldTag {}
+
+ast_node!(OverrideTag, OverrideTag);
+impl HasDocDescription for OverrideTag {}
+impl IsTag for OverrideTag {}
+
+ast_node!(NoDiscardTag, NoDiscardTag);
+impl HasDocDescription for NoDiscardTag {}
+impl IsTag for NoDiscardTag {}
 
 ast_node!(NativeTag, NativeTag);
 impl HasDocDescription for NativeTag {}

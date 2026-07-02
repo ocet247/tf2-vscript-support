@@ -311,6 +311,8 @@ impl<'a> DocComment<'a> {
                 self.parse_tag_type();
                 SyntaxKind::ThisTag
             }
+            "override" => SyntaxKind::OverrideTag,
+            "nodiscard" => SyntaxKind::NoDiscardTag,
             "native" => SyntaxKind::NativeTag,
             "deprecated" => SyntaxKind::DeprecatedTag,
             "hide" => SyntaxKind::HideTag,
