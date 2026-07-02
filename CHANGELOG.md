@@ -1,5 +1,10 @@
 # Changelog
 
+## [3.3.4]
+- Fix infinite loop in parameter parsing
+- Add @override and @nodiscard tags
+- Improve standard library
+
 ## [3.3.3]
 - Don't show symbol completions that are impossible to use with identifiers when writing a flat name
 - Quote names unable to be written with an identifier when displaying symbol documentation
