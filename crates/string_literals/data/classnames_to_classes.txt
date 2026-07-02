@@ -1,6 +1,6 @@
 # TF2 classnames to classes
 # Blank lines and lines starting with # are ignored.
-# '$' is used a separator
+# '$' is used as a separator
 
 _ballplayertoucher$CBaseEntity
 _firesmoke$CBaseEntity

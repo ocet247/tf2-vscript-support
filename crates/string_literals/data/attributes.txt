@@ -10,7 +10,7 @@ CARD: health regen
 CARD: move speed bonus
 Construction rate decreased
 Construction rate increased
-DEPRECATED socketed item definition id DEPRECATED,
+DEPRECATED socketed item definition id DEPRECATED
 Halloween Spellbook Page: Audere
 Halloween Spellbook Page: Congeriae
 Halloween Spellbook Page: Gratanter
