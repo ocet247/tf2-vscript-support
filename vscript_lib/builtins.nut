@@ -11,6 +11,7 @@ class integer {
      * Converts the integer to float and returns it.
      * @type {function}
      * @returns {float}
+     * @nodiscard
      */
     function tofloat();
 
@@ -18,6 +19,7 @@ class integer {
      * Converts the integer to string and returns it.
      * @type {function}
      * @returns {string}
+     * @nodiscard
      */
     function tostring();
 
@@ -26,6 +28,7 @@ class integer {
      * Only works for ascii values (0-127 range), otherwise returns `"?"` if integer is outside of this range.
      * @type {function}
      * @returns {string}
+     * @nodiscard
      */
     function tochar();
 
@@ -33,6 +36,7 @@ class integer {
      * Returns the integer itself
      * @type {function}
      * @returns {this}
+     * @nodiscard
      * @hide
      */
     function tointeger();
@@ -41,6 +45,7 @@ class integer {
      * Returns the integer itself
      * @type {function}
      * @returns {this}
+     * @nodiscard
      * @hide
      */
     function weakref();
@@ -52,6 +57,7 @@ class float {
      * Converts the float to integer and returns it. Returns `INT_MIN` for `inf`, `-inf` and `NaN`
      * @type {function}
      * @returns {integer}
+     * @nodiscard
      */
     function tointeger();
 
@@ -59,6 +65,7 @@ class float {
      * Converts the float to string and returns it.
      * @type {function}
      * @returns {string}
+     * @nodiscard
      */
     function tostring();
 
@@ -67,6 +74,7 @@ class float {
      * Only works for ascii values (0-127 range), otherwise returns `"?"` if float is outside of this range.
      * @type {function}
      * @returns {string}
+     * @nodiscard
      */
     function tochar();
 
@@ -74,6 +82,7 @@ class float {
      * Returns the float itself
      * @type {function}
      * @returns {this}
+     * @nodiscard
      * @hide
      */
     function tofloat();
@@ -82,6 +91,7 @@ class float {
      * Returns the float itself
      * @type {function}
      * @returns {this}
+     * @nodiscard
      * @hide
      */
     function weakref();
@@ -93,6 +103,7 @@ class bool {
      * Returns `1.0` for `true`, `0.0` for `false`.
      * @type {function}
      * @returns {float}
+     * @nodiscard
      */
     function tofloat();
 
@@ -100,6 +111,7 @@ class bool {
      * Returns `1` for `true`, `0` for `false`.
      * @type {function}
      * @returns {integer}
+     * @nodiscard
      */
     function tointeger();
 
@@ -107,6 +119,7 @@ class bool {
      * Returns `"true"` for `true` and `"false"` for `false`.
      * @type {function}
      * @returns {string}
+     * @nodiscard
      */
     function tostring();
 
@@ -114,6 +127,7 @@ class bool {
      * Returns the bool itself
      * @type {function}
      * @returns {this}
+     * @nodiscard
      * @hide
      */
     function weakref();
@@ -129,6 +143,7 @@ class string {
      * @param {string} search_string
      * @param {integer} start_index Defaults to `0`
      * @returns {integer|null}
+     * @nodiscard
      */
     function find(search_string, start_index = 0);
 
@@ -136,6 +151,7 @@ class string {
      * Returns the length of the string, ie. the number of characters it comprises.
      * @type {function}
      * @returns {integer}
+     * @nodiscard
      */
     function len();
 
@@ -150,6 +166,7 @@ class string {
      * @param {integer} end_index Defaults to `-1`
      * @returns {string}
      * @throws {string} if the provided start or end index is beyond the string
+     * @nodiscard
      */
     function slice(start_index, end_index = -1);
 
@@ -159,6 +176,7 @@ class string {
      * @type {function}
      * @returns {float}
      * @throws {string}
+     * @nodiscard
      */
     function tofloat();
 
@@ -170,6 +188,7 @@ class string {
      * @param {integer} number_base Defaults to `10`
      * @returns {integer}
      * @throws {string}
+     * @nodiscard
      */
     function tointeger(number_base = 10);
 
@@ -177,6 +196,7 @@ class string {
      * Returns a new string with all upper-case characters converted to lower-case.
      * @type {function}
      * @returns {string}
+     * @nodiscard
      */
     function tolower();
 
@@ -184,6 +204,7 @@ class string {
      * Returns a new string with all lower-case characters converted to upper-case.
      * @type {function}
      * @returns {string}
+     * @nodiscard
      */
     function toupper();
 
@@ -191,6 +212,7 @@ class string {
      * Returns a weak reference pointing to the string
      * @type {function}
      * @returns {weakref}
+     * @nodiscard
      */
     function weakref();
 
@@ -198,6 +220,7 @@ class string {
      * Returns the string itself
      * @type {function}
      * @returns {this}
+     * @nodiscard
      * @hide
      */
     function tostring();
@@ -264,6 +287,7 @@ class array {
      * @type {function}
      * @param {any} element
      * @returns {integer|null}
+     * @nodiscard
      */
     function find(element);
 
@@ -280,6 +304,7 @@ class array {
      * Returns the length of the array, ie. the number of elements it has.
      * @type {function}
      * @returns {integer}
+     * @nodiscard
      */
     function len();
 
@@ -360,6 +385,7 @@ class array {
      * @param {integer} end_index Defaults to `null`
      * @returns {array}
      * @throws {string} if the provided start or end index is beyond the array
+     * @nodiscard
      */
     function slice(start_index, end_index = -1);
 
@@ -380,6 +406,7 @@ class array {
      * @type {function}
      * @returns {any}
      * @throws {string} if the array is empty.
+     * @nodiscard
      */
     function top();
 
@@ -387,6 +414,7 @@ class array {
      * Returns the string `"(array : pointer)"`.
      * @type {function}
      * @returns {string}
+     * @nodiscard
      */
     function tostring();
 
@@ -394,6 +422,7 @@ class array {
      * Returns a weak reference pointing to the array
      * @type {function}
      * @returns {weakref}
+     * @nodiscard
      */
     function weakref();
 }
@@ -421,6 +450,7 @@ class table {
      * Returns the table's delegate.
      * @type {function}
      * @returns {table|null}
+     * @nodiscard
      */
     function getdelegate();
 
@@ -428,6 +458,7 @@ class table {
      * Returns an array containing all the keys of the table slots.
      * @type {function}
      * @returns {array}
+     * @nodiscard
      */
     function keys();
 
@@ -435,6 +466,7 @@ class table {
      * Returns the length of the table, ie. the number of entries it has.
      * @type {function}
      * @returns {integer}
+     * @nodiscard
      */
     function len();
 
@@ -452,6 +484,7 @@ class table {
      * @type {function}
      * @param {any} key
      * @returns {any}
+     * @nodiscard
      */
     function rawget(key);
 
@@ -460,6 +493,7 @@ class table {
      * @type {function}
      * @param {any} key
      * @returns {bool}
+     * @nodiscard
      */
     function rawin(key);
 
@@ -485,6 +519,7 @@ class table {
      * Returns an array containing all the values of the table slots.
      * @type {function}
      * @returns {array}
+     * @nodiscard
      */
     function values();
 
@@ -492,6 +527,7 @@ class table {
      * Tries to invoke the `_tostring` metamethod. If that fails returns the string `"(table: pointer)"`.
      * @type {function}
      * @returns {string}
+     * @nodiscard
      */
     function tostring();
 
@@ -499,6 +535,7 @@ class table {
      * Returns a weak reference pointing to the table
      * @type {function}
      * @returns {weakref}
+     * @nodiscard
      */
     function weakref();
 }
@@ -519,6 +556,7 @@ class function_ {
      * @type {function}
      * @param {table|class|instance|null} environment
      * @returns {function}
+     * @nodiscard
      */
     function bindenv(environment);
 
@@ -536,6 +574,7 @@ class function_ {
      * such as parameters, name and source name.
      * @type {function}
      * @returns {table}
+     * @nodiscard
      */
     function getinfos() {
         return {
@@ -573,6 +612,7 @@ class function_ {
      * Returns the root table of the closure.
      * @type {function}
      * @returns {table}
+     * @nodiscard
      */
     function getroot();
 
@@ -606,6 +646,7 @@ class function_ {
      * Returns the string `"(closure: pointer)"`.
      * @type {function}
      * @returns {string}
+     * @nodiscard
      */
     function tostring();
 }
@@ -618,6 +659,7 @@ class class_ {
      * @type {function}
      * @param {string|null} member_name
      * @returns {any}
+     * @nodiscard
      */
     function getattributes(member_name);
 
@@ -626,6 +668,7 @@ class class_ {
      * The constructor must be explicitly called (e.g. `class_inst.constructor(class_inst)`).
      * @type {function}
      * @returns {instance}
+     * @nodiscard
      */
     function instance();
 
@@ -656,6 +699,7 @@ class class_ {
      * @type {function}
      * @param {any} key
      * @returns {any}
+     * @nodiscard
      */
     function rawget(key);
 
@@ -664,6 +708,7 @@ class class_ {
      * @type {function}
      * @param {any} key
      * @returns {bool}
+     * @nodiscard
      */
     function rawin(key);
 
@@ -702,6 +747,7 @@ class class_ {
      * Returns the string "(class: pointer)".
      * @type {function}
      * @returns {string}
+     * @nodiscard
      */
     function tostring();
 
@@ -709,6 +755,7 @@ class class_ {
      * Returns a weak reference pointing to the class
      * @type {function}
      * @returns {weakref}
+     * @nodiscard
      */
     function weakref();
 }
@@ -719,6 +766,7 @@ class instance {
      * Returns the class that created the instance.
      * @type {function}
      * @returns {class}
+     * @nodiscard
      */
     function getclass();
 
@@ -727,6 +775,7 @@ class instance {
      * @type {function}
      * @param {any} key
      * @returns {any}
+     * @nodiscard
      */
     function rawget(key);
 
@@ -735,6 +784,7 @@ class instance {
      * @type {function}
      * @param {any} key
      * @returns {bool}
+     * @nodiscard
      */
     function rawin(key);
 
@@ -751,6 +801,7 @@ class instance {
      * Tries to invoke the `_tostring` metamethod. If that fails returns the string `"(instance: pointer)"`.
      * @type {function}
      * @returns {string}
+     * @nodiscard
      */
     function tostring();
 
@@ -758,6 +809,7 @@ class instance {
      * Returns a weak reference pointing to the instance
      * @type {function}
      * @returns {weakref}
+     * @nodiscard
      */
     function weakref();
 }
@@ -768,6 +820,7 @@ class generator {
      * Returns the status of the generator as a string: `"running"`, `"dead"` or `"suspended"`.
      * @type {function}
      * @returns {string}
+     * @nodiscard
      */
     function getstatus();
 
@@ -775,6 +828,7 @@ class generator {
      * Returns the string `"(generator : pointer)"`.
      * @type {function}
      * @returns {string}
+     * @nodiscard
      */
     function tostring();
 
@@ -782,6 +836,7 @@ class generator {
      * Returns a weak reference pointing to the generator
      * @type {function}
      * @returns {weakref}
+     * @nodiscard
      */
     function weakref();
 }
@@ -804,6 +859,7 @@ class thread {
      * @type {function}
      * @param {integer} level
      * @returns {table|null}
+     * @nodiscard
      */
     function getstackinfos(level) {
         return {
@@ -822,6 +878,7 @@ class thread {
      * Returns the status of the thread as a string: `"idle"`, `"running"` or `"suspended"`.
      * @type {function}
      * @returns {string}
+     * @nodiscard
      */
     function getstatus();
 
@@ -829,6 +886,7 @@ class thread {
      * Returns the string `"(thread : pointer)"`.
      * @type {function}
      * @returns {string}
+     * @nodiscard
      */
     function tostring();
 
@@ -836,6 +894,7 @@ class thread {
      * Returns a weak reference pointing to the thread
      * @type {function}
      * @returns {weakref}
+     * @nodiscard
      */
     function weakref();
 
@@ -864,6 +923,7 @@ class weakref {
      * Returns the object that the weak reference is pointing at.
      * @type {function}
      * @returns {any} `null` if the referenced object has been destroyed.
+     * @nodiscard
      */
     function ref();
 
@@ -871,6 +931,7 @@ class weakref {
      * Returns the string `"(weakref : pointer)"`.
      * @type {function}
      * @returns {string}
+     * @nodiscard
      */
     function tostring();
 
@@ -878,6 +939,7 @@ class weakref {
      * Returns a weak reference pointing to the weakref
      * @type {function}
      * @returns {weakref}
+     * @nodiscard
      */
     function weakref();
 }

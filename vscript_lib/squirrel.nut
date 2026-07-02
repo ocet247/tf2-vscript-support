@@ -40,6 +40,7 @@ function assert(exp);
  * @type {function}
  * @param {float} value
  * @returns {integer}
+ * @nodiscard
  */
 function castf2i(value);
 
@@ -48,6 +49,7 @@ function castf2i(value);
  * @type {function}
  * @param {integer} value
  * @returns {float}
+ * @nodiscard
  */
 function casti2f(value);
 
@@ -92,6 +94,7 @@ function error(message);
  * Returns the const table of the VM.
  * @type {function}
  * @returns {table}
+ * @nodiscard
  */
 function getconsttable();
 
@@ -99,6 +102,7 @@ function getconsttable();
  * Returns the root table of the VM.
  * @type {function}
  * @returns {table}
+ * @nodiscard
  */
 function getroottable();
 
@@ -108,6 +112,7 @@ function getroottable();
  * @type {function}
  * @param {integer} level
  * @returns {table|null} `null` if the stack level doesn't exist.
+ * @nodiscard
  */
 function getstackinfos(level) {
     return {
@@ -171,6 +176,7 @@ function setroottable(table);
  * @type {function}
  * @param {integer} value
  * @returns {integer}
+ * @nodiscard
  */
 function swap2(value);
 
@@ -179,6 +185,7 @@ function swap2(value);
  * @type {function}
  * @param {integer} value
  * @returns {integer}
+ * @nodiscard
  */
 function swap4(value);
 
@@ -187,6 +194,7 @@ function swap4(value);
  * @type {function}
  * @param {float} value
  * @returns {float}
+ * @nodiscard
  */
 function swapfloat(value);
 
@@ -195,6 +203,7 @@ function swapfloat(value);
  * @type {function}
  * @param {any} value
  * @returns {string}
+ * @nodiscard
  */
 function type(value);
 
@@ -203,6 +212,7 @@ function type(value);
  * @type {function}
  * @param {float} x
  * @returns {integer}
+ * @nodiscard
  */
 function abs(x);
 
@@ -211,6 +221,7 @@ function abs(x);
  * @type {function}
  * @param {float} x
  * @returns {float}
+ * @nodiscard
  */
 function acos(x);
 
@@ -219,6 +230,7 @@ function acos(x);
  * @type {function}
  * @param {float} x
  * @returns {float}
+ * @nodiscard
  */
 function asin(x);
 
@@ -227,6 +239,7 @@ function asin(x);
  * @type {function}
  * @param {float} x
  * @returns {float}
+ * @nodiscard
  */
 function atan(x);
 
@@ -236,6 +249,7 @@ function atan(x);
  * @param {float} y
  * @param {float} x
  * @returns {float}
+ * @nodiscard
  */
 function atan2(y, x);
 
@@ -244,6 +258,7 @@ function atan2(y, x);
  * @type {function}
  * @param {float} x
  * @returns {float}
+ * @nodiscard
  */
 function ceil(x);
 
@@ -252,6 +267,7 @@ function ceil(x);
  * @type {function}
  * @param {float} x
  * @returns {float}
+ * @nodiscard
  */
 function cos(x);
 
@@ -260,6 +276,7 @@ function cos(x);
  * @type {function}
  * @param {float} x
  * @returns {float}
+ * @nodiscard
  */
 function exp(x);
 
@@ -268,6 +285,7 @@ function exp(x);
  * @type {function}
  * @param {float} x
  * @returns {float}
+ * @nodiscard
  */
 function fabs(x);
 
@@ -276,6 +294,7 @@ function fabs(x);
  * @type {function}
  * @param {float} x
  * @returns {float}
+ * @nodiscard
  */
 function floor(x);
 
@@ -284,6 +303,7 @@ function floor(x);
  * @type {function}
  * @param {float} x
  * @returns {float}
+ * @nodiscard
  */
 function log(x);
 
@@ -292,6 +312,7 @@ function log(x);
  * @type {function}
  * @param {float} x
  * @returns {float}
+ * @nodiscard
  */
 function log10(x);
 
@@ -301,6 +322,7 @@ function log10(x);
  * @param {float} x
  * @param {float} y
  * @returns {float}
+ * @nodiscard
  */
 function pow(x, y);
 
@@ -308,6 +330,7 @@ function pow(x, y);
  * Returns a random integer where `0 <= rand() <= RAND_MAX`.
  * @type {function}
  * @returns {integer}
+ * @nodiscard
  */
 function rand();
 
@@ -316,6 +339,7 @@ function rand();
  * @type {function}
  * @param {float} x
  * @returns {float}
+ * @nodiscard
  */
 function sin(x);
 
@@ -324,6 +348,7 @@ function sin(x);
  * @type {function}
  * @param {float} x
  * @returns {float}
+ * @nodiscard
  */
 function sqrt(x);
 
@@ -339,6 +364,7 @@ function srand(seed);
  * @type {function}
  * @param {float} x
  * @returns {float}
+ * @nodiscard
  */
 function tan(x);
 
@@ -348,6 +374,7 @@ function tan(x);
  * @param {string} str
  * @param {string} cmp
  * @returns {bool}
+ * @nodiscard
  */
 function endswith(str, cmp);
 
@@ -356,6 +383,7 @@ function endswith(str, cmp);
  * @type {function}
  * @param {string} str
  * @returns {string}
+ * @nodiscard
  */
 function escape(str);
 
@@ -365,6 +393,7 @@ function escape(str);
  * @param {string} str
  * @varargs {any}
  * @returns {string}
+ * @nodiscard
  */
 function format(str, ...);
 
@@ -373,6 +402,7 @@ function format(str, ...);
  * @type {function}
  * @param {string} str
  * @returns {string}
+ * @nodiscard
  */
 function lstrip(str);
 
@@ -381,6 +411,7 @@ function lstrip(str);
  * @type {function}
  * @param {string} str
  * @returns {string}
+ * @nodiscard
  */
 function rstrip(str);
 
@@ -391,6 +422,7 @@ function rstrip(str);
  * @param {string} separator
  * @param {bool} skip_empty Defaults to `skip_empty`
  * @returns {[string]}
+ * @nodiscard
  */
 function split(str, separator, skip_empty = false);
 
@@ -400,6 +432,7 @@ function split(str, separator, skip_empty = false);
  * @param {string} str
  * @param {string} cmp
  * @returns {bool}
+ * @nodiscard
  */
 function startswith(str, cmp);
 
@@ -408,6 +441,7 @@ function startswith(str, cmp);
  * @type {function}
  * @param {string} str
  * @returns {string}
+ * @nodiscard
  */
 function strip(str);
 
@@ -417,6 +451,7 @@ function strip(str);
  * @param {integer} length
  * @param {any} fill Defaults to `null`
  * @returns {[any]}
+ * @nodiscard
  */
 function array(length, fill = null);
 
@@ -442,6 +477,7 @@ class regexp {
      * Creates and compiles a regular expression from the given pattern.
      * @type {function}
      * @param {string} pattern
+     * @nodiscard
      */
     constructor(pattern);
 
@@ -451,6 +487,7 @@ class regexp {
      * @param {string} str
      * @param {integer} start Defaults to `0`
      * @returns {[table]|null} `null` if no match occurs.
+     * @nodiscard
      */
     function capture(str, start = 0) {
         return [
@@ -468,6 +505,7 @@ class regexp {
      * @type {function}
      * @param {string} str
      * @returns {bool}
+     * @nodiscard
      */
     function match(str);
 
@@ -477,6 +515,7 @@ class regexp {
      * @param {string} str
      * @param {integer} start
      * @returns {table|null}
+     * @nodiscard
      */
     function search(str, start = 0) {
         return {
@@ -491,6 +530,7 @@ class regexp {
      * Returns the number of sub-expression groups in the regular expression. Always `>= 1` since the whole regex counts as a group.
      * @type {function}
      * @returns {integer}
+     * @nodiscard
      */
     function subexpcount();
 }
@@ -501,6 +541,7 @@ class blob {
      * Creates a new blob of the given initial size.
      * @type {function}
      * @param {integer} init_size Defaults to `0`
+     * @nodiscard
      */
     constructor(init_size = 0);
 
@@ -508,6 +549,7 @@ class blob {
      * Returns non-zero if the current read/write position is at the end of the blob.
      * @type {function}
      * @returns {integer}
+     * @nodiscard
      */
     function eos();
 
@@ -521,6 +563,7 @@ class blob {
      * Returns the size of the blob in bytes.
      * @type {function}
      * @returns {integer}
+     * @nodiscard
      */
     function len();
 
@@ -529,6 +572,7 @@ class blob {
      * @type {function}
      * @param {integer} num_of_bytes
      * @returns {blob}
+     * @nodiscard
      */
     function readblob(num_of_bytes);
 
@@ -537,6 +581,7 @@ class blob {
      * @type {function}
      * @param {integer} data_type
      * @returns {any}
+     * @nodiscard
      */
     function readn(data_type);
 
@@ -544,6 +589,7 @@ class blob {
      * Resizes the blob to the specified size.
      * @type {function}
      * @param {integer} new_size
+     * @nodiscard
      */
     function resize(new_size);
 
@@ -553,6 +599,7 @@ class blob {
      * @param {integer} offset
      * @param {integer} offset_basis
      * @returns {integer} `0` on success.
+     * @nodiscard
      */
     function seek(offset, offset_basis);
 
@@ -572,6 +619,7 @@ class blob {
      * Returns the current read/write position.
      * @type {function}
      * @returns {integer}
+     * @nodiscard
      */
     function tell();
 

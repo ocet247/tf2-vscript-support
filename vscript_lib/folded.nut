@@ -807,6 +807,7 @@ foreach (name, method in ::CNetPropManager)
  * @param {CBaseEntity} entity
  * @param {property_array} property_name
  * @returns {integer}
+ * @nodiscard
  */
 GetPropArraySize <- NetProps.GetPropArraySize
 
@@ -816,6 +817,7 @@ GetPropArraySize <- NetProps.GetPropArraySize
  * @param {CBaseEntity} entity
  * @param {entity_property} property_name
  * @returns {CBaseEntity|null} `null` if property is not found.
+ * @nodiscard
  */
 GetPropEntity <- NetProps.GetPropEntity
 
@@ -826,6 +828,7 @@ GetPropEntity <- NetProps.GetPropEntity
  * @param {entity_array_property} property_name
  * @param {integer} array_element
  * @returns {CBaseEntity|null} `null` if not found.
+ * @nodiscard
  */
 GetPropEntityArray <- NetProps.GetPropEntityArray
 
@@ -835,6 +838,7 @@ GetPropEntityArray <- NetProps.GetPropEntityArray
  * @param {CBaseEntity} entity
  * @param {bool_property} property_name
  * @returns {bool} `false` if property is not found.
+ * @nodiscard
  */
 GetPropBool <- NetProps.GetPropBool
 
@@ -845,6 +849,7 @@ GetPropBool <- NetProps.GetPropBool
  * @param {bool_array_property} property_name
  * @param {integer} array_element
  * @returns {bool} `false` if not found.
+ * @nodiscard
  */
 GetPropBoolArray <- NetProps.GetPropBoolArray
 
@@ -854,6 +859,7 @@ GetPropBoolArray <- NetProps.GetPropBoolArray
  * @param {CBaseEntity} entity
  * @param {float_property} property_name
  * @returns {float} `-1.0` if property is not found.
+ * @nodiscard
  */
 GetPropFloat <- NetProps.GetPropFloat
 
@@ -864,6 +870,7 @@ GetPropFloat <- NetProps.GetPropFloat
  * @param {float_array_property} property_name
  * @param {integer} array_element
  * @returns {float} `-1.0` if not found.
+ * @nodiscard
  */
 GetPropFloatArray <- NetProps.GetPropFloatArray
 
@@ -875,6 +882,7 @@ GetPropFloatArray <- NetProps.GetPropFloatArray
  * @param {integer} array_element
  * @param {table} result
  * @returns {bool}
+ * @nodiscard
  */
 GetPropInfo <- NetProps.GetPropInfo
 
@@ -884,6 +892,7 @@ GetPropInfo <- NetProps.GetPropInfo
  * @param {CBaseEntity} entity
  * @param {integer_property} property_name
  * @returns {integer} `-1` if property is not found.
+ * @nodiscard
  */
 GetPropInt <- NetProps.GetPropInt
 
@@ -894,6 +903,7 @@ GetPropInt <- NetProps.GetPropInt
  * @param {integer_array_property} property_name
  * @param {integer} array_element
  * @returns {integer} `-1` if not found.
+ * @nodiscard
  */
 GetPropIntArray <- NetProps.GetPropIntArray
 
@@ -903,6 +913,7 @@ GetPropIntArray <- NetProps.GetPropIntArray
  * @param {CBaseEntity} entity
  * @param {string_property} property_name
  * @returns {string} Empty string if property is not found.
+ * @nodiscard
  */
 GetPropString <- NetProps.GetPropString
 
@@ -913,6 +924,7 @@ GetPropString <- NetProps.GetPropString
  * @param {string_array_property} property_name
  * @param {integer} array_element
  * @returns {string} Empty string if not found.
+ * @nodiscard
  */
 GetPropStringArray <- NetProps.GetPropStringArray
 
@@ -922,6 +934,7 @@ GetPropStringArray <- NetProps.GetPropStringArray
  * @param {CBaseEntity} entity
  * @param {property} property_name
  * @returns {string|null} `null` if not found.
+ * @nodiscard
  */
 GetPropType <- NetProps.GetPropType
 
@@ -931,6 +944,7 @@ GetPropType <- NetProps.GetPropType
  * @param {CBaseEntity} entity
  * @param {vector_property} property_name
  * @returns {Vector} `Vector(0,0,0)` if not found.
+ * @nodiscard
  */
 GetPropVector <- NetProps.GetPropVector
 
@@ -941,6 +955,7 @@ GetPropVector <- NetProps.GetPropVector
  * @param {vector_array_property} property_name
  * @param {integer} array_element
  * @returns {Vector} `Vector(0,0,0)` if not found.
+ * @nodiscard
  */
 GetPropVectorArray <- NetProps.GetPropVectorArray
 
@@ -959,6 +974,7 @@ GetTable <- NetProps.GetTable
  * @param {CBaseEntity} entity
  * @param {property} property_name
  * @returns {bool}
+ * @nodiscard
  */
 HasProp <- NetProps.HasProp
 
@@ -1091,6 +1107,7 @@ foreach (name, method in ::CNavMesh)
  * @param {Vector} end_pos
  * @param {CTFNavArea|null} ignore_area
  * @returns {CTFNavArea|null}
+ * @nodiscard
  */
 FindNavAreaAlongRay <- NavMesh.FindNavAreaAlongRay
 
@@ -1115,6 +1132,7 @@ GetAreasWithAttributes <- NavMesh.GetAreasWithAttributes
  * @param {Vector} origin
  * @param {float} beneath
  * @returns {CTFNavArea|null}
+ * @nodiscard
  */
 GetNavArea <- NavMesh.GetNavArea
 
@@ -1123,6 +1141,7 @@ GetNavArea <- NavMesh.GetNavArea
  * @type {function}
  * @param {integer} area_id
  * @returns {CTFNavArea|null}
+ * @nodiscard
  */
 GetNavAreaByID <- NavMesh.GetNavAreaByID
 
@@ -1130,6 +1149,7 @@ GetNavAreaByID <- NavMesh.GetNavAreaByID
  * Return total number of nav areas.
  * @type {function}
  * @returns {integer}
+ * @nodiscard
  */
 GetNavAreaCount <- NavMesh.GetNavAreaCount
 
@@ -1174,6 +1194,7 @@ GetNavAreasOverlappingEntityExtent <- NavMesh.GetNavAreasOverlappingEntityExtent
  * @param {bool} check_los
  * @param {bool} check_ground
  * @returns {CTFNavArea|null}
+ * @nodiscard
  */
 GetNearestNavArea <- NavMesh.GetNearestNavArea
 
@@ -1194,6 +1215,7 @@ GetObstructingEntities <- NavMesh.GetObstructingEntities
  * @param {integer} team See [Constants.ETFTeam](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ETFTeam)
  * @param {bool} ignore_nav_blockers
  * @returns {bool}
+ * @nodiscard
  */
 NavAreaBuildPath <- NavMesh.NavAreaBuildPath
 
@@ -1204,6 +1226,7 @@ NavAreaBuildPath <- NavMesh.NavAreaBuildPath
  * @param {CTFNavArea} end_area
  * @param {float} max_path_length
  * @returns {float} `-1.0` if can't reach `end_area` from `start_area`.
+ * @nodiscard
  */
 NavAreaTravelDistance <- NavMesh.NavAreaTravelDistance
 
@@ -1232,6 +1255,7 @@ foreach (name, method in ::Convars.getclass())
  * @type {function}
  * @param {convar} name
  * @returns {bool|null}
+ * @nodiscard
  */
 GetBool <- Convars.GetBool
 
@@ -1241,6 +1265,7 @@ GetBool <- Convars.GetBool
  * @param {client_convar} name
  * @param {integer} entindex
  * @returns {string}
+ * @nodiscard
  */
 GetClientConvarValue <- Convars.GetClientConvarValue
 
@@ -1251,6 +1276,7 @@ GetClientConvarValue <- Convars.GetClientConvarValue
  * @type {function}
  * @param {convar} name
  * @returns {integer|null}
+ * @nodiscard
  */
 GetInt <- Convars.GetInt
 
@@ -1261,6 +1287,7 @@ GetInt <- Convars.GetInt
  * @type {function}
  * @param {convar} name
  * @returns {string|null}
+ * @nodiscard
  */
 GetStr <- Convars.GetStr
 
@@ -1271,6 +1298,7 @@ GetStr <- Convars.GetStr
  * @type {function}
  * @param {convar} name
  * @returns {float|null}
+ * @nodiscard
  */
 GetFloat <- Convars.GetFloat
 
@@ -1279,6 +1307,7 @@ GetFloat <- Convars.GetFloat
  * @type {function}
  * @param {convar} name
  * @returns {bool}
+ * @nodiscard
  */
 IsConVarOnAllowList <- Convars.IsConVarOnAllowList
 
@@ -1318,6 +1347,7 @@ DispatchSpawn <- Entities.DispatchSpawn
  * @param {CBaseEntity|null} previous
  * @param {classname_search} classname
  * @returns {CBaseEntity|null}
+ * @nodiscard
  */
 FindByClassname <- Entities.FindByClassname
 
@@ -1328,6 +1358,7 @@ FindByClassname <- Entities.FindByClassname
  * @param {Vector} center
  * @param {float} radius
  * @returns {CBaseEntity|null}
+ * @nodiscard
  */
 FindByClassnameNearest <- Entities.FindByClassnameNearest
 
@@ -1339,6 +1370,7 @@ FindByClassnameNearest <- Entities.FindByClassnameNearest
  * @param {Vector} center
  * @param {float} radius
  * @returns {CBaseEntity|null}
+ * @nodiscard
  */
 FindByClassnameWithin <- Entities.FindByClassnameWithin
 
@@ -1348,6 +1380,7 @@ FindByClassnameWithin <- Entities.FindByClassnameWithin
  * @param {CBaseEntity|null} previous
  * @param {string} model_name
  * @returns {CBaseEntity|null}
+ * @nodiscard
  */
 FindByModel <- Entities.FindByModel
 
@@ -1357,6 +1390,7 @@ FindByModel <- Entities.FindByModel
  * @param {CBaseEntity|null} previous
  * @param {string} targetname
  * @returns {CBaseEntity|null}
+ * @nodiscard
  */
 FindByName <- Entities.FindByName
 
@@ -1367,6 +1401,7 @@ FindByName <- Entities.FindByName
  * @param {Vector} center
  * @param {float} radius
  * @returns {CBaseEntity|null}
+ * @nodiscard
  */
 FindByNameNearest <- Entities.FindByNameNearest
 
@@ -1378,6 +1413,7 @@ FindByNameNearest <- Entities.FindByNameNearest
  * @param {Vector} center
  * @param {float} radius
  * @returns {CBaseEntity|null}
+ * @nodiscard
  */
 FindByNameWithin <- Entities.FindByNameWithin
 
@@ -1387,6 +1423,7 @@ FindByNameWithin <- Entities.FindByNameWithin
  * @param {CBaseEntity|null} previous
  * @param {string} target
  * @returns {CBaseEntity|null}
+ * @nodiscard
  */
 FindByTarget <- Entities.FindByTarget
 
@@ -1397,6 +1434,7 @@ FindByTarget <- Entities.FindByTarget
  * @param {Vector} center
  * @param {float} radius
  * @returns {CBaseEntity|null}
+ * @nodiscard
  */
 FindInSphere <- Entities.FindInSphere
 
@@ -1404,6 +1442,7 @@ FindInSphere <- Entities.FindInSphere
  * Begin an iteration over the list of entities. The first entity is always worldspawn.
  * @type {function}
  * @returns {CBaseEntity}
+ * @nodiscard
  */
 First <- Entities.First
 
@@ -1412,6 +1451,7 @@ First <- Entities.First
  * @type {function}
  * @param {CBaseEntity} previous
  * @returns {CBaseEntity|null}
+ * @nodiscard
  */
 Next <- Entities.Next
 
@@ -1439,6 +1479,7 @@ AddOutput <- EntityOutputs.AddOutput
  * @param {CBaseEntity} entity
  * @param {output} output_name
  * @returns {integer}
+ * @nodiscard
  */
 GetNumElements <- EntityOutputs.GetNumElements
 
@@ -1458,6 +1499,7 @@ GetOutputTable <- EntityOutputs.GetOutputTable
  * @param {CBaseEntity} entity
  * @param {output} output_name
  * @returns {bool}
+ * @nodiscard
  */
 HasAction <- EntityOutputs.HasAction
 
@@ -1467,6 +1509,7 @@ HasAction <- EntityOutputs.HasAction
  * @param {CBaseEntity} entity
  * @param {output} output_name
  * @returns {bool}
+ * @nodiscard
  */
 HasOutput <- EntityOutputs.HasOutput
 
@@ -1480,3 +1523,27 @@ HasOutput <- EntityOutputs.HasOutput
  * @param {string|null} parameter
  */
 RemoveOutput <- EntityOutputs.RemoveOutput
+
+
+// Folded EntityOutputs methods, can be achieved by running the following:
+foreach (name, method in ::CPlayerVoiceListener)
+	if (name != "IsValid")
+		getroottable()[name] <- method.bindenv(::PlayerVoiceListener)
+
+/**
+ * Returns the number of seconds the player has been continuously speaking.
+ * @type {function}
+ * @param {integer} player_index
+ * @returns {float}
+ * @nodiscard
+ */
+GetPlayerSpeechDuration <- PlayerVoiceListener.GetPlayerSpeechDuration
+
+/**
+ * Returns whether the player specified is speaking.
+ * @type {function}
+ * @param {integer} player_index
+ * @returns {bool}
+ * @nodiscard
+ */
+IsPlayerSpeaking <- PlayerVoiceListener.IsPlayerSpeaking

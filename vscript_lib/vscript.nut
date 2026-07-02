@@ -175,6 +175,7 @@ class CBaseEntity {
      * Returns the entity index.
      * @type {function}
      * @returns {integer}
+     * @nodiscard
      */
     function entindex();
 
@@ -182,6 +183,7 @@ class CBaseEntity {
      * Returns the entity's eye angles. Acts like `GetAbsAngles` if the entity does not support it.
      * @type {function}
      * @returns {QAngle}
+     * @nodiscard
      */
     function EyeAngles();
 
@@ -189,6 +191,7 @@ class CBaseEntity {
      * Get vector to eye position - absolute coords. Acts like `GetOrigin` if the entity does not support it.
      * @type {function}
      * @returns {Vector}
+     * @nodiscard
      */
     function EyePosition();
 
@@ -196,6 +199,7 @@ class CBaseEntity {
      * Returns the most-recent entity parented to this one.
      * @type {function}
      * @returns {CBaseEntity|null}
+     * @nodiscard
      */
     function FirstMoveChild();
 
@@ -203,6 +207,7 @@ class CBaseEntity {
      * Get the entity's pitch, yaw, and roll as `QAngle`.
      * @type {function}
      * @returns {QAngle}
+     * @nodiscard
      */
     function GetAbsAngles();
 
@@ -210,6 +215,7 @@ class CBaseEntity {
      * Returns the current absolute velocity of the entity.
      * @type {function}
      * @returns {Vector}
+     * @nodiscard
      */
     function GetAbsVelocity();
 
@@ -217,6 +223,7 @@ class CBaseEntity {
      * Get the entity's pitch, yaw, and roll as `Vector`.
      * @type {function}
      * @returns {Vector}
+     * @nodiscard
      * @deprecated Use `GetAbsAngles` that returns a `QAngle` instead
      */
     function GetAngles();
@@ -225,6 +232,7 @@ class CBaseEntity {
      * Get the local angular velocity - returns a `Vector` of pitch, yaw, and roll.
      * @type {function}
      * @returns {Vector}
+     * @nodiscard
      */
     function GetAngularVelocity();
 
@@ -232,6 +240,7 @@ class CBaseEntity {
      * Returns any constant velocity currently being imparted onto the entity.
      * @type {function}
      * @returns {Vector}
+     * @nodiscard
      */
     function GetBaseVelocity();
 
@@ -239,6 +248,7 @@ class CBaseEntity {
      * Get a vector containing max bounds, centered on object.
      * @type {function}
      * @returns {Vector}
+     * @nodiscard
      */
     function GetBoundingMaxs();
 
@@ -246,6 +256,7 @@ class CBaseEntity {
      * Get a vector containing max bounds, centered on object, taking the object's orientation into account.
      * @type {function}
      * @returns {Vector}
+     * @nodiscard
      */
     function GetBoundingMaxsOriented();
 
@@ -253,6 +264,7 @@ class CBaseEntity {
      * Get a vector containing min bounds, centered on object.
      * @type {function}
      * @returns {Vector}
+     * @nodiscard
      */
     function GetBoundingMins();
 
@@ -260,6 +272,7 @@ class CBaseEntity {
      * Get a vector containing min bounds, centered on object, taking the object's orientation into account.
      * @type {function}
      * @returns {Vector}
+     * @nodiscard
      */
     function GetBoundingMinsOriented();
 
@@ -267,12 +280,14 @@ class CBaseEntity {
      * Gets center point of the entity in world coordinates.
      * @type {function}
      * @returns {Vector}
+     * @nodiscard
      */
     function GetCenter();
 
     /**
      * @type {function}
      * @returns {classname}
+     * @nodiscard
      */
     function GetClassname();
 
@@ -280,6 +295,7 @@ class CBaseEntity {
      * Gets the current collision group of the entity.
      * @type {function}
      * @returns {integer} See [Constants.ECollisionGroup](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ECollisionGroup)
+     * @nodiscard
      */
     function GetCollisionGroup();
 
@@ -287,6 +303,7 @@ class CBaseEntity {
      * Get the entity's engine flags.
      * @type {function}
      * @returns {integer} See [Constants.FEntityEFlags](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#FEntityEFlags)
+     * @nodiscard
      */
     function GetEFlags();
 
@@ -294,6 +311,7 @@ class CBaseEntity {
      * Get the entity's flags.
      * @type {function}
      * @returns {integer} See [Constants.FPlayer](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#FPlayer)
+     * @nodiscard
      */
     function GetFlags();
 
@@ -301,6 +319,7 @@ class CBaseEntity {
      * Get the entity as an `EHANDLE`.
      * @type {function}
      * @returns {instance}
+     * @nodiscard
      * @deprecated Leftover from earlier versions of VScript.
      */
     function GetEntityHandle();
@@ -308,6 +327,7 @@ class CBaseEntity {
     /**
      * @type {function}
      * @returns {integer}
+     * @nodiscard
      */
     function GetEntityIndex();
 
@@ -317,6 +337,7 @@ class CBaseEntity {
      * **Note**: If you intend to get a player's eye forward vector, use `EyeAngles().Forward()` instead.
      * @type {function}
      * @returns {Vector}
+     * @nodiscard
      */
     function GetForwardVector();
 
@@ -324,18 +345,21 @@ class CBaseEntity {
      * Get PLAYER friction, ignored for objects.
      * @type {function}
      * @returns {float}
+     * @nodiscard
      */
     function GetFriction();
 
     /**
      * @type {function}
      * @returns {float}
+     * @nodiscard
      */
     function GetGravity();
 
     /**
      * @type {function}
      * @returns {integer}
+     * @nodiscard
      */
     function GetHealth();
 
@@ -343,6 +367,7 @@ class CBaseEntity {
      * Get the right vector of the entity.
      * @type {function}
      * @returns {Vector}
+     * @nodiscard
      * @deprecated This is purely for compatibility, use `GetLeftVector` instead
      */
     function GetLeftVector();
@@ -350,12 +375,14 @@ class CBaseEntity {
     /**
      * @type {function}
      * @returns {QAngle}
+     * @nodiscard
      */
     function GetLocalAngles();
 
     /**
      * @type {function}
      * @returns {Vector}
+     * @nodiscard
      */
     function GetLocalOrigin();
 
@@ -363,12 +390,14 @@ class CBaseEntity {
      * Get Entity relative velocity.
      * @type {function}
      * @returns {Vector}
+     * @nodiscard
      */
     function GetLocalVelocity();
 
     /**
      * @type {function}
      * @returns {integer}
+     * @nodiscard
      */
     function GetMaxHealth();
 
@@ -376,6 +405,7 @@ class CBaseEntity {
      * Get a KeyValue class instance on this entity's model.
      * @type {function}
      * @returns {CScriptKeyValues}
+     * @nodiscard
      */
     function GetModelKeyValues();
 
@@ -383,6 +413,7 @@ class CBaseEntity {
      * Returns the name of the model.
      * @type {function}
      * @returns {string}
+     * @nodiscard
      */
     function GetModelName();
 
@@ -390,12 +421,14 @@ class CBaseEntity {
      * If in hierarchy, retrieves the entity's parent.
      * @type {function}
      * @returns {CBaseEntity|null}
+     * @nodiscard
      */
     function GetMoveParent();
 
     /**
      * @type {function}
      * @returns {integer}
+     * @nodiscard
      */
     function GetMoveType();
 
@@ -403,6 +436,7 @@ class CBaseEntity {
      * Get entity's targetname.
      * @type {function}
      * @returns {string}
+     * @nodiscard
      */
     function GetName();
 
@@ -410,6 +444,7 @@ class CBaseEntity {
      * This is `GetAbsOrigin` with a funny script name for some reason.
      * @type {function}
      * @returns {Vector}
+     * @nodiscard
      */
     function GetOrigin();
 
@@ -419,18 +454,21 @@ class CBaseEntity {
      * **Note**: This is a wrapper for `m_hOwnerEntity` netprop.
      * @type {function}
      * @returns {CBaseEntity|null}
+     * @nodiscard
      */
     function GetOwner();
 
     /**
      * @type {function}
      * @returns {Vector}
+     * @nodiscard
      */
     function GetPhysAngularVelocity();
 
     /**
      * @type {function}
      * @returns {Vector}
+     * @nodiscard
      */
     function GetPhysVelocity();
 
@@ -438,6 +476,7 @@ class CBaseEntity {
      * Get the entity name stripped of template unique decoration.
      * @type {function}
      * @returns {string}
+     * @nodiscard
      */
     function GetPreTemplateName();
 
@@ -445,6 +484,7 @@ class CBaseEntity {
      * Get the right vector of the entity.
      * @type {function}
      * @returns {Vector}
+     * @nodiscard
      */
     function GetRightVector();
 
@@ -452,6 +492,7 @@ class CBaseEntity {
      * If in hierarchy, walks up the hierarchy to find the root parent.
      * @type {function}
      * @returns {CBaseEntity|null}
+     * @nodiscard
      */
     function GetRootMoveParent();
 
@@ -459,6 +500,7 @@ class CBaseEntity {
      * Retrieve the unique identifier used to refer to the entity within the scripting system.
      * @type {function}
      * @returns {string}
+     * @nodiscard
      */
     function GetScriptId();
 
@@ -466,6 +508,7 @@ class CBaseEntity {
      * Retrieve the script-side data associated with an entity.
      * @type {function}
      * @returns {table|null}
+     * @nodiscard
      */
     function GetScriptScope() {
         return {
@@ -482,12 +525,14 @@ class CBaseEntity {
      * Retrieve the name of the current script think func.
      * @type {function}
      * @returns {string}
+     * @nodiscard
      */
     function GetScriptThinkFunc();
 
     /**
      * @type {function}
      * @returns {integer} See [Constants.ESolidType](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ESolidType)
+     * @nodiscard
      */
     function GetSolid();
 
@@ -499,12 +544,14 @@ class CBaseEntity {
      * @param {string} sound_name
      * @param {string|null} actor_model_name Optional and can be left empty.
      * @returns {float}
+     * @nodiscard
      */
     function GetSoundDuration(sound_name, actor_model_name);
 
     /**
      * @type {function}
      * @returns {integer} See [Constants.ETFTeam](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ETFTeam)
+     * @nodiscard
      */
     function GetTeam();
 
@@ -512,12 +559,14 @@ class CBaseEntity {
      * Get the up vector of the entity.
      * @type {function}
      * @returns {Vector}
+     * @nodiscard
      */
     function GetUpVector();
 
     /**
      * @type {function}
      * @returns {Vector}
+     * @nodiscard
      * @deprecated Use `GetAbsVelocity` instead
      */
     function GetVelocity();
@@ -526,6 +575,7 @@ class CBaseEntity {
      * This function tells you how much of the entity is underwater.
      * @type {function}
      * @returns {integer} `0`=not underwater, `1`=feet, `2`=waist, `3`=head.
+     * @nodiscard
      */
     function GetWaterLevel();
 
@@ -533,6 +583,7 @@ class CBaseEntity {
      * Returns the type of water the entity is currently submerged in.
      * @type {function}
      * @returns {integer} 32=water, 16=slime.
+     * @nodiscard
      */
     function GetWaterType();
 
@@ -540,12 +591,14 @@ class CBaseEntity {
      * Am I alive?
      * @type {function}
      * @returns {bool}
+     * @nodiscard
      */
     function IsAlive();
 
     /**
      * @type {function}
      * @param {integer} flag See [Constants.FEntityEFlags](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#FEntityEFlags)
+     * @nodiscard
      * @returns {bool}
      */
     function IsEFlagSet(flag);
@@ -553,12 +606,14 @@ class CBaseEntity {
     /**
      * Checks whether the entity is a player or not.
      * @type {function}
+     * @nodiscard
      * @returns {bool}
      */
     function IsPlayer();
 
     /**
      * @type {function}
+     * @nodiscard
      * @returns {bool}
      */
     function IsSolid();
@@ -566,6 +621,7 @@ class CBaseEntity {
     /**
      * @type {function}
      * @param {integer} flag See [Constants.FSolid](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#FSolid)
+     * @nodiscard
      * @returns {bool}
      */
     function IsSolidFlagSet(flag);
@@ -574,6 +630,7 @@ class CBaseEntity {
      * Checks whether the entity still exists.
      * Useful when storing entity handles and needing to check if the entity was not deleted.
      * @type {function}
+     * @nodiscard
      * @returns {bool}
      */
     function IsValid();
@@ -634,6 +691,7 @@ class CBaseEntity {
      * Returns the entity's local eye angles.
      * @type {function}
      * @returns {QAngle}
+     * @nodiscard
      */
     function LocalEyeAngles();
 
@@ -641,6 +699,7 @@ class CBaseEntity {
      * Returns the next entity parented with the entity.
      * @type {function}
      * @returns {CBaseEntity|null}
+     * @nodiscard
      */
     function NextMovePeer();
 
@@ -973,6 +1032,24 @@ class CBaseEntity {
  */
 class CBaseAnimating extends CBaseEntity {
     /**
+     * Retrieve the script-side data associated with an entity.
+     * @override
+     * @type {function}
+     * @returns {table|null}
+     * @nodiscard
+     */
+    function GetScriptScope() {
+        return {
+            /** @type {this} */
+            self = null
+            /** @type {string} */
+            __vname = null
+            /** @type {integer} */
+            __vrefs = null
+        }
+    }
+
+    /**
      * Dispatch animation events to a `CBaseAnimating` entity.
      * @type {function}
      * @param {CBaseAnimating} entity
@@ -984,6 +1061,7 @@ class CBaseAnimating extends CBaseEntity {
      * @type {function}
      * @param {string} name
      * @returns {integer} `-1` if the bodygroup does not exist.
+     * @nodiscard
      */
     function FindBodygroupByName(name);
 
@@ -992,6 +1070,7 @@ class CBaseAnimating extends CBaseEntity {
      * @type {function}
      * @param {integer} id
      * @returns {QAngle}
+     * @nodiscard
      */
     function GetAttachmentAngles(id);
 
@@ -1000,6 +1079,7 @@ class CBaseAnimating extends CBaseEntity {
      * @type {function}
      * @param {integer} id
      * @returns {integer}
+     * @nodiscard
      */
     function GetAttachmentBone(id);
 
@@ -1008,6 +1088,7 @@ class CBaseAnimating extends CBaseEntity {
      * @type {function}
      * @param {integer} id
      * @returns {Vector}
+     * @nodiscard
      */
     function GetAttachmentOrigin(id);
 
@@ -1016,6 +1097,7 @@ class CBaseAnimating extends CBaseEntity {
      * @type {function}
      * @param {integer} id
      * @returns {integer}
+     * @nodiscard
      */
     function GetBodygroup(id);
 
@@ -1024,6 +1106,7 @@ class CBaseAnimating extends CBaseEntity {
      * @type {function}
      * @param {integer} id
      * @returns {string}
+     * @nodiscard
      */
     function GetBodygroupName(id);
 
@@ -1033,6 +1116,7 @@ class CBaseAnimating extends CBaseEntity {
      * @param {integer} group
      * @param {integer} part
      * @returns {string}
+     * @nodiscard
      */
     function GetBodygroupPartName(group, part);
 
@@ -1043,15 +1127,18 @@ class CBaseAnimating extends CBaseEntity {
      * @type {function}
      * @param {integer} id
      * @returns {QAngle}
+     * @nodiscard
      */
     function GetBoneAngles(id);
 
     /**
      * Get the bone's origin `Vector` by ID.
-     * **Warning**: See GetBoneAngles warning.
+     *
+     * **Warning**: Bone transforms are cached; setting new sequences may cause stale bone data.
      * @type {function}
      * @param {integer} id
      * @returns {Vector}
+     * @nodiscard
      */
     function GetBoneOrigin(id);
 
@@ -1059,6 +1146,7 @@ class CBaseAnimating extends CBaseEntity {
      * Gets the model's current animation cycle rate. Ranges from `0.0` to `1.0`.
      * @type {function}
      * @returns {float}
+     * @nodiscard
      */
     function GetCycle();
 
@@ -1066,6 +1154,7 @@ class CBaseAnimating extends CBaseEntity {
      * Get the model's scale.
      * @type {function}
      * @returns {float}
+     * @nodiscard
      */
     function GetModelScale();
 
@@ -1073,6 +1162,7 @@ class CBaseAnimating extends CBaseEntity {
      * Get the current animation's playback rate.
      * @type {function}
      * @returns {float}
+     * @nodiscard
      */
     function GetPlaybackRate();
 
@@ -1080,6 +1170,7 @@ class CBaseAnimating extends CBaseEntity {
      * Get the current-playing sequence's ID.
      * @type {function}
      * @returns {integer}
+     * @nodiscard
      */
     function GetSequence();
 
@@ -1088,6 +1179,7 @@ class CBaseAnimating extends CBaseEntity {
      * @type {function}
      * @param {integer} id
      * @returns {string}
+     * @nodiscard
      */
     function GetSequenceActivityName(id);
 
@@ -1096,6 +1188,7 @@ class CBaseAnimating extends CBaseEntity {
      * @type {function}
      * @param {integer} id
      * @returns {float}
+     * @nodiscard
      */
     function GetSequenceDuration(id);
 
@@ -1104,6 +1197,7 @@ class CBaseAnimating extends CBaseEntity {
      * @type {function}
      * @param {integer} id
      * @returns {string}
+     * @nodiscard
      */
     function GetSequenceName(id);
 
@@ -1111,6 +1205,7 @@ class CBaseAnimating extends CBaseEntity {
      * Gets the current skin index.
      * @type {function}
      * @returns {integer}
+     * @nodiscard
      */
     function GetSkin();
 
@@ -1118,6 +1213,7 @@ class CBaseAnimating extends CBaseEntity {
      * Ask whether the main sequence is done playing.
      * @type {function}
      * @returns {bool}
+     * @nodiscard
      */
     function IsSequenceFinished();
 
@@ -1126,6 +1222,7 @@ class CBaseAnimating extends CBaseEntity {
      * @type {function}
      * @param {string} activity
      * @returns {integer} `-1` if the activity does not exist.
+     * @nodiscard
      */
     function LookupActivity(activity);
 
@@ -1134,6 +1231,7 @@ class CBaseAnimating extends CBaseEntity {
      * @type {function}
      * @param {string} name
      * @returns {integer} `0` if the attachment does not exist.
+     * @nodiscard
      */
     function LookupAttachment(name);
 
@@ -1142,6 +1240,7 @@ class CBaseAnimating extends CBaseEntity {
      * @type {function}
      * @param {string} bone
      * @returns {integer} `-1` if the bone does not exist.
+     * @nodiscard
      */
     function LookupBone(bone);
 
@@ -1150,6 +1249,7 @@ class CBaseAnimating extends CBaseEntity {
      * @type {function}
      * @param {string} name
      * @returns {integer} `-1` if the pose parameter does not exist.
+     * @nodiscard
      */
     function LookupPoseParameter(name);
 
@@ -1158,6 +1258,7 @@ class CBaseAnimating extends CBaseEntity {
      * @type {function}
      * @param {string} name
      * @returns {integer} `-1` if not found.
+     * @nodiscard
      */
     function LookupSequence(name);
 
@@ -1258,9 +1359,28 @@ class CBaseAnimating extends CBaseEntity {
  */
 class CBaseCombatWeapon extends CBaseAnimating {
     /**
+     * Retrieve the script-side data associated with an entity.
+     * @override
+     * @type {function}
+     * @returns {table|null}
+     * @nodiscard
+     */
+    function GetScriptScope() {
+        return {
+            /** @type {this} */
+            self = null
+            /** @type {string} */
+            __vname = null
+            /** @type {integer} */
+            __vrefs = null
+        }
+    }
+
+    /**
      * Can this weapon be selected.
      * @type {function}
      * @returns {bool}
+     * @nodiscard
      */
     function CanBeSelected();
 
@@ -1268,6 +1388,7 @@ class CBaseCombatWeapon extends CBaseAnimating {
      * Current ammo in clip1.
      * @type {function}
      * @returns {integer} `-1` if clip1 is not present.
+     * @nodiscard
      */
     function Clip1();
 
@@ -1275,6 +1396,7 @@ class CBaseCombatWeapon extends CBaseAnimating {
      * Current ammo in clip2.
      * @type {function}
      * @returns {integer} `-1` if clip2 is not present.
+     * @nodiscard
      */
     function Clip2();
 
@@ -1282,6 +1404,7 @@ class CBaseCombatWeapon extends CBaseAnimating {
      * Default size of clip1.
      * @type {function}
      * @returns {integer} `-1` if clip1 is not present.
+     * @nodiscard
      */
     function GetDefaultClip1();
 
@@ -1289,6 +1412,7 @@ class CBaseCombatWeapon extends CBaseAnimating {
      * Default size of clip2.
      * @type {function}
      * @returns {integer} `-1` if clip2 is not present.
+     * @nodiscard
      */
     function GetDefaultClip2();
 
@@ -1296,6 +1420,7 @@ class CBaseCombatWeapon extends CBaseAnimating {
      * Max size of clip1.
      * @type {function}
      * @returns {integer} `-1` if clip1 is not present.
+     * @nodiscard
      */
     function GetMaxClip1();
 
@@ -1303,6 +1428,7 @@ class CBaseCombatWeapon extends CBaseAnimating {
      * Max size of clip2.
      * @type {function}
      * @returns {integer} `-1` if clip2 is not present.
+     * @nodiscard
      */
     function GetMaxClip2();
 
@@ -1310,8 +1436,10 @@ class CBaseCombatWeapon extends CBaseAnimating {
      * Gets the weapon's internal name (not the targetname!)
      *
      * **Warning**: Conflicts with `CBaseEntity`'s `GetName`. Use `CBaseEntity.GetName.call(weapon)` for targetname.
+     * @override
      * @type {function}
      * @returns {string}
+     * @nodiscard
      */
     function GetName();
 
@@ -1319,6 +1447,7 @@ class CBaseCombatWeapon extends CBaseAnimating {
      * Gets the weapon's current position.
      * @type {function}
      * @returns {integer}
+     * @nodiscard
      */
     function GetPosition();
 
@@ -1326,6 +1455,7 @@ class CBaseCombatWeapon extends CBaseAnimating {
      * Current primary ammo count.
      * @type {function}
      * @returns {integer}
+     * @nodiscard
      */
     function GetPrimaryAmmoCount();
 
@@ -1333,6 +1463,7 @@ class CBaseCombatWeapon extends CBaseAnimating {
      * Returns the primary ammo type.
      * @type {function}
      * @returns {integer}
+     * @nodiscard
      */
     function GetPrimaryAmmoType();
 
@@ -1340,6 +1471,7 @@ class CBaseCombatWeapon extends CBaseAnimating {
      * Gets the weapon's print name.
      * @type {function}
      * @returns {string}
+     * @nodiscard
      */
     function GetPrintName();
 
@@ -1347,6 +1479,7 @@ class CBaseCombatWeapon extends CBaseAnimating {
      * Current secondary ammo count.
      * @type {function}
      * @returns {integer}
+     * @nodiscard
      */
     function GetSecondaryAmmoCount();
 
@@ -1354,6 +1487,7 @@ class CBaseCombatWeapon extends CBaseAnimating {
      * Returns the secondary ammo type.
      * @type {function}
      * @returns {integer}
+     * @nodiscard
      */
     function GetSecondaryAmmoType();
 
@@ -1361,6 +1495,7 @@ class CBaseCombatWeapon extends CBaseAnimating {
      * Gets the weapon's current slot.
      * @type {function}
      * @returns {integer}
+     * @nodiscard
      */
     function GetSlot();
 
@@ -1368,6 +1503,7 @@ class CBaseCombatWeapon extends CBaseAnimating {
      * Get the weapon subtype.
      * @type {function}
      * @returns {integer}
+     * @nodiscard
      */
     function GetSubType();
 
@@ -1375,6 +1511,7 @@ class CBaseCombatWeapon extends CBaseAnimating {
      * Get the weapon flags.
      * @type {function}
      * @returns {integer}
+     * @nodiscard
      */
     function GetWeaponFlags();
 
@@ -1382,6 +1519,7 @@ class CBaseCombatWeapon extends CBaseAnimating {
      * Get the weapon weighting/importance.
      * @type {function}
      * @returns {integer}
+     * @nodiscard
      */
     function GetWeight();
 
@@ -1389,6 +1527,7 @@ class CBaseCombatWeapon extends CBaseAnimating {
      * Do we have any ammo?
      * @type {function}
      * @returns {bool}
+     * @nodiscard
      */
     function HasAnyAmmo();
 
@@ -1396,6 +1535,7 @@ class CBaseCombatWeapon extends CBaseAnimating {
      * Do we have any primary ammo?
      * @type {function}
      * @returns {bool}
+     * @nodiscard
      */
     function HasPrimaryAmmo();
 
@@ -1403,6 +1543,7 @@ class CBaseCombatWeapon extends CBaseAnimating {
      * Do we have any secondary ammo?
      * @type {function}
      * @returns {bool}
+     * @nodiscard
      */
     function HasSecondaryAmmo();
 
@@ -1410,6 +1551,7 @@ class CBaseCombatWeapon extends CBaseAnimating {
      * Are we allowed to switch to this weapon?
      * @type {function}
      * @returns {bool}
+     * @nodiscard
      */
     function IsAllowedToSwitch();
 
@@ -1417,6 +1559,7 @@ class CBaseCombatWeapon extends CBaseAnimating {
      * Returns whether this is a melee weapon.
      * @type {function}
      * @returns {bool}
+     * @nodiscard
      */
     function IsMeleeWeapon();
 
@@ -1475,6 +1618,7 @@ class CBaseCombatWeapon extends CBaseAnimating {
      * Do we use clips for ammo 1?
      * @type {function}
      * @returns {bool}
+     * @nodiscard
      */
     function UsesClipsForAmmo1();
 
@@ -1482,6 +1626,7 @@ class CBaseCombatWeapon extends CBaseAnimating {
      * Do we use clips for ammo 2?
      * @type {function}
      * @returns {bool}
+     * @nodiscard
      */
     function UsesClipsForAmmo2();
 
@@ -1489,6 +1634,7 @@ class CBaseCombatWeapon extends CBaseAnimating {
      * Do we use primary ammo?
      * @type {function}
      * @returns {bool}
+     * @nodiscard
      */
     function UsesPrimaryAmmo();
 
@@ -1496,6 +1642,7 @@ class CBaseCombatWeapon extends CBaseAnimating {
      * Do we use secondary ammo?
      * @type {function}
      * @returns {bool}
+     * @nodiscard
      */
     function UsesSecondaryAmmo();
 
@@ -1503,6 +1650,7 @@ class CBaseCombatWeapon extends CBaseAnimating {
      * Is this weapon visible in weapon selection?
      * @type {function}
      * @returns {bool}
+     * @nodiscard
      */
     function VisibleInWeaponSelection();
 }
@@ -1516,6 +1664,24 @@ class CBaseCombatWeapon extends CBaseAnimating {
  * @extends {CBaseCombatWeapon|CEconEntity}
  */
 class CTFWeaponBase extends CBaseCombatWeapon {
+    /**
+     * Retrieve the script-side data associated with an entity.
+     * @override
+     * @type {function}
+     * @returns {table|null}
+     * @nodiscard
+     */
+    function GetScriptScope() {
+        return {
+            /** @type {this} */
+            self = null
+            /** @type {string} */
+            __vname = null
+            /** @type {integer} */
+            __vrefs = null
+        }
+    }
+
     /**
      * Add an attribute to the entity. Set duration to `0` or lower for infinite duration.
      *
@@ -1533,6 +1699,7 @@ class CTFWeaponBase extends CBaseCombatWeapon {
      * @param {attribute} name
      * @param {float} default_value
      * @returns {float} `default_value` if not found.
+     * @nodiscard
      */
     function GetAttribute(name, default_value);
 
@@ -1558,6 +1725,24 @@ class CTFWeaponBase extends CBaseCombatWeapon {
  */
 class CBaseFlex extends CBaseAnimating {
     /**
+     * Retrieve the script-side data associated with an entity.
+     * @override
+     * @type {function}
+     * @returns {table|null}
+     * @nodiscard
+     */
+    function GetScriptScope() {
+        return {
+            /** @type {this} */
+            self = null
+            /** @type {string} */
+            __vname = null
+            /** @type {integer} */
+            __vrefs = null
+        }
+    }
+
+    /**
      * Play the specified .vcd file, causing the related characters to speak and subtitles to play.
      * @type {function}
      * @param {string} scene_file
@@ -1573,9 +1758,28 @@ class CBaseFlex extends CBaseAnimating {
  */
 class CBaseCombatCharacter extends CBaseFlex {
     /**
+     * Retrieve the script-side data associated with an entity.
+     * @override
+     * @type {function}
+     * @returns {table|null}
+     * @nodiscard
+     */
+    function GetScriptScope() {
+        return {
+            /** @type {this} */
+            self = null
+            /** @type {string} */
+            __vname = null
+            /** @type {integer} */
+            __vrefs = null
+        }
+    }
+
+    /**
      * Return the last nav area occupied, `null` if unknown.
      * @type {function}
      * @returns {CTFNavArea|null}
+     * @nodiscard
      */
     function GetLastKnownArea();
 }
@@ -1586,9 +1790,28 @@ class CBaseCombatCharacter extends CBaseFlex {
  */
 class CBasePlayer extends CBaseCombatCharacter {
     /**
+     * Retrieve the script-side data associated with an entity.
+     * @override
+     * @type {function}
+     * @returns {table|null}
+     * @nodiscard
+     */
+    function GetScriptScope() {
+        return {
+            /** @type {this} */
+            self = null
+            /** @type {string} */
+            __vname = null
+            /** @type {integer} */
+            __vrefs = null
+        }
+    }
+
+    /**
      * Whether the player is being forced by SetForceLocalDraw to be drawn.
      * @type {function}
      * @returns {bool}
+     * @nodiscard
      */
     function GetForceLocalDraw();
 
@@ -1596,6 +1819,7 @@ class CBasePlayer extends CBaseCombatCharacter {
      * Get a vector containing max bounds of the player in local space.
      * @type {function}
      * @returns {Vector}
+     * @nodiscard
      */
     function GetPlayerMaxs();
 
@@ -1603,6 +1827,7 @@ class CBasePlayer extends CBaseCombatCharacter {
      * Get a vector containing min bounds of the player in local space.
      * @type {function}
      * @returns {Vector}
+     * @nodiscard
      */
     function GetPlayerMins();
 
@@ -1610,6 +1835,7 @@ class CBasePlayer extends CBaseCombatCharacter {
      * Gets the current overlay material set by SetScriptOverlayMaterial.
      * @type {function}
      * @returns {string}
+     * @nodiscard
      */
     function GetScriptOverlayMaterial();
 
@@ -1617,6 +1843,7 @@ class CBasePlayer extends CBaseCombatCharacter {
      * Returns `true` if the player is in noclip mode.
      * @type {function}
      * @returns {bool}
+     * @nodiscard
      */
     function IsNoclipping();
 
@@ -1662,6 +1889,24 @@ class CBasePlayer extends CBaseCombatCharacter {
  */
 class CEconEntity extends CBaseAnimating {
     /**
+     * Retrieve the script-side data associated with an entity.
+     * @override
+     * @type {function}
+     * @returns {table|null}
+     * @nodiscard
+     */
+    function GetScriptScope() {
+        return {
+            /** @type {this} */
+            self = null
+            /** @type {string} */
+            __vname = null
+            /** @type {integer} */
+            __vrefs = null
+        }
+    }
+
+    /**
      * Add an attribute to the entity. Set duration to `0` or lower for infinite duration.
      *
      * **Note**: For players use `AddCustomAttribute` instead.
@@ -1678,6 +1923,7 @@ class CEconEntity extends CBaseAnimating {
      * @param {attribute} name
      * @param {float} default_value
      * @returns {float} `default_value` if not found.
+     * @nodiscard
      */
     function GetAttribute(name, default_value);
 
@@ -1702,6 +1948,24 @@ class CEconEntity extends CBaseAnimating {
  * @type {class}
  */
 class CTFPlayer extends CBasePlayer {
+    /**
+     * Retrieve the script-side data associated with an entity.
+     * @override
+     * @type {function}
+     * @nodiscard
+     * @returns {table|null}
+     */
+    function GetScriptScope() {
+        return {
+            /** @type {this} */
+            self = null
+            /** @type {string} */
+            __vname = null
+            /** @type {integer} */
+            __vrefs = null
+        }
+    }
+
     /**
      * @type {function}
      * @param {integer} cond See [Constants.ETFCond](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ETFCond)
@@ -1776,18 +2040,21 @@ class CTFPlayer extends CBasePlayer {
      * Can the player air dash/double jump?
      * @type {function}
      * @returns {bool}
+     * @nodiscard
      */
     function CanAirDash();
 
     /**
      * @type {function}
      * @returns {bool}
+     * @nodiscard
      */
     function CanBeDebuffed();
 
     /**
      * @type {function}
      * @returns {bool}
+     * @nodiscard
      */
     function CanBreatheUnderwater();
 
@@ -1795,6 +2062,7 @@ class CTFPlayer extends CBasePlayer {
      * Can the player duck?
      * @type {function}
      * @returns {bool}
+     * @nodiscard
      */
     function CanDuck();
 
@@ -1802,6 +2070,7 @@ class CTFPlayer extends CBasePlayer {
      * Can the player get wet by jarate/milk?
      * @type {function}
      * @returns {bool}
+     * @nodiscard
      */
     function CanGetWet();
 
@@ -1809,6 +2078,7 @@ class CTFPlayer extends CBasePlayer {
      * Can the player jump?
      * @type {function}
      * @returns {bool}
+     * @nodiscard
      */
     function CanJump();
 
@@ -1816,6 +2086,7 @@ class CTFPlayer extends CBasePlayer {
      * Can the player move?
      * @type {function}
      * @returns {bool}
+     * @nodiscard
      */
     function CanPlayerMove();
 
@@ -1904,36 +2175,42 @@ class CTFPlayer extends CBasePlayer {
      * Get the player's current weapon.
      * @type {function}
      * @returns {CTFWeaponBase|null}
+     * @nodiscard
      */
     function GetActiveWeapon();
 
     /**
      * @type {function}
      * @returns {integer}
+     * @nodiscard
      */
     function GetBackstabs();
 
     /**
      * @type {function}
      * @returns {integer}
+     * @nodiscard
      */
     function GetBonusPoints();
 
     /**
      * @type {function}
      * @returns {integer}
+     * @nodiscard
      */
     function GetBotType();
 
     /**
      * @type {function}
      * @returns {integer}
+     * @nodiscard
      */
     function GetBuildingsDestroyed();
 
     /**
      * @type {function}
      * @returns {integer}
+     * @nodiscard
      */
     function GetCaptures();
 
@@ -1941,6 +2218,7 @@ class CTFPlayer extends CBasePlayer {
      * Gets the eye height of the player.
      * @type {function}
      * @returns {Vector}
+     * @nodiscard
      */
     function GetClassEyeHeight();
 
@@ -1949,6 +2227,7 @@ class CTFPlayer extends CBasePlayer {
      * @type {function}
      * @param {integer} cond See [Constants.ETFCond](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ETFCond)
      * @returns {float} `0` if not applied; `-1` if infinite.
+     * @nodiscard
      */
     function GetCondDuration(cond);
 
@@ -1958,6 +2237,7 @@ class CTFPlayer extends CBasePlayer {
      * @param {attribute} name
      * @param {float} default_value
      * @returns {float} `default_value` if not found.
+     * @nodiscard
      */
     function GetCustomAttribute(name, default_value);
 
@@ -1965,42 +2245,49 @@ class CTFPlayer extends CBasePlayer {
      * Get player's cash for MvM.
      * @type {function}
      * @returns {integer}
+     * @nodiscard
      */
     function GetCurrency();
 
     /**
      * @type {function}
      * @returns {float}
+     * @nodiscard
      */
     function GetCurrentTauntMoveSpeed();
 
     /**
      * @type {function}
      * @returns {integer}
+     * @nodiscard
      */
     function GetDefenses();
 
     /**
      * @type {function}
      * @returns {integer}
+     * @nodiscard
      */
     function GetDisguiseAmmoCount();
 
     /**
      * @type {function}
      * @returns {CTFPlayer|null}
+     * @nodiscard
      */
     function GetDisguiseTarget();
 
     /**
      * @type {function}
      * @returns {integer}
+     * @nodiscard
      */
     function GetDisguiseTeam();
 
     /**
      * @type {function}
      * @returns {integer}
+     * @nodiscard
      */
     function GetDominations();
 
@@ -2008,18 +2295,21 @@ class CTFPlayer extends CBasePlayer {
      * What entity is the player grappling?
      * @type {function}
      * @returns {CBaseEntity|null}
+     * @nodiscard
      */
     function GetGrapplingHookTarget();
 
     /**
      * @type {function}
      * @returns {integer}
+     * @nodiscard
      */
     function GetHeadshots();
 
     /**
      * @type {function}
      * @returns {integer}
+     * @nodiscard
      */
     function GetHealPoints();
 
@@ -2027,6 +2317,7 @@ class CTFPlayer extends CBasePlayer {
      * Who is the medic healing?
      * @type {function}
      * @returns {CBaseEntity|null}
+     * @nodiscard
      */
     function GetHealTarget();
 
@@ -2034,24 +2325,28 @@ class CTFPlayer extends CBasePlayer {
      * Gets current hidden HUD elements.
      * @type {function}
      * @returns {integer} See [Constants.FHideHUD](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#FHideHUD)
+     * @nodiscard
      */
     function GetHudHideFlags();
 
     /**
      * @type {function}
      * @returns {integer}
+     * @nodiscard
      */
     function GetInvulns();
 
     /**
      * @type {function}
      * @returns {integer}
+     * @nodiscard
      */
     function GetKillAssists();
 
     /**
      * @type {function}
      * @returns {CTFWeaponBase|null}
+     * @nodiscard
      */
     function GetLastWeapon();
 
@@ -2059,6 +2354,7 @@ class CTFPlayer extends CBasePlayer {
      * Get next change class time.
      * @type {function}
      * @returns {float}
+     * @nodiscard
      */
     function GetNextChangeClassTime();
 
@@ -2066,6 +2362,7 @@ class CTFPlayer extends CBasePlayer {
      * Get next change team time.
      * @type {function}
      * @returns {float}
+     * @nodiscard
      */
     function GetNextChangeTeamTime();
 
@@ -2073,48 +2370,56 @@ class CTFPlayer extends CBasePlayer {
      * Get next health regen time.
      * @type {function}
      * @returns {float}
+     * @nodiscard
      */
     function GetNextRegenTime();
 
     /**
      * @type {function}
      * @returns {integer}
+     * @nodiscard
      */
     function GetPlayerClass();
 
     /**
      * @type {function}
      * @returns {float}
+     * @nodiscard
      */
     function GetRageMeter();
 
     /**
      * @type {function}
      * @returns {integer}
+     * @nodiscard
      */
     function GetResupplyPoints();
 
     /**
      * @type {function}
      * @returns {integer}
+     * @nodiscard
      */
     function GetRevenge();
 
     /**
      * @type {function}
      * @returns {float}
+     * @nodiscard
      */
     function GetScoutHypeMeter();
 
     /**
      * @type {function}
      * @returns {float}
+     * @nodiscard
      */
     function GetSpyCloakMeter();
 
     /**
      * @type {function}
      * @returns {integer}
+     * @nodiscard
      */
     function GetTeleports();
 
@@ -2122,6 +2427,7 @@ class CTFPlayer extends CBasePlayer {
      * Timestamp until a taunt attack lasts. `0` if unavailable.
      * @type {function}
      * @returns {float}
+     * @nodiscard
      */
     function GetTauntAttackTime();
 
@@ -2129,6 +2435,7 @@ class CTFPlayer extends CBasePlayer {
      * Timestamp until taunt is stopped.
      * @type {function}
      * @returns {float}
+     * @nodiscard
      */
     function GetTauntRemoveTime();
 
@@ -2136,6 +2443,7 @@ class CTFPlayer extends CBasePlayer {
      * Timestamp when kart was reversed. `FLT_MAX` if yet to be done.
      * @type {function}
      * @returns {float}
+     * @nodiscard
      */
     function GetVehicleReverseTime();
 
@@ -2143,6 +2451,7 @@ class CTFPlayer extends CBasePlayer {
      * When did the player last call medic. `99999.9` if yet to be done.
      * @type {function}
      * @returns {float}
+     * @nodiscard
      */
     function GetTimeSinceCalledForMedic();
 
@@ -2150,6 +2459,7 @@ class CTFPlayer extends CBasePlayer {
      * @type {function}
      * @param {bool} remove
      * @param {bool} refund
+     * @nodiscard
      */
     function GrantOrRemoveAllUpgrades(remove, refund);
 
@@ -2157,6 +2467,7 @@ class CTFPlayer extends CBasePlayer {
      * Currently holding an item (e.g. capture flag)?
      * @type {function}
      * @returns {bool}
+     * @nodiscard
      */
     function HasItem();
 
@@ -2170,12 +2481,14 @@ class CTFPlayer extends CBasePlayer {
     /**
      * @type {function}
      * @returns {bool}
+     * @nodiscard
      */
     function InAirDueToExplosion();
 
     /**
      * @type {function}
      * @returns {bool}
+     * @nodiscard
      */
     function InAirDueToKnockback();
 
@@ -2183,12 +2496,14 @@ class CTFPlayer extends CBasePlayer {
      * @type {function}
      * @param {integer} cond See [Constants.ETFCond](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ETFCond)
      * @returns {bool}
+     * @nodiscard
      */
     function InCond(cond);
 
     /**
      * @type {function}
      * @returns {bool}
+     * @nodiscard
      */
     function IsAirDashing();
 
@@ -2196,12 +2511,14 @@ class CTFPlayer extends CBasePlayer {
      * Returns `true` if the taunt will be stopped.
      * @type {function}
      * @returns {bool}
+     * @nodiscard
      */
     function IsAllowedToRemoveTaunt();
 
     /**
      * @type {function}
      * @returns {bool}
+     * @nodiscard
      */
     function IsAllowedToTaunt();
 
@@ -2210,6 +2527,7 @@ class CTFPlayer extends CBasePlayer {
      * @type {function}
      * @param {integer} type See [Constants.EBotType](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#EBotType)
      * @returns {bool}
+     * @nodiscard
      */
     function IsBotOfType(type);
 
@@ -2217,24 +2535,28 @@ class CTFPlayer extends CBasePlayer {
      * Is this player calling for medic?
      * @type {function}
      * @returns {bool}
+     * @nodiscard
      */
     function IsCallingForMedic();
 
     /**
      * @type {function}
      * @returns {bool}
+     * @nodiscard
      */
     function IsCarryingRune();
 
     /**
      * @type {function}
      * @returns {bool}
+     * @nodiscard
      */
     function IsControlStunned();
 
     /**
      * @type {function}
      * @returns {bool}
+     * @nodiscard
      */
     function IsCritBoosted();
 
@@ -2242,48 +2564,56 @@ class CTFPlayer extends CBasePlayer {
      * Returns `true` if the player is a puppet or AI bot.
      * @type {function}
      * @returns {bool}
+     * @nodiscard
      */
     function IsFakeClient();
 
     /**
      * @type {function}
      * @returns {bool}
+     * @nodiscard
      */
     function IsFireproof();
 
     /**
      * @type {function}
      * @returns {bool}
+     * @nodiscard
      */
     function IsFullyInvisible();
 
     /**
      * @type {function}
      * @returns {bool}
+     * @nodiscard
      */
     function IsHypeBuffed();
 
     /**
      * @type {function}
      * @returns {bool}
+     * @nodiscard
      */
     function IsImmuneToPushback();
 
     /**
      * @type {function}
      * @returns {bool}
+     * @nodiscard
      */
     function IsInspecting();
 
     /**
      * @type {function}
      * @returns {bool}
+     * @nodiscard
      */
     function IsInvulnerable();
 
     /**
      * @type {function}
      * @returns {bool}
+     * @nodiscard
      */
     function IsJumping();
 
@@ -2291,12 +2621,14 @@ class CTFPlayer extends CBasePlayer {
      * Is this player an MvM mini-boss?
      * @type {function}
      * @returns {bool}
+     * @nodiscard
      */
     function IsMiniBoss();
 
     /**
      * @type {function}
      * @returns {bool}
+     * @nodiscard
      */
     function IsParachuteEquipped();
 
@@ -2304,18 +2636,21 @@ class CTFPlayer extends CBasePlayer {
      * Returns `true` if we placed a sapper in the last few moments.
      * @type {function}
      * @returns {bool}
+     * @nodiscard
      */
     function IsPlacingSapper();
 
     /**
      * @type {function}
      * @returns {bool}
+     * @nodiscard
      */
     function IsRageDraining();
 
     /**
      * @type {function}
      * @returns {bool}
+     * @nodiscard
      */
     function IsRegenerating();
 
@@ -2323,36 +2658,42 @@ class CTFPlayer extends CBasePlayer {
      * Returns `true` if we are currently sapping.
      * @type {function}
      * @returns {bool}
+     * @nodiscard
      */
     function IsSapping();
 
     /**
      * @type {function}
      * @returns {bool}
+     * @nodiscard
      */
     function IsSnared();
 
     /**
      * @type {function}
      * @returns {bool}
+     * @nodiscard
      */
     function IsStealthed();
 
     /**
      * @type {function}
      * @returns {bool}
+     * @nodiscard
      */
     function IsTaunting();
 
     /**
      * @type {function}
      * @returns {bool}
+     * @nodiscard
      */
     function IsUsingActionSlot();
 
     /**
      * @type {function}
      * @returns {bool}
+     * @nodiscard
      */
     function IsViewingCYOAPDA();
 
@@ -2650,6 +2991,7 @@ class CTFPlayer extends CBasePlayer {
      * @type {function}
      * @param {integer} cond See [Constants.ETFCond](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ETFCond)
      * @returns {bool}
+     * @nodiscard
      */
     function WasInCond(cond);
 
@@ -2657,6 +2999,7 @@ class CTFPlayer extends CBasePlayer {
      * @type {function}
      * @param {CTFWeaponBase} weapon
      * @returns {bool}
+     * @nodiscard
      */
     function Weapon_CanUse(weapon);
 
@@ -2677,6 +3020,7 @@ class CTFPlayer extends CBasePlayer {
      * The same as calling `EyePosition`.
      * @type {function}
      * @returns {Vector}
+     * @nodiscard
      */
     function Weapon_ShootPosition();
 
@@ -2696,6 +3040,24 @@ class CTFPlayer extends CBasePlayer {
  * @extends {CTFPlayer | NextBotCombatCharacter}
  */
 class CTFBot extends CTFPlayer {
+    /**
+     * Retrieve the script-side data associated with an entity.
+     * @override
+     * @type {function}
+     * @returns {table|null}
+     * @nodiscard
+     */
+    function GetScriptScope() {
+        return {
+            /** @type {this} */
+            self = null
+            /** @type {string} */
+            __vname = null
+            /** @type {integer} */
+            __vrefs = null
+        }
+    }
+
     /**
      * Sets attribute flags on this TFBot.
      * @type {function}
@@ -2781,6 +3143,7 @@ class CTFBot extends CTFPlayer {
      * Get the given action point for this bot.
      * @type {function}
      * @returns {CBaseEntity|null}
+     * @nodiscard
      */
     function GetActionPoint();
 
@@ -2802,6 +3165,7 @@ class CTFBot extends CTFPlayer {
      * Returns the bot's difficulty level.
      * @type {function}
      * @returns {integer} See [Constants.ETFBotDifficultyType](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ETFBotDifficultyType)
+     * @nodiscard
      */
     function GetDifficulty();
 
@@ -2809,6 +3173,7 @@ class CTFBot extends CTFPlayer {
      * Gets the max vision range override for the bot.
      * @type {function}
      * @returns {float}
+     * @nodiscard
      */
     function GetMaxVisionRangeOverride();
 
@@ -2816,6 +3181,7 @@ class CTFBot extends CTFPlayer {
      * Get this bot's current mission.
      * @type {function}
      * @returns {integer} See [Constants.ETFBotMissionType](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ETFBotMissionType)
+     * @nodiscard
      */
     function GetMission();
 
@@ -2823,6 +3189,7 @@ class CTFBot extends CTFPlayer {
      * Get this bot's current mission target.
      * @type {function}
      * @returns {CBaseEntity|null}
+     * @nodiscard
      */
     function GetMissionTarget();
 
@@ -2830,6 +3197,7 @@ class CTFBot extends CTFPlayer {
      * Gets the nearest known sappable target.
      * @type {function}
      * @returns {CBaseEntity|null}
+     * @nodiscard
      */
     function GetNearestKnownSappableTarget();
 
@@ -2837,6 +3205,7 @@ class CTFBot extends CTFPlayer {
      * Get this bot's previous mission.
      * @type {function}
      * @returns {integer} See [Constants.ETFBotMissionType](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ETFBotMissionType)
+     * @nodiscard
      */
     function GetPrevMission();
 
@@ -2844,6 +3213,7 @@ class CTFBot extends CTFPlayer {
      * Return the nav area of where we spawned.
      * @type {function}
      * @returns {CTFNavArea|null}
+     * @nodiscard
      */
     function GetSpawnArea();
 
@@ -2851,6 +3221,7 @@ class CTFBot extends CTFPlayer {
      * Gets our formation error coefficient.
      * @type {function}
      * @returns {float}
+     * @nodiscard
      */
     function GetSquadFormationError();
 
@@ -2859,6 +3230,7 @@ class CTFBot extends CTFPlayer {
      * @type {function}
      * @param {integer} attribute See [Constants.FTFBotAttributeType](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#FTFBotAttributeType)
      * @returns {bool}
+     * @nodiscard
      */
     function HasBotAttribute(attribute);
 
@@ -2867,6 +3239,7 @@ class CTFBot extends CTFPlayer {
      * @type {function}
      * @param {string} tag
      * @returns {bool}
+     * @nodiscard
      */
     function HasBotTag(tag);
 
@@ -2875,6 +3248,7 @@ class CTFBot extends CTFPlayer {
      * @type {function}
      * @param {integer} mission See [Constants.ETFBotMissionType](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ETFBotMissionType)
      * @returns {bool}
+     * @nodiscard
      */
     function HasMission(mission);
 
@@ -2883,18 +3257,21 @@ class CTFBot extends CTFPlayer {
      * @type {function}
      * @param {integer} flags See [Constants.TFBotWeaponRestrictionType](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#TFBotWeaponRestrictionType)
      * @returns {bool}
+     * @nodiscard
      */
     function HasWeaponRestriction(flags);
 
     /**
      * @type {function}
      * @returns {bool}
+     * @nodiscard
      */
     function IsAmmoFull();
 
     /**
      * @type {function}
      * @returns {bool}
+     * @nodiscard
      */
     function IsAmmoLow();
 
@@ -2902,6 +3279,7 @@ class CTFBot extends CTFPlayer {
      * Is our attention focused right now?
      * @type {function}
      * @returns {bool}
+     * @nodiscard
      */
     function IsAttentionFocused();
 
@@ -2910,6 +3288,7 @@ class CTFBot extends CTFPlayer {
      * @type {function}
      * @param {CBaseEntity} entity
      * @returns {bool}
+     * @nodiscard
      */
     function IsAttentionFocusedOn(entity);
 
@@ -2918,6 +3297,7 @@ class CTFBot extends CTFPlayer {
      * @type {function}
      * @param {integer} flags See [Constants.TFBOT_BEHAVIOR](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#TFBOT_BEHAVIOR)
      * @returns {bool}
+     * @nodiscard
      */
     function IsBehaviorFlagSet(flags);
 
@@ -2926,6 +3306,7 @@ class CTFBot extends CTFPlayer {
      * @type {function}
      * @param {integer} difficulty See [Constants.ETFBotDifficultyType](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ETFBotDifficultyType)
      * @returns {bool}
+     * @nodiscard
      */
     function IsDifficulty(difficulty);
 
@@ -2933,6 +3314,7 @@ class CTFBot extends CTFPlayer {
      * Checks if we are in a squad.
      * @type {function}
      * @returns {bool}
+     * @nodiscard
      */
     function IsInASquad();
 
@@ -2940,6 +3322,7 @@ class CTFBot extends CTFPlayer {
      * Return `true` if this bot has a current mission.
      * @type {function}
      * @returns {bool}
+     * @nodiscard
      */
     function IsOnAnyMission();
 
@@ -2948,12 +3331,14 @@ class CTFBot extends CTFPlayer {
      * @type {function}
      * @param {CBaseEntity} weapon
      * @returns {bool}
+     * @nodiscard
      */
     function IsWeaponRestricted(weapon);
 
     /**
      * Makes us leave the current squad (if any).
      * @type {function}
+     * @nodiscard
      */
     function LeaveSquad();
 
@@ -3093,6 +3478,7 @@ class CTFBot extends CTFPlayer {
      * Returns if the bot should automatically jump.
      * @type {function}
      * @returns {bool}
+     * @nodiscard
      */
     function ShouldAutoJump();
 
@@ -3100,6 +3486,7 @@ class CTFBot extends CTFPlayer {
      * Returns if the bot should build instantly.
      * @type {function}
      * @returns {bool}
+     * @nodiscard
      */
     function ShouldQuickBuild();
 
@@ -3129,6 +3516,7 @@ class CTFBot extends CTFPlayer {
      * Get this bot's body interface.
      * @type {function}
      * @returns {INextBotComponent}
+     * @nodiscard
      */
     function GetBodyInterface();
 
@@ -3136,6 +3524,7 @@ class CTFBot extends CTFPlayer {
      * Get this bot's id.
      * @type {function}
      * @returns {integer}
+     * @nodiscard
      */
     function GetBotId();
 
@@ -3143,6 +3532,7 @@ class CTFBot extends CTFPlayer {
      * How long have we been immobile.
      * @type {function}
      * @returns {float}
+     * @nodiscard
      */
     function GetImmobileDuration();
 
@@ -3150,6 +3540,7 @@ class CTFBot extends CTFPlayer {
      * Return units/second below which this actor is considered immobile.
      * @type {function}
      * @returns {float}
+     * @nodiscard
      */
     function GetImmobileSpeedThreshold();
 
@@ -3157,6 +3548,7 @@ class CTFBot extends CTFPlayer {
      * Get this bot's intention interface.
      * @type {function}
      * @returns {INextBotComponent}
+     * @nodiscard
      */
     function GetIntentionInterface();
 
@@ -3164,6 +3556,7 @@ class CTFBot extends CTFPlayer {
      * Get this bot's locomotion interface.
      * @type {function}
      * @returns {ILocomotion}
+     * @nodiscard
      */
     function GetLocomotionInterface();
 
@@ -3171,6 +3564,7 @@ class CTFBot extends CTFPlayer {
      * Get last update tick.
      * @type {function}
      * @returns {integer}
+     * @nodiscard
      */
     function GetTickLastUpdate();
 
@@ -3178,6 +3572,7 @@ class CTFBot extends CTFPlayer {
      * Get this bot's vision interface.
      * @type {function}
      * @returns {INextBotComponent}
+     * @nodiscard
      */
     function GetVisionInterface();
 
@@ -3186,6 +3581,7 @@ class CTFBot extends CTFPlayer {
      * @type {function}
      * @param {CBaseEntity} entity
      * @returns {bool}
+     * @nodiscard
      */
     function IsEnemy(entity);
 
@@ -3193,6 +3589,7 @@ class CTFBot extends CTFPlayer {
      * Is this bot flagged for update.
      * @type {function}
      * @returns {bool}
+     * @nodiscard
      */
     function IsFlaggedForUpdate();
 
@@ -3201,6 +3598,7 @@ class CTFBot extends CTFPlayer {
      * @type {function}
      * @param {CBaseEntity} entity
      * @returns {bool}
+     * @nodiscard
      */
     function IsFriend(entity);
 
@@ -3208,6 +3606,7 @@ class CTFBot extends CTFPlayer {
      * Return `true` if we haven't moved in awhile.
      * @type {function}
      * @returns {bool}
+     * @nodiscard
      */
     function IsImmobile();
 }
@@ -3224,6 +3623,7 @@ class Convars {
      * @type {function}
      * @param {convar} name
      * @returns {bool|null}
+     * @nodiscard
      */
     function GetBool(name);
 
@@ -3233,6 +3633,7 @@ class Convars {
      * @param {client_convar} name
      * @param {integer} entindex
      * @returns {string}
+     * @nodiscard
      */
     function GetClientConvarValue(name, entindex);
 
@@ -3243,6 +3644,7 @@ class Convars {
      * @type {function}
      * @param {convar} name
      * @returns {integer|null}
+     * @nodiscard
      */
     function GetInt(name);
 
@@ -3253,6 +3655,7 @@ class Convars {
      * @type {function}
      * @param {convar} name
      * @returns {string|null}
+     * @nodiscard
      */
     function GetStr(name);
 
@@ -3263,6 +3666,7 @@ class Convars {
      * @type {function}
      * @param {convar} name
      * @returns {float|null}
+     * @nodiscard
      */
     function GetFloat(name);
 
@@ -3271,6 +3675,7 @@ class Convars {
      * @type {function}
      * @param {convar} name
      * @returns {bool}
+     * @nodiscard
      */
     function IsConVarOnAllowList(name);
 
@@ -3311,6 +3716,7 @@ class CEntities {
      * @param {CBaseEntity|null} previous
      * @param {classname_search} classname
      * @returns {CBaseEntity|null}
+     * @nodiscard
      */
     function FindByClassname(previous, classname);
 
@@ -3321,6 +3727,7 @@ class CEntities {
      * @param {Vector} center
      * @param {float} radius
      * @returns {CBaseEntity|null}
+     * @nodiscard
      */
     function FindByClassnameNearest(classname, center, radius);
 
@@ -3332,6 +3739,7 @@ class CEntities {
      * @param {Vector} center
      * @param {float} radius
      * @returns {CBaseEntity|null}
+     * @nodiscard
      */
     function FindByClassnameWithin(previous, classname, center, radius);
 
@@ -3341,6 +3749,7 @@ class CEntities {
      * @param {CBaseEntity|null} previous
      * @param {string} model_name
      * @returns {CBaseEntity|null}
+     * @nodiscard
      */
     function FindByModel(previous, model_name);
 
@@ -3350,6 +3759,7 @@ class CEntities {
      * @param {CBaseEntity|null} previous
      * @param {string} targetname
      * @returns {CBaseEntity|null}
+     * @nodiscard
      */
     function FindByName(previous, targetname);
 
@@ -3360,6 +3770,7 @@ class CEntities {
      * @param {Vector} center
      * @param {float} radius
      * @returns {CBaseEntity|null}
+     * @nodiscard
      */
     function FindByNameNearest(targetname, center, radius);
 
@@ -3371,6 +3782,7 @@ class CEntities {
      * @param {Vector} center
      * @param {float} radius
      * @returns {CBaseEntity|null}
+     * @nodiscard
      */
     function FindByNameWithin(previous, targetname, center, radius);
 
@@ -3380,6 +3792,7 @@ class CEntities {
      * @param {CBaseEntity|null} previous
      * @param {string} target
      * @returns {CBaseEntity|null}
+     * @nodiscard
      */
     function FindByTarget(previous, target);
 
@@ -3390,6 +3803,7 @@ class CEntities {
      * @param {Vector} center
      * @param {float} radius
      * @returns {CBaseEntity|null}
+     * @nodiscard
      */
     function FindInSphere(previous, center, radius);
 
@@ -3397,6 +3811,7 @@ class CEntities {
      * Begin an iteration over the list of entities. The first entity is always worldspawn.
      * @type {function}
      * @returns {CBaseEntity}
+     * @nodiscard
      */
     function First();
 
@@ -3405,6 +3820,7 @@ class CEntities {
      * @type {function}
      * @param {CBaseEntity} previous
      * @returns {CBaseEntity|null}
+     * @nodiscard
      */
     function Next(previous);
 }
@@ -3436,6 +3852,7 @@ class CTFNavArea {
      * @param {integer} dir See [Constants.ENavDirType](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ENavDirType)
      * @param {Vector} close_pos
      * @returns {Vector}
+     * @nodiscard
      */
     function ComputeClosestPointInPortal(to, dir, close_pos);
 
@@ -3444,6 +3861,7 @@ class CTFNavArea {
      * @type {function}
      * @param {Vector} point
      * @returns {integer}
+     * @nodiscard
      */
     function ComputeDirection(point);
 
@@ -3460,6 +3878,7 @@ class CTFNavArea {
      * @type {function}
      * @param {CTFNavArea} area
      * @returns {bool}
+     * @nodiscard
      */
     function Contains(area);
 
@@ -3468,6 +3887,7 @@ class CTFNavArea {
      * @type {function}
      * @param {Vector} point
      * @returns {bool}
+     * @nodiscard
      */
     function ContainsOrigin(point);
 
@@ -3495,6 +3915,7 @@ class CTFNavArea {
      * Get random origin within extent of area.
      * @type {function}
      * @returns {Vector}
+     * @nodiscard
      */
     function FindRandomSpot();
 
@@ -3504,6 +3925,7 @@ class CTFNavArea {
      * @param {integer} dir See [Constants.ENavDirType](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ENavDirType)
      * @param {integer} n
      * @returns {CTFNavArea|null}
+     * @nodiscard
      */
     function GetAdjacentArea(dir, n);
 
@@ -3520,6 +3942,7 @@ class CTFNavArea {
      * @type {function}
      * @param {integer} dir See [Constants.ENavDirType](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ENavDirType)
      * @returns {integer}
+     * @nodiscard
      */
     function GetAdjacentCount(dir);
 
@@ -3527,6 +3950,7 @@ class CTFNavArea {
      * Get area attribute bits.
      * @type {function}
      * @returns {integer} See [Constants.FNavAttributeType](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#FNavAttributeType)
+     * @nodiscard
      */
     function GetAttributes();
 
@@ -3534,6 +3958,7 @@ class CTFNavArea {
      * Returns the maximum height of the obstruction above the ground.
      * @type {function}
      * @returns {float}
+     * @nodiscard
      */
     function GetAvoidanceObstacleHeight();
 
@@ -3541,6 +3966,7 @@ class CTFNavArea {
      * Get center origin of area.
      * @type {function}
      * @returns {Vector}
+     * @nodiscard
      */
     function GetCenter();
 
@@ -3549,6 +3975,7 @@ class CTFNavArea {
      * @type {function}
      * @param {integer} dir See [Constants.ENavDirType](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ENavDirType)
      * @returns {Vector}
+     * @nodiscard
      */
     function GetCorner(dir);
 
@@ -3557,6 +3984,7 @@ class CTFNavArea {
      * @type {function}
      * @param {Vector} pos
      * @returns {float}
+     * @nodiscard
      */
     function GetDistanceSquaredToPoint(pos);
 
@@ -3564,6 +3992,7 @@ class CTFNavArea {
      * Returns the door entity above the area.
      * @type {function}
      * @returns {CBaseAnimating|null}
+     * @nodiscard
      */
     function GetDoor();
 
@@ -3571,6 +4000,7 @@ class CTFNavArea {
      * Returns the elevator if in an elevator's path.
      * @type {function}
      * @returns {CBaseAnimating|null}
+     * @nodiscard
      */
     function GetElevator();
 
@@ -3585,6 +4015,7 @@ class CTFNavArea {
      * Get area ID.
      * @type {function}
      * @returns {integer}
+     * @nodiscard
      */
     function GetID();
 
@@ -3600,6 +4031,7 @@ class CTFNavArea {
      * Returns the area just prior to this one in the search path.
      * @type {function}
      * @returns {CTFNavArea|null}
+     * @nodiscard
      */
     function GetParent();
 
@@ -3607,6 +4039,7 @@ class CTFNavArea {
      * Returns how we get from parent to us.
      * @type {function}
      * @returns {integer}
+     * @nodiscard
      */
     function GetParentHow();
 
@@ -3614,6 +4047,7 @@ class CTFNavArea {
      * Get place name if it exists, `null` otherwise.
      * @type {function}
      * @returns {string|null}
+     * @nodiscard
      */
     function GetPlaceName();
 
@@ -3622,6 +4056,7 @@ class CTFNavArea {
      * @type {function}
      * @param {integer} team See [Constants.ETFTeam](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ETFTeam)
      * @returns {integer}
+     * @nodiscard
      */
     function GetPlayerCount(team);
 
@@ -3630,6 +4065,7 @@ class CTFNavArea {
      * @type {function}
      * @param {integer} dir See [Constants.ENavDirType](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ENavDirType)
      * @returns {CTFNavArea|null}
+     * @nodiscard
      */
     function GetRandomAdjacentArea(dir);
 
@@ -3637,6 +4073,7 @@ class CTFNavArea {
      * Return the area size along the X axis.
      * @type {function}
      * @returns {float}
+     * @nodiscard
      */
     function GetSizeX();
 
@@ -3644,6 +4081,7 @@ class CTFNavArea {
      * Return the area size along the Y axis.
      * @type {function}
      * @returns {float}
+     * @nodiscard
      */
     function GetSizeY();
 
@@ -3651,6 +4089,7 @@ class CTFNavArea {
      * Gets the travel distance to the MvM bomb target.
      * @type {function}
      * @returns {float}
+     * @nodiscard
      */
     function GetTravelDistanceToBombTarget();
 
@@ -3659,6 +4098,7 @@ class CTFNavArea {
      * @type {function}
      * @param {Vector} pos
      * @returns {float}
+     * @nodiscard
      */
     function GetZ(pos);
 
@@ -3667,6 +4107,7 @@ class CTFNavArea {
      * @type {function}
      * @param {integer} bits See [Constants.FTFNavAttributeType](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#FTFNavAttributeType)
      * @returns {bool}
+     * @nodiscard
      */
     function HasAttributeTF(bits);
 
@@ -3675,6 +4116,7 @@ class CTFNavArea {
      * @type {function}
      * @param {integer} bits See [Constants.FNavAttributeType](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#FNavAttributeType)
      * @returns {bool}
+     * @nodiscard
      */
     function HasAttributes(bits);
 
@@ -3683,6 +4125,7 @@ class CTFNavArea {
      * @type {function}
      * @param {float} max_height
      * @returns {bool}
+     * @nodiscard
      */
     function HasAvoidanceObstacle(max_height);
 
@@ -3692,6 +4135,7 @@ class CTFNavArea {
      * @param {integer} team See [Constants.ETFTeam](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ETFTeam)
      * @param {bool} affects_flow
      * @returns {bool}
+     * @nodiscard
      */
     function IsBlocked(team, affects_flow);
 
@@ -3699,6 +4143,7 @@ class CTFNavArea {
      * Returns `true` if area is a bottleneck.
      * @type {function}
      * @returns {bool}
+     * @nodiscard
      */
     function IsBottleneck();
 
@@ -3707,6 +4152,7 @@ class CTFNavArea {
      * @type {function}
      * @param {integer} team See [Constants.ETFTeam](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ETFTeam)
      * @returns {bool}
+     * @nodiscard
      */
     function IsCompletelyVisibleToTeam(team);
 
@@ -3716,6 +4162,7 @@ class CTFNavArea {
      * @param {CBaseEntity} area
      * @param {integer} dir See [Constants.ENavDirType](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ENavDirType)
      * @returns {bool}
+     * @nodiscard
      */
     function IsConnected(area, dir);
 
@@ -3724,6 +4171,7 @@ class CTFNavArea {
      * @type {function}
      * @param {CBaseEntity} area
      * @returns {bool}
+     * @nodiscard
      */
     function IsCoplanar(area);
 
@@ -3731,6 +4179,7 @@ class CTFNavArea {
      * Return `true` if this area is marked to have continuous damage.
      * @type {function}
      * @returns {bool}
+     * @nodiscard
      */
     function IsDamaging();
 
@@ -3738,6 +4187,7 @@ class CTFNavArea {
      * Return `true` if this area is badly formed.
      * @type {function}
      * @returns {bool}
+     * @nodiscard
      */
     function IsDegenerate();
 
@@ -3746,6 +4196,7 @@ class CTFNavArea {
      * @type {function}
      * @param {integer} dir See [Constants.ENavDirType](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ENavDirType)
      * @returns {bool}
+     * @nodiscard
      */
     function IsEdge(dir);
 
@@ -3753,6 +4204,7 @@ class CTFNavArea {
      * Return `true` if this area is approximately flat.
      * @type {function}
      * @returns {bool}
+     * @nodiscard
      */
     function IsFlat();
 
@@ -3761,6 +4213,7 @@ class CTFNavArea {
      * @type {function}
      * @param {CBaseEntity} area
      * @returns {bool}
+     * @nodiscard
      */
     function IsOverlapping(area);
 
@@ -3770,6 +4223,7 @@ class CTFNavArea {
      * @param {Vector} pos
      * @param {float} tolerance
      * @returns {bool}
+     * @nodiscard
      */
     function IsOverlappingOrigin(pos, tolerance);
 
@@ -3778,6 +4232,7 @@ class CTFNavArea {
      * @type {function}
      * @param {integer} team See [Constants.ETFTeam](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ETFTeam)
      * @returns {bool}
+     * @nodiscard
      */
     function IsPotentiallyVisibleToTeam(team);
 
@@ -3786,6 +4241,7 @@ class CTFNavArea {
      * @type {function}
      * @param {integer} team See [Constants.ETFTeam](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ETFTeam)
      * @returns {bool}
+     * @nodiscard
      */
     function IsReachableByTeam(team);
 
@@ -3793,6 +4249,7 @@ class CTFNavArea {
      * Return `true` if this area is approximately square.
      * @type {function}
      * @returns {bool}
+     * @nodiscard
      */
     function IsRoughlySquare();
 
@@ -3800,6 +4257,7 @@ class CTFNavArea {
      * Is this nav area marked with the current marking scope?
      * @type {function}
      * @returns {bool}
+     * @nodiscard
      */
     function IsTFMarked();
 
@@ -3807,6 +4265,7 @@ class CTFNavArea {
      * Return `true` if area is underwater.
      * @type {function}
      * @returns {bool}
+     * @nodiscard
      */
     function IsUnderwater();
 
@@ -3814,6 +4273,7 @@ class CTFNavArea {
      * Returns `true` if area is valid for wandering population.
      * @type {function}
      * @returns {bool}
+     * @nodiscard
      */
     function IsValidForWanderingPopulation();
 
@@ -3822,6 +4282,7 @@ class CTFNavArea {
      * @type {function}
      * @param {Vector} point
      * @returns {bool}
+     * @nodiscard
      */
     function IsVisible(point);
 
@@ -3906,6 +4367,7 @@ class CNavMesh {
      * @param {Vector} end_pos
      * @param {CTFNavArea|null} ignore_area
      * @returns {CTFNavArea|null}
+     * @nodiscard
      */
     function FindNavAreaAlongRay(start_pos, end_pos, ignore_area);
 
@@ -3930,6 +4392,7 @@ class CNavMesh {
      * @param {Vector} origin
      * @param {float} beneath
      * @returns {CTFNavArea|null}
+     * @nodiscard
      */
     function GetNavArea(origin, beneath);
 
@@ -3938,6 +4401,7 @@ class CNavMesh {
      * @type {function}
      * @param {integer} area_id
      * @returns {CTFNavArea|null}
+     * @nodiscard
      */
     function GetNavAreaByID(area_id);
 
@@ -3945,6 +4409,7 @@ class CNavMesh {
      * Return total number of nav areas.
      * @type {function}
      * @returns {integer}
+     * @nodiscard
      */
     function GetNavAreaCount();
 
@@ -3989,6 +4454,7 @@ class CNavMesh {
      * @param {bool} check_los
      * @param {bool} check_ground
      * @returns {CTFNavArea|null}
+     * @nodiscard
      */
     function GetNearestNavArea(origin, max_distance, check_los, check_ground);
 
@@ -4009,6 +4475,7 @@ class CNavMesh {
      * @param {integer} team See [Constants.ETFTeam](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ETFTeam)
      * @param {bool} ignore_nav_blockers
      * @returns {bool}
+     * @nodiscard
      */
     function NavAreaBuildPath(start_area, end_area, goal_pos, max_path_length, team, ignore_nav_blockers);
 
@@ -4019,6 +4486,7 @@ class CNavMesh {
      * @param {CTFNavArea} end_area
      * @param {float} max_path_length
      * @returns {float} `-1.0` if can't reach `end_area` from `start_area`.
+     * @nodiscard
      */
     function NavAreaTravelDistance(start_area, end_area, max_path_length);
 
@@ -4048,6 +4516,7 @@ class CNetPropManager {
      * @param {CBaseEntity} entity
      * @param {property_array} property_name
      * @returns {integer}
+     * @nodiscard
      */
     function GetPropArraySize(entity, property_name);
 
@@ -4057,6 +4526,7 @@ class CNetPropManager {
      * @param {CBaseEntity} entity
      * @param {entity_property} property_name
      * @returns {CBaseEntity|null} `null` if property is not found.
+     * @nodiscard
      */
     function GetPropEntity(entity, property_name);
 
@@ -4067,6 +4537,7 @@ class CNetPropManager {
      * @param {entity_array_property} property_name
      * @param {integer} array_element
      * @returns {CBaseEntity|null} `null` if not found.
+     * @nodiscard
      */
     function GetPropEntityArray(entity, property_name, array_element);
 
@@ -4076,6 +4547,7 @@ class CNetPropManager {
      * @param {CBaseEntity} entity
      * @param {bool_property} property_name
      * @returns {bool} `false` if property is not found.
+     * @nodiscard
      */
     function GetPropBool(entity, property_name);
 
@@ -4086,6 +4558,7 @@ class CNetPropManager {
      * @param {bool_array_property} property_name
      * @param {integer} array_element
      * @returns {bool} `false` if not found.
+     * @nodiscard
      */
     function GetPropBoolArray(entity, property_name, array_element);
 
@@ -4095,6 +4568,7 @@ class CNetPropManager {
      * @param {CBaseEntity} entity
      * @param {float_property} property_name
      * @returns {float} `-1.0` if property is not found.
+     * @nodiscard
      */
     function GetPropFloat(entity, property_name);
 
@@ -4105,6 +4579,7 @@ class CNetPropManager {
      * @param {float_array_property} property_name
      * @param {integer} array_element
      * @returns {float} `-1.0` if not found.
+     * @nodiscard
      */
     function GetPropFloatArray(entity, property_name, array_element);
 
@@ -4125,6 +4600,7 @@ class CNetPropManager {
      * @param {CBaseEntity} entity
      * @param {integer_property} property_name
      * @returns {integer} `-1` if property is not found.
+     * @nodiscard
      */
     function GetPropInt(entity, property_name);
 
@@ -4135,6 +4611,7 @@ class CNetPropManager {
      * @param {integer_array_property} property_name
      * @param {integer} array_element
      * @returns {integer} `-1` if not found.
+     * @nodiscard
      */
     function GetPropIntArray(entity, property_name, array_element);
 
@@ -4144,6 +4621,7 @@ class CNetPropManager {
      * @param {CBaseEntity} entity
      * @param {string_property} property_name
      * @returns {string} Empty string if property is not found.
+     * @nodiscard
      */
     function GetPropString(entity, property_name);
 
@@ -4154,6 +4632,7 @@ class CNetPropManager {
      * @param {string_array_property} property_name
      * @param {integer} array_element
      * @returns {string} Empty string if not found.
+     * @nodiscard
      */
     function GetPropStringArray(entity, property_name, array_element);
 
@@ -4163,6 +4642,7 @@ class CNetPropManager {
      * @param {CBaseEntity} entity
      * @param {property} property_name
      * @returns {string|null} `null` if not found.
+     * @nodiscard
      */
     function GetPropType(entity, property_name);
 
@@ -4172,6 +4652,7 @@ class CNetPropManager {
      * @param {CBaseEntity} entity
      * @param {vector_property} property_name
      * @returns {Vector} `Vector(0,0,0)` if not found.
+     * @nodiscard
      */
     function GetPropVector(entity, property_name);
 
@@ -4182,6 +4663,7 @@ class CNetPropManager {
      * @param {vector_array_property} property_name
      * @param {integer} array_element
      * @returns {Vector} `Vector(0,0,0)` if not found.
+     * @nodiscard
      */
     function GetPropVectorArray(entity, property_name, array_element);
 
@@ -4200,6 +4682,7 @@ class CNetPropManager {
      * @param {CBaseEntity} entity
      * @param {property} property_name
      * @returns {bool}
+     * @nodiscard
      */
     function HasProp(entity, property_name);
 
@@ -4363,6 +4846,7 @@ class CScriptEntityOutputs {
      * @param {CBaseEntity} entity
      * @param {output} output_name
      * @returns {bool}
+     * @nodiscard
      */
     function HasAction(entity, output_name);
 
@@ -4372,6 +4856,7 @@ class CScriptEntityOutputs {
      * @param {CBaseEntity} entity
      * @param {output} output_name
      * @returns {bool}
+     * @nodiscard
      */
     function HasOutput(entity, output_name);
 
@@ -4397,6 +4882,7 @@ class CScriptKeyValues {
      * @type {function}
      * @param {string} key
      * @returns {CScriptKeyValues|null}
+     * @nodiscard
      */
     function FindKey(key);
 
@@ -4404,6 +4890,7 @@ class CScriptKeyValues {
      * Return the first sub key object.
      * @type {function}
      * @returns {CScriptKeyValues|null}
+     * @nodiscard
      */
     function GetFirstSubKey();
 
@@ -4412,6 +4899,7 @@ class CScriptKeyValues {
      * @type {function}
      * @param {string} key
      * @returns {bool}
+     * @nodiscard
      */
     function GetKeyBool(key);
 
@@ -4420,6 +4908,7 @@ class CScriptKeyValues {
      * @type {function}
      * @param {string} key
      * @returns {float}
+     * @nodiscard
      */
     function GetKeyFloat(key);
 
@@ -4428,6 +4917,7 @@ class CScriptKeyValues {
      * @type {function}
      * @param {string} key
      * @returns {integer}
+     * @nodiscard
      */
     function GetKeyInt(key);
 
@@ -4436,6 +4926,7 @@ class CScriptKeyValues {
      * @type {function}
      * @param {string} key
      * @returns {string}
+     * @nodiscard
      */
     function GetKeyString(key);
 
@@ -4443,6 +4934,7 @@ class CScriptKeyValues {
      * Return the next neighbor key object.
      * @type {function}
      * @returns {CScriptKeyValues|null}
+     * @nodiscard
      */
     function GetNextKey();
 
@@ -4451,6 +4943,7 @@ class CScriptKeyValues {
      * @type {function}
      * @param {string} key
      * @returns {bool}
+     * @nodiscard
      */
     function IsKeyEmpty(key);
 
@@ -4458,6 +4951,7 @@ class CScriptKeyValues {
      * Whether the handle belongs to a valid key.
      * @type {function}
      * @returns {bool}
+     * @nodiscard
      */
     function IsValid();
 
@@ -4478,6 +4972,7 @@ class CPlayerVoiceListener {
      * @type {function}
      * @param {integer} player_index
      * @returns {float}
+     * @nodiscard
      */
     function GetPlayerSpeechDuration(player_index);
 
@@ -4486,6 +4981,7 @@ class CPlayerVoiceListener {
      * @type {function}
      * @param {integer} player_index
      * @returns {bool}
+     * @nodiscard
      */
     function IsPlayerSpeaking(player_index);
 }
@@ -4495,6 +4991,24 @@ class CPlayerVoiceListener {
  * @type {class}
  */
 class CEnvEntityMaker extends CBaseEntity {
+    /**
+     * Retrieve the script-side data associated with an entity.
+     * @override
+     * @type {function}
+     * @returns {table|null}
+     * @nodiscard
+     */
+    function GetScriptScope() {
+        return {
+            /** @type {this} */
+            self = null
+            /** @type {string} */
+            __vname = null
+            /** @type {integer} */
+            __vrefs = null
+        }
+    }
+
     /**
      * Create an entity at the location of the maker.
      * @type {function}
@@ -4544,6 +5058,24 @@ class CFuncTrackTrain extends CBaseEntity {
  * @type {class}
  */
 class CSceneEntity extends CBaseEntity {
+    /**
+     * Retrieve the script-side data associated with an entity.
+     * @override
+     * @type {function}
+     * @returns {table|null}
+     * @nodiscard
+     */
+    function GetScriptScope() {
+        return {
+            /** @type {this} */
+            self = null
+            /** @type {string} */
+            __vname = null
+            /** @type {integer} */
+            __vrefs = null
+        }
+    }
+
     /**
      * Adds a team (by index) to the broadcast list.
      * @type {function}
@@ -4701,6 +5233,24 @@ class CSimpleCallChainer {
  */
 class NextBotCombatCharacter extends CBaseCombatCharacter {
     /**
+     * Retrieve the script-side data associated with an entity.
+     * @override
+     * @type {function}
+     * @returns {table|null}
+     * @nodiscard
+     */
+    function GetScriptScope() {
+        return {
+            /** @type {this} */
+            self = null
+            /** @type {string} */
+            __vname = null
+            /** @type {integer} */
+            __vrefs = null
+        }
+    }
+
+    /**
      * Clear immobile status.
      * @type {function}
      */
@@ -4718,6 +5268,7 @@ class NextBotCombatCharacter extends CBaseCombatCharacter {
      * Get this bot's body interface.
      * @type {function}
      * @returns {INextBotComponent}
+     * @nodiscard
      */
     function GetBodyInterface();
 
@@ -4725,6 +5276,7 @@ class NextBotCombatCharacter extends CBaseCombatCharacter {
      * Get this bot's id.
      * @type {function}
      * @returns {integer}
+     * @nodiscard
      */
     function GetBotId();
 
@@ -4732,6 +5284,7 @@ class NextBotCombatCharacter extends CBaseCombatCharacter {
      * How long have we been immobile.
      * @type {function}
      * @returns {float}
+     * @nodiscard
      */
     function GetImmobileDuration();
 
@@ -4739,6 +5292,7 @@ class NextBotCombatCharacter extends CBaseCombatCharacter {
      * Return units/second below which this actor is considered immobile.
      * @type {function}
      * @returns {float}
+     * @nodiscard
      */
     function GetImmobileSpeedThreshold();
 
@@ -4746,6 +5300,7 @@ class NextBotCombatCharacter extends CBaseCombatCharacter {
      * Get this bot's intention interface.
      * @type {function}
      * @returns {INextBotComponent}
+     * @nodiscard
      */
     function GetIntentionInterface();
 
@@ -4753,6 +5308,7 @@ class NextBotCombatCharacter extends CBaseCombatCharacter {
      * Get this bot's locomotion interface.
      * @type {function}
      * @returns {ILocomotion}
+     * @nodiscard
      */
     function GetLocomotionInterface();
 
@@ -4760,6 +5316,7 @@ class NextBotCombatCharacter extends CBaseCombatCharacter {
      * Get last update tick.
      * @type {function}
      * @returns {integer}
+     * @nodiscard
      */
     function GetTickLastUpdate();
 
@@ -4767,6 +5324,7 @@ class NextBotCombatCharacter extends CBaseCombatCharacter {
      * Get this bot's vision interface.
      * @type {function}
      * @returns {INextBotComponent}
+     * @nodiscard
      */
     function GetVisionInterface();
 
@@ -4775,6 +5333,7 @@ class NextBotCombatCharacter extends CBaseCombatCharacter {
      * @type {function}
      * @param {CBaseEntity} entity
      * @returns {bool}
+     * @nodiscard
      */
     function IsEnemy(entity);
 
@@ -4782,6 +5341,7 @@ class NextBotCombatCharacter extends CBaseCombatCharacter {
      * Is this bot flagged for update.
      * @type {function}
      * @returns {bool}
+     * @nodiscard
      */
     function IsFlaggedForUpdate();
 
@@ -4790,6 +5350,7 @@ class NextBotCombatCharacter extends CBaseCombatCharacter {
      * @type {function}
      * @param {CBaseEntity} entity
      * @returns {bool}
+     * @nodiscard
      */
     function IsFriend(entity);
 
@@ -4797,6 +5358,7 @@ class NextBotCombatCharacter extends CBaseCombatCharacter {
      * Return `true` if we haven't moved in awhile.
      * @type {function}
      * @returns {bool}
+     * @nodiscard
      */
     function IsImmobile();
 }
@@ -4806,6 +5368,24 @@ class NextBotCombatCharacter extends CBaseCombatCharacter {
  * @type {class}
  */
 class CTFBaseBoss extends NextBotCombatCharacter {
+    /**
+     * Retrieve the script-side data associated with an entity.
+     * @override
+     * @type {function}
+     * @returns {table|null}
+     * @nodiscard
+     */
+    function GetScriptScope() {
+        return {
+            /** @type {this} */
+            self = null
+            /** @type {string} */
+            __vname = null
+            /** @type {integer} */
+            __vrefs = null
+        }
+    }
+
     /**
      * Sets whether the entity should push away players intersecting its bounding box. On by default.
      * @type {function}
@@ -4875,6 +5455,7 @@ class ILocomotion extends INextBotComponent {
      * Returns `false` if no time has elapsed.
      * @type {function}
      * @returns {bool}
+     * @nodiscard
      */
     function ComputeUpdateInterval();
 
@@ -4899,6 +5480,7 @@ class ILocomotion extends INextBotComponent {
      * @param {Vector} from
      * @param {Vector} to
      * @returns {float}
+     * @nodiscard
      */
     function FractionPotentialGap(from, to);
 
@@ -4909,6 +5491,7 @@ class ILocomotion extends INextBotComponent {
      * @param {Vector} to
      * @param {bool} immediately
      * @returns {float}
+     * @nodiscard
      */
     function FractionPotentiallyTraversable(from, to, immediately);
 
@@ -4916,6 +5499,7 @@ class ILocomotion extends INextBotComponent {
      * Distance at which we will die if we fall.
      * @type {function}
      * @returns {float}
+     * @nodiscard
      */
     function GetDeathDropHeight();
 
@@ -4923,6 +5507,7 @@ class ILocomotion extends INextBotComponent {
      * Get desired speed for locomotor movement.
      * @type {function}
      * @returns {float}
+     * @nodiscard
      */
     function GetDesiredSpeed();
 
@@ -4930,6 +5515,7 @@ class ILocomotion extends INextBotComponent {
      * Return position of feet - the driving point where the bot contacts the ground.
      * @type {function}
      * @returns {Vector}
+     * @nodiscard
      */
     function GetFeet();
 
@@ -4937,6 +5523,7 @@ class ILocomotion extends INextBotComponent {
      * Return the current ground entity or `null` if not on the ground.
      * @type {function}
      * @returns {CBaseEntity|null}
+     * @nodiscard
      */
     function GetGround();
 
@@ -4944,6 +5531,7 @@ class ILocomotion extends INextBotComponent {
      * Return unit vector in XY plane describing direction of motion.
      * @type {function}
      * @returns {Vector}
+     * @nodiscard
      */
     function GetGroundMotionVector();
 
@@ -4951,6 +5539,7 @@ class ILocomotion extends INextBotComponent {
      * Surface normal of the ground we are in contact with.
      * @type {function}
      * @returns {Vector}
+     * @nodiscard
      */
     function GetGroundNormal();
 
@@ -4958,6 +5547,7 @@ class ILocomotion extends INextBotComponent {
      * Return current world space speed in XY plane.
      * @type {function}
      * @returns {float}
+     * @nodiscard
      */
     function GetGroundSpeed();
 
@@ -4965,6 +5555,7 @@ class ILocomotion extends INextBotComponent {
      * Return maximum acceleration of locomotor.
      * @type {function}
      * @returns {float}
+     * @nodiscard
      */
     function GetMaxAcceleration();
 
@@ -4972,6 +5563,7 @@ class ILocomotion extends INextBotComponent {
      * Return maximum deceleration of locomotor.
      * @type {function}
      * @returns {float}
+     * @nodiscard
      */
     function GetMaxDeceleration();
 
@@ -4979,6 +5571,7 @@ class ILocomotion extends INextBotComponent {
      * Return maximum height of a jump.
      * @type {function}
      * @returns {float}
+     * @nodiscard
      */
     function GetMaxJumpHeight();
 
@@ -4986,6 +5579,7 @@ class ILocomotion extends INextBotComponent {
      * Return unit vector describing our direction of motion.
      * @type {function}
      * @returns {Vector}
+     * @nodiscard
      */
     function GetMotionVector();
 
@@ -4993,6 +5587,7 @@ class ILocomotion extends INextBotComponent {
      * Get maximum running speed.
      * @type {function}
      * @returns {float}
+     * @nodiscard
      */
     function GetRunSpeed();
 
@@ -5000,6 +5595,7 @@ class ILocomotion extends INextBotComponent {
      * Return current world space speed (magnitude of velocity).
      * @type {function}
      * @returns {float}
+     * @nodiscard
      */
     function GetSpeed();
 
@@ -5007,6 +5603,7 @@ class ILocomotion extends INextBotComponent {
      * Get maximum speed bot can reach, regardless of desired speed.
      * @type {function}
      * @returns {float}
+     * @nodiscard
      */
     function GetSpeedLimit();
 
@@ -5014,6 +5611,7 @@ class ILocomotion extends INextBotComponent {
      * If delta Z is lower than this, we can step up the surface; otherwise we have to jump.
      * @type {function}
      * @returns {float}
+     * @nodiscard
      */
     function GetStepHeight();
 
@@ -5021,6 +5619,7 @@ class ILocomotion extends INextBotComponent {
      * Return how long we've been stuck.
      * @type {function}
      * @returns {float}
+     * @nodiscard
      */
     function GetStuckDuration();
 
@@ -5028,6 +5627,7 @@ class ILocomotion extends INextBotComponent {
      * Return Z component of unit normal of steepest traversable slope.
      * @type {function}
      * @returns {float}
+     * @nodiscard
      */
     function GetTraversableSlopeLimit();
 
@@ -5035,6 +5635,7 @@ class ILocomotion extends INextBotComponent {
      * Returns time between updates.
      * @type {function}
      * @returns {float}
+     * @nodiscard
      */
     function GetUpdateInterval();
 
@@ -5042,6 +5643,7 @@ class ILocomotion extends INextBotComponent {
      * Return current world space velocity.
      * @type {function}
      * @returns {Vector}
+     * @nodiscard
      */
     function GetVelocity();
 
@@ -5049,6 +5651,7 @@ class ILocomotion extends INextBotComponent {
      * Get maximum walking speed.
      * @type {function}
      * @returns {float}
+     * @nodiscard
      */
     function GetWalkSpeed();
 
@@ -5058,6 +5661,7 @@ class ILocomotion extends INextBotComponent {
      * @param {Vector} from
      * @param {Vector} to
      * @returns {float}
+     * @nodiscard
      */
     function HasPotentialGap(from, to);
 
@@ -5065,6 +5669,7 @@ class ILocomotion extends INextBotComponent {
      * Return `true` if this bot can climb arbitrary geometry it encounters.
      * @type {function}
      * @returns {bool}
+     * @nodiscard
      */
     function IsAbleToClimb();
 
@@ -5072,6 +5677,7 @@ class ILocomotion extends INextBotComponent {
      * Return `true` if this bot can jump across gaps in its path.
      * @type {function}
      * @returns {bool}
+     * @nodiscard
      */
     function IsAbleToJumpAcrossGaps();
 
@@ -5080,6 +5686,7 @@ class ILocomotion extends INextBotComponent {
      * @type {function}
      * @param {CBaseEntity} area
      * @returns {bool}
+     * @nodiscard
      */
     function IsAreaTraversable(area);
 
@@ -5087,6 +5694,7 @@ class ILocomotion extends INextBotComponent {
      * Return `true` if we have tried to `Approach()` or `DriveTo()` very recently.
      * @type {function}
      * @returns {bool}
+     * @nodiscard
      */
     function IsAttemptingToMove();
 
@@ -5094,6 +5702,7 @@ class ILocomotion extends INextBotComponent {
      * Is jumping in any form.
      * @type {function}
      * @returns {bool}
+     * @nodiscard
      */
     function IsClimbingOrJumping();
 
@@ -5101,6 +5710,7 @@ class ILocomotion extends INextBotComponent {
      * Is climbing up to a high ledge.
      * @type {function}
      * @returns {bool}
+     * @nodiscard
      */
     function IsClimbingUpToLedge();
 
@@ -5110,6 +5720,7 @@ class ILocomotion extends INextBotComponent {
      * @param {CBaseEntity} entity
      * @param {bool} immediately
      * @returns {bool}
+     * @nodiscard
      */
     function IsEntityTraversable(entity, immediately);
 
@@ -5119,6 +5730,7 @@ class ILocomotion extends INextBotComponent {
      * @param {Vector} pos
      * @param {Vector} forward
      * @returns {bool}
+     * @nodiscard
      */
     function IsGap(pos, forward);
 
@@ -5126,6 +5738,7 @@ class ILocomotion extends INextBotComponent {
      * Is jumping across a gap to the far side.
      * @type {function}
      * @returns {bool}
+     * @nodiscard
      */
     function IsJumpingAcrossGap();
 
@@ -5133,6 +5746,7 @@ class ILocomotion extends INextBotComponent {
      * Return `true` if standing on something.
      * @type {function}
      * @returns {bool}
+     * @nodiscard
      */
     function IsOnGround();
 
@@ -5143,6 +5757,7 @@ class ILocomotion extends INextBotComponent {
      * @param {Vector} to
      * @param {bool} immediately
      * @returns {float}
+     * @nodiscard
      */
     function IsPotentiallyTraversable(from, to, immediately);
 
@@ -5150,6 +5765,7 @@ class ILocomotion extends INextBotComponent {
      * Is running?
      * @type {function}
      * @returns {bool}
+     * @nodiscard
      */
     function IsRunning();
 
@@ -5157,6 +5773,7 @@ class ILocomotion extends INextBotComponent {
      * Is in the middle of a complex action that shouldn't be interrupted.
      * @type {function}
      * @returns {bool}
+     * @nodiscard
      */
     function IsScrambling();
 
@@ -5164,6 +5781,7 @@ class ILocomotion extends INextBotComponent {
      * Return `true` if bot is stuck.
      * @type {function}
      * @returns {bool}
+     * @nodiscard
      */
     function IsStuck();
 
@@ -5264,6 +5882,7 @@ class Vector {
      * @param {float} x Defaults to `0.0`
      * @param {float} y Defaults to `0.0`
      * @param {float} z Defaults to `0.0`
+     * @nodiscard
      */
     constructor(x = 0.0, y = 0.0, z = 0.0);
 
@@ -5272,6 +5891,7 @@ class Vector {
      * @type {function}
      * @param {Vector|QAngle} other
      * @returns {Vector}
+     * @nodiscard
      */
     function _add(other);
 
@@ -5280,6 +5900,7 @@ class Vector {
      * @type {function}
      * @param {Vector|QAngle} other
      * @returns {Vector}
+     * @nodiscard
      */
     function _sub(other);
 
@@ -5288,6 +5909,7 @@ class Vector {
      * @type {function}
      * @param {float} other
      * @returns {Vector}
+     * @nodiscard
      */
     function _mul(other);
 
@@ -5296,6 +5918,7 @@ class Vector {
      * @type {function}
      * @param {Vector} factor
      * @returns {Vector}
+     * @nodiscard
      */
     function Cross(factor);
 
@@ -5304,6 +5927,7 @@ class Vector {
      * @type {function}
      * @param {Vector} factor
      * @returns {float}
+     * @nodiscard
      */
     function Dot(factor);
 
@@ -5311,6 +5935,7 @@ class Vector {
      * Magnitude of the vector.
      * @type {function}
      * @returns {float}
+     * @nodiscard
      */
     function Length();
 
@@ -5318,6 +5943,7 @@ class Vector {
      * The magnitude of the vector squared.
      * @type {function}
      * @returns {float}
+     * @nodiscard
      */
     function LengthSqr();
 
@@ -5325,6 +5951,7 @@ class Vector {
      * Returns the magnitude of the vector on the x-y plane.
      * @type {function}
      * @returns {float}
+     * @nodiscard
      */
     function Length2D();
 
@@ -5332,6 +5959,7 @@ class Vector {
      * Returns the square of the magnitude of the vector on the x-y plane.
      * @type {function}
      * @returns {float}
+     * @nodiscard
      */
     function Length2DSqr();
 
@@ -5347,6 +5975,7 @@ class Vector {
      * @type {function}
      * @param {float} factor
      * @returns {Vector}
+     * @nodiscard
      */
     function Scale(factor);
 
@@ -5354,6 +5983,7 @@ class Vector {
      * Returns a string without separating commas.
      * @type {function}
      * @returns {string}
+     * @nodiscard
      */
     function ToKVString();
 
@@ -5361,6 +5991,7 @@ class Vector {
      * Returns a human-readable string.
      * @type {function}
      * @returns {string}
+     * @nodiscard
      */
     function tostring();
 }
@@ -5395,6 +6026,7 @@ class QAngle {
      * @param {float} pitch Defaults to `0.0`
      * @param {float} yaw Defaults to `0.0`
      * @param {float} roll Defaults to `0.0`
+     * @nodiscard
      */
     constructor(pitch = 0.0, yaw = 0.0, roll = 0.0);
 
@@ -5403,6 +6035,7 @@ class QAngle {
      * @type {function}
      * @param {QAngle|Vector} other
      * @returns {QAngle}
+     * @nodiscard
      */
     function _add(other);
 
@@ -5411,6 +6044,7 @@ class QAngle {
      * @type {function}
      * @param {QAngle|Vector} other
      * @returns {QAngle}
+     * @nodiscard
      */
     function _sub(other);
 
@@ -5419,6 +6053,7 @@ class QAngle {
      * @type {function}
      * @param {float} other
      * @returns {QAngle}
+     * @nodiscard
      */
     function _mul(other);
 
@@ -5426,6 +6061,7 @@ class QAngle {
      * @type {function}
      * @param {string|null} start
      * @returns {float}
+     * @nodiscard
      */
     function _nexti(start);
 
@@ -5433,6 +6069,7 @@ class QAngle {
      * Returns the Forward Vector of the angles.
      * @type {function}
      * @returns {Vector}
+     * @nodiscard
      */
     function Forward();
 
@@ -5442,6 +6079,7 @@ class QAngle {
      * **Note**: Despite being named "Left", this actually returns the right vector.
      * @type {function}
      * @returns {Vector}
+     * @nodiscard
      */
     function Left();
 
@@ -5449,6 +6087,7 @@ class QAngle {
      * Returns the pitch angle in degrees.
      * @type {function}
      * @returns {float}
+     * @nodiscard
      */
     function Pitch();
 
@@ -5456,6 +6095,7 @@ class QAngle {
      * Returns the roll angle in degrees.
      * @type {function}
      * @returns {float}
+     * @nodiscard
      */
     function Roll();
 
@@ -5463,6 +6103,7 @@ class QAngle {
      * Returns a string with the values separated by one space.
      * @type {function}
      * @returns {string}
+     * @nodiscard
      */
     function ToKVString();
 
@@ -5470,6 +6111,7 @@ class QAngle {
      * Returns a quaternion representation of the orientation.
      * @type {function}
      * @returns {Quaternion}
+     * @nodiscard
      */
     function ToQuat();
 
@@ -5477,6 +6119,7 @@ class QAngle {
      * Returns the Up Vector of the angles.
      * @type {function}
      * @returns {Vector}
+     * @nodiscard
      */
     function Up();
 
@@ -5484,6 +6127,7 @@ class QAngle {
      * Returns the yaw angle in degrees.
      * @type {function}
      * @returns {float}
+     * @nodiscard
      */
     function Yaw();
 }
@@ -5503,6 +6147,7 @@ class Vector2D {
      * @type {function}
      * @param {float} x Defaults to `0.0`
      * @param {float} y Defaults to `0.0`
+     * @nodiscard
      */
     constructor(x = 0.0, y = 0.0);
 
@@ -5511,6 +6156,7 @@ class Vector2D {
      * @type {function}
      * @param {Vector2D} other
      * @returns {Vector2D}
+     * @nodiscard
      */
     function _add(other);
 
@@ -5519,6 +6165,7 @@ class Vector2D {
      * @type {function}
      * @param {Vector2D} other
      * @returns {Vector2D}
+     * @nodiscard
      */
     function _sub(other);
 
@@ -5527,6 +6174,7 @@ class Vector2D {
      * @type {function}
      * @param {float} other
      * @returns {Vector2D}
+     * @nodiscard
      */
     function _mul(other);
 
@@ -5535,6 +6183,7 @@ class Vector2D {
      * @type {function}
      * @param {Vector2D} factor
      * @returns {float}
+     * @nodiscard
      */
     function Dot(factor);
 
@@ -5542,6 +6191,7 @@ class Vector2D {
      * Magnitude of the vector.
      * @type {function}
      * @returns {float}
+     * @nodiscard
      */
     function Length();
 
@@ -5549,6 +6199,7 @@ class Vector2D {
      * The magnitude of the vector squared.
      * @type {function}
      * @returns {float}
+     * @nodiscard
      */
     function LengthSqr();
 
@@ -5563,6 +6214,7 @@ class Vector2D {
      * Returns a string without separating commas.
      * @type {function}
      * @returns {string}
+     * @nodiscard
      */
     function ToKVString();
 }
@@ -5590,6 +6242,7 @@ class Vector4D {
      * @param {float} y Defaults to `0.0`
      * @param {float} z Defaults to `0.0`
      * @param {float} w Defaults to `0.0`
+     * @nodiscard
      */
     constructor(x = 0.0, y = 0.0, z = 0.0, w = 0.0);
 
@@ -5598,6 +6251,7 @@ class Vector4D {
      * @type {function}
      * @param {Vector4D} other
      * @returns {Vector4D}
+     * @nodiscard
      */
     function _add(other);
 
@@ -5606,6 +6260,7 @@ class Vector4D {
      * @type {function}
      * @param {Vector4D} other
      * @returns {Vector4D}
+     * @nodiscard
      */
     function _sub(other);
 
@@ -5614,6 +6269,7 @@ class Vector4D {
      * @type {function}
      * @param {float} other
      * @returns {Vector4D}
+     * @nodiscard
      */
     function _mul(other);
 
@@ -5622,6 +6278,7 @@ class Vector4D {
      * @type {function}
      * @param {Vector4D} factor
      * @returns {float}
+     * @nodiscard
      */
     function Dot(factor);
 
@@ -5629,6 +6286,7 @@ class Vector4D {
      * Magnitude of the vector.
      * @type {function}
      * @returns {float}
+     * @nodiscard
      */
     function Length();
 
@@ -5636,6 +6294,7 @@ class Vector4D {
      * The magnitude of the vector squared.
      * @type {function}
      * @returns {float}
+     * @nodiscard
      */
     function LengthSqr();
 
@@ -5650,6 +6309,7 @@ class Vector4D {
      * Returns a string without separating commas.
      * @type {function}
      * @returns {string}
+     * @nodiscard
      */
     function ToKVString();
 }
@@ -5691,6 +6351,7 @@ class Quaternion {
      * @param {float} y Defaults to `0.0`
      * @param {float} z Defaults to `0.0`
      * @param {float} w Defaults to `0.0`
+     * @nodiscard
      */
     constructor(x = 0.0, y = 0.0, z = 0.0, w = 0.0);
 
@@ -5698,6 +6359,7 @@ class Quaternion {
      * @type {function}
      * @param {Quaternion} other
      * @returns {Quaternion}
+     * @nodiscard
      */
     function _add(other);
 
@@ -5705,6 +6367,7 @@ class Quaternion {
      * @type {function}
      * @param {Quaternion} other
      * @returns {Quaternion}
+     * @nodiscard
      */
     function _sub(other);
 
@@ -5712,6 +6375,7 @@ class Quaternion {
      * @type {function}
      * @param {float} other
      * @returns {Quaternion}
+     * @nodiscard
      */
     function _mul(other);
 
@@ -5720,6 +6384,7 @@ class Quaternion {
      * @type {function}
      * @param {Quaternion} factor
      * @returns {float}
+     * @nodiscard
      */
     function Dot(factor);
 
@@ -5727,6 +6392,7 @@ class Quaternion {
      * Returns a quaternion with the complementary rotation.
      * @type {function}
      * @returns {Quaternion}
+     * @nodiscard
      */
     function Invert();
 
@@ -5734,6 +6400,7 @@ class Quaternion {
      * Normalizes the quaternion.
      * @type {function}
      * @returns {float}
+     * @nodiscard
      */
     function Norm();
 
@@ -5743,6 +6410,7 @@ class Quaternion {
      * @param {float} pitch
      * @param {float} yaw
      * @param {float} roll
+     * @nodiscard
      */
     function SetPitchYawRoll(pitch, yaw, roll);
 
@@ -5750,6 +6418,7 @@ class Quaternion {
      * Returns a string with the values separated by one space.
      * @type {function}
      * @returns {string}
+     * @nodiscard
      */
     function ToKVString();
 
@@ -5757,6 +6426,7 @@ class Quaternion {
      * Returns the angles resulting from the rotation.
      * @type {function}
      * @returns {QAngle}
+     * @nodiscard
      */
     function ToQAngle();
 }
@@ -5814,6 +6484,7 @@ function CreateSceneEntity(scene);
  * The current level of the developer console variable.
  * @type {function}
  * @returns {integer}
+ * @nodiscard
  */
 function developer();
 
@@ -5972,6 +6643,7 @@ function EntFireByHandle(entity, action, value, delay, activator, caller);
  * @type {function}
  * @param {integer} entindex
  * @returns {CBaseEntity|null}
+ * @nodiscard
  */
 function EntIndexToHScript(entindex);
 
@@ -5981,6 +6653,7 @@ function EntIndexToHScript(entindex);
  * @type {function}
  * @param {string} file
  * @returns {string|null}
+ * @nodiscard
  */
 function FileToString(file);
 
@@ -6008,6 +6681,7 @@ function FireScriptHook(name, params);
  * Get the time spent on the server in the last frame. Usually `0.015` (default tickrate).
  * @type {function}
  * @returns {float}
+ * @nodiscard
  */
 function FrameTime();
 
@@ -6015,6 +6689,7 @@ function FrameTime();
  * Gets the level of 'developer'.
  * @type {function}
  * @returns {integer}
+ * @nodiscard
  */
 function GetDeveloperLevel();
 
@@ -6022,6 +6697,7 @@ function GetDeveloperLevel();
  * Returns the engines current frame count.
  * @type {function}
  * @returns {integer}
+ * @nodiscard
  */
 function GetFrameCount();
 
@@ -6031,6 +6707,7 @@ function GetFrameCount();
  * @param {function} func
  * @param {string} prefix
  * @returns {string|null}
+ * @nodiscard
  */
 function GetFunctionSignature(func, prefix);
 
@@ -6038,6 +6715,7 @@ function GetFunctionSignature(func, prefix);
  * Get the local player on a listen server.
  * @type {function}
  * @returns {CTFPlayer|null} `null` on dedicated servers.
+ * @nodiscard
  */
 function GetListenServerHost();
 
@@ -6045,6 +6723,7 @@ function GetListenServerHost();
  * Get the name of the map without extension.
  * @type {function}
  * @returns {string}
+ * @nodiscard
  */
 function GetMapName();
 
@@ -6053,6 +6732,7 @@ function GetMapName();
  * @type {function}
  * @param {string} model_name
  * @returns {integer} `-1` if not loaded.
+ * @nodiscard
  */
 function GetModelIndex(model_name);
 
@@ -6061,6 +6741,7 @@ function GetModelIndex(model_name);
  * @type {function}
  * @param {CBaseEntity} entity
  * @returns {Vector}
+ * @nodiscard
  * @deprecated Use the `GetPhysAngularVelocity` method on the entity instead.
  */
 function GetPhysAngularVelocity(entity);
@@ -6070,6 +6751,7 @@ function GetPhysAngularVelocity(entity);
  * @type {function}
  * @param {CBaseEntity} entity
  * @returns {Vector}
+ * @nodiscard
  * @deprecated Use the `GetPhysVelocity` method on the entity instead.
  */
 function GetPhysVelocity(entity);
@@ -6079,6 +6761,7 @@ function GetPhysVelocity(entity);
  * @type {function}
  * @param {integer} userid
  * @returns {CTFPlayer|null}
+ * @nodiscard
  */
 function GetPlayerFromUserID(userid);
 
@@ -6090,6 +6773,7 @@ function GetPlayerFromUserID(userid);
  * @param {string} sound_name
  * @param {string|null} actor_model_name
  * @returns {float}
+ * @nodiscard
  */
 function GetSoundDuration(sound_name, actor_model_name);
 
@@ -6097,6 +6781,7 @@ function GetSoundDuration(sound_name, actor_model_name);
  * Returns `true` if this server is a dedicated server.
  * @type {function}
  * @returns {bool}
+ * @nodiscard
  */
 function IsDedicatedServer();
 
@@ -6105,6 +6790,7 @@ function IsDedicatedServer();
  * @type {function}
  * @param {string} model_name
  * @returns {bool}
+ * @nodiscard
  */
 function IsModelPrecached(model_name);
 
@@ -6113,6 +6799,7 @@ function IsModelPrecached(model_name);
  * @type {function}
  * @param {string} sound_name
  * @returns {bool}
+ * @nodiscard
  */
 function IsSoundPrecached(sound_name);
 
@@ -6121,6 +6808,7 @@ function IsSoundPrecached(sound_name);
  * @type {function}
  * @param {CTFPlayer} player
  * @returns {bool}
+ * @nodiscard
  */
 function IsPlayerABot(player);
 
@@ -6137,6 +6825,7 @@ function LocalTime(result);
  * Get the current number of max clients set by the maxplayers command.
  * @type {function}
  * @returns {float}
+ * @nodiscard
  */
 function MaxClients();
 
@@ -6145,6 +6834,7 @@ function MaxClients();
  * @type {function}
  * @param {integer} index
  * @returns {CTFPlayer|null}
+ * @nodiscard
  */
 function PlayerInstanceFromIndex(index);
 
@@ -6186,6 +6876,7 @@ function PrecacheSound(sound_name);
  * @param {float} min
  * @param {float} max
  * @returns {float}
+ * @nodiscard
  */
 function RandomFloat(min, max);
 
@@ -6195,6 +6886,7 @@ function RandomFloat(min, max);
  * @param {integer} min
  * @param {integer} max
  * @returns {integer}
+ * @nodiscard
  */
 function RandomInt(min, max);
 
@@ -6218,6 +6910,7 @@ function RegisterScriptHookListener(name);
  * @param {QAngle} initial
  * @param {QAngle} rotation
  * @returns {QAngle}
+ * @nodiscard
  */
 function RotateOrientation(initial, rotation);
 
@@ -6228,6 +6921,7 @@ function RotateOrientation(initial, rotation);
  * @param {QAngle} rotation
  * @param {Vector} input
  * @returns {Vector}
+ * @nodiscard
  */
 function RotatePosition(origin, rotation, input);
 
@@ -6263,6 +6957,7 @@ function ScreenShake(center, amplitude, frequency, duration, radius, command, ai
  * Returns whether script hooks are currently enabled.
  * @type {function}
  * @returns {bool}
+ * @nodiscard
  */
 function ScriptHooksEnabled();
 
@@ -6343,6 +7038,7 @@ function StringToFile(file, content);
  * Get the current time since map load in seconds.
  * @type {function}
  * @returns {float}
+ * @nodiscard
  */
 function Time();
 
@@ -6445,6 +7141,7 @@ function TraceHull(params);
  * @type {function}
  * @param {string} suffix Defaults to `""`
  * @returns {string}
+ * @nodiscard
  */
 function UniqueString(suffix = "");
 
@@ -6453,6 +7150,7 @@ function UniqueString(suffix = "");
  * @type {function}
  * @param {string|null} suffix
  * @returns {string}
+ * @nodiscard
  * @hide
  */
 function DoUniqueString(suffix);
@@ -6471,12 +7169,14 @@ function __CollectGameEventCallbacks(scope);
 /**
  * @type {function}
  * @returns {bool}
+ * @nodiscard
  */
 function AllowThirdPersonCamera();
 
 /**
  * @type {function}
  * @returns {bool}
+ * @nodiscard
  */
 function ArePlayersInHell();
 
@@ -6484,6 +7184,7 @@ function ArePlayersInHell();
  * May a flag be captured?
  * @type {function}
  * @returns {bool}
+ * @nodiscard
  */
 function FlagsMayBeCapped();
 
@@ -6505,6 +7206,7 @@ function ForceEscortPushLogic(state);
  * Does the current gamemode have currency?
  * @type {function}
  * @returns {bool}
+ * @nodiscard
  */
 function GameModeUsesCurrency();
 
@@ -6512,6 +7214,7 @@ function GameModeUsesCurrency();
  * Does the current gamemode have minibosses?
  * @type {function}
  * @returns {bool}
+ * @nodiscard
  */
 function GameModeUsesMiniBosses();
 
@@ -6519,6 +7222,7 @@ function GameModeUsesMiniBosses();
  * Does the current gamemode have upgrades?
  * @type {function}
  * @returns {bool}
+ * @nodiscard
  */
 function GameModeUsesUpgrades();
 
@@ -6527,24 +7231,28 @@ function GameModeUsesUpgrades();
  * @type {function}
  * @param {integer} class_number See [Constants.ETFClass](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ETFClass)
  * @returns {integer}
+ * @nodiscard
  */
 function GetClassLimit(class_number);
 
 /**
  * @type {function}
  * @returns {float}
+ * @nodiscard
  */
 function GetGravityMultiplier();
 
 /**
  * @type {function}
  * @returns {bool}
+ * @nodiscard
  */
 function GetMannVsMachineAlarmStatus();
 
 /**
  * @type {function}
  * @returns {bool}
+ * @nodiscard
  */
 function GetOvertimeAllowedForCTF();
 
@@ -6552,6 +7260,7 @@ function GetOvertimeAllowedForCTF();
  * Get current round state.
  * @type {function}
  * @returns {integer} See [Constants.ERoundState](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ERoundState)
+ * @nodiscard
  */
 function GetRoundState();
 
@@ -6559,6 +7268,7 @@ function GetRoundState();
  * Get the current stopwatch state.
  * @type {function}
  * @returns {integer} See [Constants.EStopwatchState](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#EStopwatchState)
+ * @nodiscard
  */
 function GetStopWatchState();
 
@@ -6566,12 +7276,14 @@ function GetStopWatchState();
  * Who won!
  * @type {function}
  * @returns {integer}
+ * @nodiscard
  */
 function GetWinningTeam();
 
 /**
  * @type {function}
  * @returns {bool}
+ * @nodiscard
  */
 function HaveStopWatchWinner();
 
@@ -6579,6 +7291,7 @@ function HaveStopWatchWinner();
  * Are we in the pre-match/setup state?
  * @type {function}
  * @returns {bool}
+ * @nodiscard
  */
 function InMatchStartCountdown();
 
@@ -6586,12 +7299,14 @@ function InMatchStartCountdown();
  * Currently in overtime?
  * @type {function}
  * @returns {bool}
+ * @nodiscard
  */
 function InOvertime();
 
 /**
  * @type {function}
  * @returns {bool}
+ * @nodiscard
  */
 function IsAttackDefenseMode();
 
@@ -6599,6 +7314,7 @@ function IsAttackDefenseMode();
  * Are we in birthday mode?
  * @type {function}
  * @returns {bool}
+ * @nodiscard
  */
 function IsBirthday();
 
@@ -6606,6 +7322,7 @@ function IsBirthday();
  * Playing competitive?
  * @type {function}
  * @returns {bool}
+ * @nodiscard
  */
 function IsCompetitiveMode();
 
@@ -6613,6 +7330,7 @@ function IsCompetitiveMode();
  * The absence of arena, mvm, tournament mode, etc.
  * @type {function}
  * @returns {bool}
+ * @nodiscard
  */
 function IsDefaultGameMode();
 
@@ -6621,6 +7339,7 @@ function IsDefaultGameMode();
  * @type {function}
  * @param {integer} holiday See [Constants.EHoliday](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#EHoliday)
  * @returns {bool}
+ * @nodiscard
  */
 function IsHolidayActive(holiday);
 
@@ -6629,6 +7348,7 @@ function IsHolidayActive(holiday);
  * @type {function}
  * @param {integer} holiday See [Constants.EHoliday](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#EHoliday)
  * @returns {bool}
+ * @nodiscard
  */
 function IsHolidayMap(holiday);
 
@@ -6636,6 +7356,7 @@ function IsHolidayMap(holiday);
  * Playing arena mode?
  * @type {function}
  * @returns {bool}
+ * @nodiscard
  */
 function IsInArenaMode();
 
@@ -6643,6 +7364,7 @@ function IsInArenaMode();
  * Playing king of the hill mode?
  * @type {function}
  * @returns {bool}
+ * @nodiscard
  */
 function IsInKothMode();
 
@@ -6650,6 +7372,7 @@ function IsInKothMode();
  * Playing medieval mode?
  * @type {function}
  * @returns {bool}
+ * @nodiscard
  */
 function IsInMedievalMode();
 
@@ -6657,6 +7380,7 @@ function IsInMedievalMode();
  * Are we waiting for some stragglers?
  * @type {function}
  * @returns {bool}
+ * @nodiscard
  */
 function IsInWaitingForPlayers();
 
@@ -6664,6 +7388,7 @@ function IsInWaitingForPlayers();
  * Playing MvM?
  * @type {function}
  * @returns {bool}
+ * @nodiscard
  */
 function IsMannVsMachineMode();
 
@@ -6671,6 +7396,7 @@ function IsMannVsMachineMode();
  * Are players allowed to refund their upgrades?
  * @type {function}
  * @returns {bool}
+ * @nodiscard
  */
 function IsMannVsMachineRespecEnabled();
 
@@ -6678,6 +7404,7 @@ function IsMannVsMachineRespecEnabled();
  * Playing casual?
  * @type {function}
  * @returns {bool}
+ * @nodiscard
  */
 function IsMatchTypeCasual();
 
@@ -6685,6 +7412,7 @@ function IsMatchTypeCasual();
  * Playing competitive?
  * @type {function}
  * @returns {bool}
+ * @nodiscard
  */
 function IsMatchTypeCompetitive();
 
@@ -6692,6 +7420,7 @@ function IsMatchTypeCompetitive();
  * No ball games.
  * @type {function}
  * @returns {bool}
+ * @nodiscard
  */
 function IsPasstimeMode();
 
@@ -6699,12 +7428,14 @@ function IsPasstimeMode();
  * Playing powerup mode?
  * @type {function}
  * @returns {bool}
+ * @nodiscard
  */
 function IsPowerupMode();
 
 /**
  * @type {function}
  * @returns {bool}
+ * @nodiscard
  */
 function IsPVEModeActive();
 
@@ -6712,36 +7443,42 @@ function IsPVEModeActive();
  * If an engineer places a building, will it immediately upgrade?
  * @type {function}
  * @returns {bool}
+ * @nodiscard
  */
 function IsQuickBuildTime();
 
 /**
  * @type {function}
  * @returns {bool}
+ * @nodiscard
  */
 function IsTruceActive();
 
 /**
  * @type {function}
  * @returns {bool}
+ * @nodiscard
  */
 function IsUsingGrapplingHook();
 
 /**
  * @type {function}
  * @returns {bool}
+ * @nodiscard
  */
 function IsUsingSpells();
 
 /**
  * @type {function}
  * @returns {bool}
+ * @nodiscard
  */
 function MapHasMatchSummaryStage();
 
 /**
  * @type {function}
  * @returns {bool}
+ * @nodiscard
  */
 function MatchmakingShouldUseStopwatchMode();
 
@@ -6749,12 +7486,14 @@ function MatchmakingShouldUseStopwatchMode();
  * @type {function}
  * @param {integer} team See [Constants.ETFTeam](https://developer.valvesoftware.com/wiki/Team_Fortress_2/Scripting/Script_Functions/Constants#ETFTeam)
  * @returns {bool}
+ * @nodiscard
  */
 function PlayerReadyStatus_ArePlayersOnTeamReady(team);
 
 /**
  * @type {function}
  * @returns {bool}
+ * @nodiscard
  */
 function PlayerReadyStatus_HaveMinPlayersToEnable();
 
@@ -6766,6 +7505,7 @@ function PlayerReadyStatus_ResetState();
 /**
  * @type {function}
  * @returns {bool}
+ * @nodiscard
  */
 function PlayersAreOnMatchSummaryStage();
 
@@ -6773,6 +7513,7 @@ function PlayersAreOnMatchSummaryStage();
  * Are points able to be captured?
  * @type {function}
  * @returns {bool}
+ * @nodiscard
  */
 function PointsMayBeCaptured();
 
@@ -6809,6 +7550,7 @@ function SetUsingSpells(state);
 /**
  * @type {function}
  * @returns {bool}
+ * @nodiscard
  */
 function UsePlayerReadyStatusMode();
 
