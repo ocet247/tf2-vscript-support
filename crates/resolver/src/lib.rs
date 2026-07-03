@@ -131,12 +131,12 @@ pub enum FunctionMarkdown<'a> {
 #[must_use]
 pub fn can_use_identifier(name: &str) -> bool {
     static HARD_KEYWORDS: phf::Set<&'static str> = phf::phf_set! {
-        "base", "break", "case", "catch", "class", "clone", "const",
-        "constructor", "continue", "default", "delete", "do", "else",
-        "enum", "extends", "false", "foreach", "for", "function",
-        "if", "in", "instanceof", "local", "null", "rawcall", "resume",
-        "return", "static", "switch", "this", "throw", "true", "try",
-        "typeof", "while", "yield", "__FILE__", "__LINE__",
+        "base", "break", "case" , "catch", "class", "clone", "const",
+        "continue", "default", "delete", "do", "else", "enum",
+        "extends", "false", "foreach", "for", "function", "if", "in",
+        "instanceof", "local", "null", "rawcall", "resume", "return",
+        "static", "switch", "this", "throw", "true", "try", "typeof",
+        "while", "yield", "__FILE__", "__LINE__",
     };
 
     let mut chars = name.chars();
