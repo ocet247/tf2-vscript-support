@@ -1,5 +1,5 @@
 use lsp_types::{Hover, HoverContents, HoverParams, MarkupContent, MarkupKind};
-use resolver::{SourceCtx, Source, VScriptDatabase, parse, token_name_range};
+use resolver::{Source, SourceCtx, VScriptDatabase, parse, token_name_range};
 use sq_3_parser::SyntaxKind;
 
 use crate::positions;

@@ -78,7 +78,64 @@ fn type_hints(
             )
             | SymbolKind::Property {
                 show_inlay_hint: true,
-            } => {}
+            } => {
+                // skip if type is any or null - nothing useful to show
+                if !symbol.typ.is_useful() {
+                    return None;
+                }
+
+                if let Some(var) = ast::VariableDeclaration::cast(node.clone())
+                    && var
+                        .initialiser()
+                        .and_then(|i| i.expression())
+                        .is_some_and(|e| expr_obviously_has_type(ctx, &e, &symbol.typ))
+                {
+                    return None;
+                }
+
+                if let Some(var) = ast::Property::cast(node.clone())
+                    && var
+                        .value()
+                        .is_some_and(|e| expr_obviously_has_type(ctx, &e, &symbol.typ))
+                {
+                    return None;
+                }
+
+                if let Some(var) = ast::BinaryExpression::cast(node)
+                    && var
+                        .rhs()
+                        .is_some_and(|e| expr_obviously_has_type(ctx, &e, &symbol.typ))
+                {
+                    return None;
+                }
+
+                let label = format!(": {}", ctx.type_to_str(&symbol.typ));
+                let tooltip = if let Ok(id) = symbol.typ.to_instance()
+                    && let Some(class_symbol_id) = ctx.get(id).symbol
+                {
+                    let content = ctx.symbol_markdown(class_symbol_id);
+
+                    Some(InlayHintTooltip::MarkupContent(MarkupContent {
+                        kind: MarkupKind::Markdown,
+                        value: content,
+                    }))
+                } else {
+                    None
+                };
+
+                let position = positions::range(line_idx, symbol.name_range)?.end;
+
+                Some(InlayHint {
+                    position,
+                    label: InlayHintLabel::String(label),
+                    kind: Some(InlayHintKind::TYPE),
+                    text_edits: None,
+                    tooltip,
+                    padding_left: Some(false),
+                    padding_right: Some(false),
+                    data: None,
+                })
+            }
             SymbolKind::EnumMember => {
                 if !enum_member_value_allowed {
                     return None;
@@ -95,7 +152,7 @@ fn type_hints(
 
                 let position = positions::range(line_idx, symbol.name_range)?.end;
 
-                return Some(InlayHint {
+                Some(InlayHint {
                     position,
                     label: InlayHintLabel::String(format!(" = {value}")),
                     kind: Some(InlayHintKind::TYPE),
@@ -104,67 +161,10 @@ fn type_hints(
                     padding_left: Some(false),
                     padding_right: Some(false),
                     data: None,
-                });
+                })
             }
-            _ => return None,
+            _ => None,
         }
-
-        // skip if type is any or null - nothing useful to show
-        if !symbol.typ.is_useful() {
-            return None;
-        }
-
-        if let Some(var) = ast::VariableDeclaration::cast(node.clone())
-            && var
-                .initialiser()
-                .and_then(|i| i.expression())
-                .is_some_and(|e| expr_obviously_has_type(ctx, &e, &symbol.typ))
-        {
-            return None;
-        }
-
-        if let Some(var) = ast::Property::cast(node.clone())
-            && var
-                .value()
-                .is_some_and(|e| expr_obviously_has_type(ctx, &e, &symbol.typ))
-        {
-            return None;
-        }
-
-        if let Some(var) = ast::BinaryExpression::cast(node)
-            && var
-                .rhs()
-                .is_some_and(|e| expr_obviously_has_type(ctx, &e, &symbol.typ))
-        {
-            return None;
-        }
-
-        let label = format!(": {}", ctx.type_to_str(&symbol.typ));
-        let tooltip = if let Ok(id) = symbol.typ.to_instance()
-            && let Some(class_symbol_id) = ctx.get(id).symbol
-        {
-            let content = ctx.symbol_markdown(class_symbol_id);
-
-            Some(InlayHintTooltip::MarkupContent(MarkupContent {
-                kind: MarkupKind::Markdown,
-                value: content,
-            }))
-        } else {
-            None
-        };
-
-        let position = positions::range(line_idx, symbol.name_range)?.end;
-
-        Some(InlayHint {
-            position,
-            label: InlayHintLabel::String(label),
-            kind: Some(InlayHintKind::TYPE),
-            text_edits: None,
-            tooltip,
-            padding_left: Some(false),
-            padding_right: Some(false),
-            data: None,
-        })
     })
 }
 

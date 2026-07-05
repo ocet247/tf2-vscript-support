@@ -2,7 +2,7 @@ use std::path::PathBuf;
 
 use lsp_types::{GotoDefinitionParams, GotoDefinitionResponse, Location, Range};
 use resolver::{
-    ArenaId, ExpressionKind, SourceCtx, Primitive, Source, StringKind, Type, VScriptDatabase,
+    ArenaId, ExpressionKind, Primitive, Source, SourceCtx, StringKind, Type, VScriptDatabase,
     parse, token_name_range,
 };
 
