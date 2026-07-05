@@ -1,5 +1,5 @@
 use lsp_types::{Location, ReferenceParams};
-use resolver::{Source, SourceCtx, SymbolKind, VScriptDatabase, parse, token_name_range};
+use resolver::{ArenaId, Source, SourceCtx, SymbolKind, VScriptDatabase, parse, token_name_range};
 
 use crate::positions;
 
@@ -30,7 +30,7 @@ pub fn handle_references<Db: VScriptDatabase>(
     };
 
     // can't do token.text() if the token is a string that got unquoted
-    let reference_ctx = SourceCtx::new(db, ctx.file());
+    let reference_ctx = SourceCtx::new(db, reference_id.file());
     let reference = reference_ctx.get(reference_id);
     let name = reference.name.as_ref();
     let name_range = reference.name_range;
@@ -64,7 +64,7 @@ pub fn handle_references<Db: VScriptDatabase>(
     for entry in db.get_files() {
         let (url, &candidate_file) = entry.pair();
 
-        if candidate_file == file {
+        if candidate_file == reference_id.file() {
             continue;
         }
 
