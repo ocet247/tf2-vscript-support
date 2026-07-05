@@ -1019,7 +1019,7 @@ pub trait Source {
                         return str;
                     }
                     Type::Primitive(Primitive::Integer(Some(value))) => value.to_string(),
-                    Type::Primitive(Primitive::Float(Some(value))) => value.to_string(),
+                    Type::Primitive(Primitive::Float(Some(value))) => format!("{value:?}"),
                     Type::Primitive(Primitive::Bool(Some(value))) => value.to_string(),
                     Type::Primitive(Primitive::String {
                         literal: Some(literal),

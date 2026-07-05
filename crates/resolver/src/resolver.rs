@@ -4121,50 +4121,104 @@ impl<'db> Resolver<'db> {
                 // Default values are provided to signify that the user has tried
                 // to write a literal but the literal was malformed
                 // This is to not error out
-                let value = text.parse::<i32>().unwrap_or(0);
+                let value = text.parse::<i32>().unwrap_or_else(|_| {
+                    self.diagnostics.push(Diagnostic {
+                        message: format!(
+                            "Integer literal '{text}' is out of range for a 32-bit integer"
+                        ),
+                        range: token.text_range(),
+                        severity: DiagnosticSeverity::Warning,
+                    });
+                    0
+                });
 
                 ExpressionKind::Literal(Type::Primitive(Primitive::Integer(Some(value))))
             }
             LiteralExpressionKind::OctalInteger => {
                 let text = token.text();
                 // 0321321
-                let value = i32::from_str_radix(&text[1..], 8).unwrap_or(0);
+                let value = i32::from_str_radix(&text[1..], 8).unwrap_or_else(|_| {
+                    self.diagnostics.push(Diagnostic {
+                        message: format!(
+                            "Octal literal '{text}' is out of range for a 32-bit integer"
+                        ),
+                        range: token.text_range(),
+                        severity: DiagnosticSeverity::Warning,
+                    });
+                    0
+                });
 
                 ExpressionKind::Literal(Type::Primitive(Primitive::Integer(Some(value))))
             }
             LiteralExpressionKind::HexInteger => {
                 let text = token.text();
                 //0x12312312
-                let value = i32::from_str_radix(&text[2..], 16).unwrap_or(0);
+                let value = i32::from_str_radix(&text[2..], 16).unwrap_or_else(|_| {
+                    self.diagnostics.push(Diagnostic {
+                        message: format!(
+                            "Hex literal '{text}' is out of range for a 32-bit integer"
+                        ),
+                        range: token.text_range(),
+                        severity: DiagnosticSeverity::Warning,
+                    });
+                    0
+                });
 
                 ExpressionKind::Literal(Type::Primitive(Primitive::Integer(Some(value))))
             }
             LiteralExpressionKind::Character => {
-                // let text = token.text();
-                // let inner = &text[1..];
+                let text = token.text();
+                let inner = text.strip_prefix('\'').unwrap_or(text);
+                let inner = if inner.ends_with("\\'") {
+                    inner
+                } else {
+                    inner.strip_suffix('\'').unwrap_or(inner)
+                };
 
-                // let value = if !inner.starts_with('\\') {
-                //     inner.chars().next().map(|c| c as i32)
-                // } else {
-                //     match inner.chars().nth(1) {
-                //         Some('n') => Some('\n' as i32),
-                //         Some('t') => Some('\t' as i32),
-                //         Some('r') => Some('\r' as i32),
-                //         Some('\\') => Some('\\' as i32),
-                //         Some('\'') => Some('\'' as i32),
+                let byte: Option<u8> = if inner.starts_with('\\') {
+                    match inner.chars().nth(1) {
+                        // \x is always exactly 2 hex digits and is a raw byte, not a codepoint
+                        Some('x') => {
+                            let hex = &inner[2..];
+                            u8::from_str_radix(hex, 16).ok()
+                        }
+                        Some('u' | 'U') => {
+                            let hex = &inner[2..];
+                            u32::from_str_radix(hex, 16)
+                                .ok()
+                                .and_then(|v| u8::try_from(v).ok())
+                        }
+                        Some('t') => Some(b'\t'),
+                        Some('a') => Some(0x07),
+                        Some('b') => Some(0x08),
+                        Some('n') => Some(b'\n'),
+                        Some('r') => Some(b'\r'),
+                        Some('v') => Some(0x0b),
+                        Some('f') => Some(0x0c),
+                        Some('0') => Some(0),
+                        Some('\\') => Some(b'\\'),
+                        Some('"') => Some(b'"'),
+                        Some('\'') => Some(b'\''),
+                        Some(other) => {
+                            self.diagnostics.push(Diagnostic {
+                                message: format!("Unknown escape sequence '\\{other}'"),
+                                range: token.text_range(),
+                                severity: DiagnosticSeverity::Warning,
+                            });
+                            None
+                        }
+                        None => None,
+                    }
+                } else {
+                    let ch = inner.chars().next();
+                    ch.and_then(|c| u8::try_from(c).ok())
+                };
 
-                //         Some('x') => {
-                //             let hex = &inner[2..];
-                //             u8::from_str_radix(hex, 16).ok().map(|c| c as i32)
-                //         }
+                // Character literals are a signed 8-bit value: byte 0x80-0xFF wraps to -128..-1
+                #[allow(clippy::cast_possible_wrap)]
+                let value = byte.map_or(0, |b| i32::from(b as i8));
 
-                //         Some(other) => panic!("unknown escape: {}", other),
-                //         None => None,
-                //     }
-                // }
-                // .unwrap_or(0);
-
-                ExpressionKind::Literal(Type::Primitive(Primitive::Integer(Some(0))))
+                ExpressionKind::Literal(Type::Primitive(Primitive::Integer(Some(value))))
             }
             LiteralExpressionKind::Float => {
                 let text = token.text();
