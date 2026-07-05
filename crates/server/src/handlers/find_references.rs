@@ -28,32 +28,30 @@ pub fn handle_references<Db: VScriptDatabase>(
     let Some(reference_id) = ctx.symbol_at(range) else {
         return Ok(None);
     };
-
+    let reference = ctx.get(reference_id);
     // can't do token.text() if the token is a string that got unquoted
-    let reference_ctx = SourceCtx::new(db, reference_id.file());
-    let reference = reference_ctx.get(reference_id);
     let name = reference.name.as_ref();
     let name_range = reference.name_range;
+
     let mut all_locations = Vec::new();
-
-    if let Some(ranges) = reference_ctx.symbol_to_ranges().get(&reference_id) {
-        for text_range in ranges {
-            if *text_range == name_range {
-                continue;
-            }
-
-            let Some(range) = positions::range(line_idx, *text_range) else {
-                continue;
-            };
-
-            all_locations.push(Location {
-                range,
-                uri: uri.clone(),
-            });
-        }
-    }
-
     if matches!(reference.kind, SymbolKind::Local(_)) {
+        if let Some(ranges) = ctx.symbol_to_ranges().get(&reference_id) {
+            for text_range in ranges {
+                if *text_range == name_range {
+                    continue;
+                }
+
+                let Some(range) = positions::range(line_idx, *text_range) else {
+                    continue;
+                };
+
+                all_locations.push(Location {
+                    range,
+                    uri: uri.clone(),
+                });
+            }
+        }
+
         if all_locations.is_empty() {
             return Ok(None);
         }
@@ -63,10 +61,6 @@ pub fn handle_references<Db: VScriptDatabase>(
 
     for entry in db.get_files() {
         let (url, &candidate_file) = entry.pair();
-
-        if candidate_file == reference_id.file() {
-            continue;
-        }
 
         let text = candidate_file.text(db);
         if !text.contains(name) {
@@ -81,8 +75,12 @@ pub fn handle_references<Db: VScriptDatabase>(
 
         let line_idx = positions::line_index(db, candidate_file);
 
-        for text_range in ranges {
-            let Some(range) = positions::range(line_idx, *text_range) else {
+        for &text_range in ranges {
+            if candidate_file == reference_id.file() && text_range == name_range {
+                continue;
+            }
+
+            let Some(range) = positions::range(line_idx, text_range) else {
                 continue;
             };
 
@@ -93,5 +91,9 @@ pub fn handle_references<Db: VScriptDatabase>(
         }
     }
 
-    Ok(Some(all_locations))
+    if all_locations.is_empty() {
+        Ok(None)
+    } else {
+        Ok(Some(all_locations))
+    }
 }
