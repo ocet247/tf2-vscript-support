@@ -1,5 +1,10 @@
 # Changelog
 
+## [3.3.5]
+- Properly resolve all literals
+- Add 'integer too big/small' diagnostic
+- Fix concrete instances narrowing to generic 'instance'
+
 ## [3.3.4]
 - Fix infinite loop in parameter parsing
 - Add @override and @nodiscard tags
