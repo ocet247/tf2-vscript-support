@@ -2,7 +2,8 @@ mod normalize_path;
 pub use dashmap::DashMap;
 pub use lsp_types::Url;
 
-pub use crate::normalize_path::{key_to_url, normalize_file_path, normalize_file_url};
+use crate::normalize_path::key_to_url;
+pub use crate::normalize_path::{normalize_file_path, normalize_file_url};
 
 #[salsa::input]
 #[derive(Debug)]

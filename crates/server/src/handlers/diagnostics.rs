@@ -1,4 +1,4 @@
-use db::{Url, file_iter, key_to_url};
+use db::{Url, file_iter};
 use lsp_types::{
     Diagnostic, DiagnosticSeverity, DiagnosticTag, DocumentDiagnosticParams,
     DocumentDiagnosticReport, DocumentDiagnosticReportResult, FullDocumentDiagnosticReport,
@@ -36,12 +36,10 @@ pub fn handle_workspace_diagnostics<Db: VScriptDatabase>(
     _params: WorkspaceDiagnosticParams,
 ) -> anyhow::Result<WorkspaceDiagnosticReportResult> {
     if !db.config().workspace_diagnostics {
-        let items = db
-            .get_keys()
-            .iter()
-            .map(|key| {
+        let items = file_iter(db)
+            .map(|(uri, _)| {
                 WorkspaceDocumentDiagnosticReport::Full(WorkspaceFullDocumentDiagnosticReport {
-                    uri: key_to_url(&key),
+                    uri,
                     version: None,
                     full_document_diagnostic_report: FullDocumentDiagnosticReport {
                         result_id: None,
