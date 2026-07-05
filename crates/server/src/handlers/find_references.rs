@@ -61,7 +61,6 @@ pub fn handle_references<Db: VScriptDatabase>(
 
     for entry in db.get_files() {
         let (url, &candidate_file) = entry.pair();
-        dbg!(url);
 
         let text = candidate_file.text(db);
         if !text.contains(name) {

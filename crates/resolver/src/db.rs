@@ -148,7 +148,7 @@ impl VScriptDatabase for Database {
             .config
             .tf2_root_path
             .as_ref()
-            .and_then(|r| r.canonicalize().ok())
+            .and_then(|r| dunce::canonicalize(r).ok())
         else {
             self.tf2_root_url = None;
             self.scripts_url = None;
@@ -290,7 +290,7 @@ impl Database {
             return this;
         };
 
-        let Ok(path) = path.canonicalize() else {
+        let Ok(path) = dunce::canonicalize(&path) else {
             log::error!(
                 "Standard library directory '{}' couldn't be resolved",
                 path.display()
@@ -336,7 +336,7 @@ impl Database {
             .filter(|e| e.path().extension().and_then(|e| e.to_str()) == Some("nut"))
         {
             let path = entry.into_path();
-            let Ok(path) = path.canonicalize() else {
+            let Ok(path) = dunce::canonicalize(&path) else {
                 continue;
             };
 
@@ -356,7 +356,7 @@ impl Database {
     /// Converts a `&Path` to a URL and opens the file.
     /// Used only during init where we receive `PathBuf` from config.
     fn open_file_from_path(&self, path: &Path) -> Option<File> {
-        let path = path.canonicalize().ok()?;
+        let path = dunce::canonicalize(path).ok()?;
         let url = Url::from_file_path(&path).ok()?;
 
         if let Some(file) = self.get_file(&url) {
