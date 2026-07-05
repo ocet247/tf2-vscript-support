@@ -801,10 +801,7 @@ impl<'db> Resolver<'db> {
 
                 match kind {
                     StringKind::Script => {
-                        if let Err(message) = self
-                            .db()
-                            .get_script(PathBuf::from(text.replace("\\\\", "/")))
-                        {
+                        if let Err(message) = self.db().get_script(&text) {
                             self.diagnostics.push(Diagnostic {
                                 message,
                                 range: error_range,
@@ -5917,9 +5914,7 @@ impl<'db> Resolver<'db> {
             return None;
         };
 
-        let path = PathBuf::from(self.get(id).text.replace("\\\\", "/"));
-
-        self.db.get_script(path).ok()
+        self.db.get_script(&self.get(id).text).ok()
     }
 
     fn include_script(&mut self, arguments: &[TypeWithRange]) {

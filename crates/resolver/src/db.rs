@@ -1,5 +1,5 @@
 use std::{
-    path::{Path, PathBuf},
+    path::{Component, Path, PathBuf},
     sync::Arc,
     time::Instant,
 };
@@ -103,7 +103,7 @@ pub trait VScriptDatabase: BaseDatabase {
 
     /// # Errors
     /// If the script path is absent, has a bad extension, or can't be opened.
-    fn get_script(&self, path: PathBuf) -> Result<File, String>;
+    fn get_script(&self, path: &str) -> Result<File, String>;
     fn script_literals(&self) -> Vec<String>;
 }
 
@@ -166,7 +166,7 @@ impl VScriptDatabase for Database {
         self.tf2_root_key = Some(db::normalize_file_path(&root));
     }
 
-    fn get_script(&self, mut path: PathBuf) -> Result<File, String> {
+    fn get_script(&self, path_text: &str) -> Result<File, String> {
         let scripts = self.scripts_key.as_ref().ok_or_else(|| {
             if self.tf2_root_key.is_some() {
                 "Specified TF2 root path contains no 'tf/scripts/vscripts' directory".to_owned()
@@ -175,22 +175,38 @@ impl VScriptDatabase for Database {
             }
         })?;
 
-        if path.extension().is_none() {
-            path.set_extension("nut");
-        } else if path.extension().and_then(|e| e.to_str()) != Some("nut") {
-            return Err("Script path must either have no or '.nut' extension".to_owned());
+        let path_text = path_text.replace("\\\\", "/");
+        let mut normalised = String::new();
+        let mut found = false;
+        for part in path_text.split('/') {
+            match part {
+                "." => return Err("`.` segments not allowed".into()),
+                ".." => return Err("`..` segments not allowed".into()),
+                "" => {}
+                part => {
+                    if found {
+                        normalised.push('/');
+                    } else {
+                        found = true;
+                    }
+                    normalised.push_str(part);
+                }
+            }
         }
 
-        if path.is_absolute() {
-            return Err(format!(
-                "Script path must be relative to '{}'",
-                scripts.as_str()
-            ));
+        if let Some((rest, ext)) = normalised.rsplit_once('.') {
+            if rest.contains('.') {
+                return Err("Containing dots before the extension".to_owned());
+            }
+
+            if ext != "nut" {
+                return Err("Script path must either have no or '.nut' extension".to_owned());
+            }
+        } else {
+            normalised.push_str(".nut");
         }
 
-        let abs_path =
-            PathBuf::from(scripts).join(path.to_str().ok_or("Script path is not valid UTF-8")?);
-
+        let abs_path = PathBuf::from(scripts).join(normalised);
         let key = normalize_file_path(&abs_path);
 
         if let Some(file) = self.get_file_from_key(&key) {

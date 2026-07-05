@@ -1,5 +1,3 @@
-use std::path::PathBuf;
-
 use lsp_types::{DocumentLink, DocumentLinkParams};
 use resolver::{ExpressionKind, Primitive, Source, SourceCtx, StringKind, Type, VScriptDatabase};
 
@@ -34,8 +32,7 @@ pub fn handle_document_link<Db: VScriptDatabase>(
             }
 
             let literal = ctx.get(*literal);
-            let rel_path = PathBuf::from(literal.text.replace("\\\\", "/"));
-            let script = ctx.db().get_script(rel_path).ok()?;
+            let script = ctx.db().get_script(&literal.text).ok()?;
             let url = db.get_url(&script)?;
 
             Some(DocumentLink {

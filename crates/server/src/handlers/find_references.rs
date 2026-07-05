@@ -61,7 +61,6 @@ pub fn handle_references<Db: VScriptDatabase>(
     }
 
     for (uri, candidate_file) in file_iter(db) {
-        dbg!(uri.as_str());
         let text = candidate_file.text(db);
         if !text.contains(name) {
             continue;
