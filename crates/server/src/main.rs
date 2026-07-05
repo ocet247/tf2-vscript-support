@@ -193,6 +193,7 @@ fn on_notifications<Db: VScriptDatabase + Clone + RefUnwindSafe>(
         })
         .on_mut::<DidChangeTextDocument>(|session, params| {
             let uri = &params.text_document.uri;
+            log::info!("Received didChange for {uri}");
             let file = session
                 .db
                 .get_file(uri)
