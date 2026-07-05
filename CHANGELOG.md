@@ -1,5 +1,8 @@
 # Changelog
 
+## [3.3.7]
+- Fix find references again
+
 ## [3.3.6]
 - Fix find references not working correctly
 - Properly resolve constructor references
