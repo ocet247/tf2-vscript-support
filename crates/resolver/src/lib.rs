@@ -752,7 +752,7 @@ pub trait Source {
 
     /// The vector is in order of symbols being added, therefore the last symbol that passes the condition
     /// must be the symbol we're looking for
-    fn find_member(&self, from: Container, name: &str, offset: TextSize) -> Option<&Symbol> {
+    fn find_member_id(&self, from: Container, name: &str, offset: TextSize) -> Option<SymbolId> {
         let (file, members) = match from {
             Container::Class(id) | Container::Instance(id) => {
                 (id.file(), self.additional_class_members(id))
@@ -763,9 +763,7 @@ pub trait Source {
         };
 
         if file != self.file() {
-            return to_flat_symbol_table(members)
-                .get(name)
-                .map(|id| self.get(*id));
+            return to_flat_symbol_table(members).get(name).copied();
         }
 
         let symbols = members.get(name)?;
@@ -779,7 +777,7 @@ pub trait Source {
                     break;
                 }
 
-                last = Some(symbol);
+                last = Some(*id);
             }
         } else {
             for id in symbols {
@@ -788,10 +786,17 @@ pub trait Source {
                     break;
                 }
 
-                last = Some(symbol);
+                last = Some(*id);
             }
         }
         last
+    }
+
+    /// The vector is in order of symbols being added, therefore the last symbol that passes the condition
+    /// must be the symbol we're looking for
+    fn find_member(&self, from: Container, name: &str, offset: TextSize) -> Option<&Symbol> {
+        self.find_member_id(from, name, offset)
+            .map(|id| self.get(id))
     }
 
     fn type_to_symbol(&self, typ: &Type) -> Option<SymbolId> {

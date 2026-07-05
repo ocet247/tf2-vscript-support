@@ -1860,13 +1860,18 @@ impl<'db> Resolver<'db> {
                     return Some(Type::INSTANCE);
                 };
 
-                if let Some(symbol) =
-                    self.find_member(Container::Class(id), "constructor", range.start())
+                if let Some(id) =
+                    self.find_member_id(Container::Class(id), "constructor", range.start())
                 {
+                    self.symbol_to_ranges
+                        .entry(id)
+                        .and_modify(|list| list.push(range))
+                        .or_insert_with(|| vec![range]);
+
                     self.callable(
                         context,
                         &TypeWithRange {
-                            kind: symbol.typ.clone(),
+                            kind: self.get(id).typ.clone(),
                             range,
                         },
                         arguments,
