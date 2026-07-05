@@ -341,6 +341,7 @@ impl<'db> Resolver<'db> {
 
         if let Some(vscript_lib) = db.vscript_lib()
             && vscript_lib != file
+            && Some(file) != db.folded_lib()
         {
             libs.push(vscript_lib);
         }
@@ -348,6 +349,7 @@ impl<'db> Resolver<'db> {
         // Include by default for now
         if let Some(folded_lib) = db.folded_lib()
             && folded_lib != file
+            && Some(file) != db.vscript_lib()
         {
             libs.push(folded_lib);
         }
@@ -4901,6 +4903,8 @@ impl<'db> Resolver<'db> {
                                 flags: SymbolFlags::default(),
                             })
                         };
+
+                    self.set_symbol(&value.kind, symbol);
 
                     if let NewSlotResult::CanAdd(container) = result {
                         self.add_container_member(container, name, symbol);
