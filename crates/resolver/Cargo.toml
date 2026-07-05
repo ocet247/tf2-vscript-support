@@ -17,7 +17,7 @@ salsa = { workspace = true }
 line-index = { workspace = true }
 bitflags = { workspace = true }
 log = { workspace = true }
-dunce = "1.0.5"
+dunce = { workspace = true }
 
 [lints]
 workspace = true

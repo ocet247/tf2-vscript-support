@@ -801,7 +801,10 @@ impl<'db> Resolver<'db> {
 
                 match kind {
                     StringKind::Script => {
-                        if let Err(message) = self.db().get_script(PathBuf::from(text)) {
+                        if let Err(message) = self
+                            .db()
+                            .get_script(PathBuf::from(text.replace("\\\\", "/")))
+                        {
                             self.diagnostics.push(Diagnostic {
                                 message,
                                 range: error_range,
@@ -5914,7 +5917,7 @@ impl<'db> Resolver<'db> {
             return None;
         };
 
-        let path = PathBuf::from(self.get(id).text.to_string());
+        let path = PathBuf::from(self.get(id).text.replace("\\\\", "/"));
 
         self.db.get_script(path).ok()
     }

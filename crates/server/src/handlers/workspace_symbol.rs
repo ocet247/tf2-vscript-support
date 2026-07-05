@@ -14,7 +14,8 @@ pub fn handle_workspace_symbol<Db: VScriptDatabase>(
     let mut symbols = Vec::new();
 
     for entry in db.get_files() {
-        let (url, &file) = entry.pair();
+        let (key, &file) = entry.pair();
+        let uri = db::key_to_url(key);
 
         // Quick text filter before running full analysis
         let text = file.text(db);
@@ -54,7 +55,7 @@ pub fn handle_workspace_symbol<Db: VScriptDatabase>(
                 name: symbol.name.to_string(),
                 kind,
                 location: Location {
-                    uri: url.clone(),
+                    uri: uri.clone(),
                     range,
                 },
                 tags: symbol

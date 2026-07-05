@@ -247,11 +247,10 @@ fn on_notifications<Db: VScriptDatabase + Clone + RefUnwindSafe>(
                         }
                     }
                     FileChangeType::DELETED => {
-                        let Some(file) = session.db.get_files().remove(uri).map(|e| e.1) else {
-                            continue;
-                        };
-                        file.set_text(&mut session.db).to(String::new());
-                        session.db.get_urls().remove(&file);
+                        let file = session.db.delete_file(uri);
+                        if let Some(file) = file {
+                            file.set_text(&mut session.db).to(String::new());
+                        }
                     }
                     _ => {}
                 }

@@ -4,7 +4,7 @@ use std::{
     time::Instant,
 };
 
-use db::{BaseDatabase, DashMap, File, Url};
+use db::{BaseDatabase, DashMap, File, normalize_file_path};
 use rustc_hash::FxHashMap;
 use salsa::Setter;
 use sq_3_parser::Parse;
@@ -21,11 +21,11 @@ use crate::{
 pub struct Database {
     storage: salsa::Storage<Self>,
     config: VScriptDbConfig,
-    files: Arc<DashMap<Url, File>>,
-    urls: Arc<DashMap<File, Url>>,
+    files: Arc<DashMap<String, File>>,
+    urls: Arc<DashMap<File, String>>,
     builtins: Option<Arc<Builtins>>,
-    tf2_root_url: Option<Url>,
-    scripts_url: Option<Url>,
+    tf2_root_key: Option<String>,
+    scripts_key: Option<String>,
     squirrel_lib: Option<File>,
     vscript_lib: Option<File>,
     folded_lib: Option<File>,
@@ -37,11 +37,11 @@ impl std::panic::RefUnwindSafe for Database {}
 
 #[salsa::db]
 impl BaseDatabase for Database {
-    fn get_files(&self) -> &DashMap<Url, File> {
+    fn get_files(&self) -> &DashMap<String, File> {
         &self.files
     }
 
-    fn get_urls(&self) -> &DashMap<File, Url> {
+    fn get_keys(&self) -> &DashMap<File, String> {
         &self.urls
     }
 }
@@ -150,25 +150,25 @@ impl VScriptDatabase for Database {
             .as_ref()
             .and_then(|r| dunce::canonicalize(r).ok())
         else {
-            self.tf2_root_url = None;
-            self.scripts_url = None;
+            self.tf2_root_key = None;
+            self.scripts_key = None;
             return;
         };
 
         let scripts = root.join("tf/scripts/vscripts");
         if scripts.exists() {
             self.load_all_scripts(&scripts);
-            self.scripts_url = Url::from_directory_path(&scripts).ok();
+            self.scripts_key = Some(db::normalize_file_path(&scripts));
         } else {
-            self.scripts_url = None;
+            self.scripts_key = None;
         }
 
-        self.tf2_root_url = Url::from_directory_path(&root).ok();
+        self.tf2_root_key = Some(db::normalize_file_path(&root));
     }
 
     fn get_script(&self, mut path: PathBuf) -> Result<File, String> {
-        let scripts = self.scripts_url.as_ref().ok_or_else(|| {
-            if self.tf2_root_url.is_some() {
+        let scripts = self.scripts_key.as_ref().ok_or_else(|| {
+            if self.tf2_root_key.is_some() {
                 "Specified TF2 root path contains no 'tf/scripts/vscripts' directory".to_owned()
             } else {
                 "No TF2 root specified".to_owned()
@@ -188,35 +188,33 @@ impl VScriptDatabase for Database {
             ));
         }
 
-        let url = scripts
-            .join(path.to_str().ok_or("Script path is not valid UTF-8")?)
-            .map_err(|e| format!("Couldn't construct script URL: {e}"))?;
+        let abs_path =
+            PathBuf::from(scripts).join(path.to_str().ok_or("Script path is not valid UTF-8")?);
 
-        if let Some(file) = self.get_file(&url) {
+        let key = normalize_file_path(&abs_path);
+
+        if let Some(file) = self.get_file_from_key(&key) {
             return Ok(file);
         }
 
-        let full_path = url
-            .to_file_path()
-            .map_err(|()| format!("Couldn't convert '{url}' to path"))?;
-
         let text =
-            std::fs::read_to_string(&full_path).map_err(|_| "File does not exist".to_owned())?;
+            std::fs::read_to_string(&abs_path).map_err(|_| "File does not exist".to_owned())?;
 
-        Ok(self.open_file(&url, text))
+        Ok(self.open_file_with_key(key, text))
     }
 
     fn script_literals(&self) -> Vec<String> {
-        let Some(scripts) = &self.scripts_url else {
+        let Some(scripts) = &self.scripts_key else {
             return Vec::new();
         };
-        let scripts_str = scripts.as_str();
+
+        let prefix = scripts.to_owned() + "/";
 
         self.get_files()
             .iter()
             .filter_map(|entry| {
                 let url = entry.key().as_str();
-                let rel = url.strip_prefix(scripts_str)?;
+                let rel = url.strip_prefix(&prefix)?;
 
                 if !std::path::Path::new(rel)
                     .extension()
@@ -290,7 +288,7 @@ impl Database {
             return this;
         };
 
-        let Ok(path) = dunce::canonicalize(&path) else {
+        let Some(path) = dunce::canonicalize(&path).ok() else {
             log::error!(
                 "Standard library directory '{}' couldn't be resolved",
                 path.display()
@@ -340,16 +338,14 @@ impl Database {
                 continue;
             };
 
-            let Ok(url) = Url::from_file_path(&path) else {
-                continue;
-            };
-            if self.get_file(&url).is_some() {
+            let key = db::normalize_file_path(&path);
+            if self.get_file_from_key(&key).is_some() {
                 continue;
             }
             let Ok(text) = std::fs::read_to_string(&path) else {
                 continue;
             };
-            self.open_file(&url, text);
+            self.open_file_with_key(key, text);
         }
     }
 
@@ -357,14 +353,14 @@ impl Database {
     /// Used only during init where we receive `PathBuf` from config.
     fn open_file_from_path(&self, path: &Path) -> Option<File> {
         let path = dunce::canonicalize(path).ok()?;
-        let url = Url::from_file_path(&path).ok()?;
+        let key = db::normalize_file_path(&path);
 
-        if let Some(file) = self.get_file(&url) {
+        if let Some(file) = self.get_file_from_key(&key) {
             return Some(file);
         }
 
         let text = std::fs::read_to_string(&path).ok()?;
-        Some(self.open_file(&url, text))
+        Some(self.open_file_with_key(key, text))
     }
 
     fn init_builtins(&mut self, path: &Path) -> Option<File> {

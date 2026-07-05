@@ -9,6 +9,7 @@ license.workspace = true
 dashmap = "6.1.0"
 lsp-types = { workspace = true }
 salsa = { workspace = true }
+dunce = { workspace = true }
 
 [lints]
 workspace = true

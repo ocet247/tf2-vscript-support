@@ -67,7 +67,8 @@ pub fn handle_rename<Db: VScriptDatabase>(
     }
 
     for entry in db.get_files() {
-        let (url, &candidate_file) = entry.pair();
+        let (key, &candidate_file) = entry.pair();
+        let uri = db::key_to_url(key);
 
         let text = candidate_file.text(db);
         if !text.contains(&*name) {
@@ -86,7 +87,7 @@ pub fn handle_rename<Db: VScriptDatabase>(
             let range = positions::range(candidate_line_idx, text_range)
                 .ok_or_else(|| anyhow::format_err!("Couldn't convert text range to lsp range"))?;
 
-            changes.entry(url.clone()).or_default().push(TextEdit {
+            changes.entry(uri.clone()).or_default().push(TextEdit {
                 range,
                 new_text: new_name.clone(),
             });

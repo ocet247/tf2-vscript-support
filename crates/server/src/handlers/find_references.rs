@@ -60,7 +60,8 @@ pub fn handle_references<Db: VScriptDatabase>(
     }
 
     for entry in db.get_files() {
-        let (url, &candidate_file) = entry.pair();
+        let (key, &candidate_file) = entry.pair();
+        let uri = db::key_to_url(key);
 
         let text = candidate_file.text(db);
         if !text.contains(name) {
@@ -86,7 +87,7 @@ pub fn handle_references<Db: VScriptDatabase>(
 
             all_locations.push(Location {
                 range,
-                uri: url.clone(),
+                uri: uri.clone(),
             });
         }
     }

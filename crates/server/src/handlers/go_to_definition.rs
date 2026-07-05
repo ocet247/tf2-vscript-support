@@ -34,7 +34,7 @@ pub fn handle_go_to_definition<Db: VScriptDatabase>(
     }))) = ctx.expr_kind_at(token.text_range())
         && *kind == StringKind::Script
     {
-        let path = PathBuf::from(ctx.get(*literal).text.to_string());
+        let path = PathBuf::from(ctx.get(*literal).text.replace("\\\\", "/"));
         if let Ok(script) = ctx.db().get_script(path) {
             let uri = db
                 .get_url(&script)
