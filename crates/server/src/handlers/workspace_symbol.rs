@@ -1,4 +1,5 @@
 use crate::positions;
+use db::file_iter;
 use lsp_types::{
     Location, SymbolInformation, SymbolKind as LspSymbolKind, SymbolTag, WorkspaceSymbolParams,
     WorkspaceSymbolResponse,
@@ -13,10 +14,7 @@ pub fn handle_workspace_symbol<Db: VScriptDatabase>(
     let query = params.query.to_lowercase();
     let mut symbols = Vec::new();
 
-    for entry in db.get_files() {
-        let (key, &file) = entry.pair();
-        let uri = db::key_to_url(key);
-
+    for (uri, file) in file_iter(db) {
         // Quick text filter before running full analysis
         let text = file.text(db);
         if !query.is_empty() && !text.to_lowercase().contains(&query) {

@@ -1,4 +1,4 @@
-use db::{Url, key_to_url};
+use db::{Url, file_iter, key_to_url};
 use lsp_types::{
     Diagnostic, DiagnosticSeverity, DiagnosticTag, DocumentDiagnosticParams,
     DocumentDiagnosticReport, DocumentDiagnosticReportResult, FullDocumentDiagnosticReport,
@@ -58,9 +58,7 @@ pub fn handle_workspace_diagnostics<Db: VScriptDatabase>(
 
     let mut items = Vec::new();
 
-    for entry in db.get_files() {
-        let url = key_to_url(entry.key());
-
+    for (url, _) in file_iter(db) {
         let mut diagnostics = compute_syntax_diagnostics(db, &url)?;
         diagnostics.extend(compute_semantic_diagnostics(db, &url)?);
 

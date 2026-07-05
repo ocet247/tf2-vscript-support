@@ -1,3 +1,4 @@
+use db::file_iter;
 use lsp_types::{Location, ReferenceParams};
 use resolver::{ArenaId, Source, SourceCtx, SymbolKind, VScriptDatabase, parse, token_name_range};
 
@@ -59,10 +60,8 @@ pub fn handle_references<Db: VScriptDatabase>(
         return Ok(Some(all_locations));
     }
 
-    for entry in db.get_files() {
-        let (key, &candidate_file) = entry.pair();
-        let uri = db::key_to_url(key);
-
+    for (uri, candidate_file) in file_iter(db) {
+        dbg!(uri.as_str());
         let text = candidate_file.text(db);
         if !text.contains(name) {
             continue;

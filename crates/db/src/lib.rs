@@ -10,6 +10,14 @@ pub struct File {
     #[returns(ref)]
     pub text: String,
 }
+
+pub fn file_iter<Db: BaseDatabase>(db: &Db) -> impl Iterator<Item = (Url, File)> {
+    db.get_files().iter().map(|entry| {
+        let (url, file) = entry.pair();
+        (key_to_url(url), *file)
+    })
+}
+
 #[salsa::db]
 pub trait BaseDatabase: salsa::Database {
     fn get_files(&self) -> &DashMap<String, File>;
