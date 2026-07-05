@@ -1907,25 +1907,59 @@ impl<'db> Resolver<'db> {
         )
     }
 
-    fn check_constant(&mut self, expr: Option<&ExpressionKind>, range: TextRange) {
-        match expr {
-            Some(ExpressionKind::Literal(Type::Primitive(
-                Primitive::Integer(Some(_))
-                | Primitive::Float(Some(_))
-                | Primitive::Bool(Some(_))
-                | Primitive::String {
-                    literal: Some(_), ..
-                },
-            ))) => {}
-            _ => {
-                self.diagnostics.push(Diagnostic {
-                    message:
-                        "Constant can only hold value of 'integer', 'float', 'string' or 'bool'"
-                            .to_owned(),
-                    range,
-                    ..Default::default()
-                });
+    fn check_constant(&mut self, expr: &Expr) {
+        fn is_numeric_literal(expr: &Expr) -> bool {
+            let Expr::Literal(lit) = expr else {
+                return false;
+            };
+            matches!(
+                lit.token(),
+                Some((
+                    LiteralExpressionKind::DecimalInteger
+                        | LiteralExpressionKind::OctalInteger
+                        | LiteralExpressionKind::HexInteger
+                        | LiteralExpressionKind::Character
+                        | LiteralExpressionKind::Float,
+                    _
+                ))
+            )
+        }
+
+        let is_valid = match expr {
+            Expr::Literal(lit) => matches!(
+                lit.token(),
+                Some((
+                    LiteralExpressionKind::DecimalInteger
+                        | LiteralExpressionKind::OctalInteger
+                        | LiteralExpressionKind::HexInteger
+                        | LiteralExpressionKind::Character
+                        | LiteralExpressionKind::Float
+                        | LiteralExpressionKind::String
+                        | LiteralExpressionKind::VerbatimString
+                        | LiteralExpressionKind::True
+                        | LiteralExpressionKind::False,
+                    _
+                ))
+            ),
+            // Only a literal number may be negated; "-x" for a non-literal, or negating
+            // a string/bool, is not a constant scalar
+            Expr::PrefixUnary(unary) => {
+                matches!(unary.operator(), Some((PrefixUnaryOperator::Negation, _)))
+                    && unary
+                        .operand()
+                        .is_some_and(|operand| is_numeric_literal(&operand))
             }
+            _ => false,
+        };
+
+        if !is_valid {
+            self.diagnostics.push(Diagnostic {
+                message:
+                    "Constant can only hold value of literal 'integer', 'float', 'string' or 'bool'"
+                        .to_owned(),
+                range: expr.syntax().text_range(),
+                ..Default::default()
+            });
         }
     }
 
@@ -2956,9 +2990,8 @@ impl<'db> Resolver<'db> {
                 Type::Primitive(Primitive::Integer(Some(default_value))),
             ),
             |expr| {
-                let value = self.collect_expr(&expr);
-                self.check_constant(value.as_ref(), expr.syntax().text_range());
-                (true, self.expr_kind_to_type(value.as_ref()))
+                self.check_constant(&expr);
+                (true, self.expr_to_type(&expr))
             },
         );
 
@@ -3224,9 +3257,8 @@ impl<'db> Resolver<'db> {
             .value()
             .and_then(|v| v.expression())
             .map_or(Type::ANY, |expr| {
-                let value = self.collect_expr(&expr);
-                self.check_constant(value.as_ref(), expr.syntax().text_range());
-                self.expr_kind_to_type(value.as_ref())
+                self.check_constant(&expr);
+                self.expr_to_type(&expr)
             });
 
         let Some((name_range, name)) = get_name(stmt) else {
@@ -4068,7 +4100,7 @@ impl<'db> Resolver<'db> {
 
     fn collect_expr(&mut self, expr: &Expr) -> NullableExprKind {
         let kind = match expr {
-            Expr::Literal(expr) => self.literal_expression(expr),
+            Expr::Literal(expr) => self.literal_expression::<false>(expr),
             Expr::TableLiteral(expr) => Some(self.table_literal_expression(expr)),
             Expr::Class(expr) => Some(self.class_expression(expr)),
             Expr::ArrayLiteral(expr) => Some(self.array_literal_expression(expr)),
@@ -4104,7 +4136,10 @@ impl<'db> Resolver<'db> {
         kind
     }
 
-    fn literal_expression(&mut self, expr: &LiteralExpression) -> NullableExprKind {
+    fn literal_expression<const NEGATIVE: bool>(
+        &mut self,
+        expr: &LiteralExpression,
+    ) -> NullableExprKind {
         let (kind, token) = expr.token()?;
 
         Some(match kind {
@@ -4118,50 +4153,72 @@ impl<'db> Resolver<'db> {
                         severity: DiagnosticSeverity::Warning,
                     });
                 }
+
+                let signed_text = if NEGATIVE {
+                    format!("-{text}")
+                } else {
+                    text.to_owned()
+                };
+
                 // Default values are provided to signify that the user has tried
                 // to write a literal but the literal was malformed
                 // This is to not error out
-                let value = text.parse::<i32>().unwrap_or_else(|_| {
+                let value = signed_text.parse::<i32>().unwrap_or_else(|_| {
                     self.diagnostics.push(Diagnostic {
                         message: format!(
-                            "Integer literal '{text}' is out of range for a 32-bit integer"
+                            "Integer literal '{signed_text}' is out of range for a 32-bit integer"
                         ),
                         range: token.text_range(),
                         severity: DiagnosticSeverity::Warning,
                     });
-                    0
+
+                    if NEGATIVE { i32::MIN } else { i32::MAX }
                 });
 
                 ExpressionKind::Literal(Type::Primitive(Primitive::Integer(Some(value))))
             }
             LiteralExpressionKind::OctalInteger => {
                 let text = token.text();
+                let (signed_text, parse_text) = if NEGATIVE {
+                    (format!("-{text}"), format!("-{}", &text[1..]))
+                } else {
+                    (text.to_owned(), text[1..].to_owned())
+                };
+
                 // 0321321
-                let value = i32::from_str_radix(&text[1..], 8).unwrap_or_else(|_| {
+                let value = i32::from_str_radix(&parse_text, 8).unwrap_or_else(|_| {
                     self.diagnostics.push(Diagnostic {
                         message: format!(
-                            "Octal literal '{text}' is out of range for a 32-bit integer"
+                            "Octal literal '{signed_text}' is out of range for a 32-bit integer"
                         ),
                         range: token.text_range(),
                         severity: DiagnosticSeverity::Warning,
                     });
-                    0
+
+                    if NEGATIVE { i32::MIN } else { i32::MAX }
                 });
 
                 ExpressionKind::Literal(Type::Primitive(Primitive::Integer(Some(value))))
             }
             LiteralExpressionKind::HexInteger => {
                 let text = token.text();
+                let (signed_text, parse_text) = if NEGATIVE {
+                    (format!("-{text}"), format!("-{}", &text[2..]))
+                } else {
+                    (text.to_owned(), text[2..].to_owned())
+                };
+
                 //0x12312312
-                let value = i32::from_str_radix(&text[2..], 16).unwrap_or_else(|_| {
+                let value = i32::from_str_radix(&parse_text, 16).unwrap_or_else(|_| {
                     self.diagnostics.push(Diagnostic {
                         message: format!(
-                            "Hex literal '{text}' is out of range for a 32-bit integer"
+                            "Hex literal '{signed_text}' is out of range for a 32-bit integer"
                         ),
                         range: token.text_range(),
                         severity: DiagnosticSeverity::Warning,
                     });
-                    0
+
+                    if NEGATIVE { i32::MIN } else { i32::MAX }
                 });
 
                 ExpressionKind::Literal(Type::Primitive(Primitive::Integer(Some(value))))
@@ -4175,54 +4232,59 @@ impl<'db> Resolver<'db> {
                     inner.strip_suffix('\'').unwrap_or(inner)
                 };
 
-                let byte: Option<u8> = if inner.starts_with('\\') {
+                let value = if inner.starts_with('\\') {
                     match inner.chars().nth(1) {
-                        // \x is always exactly 2 hex digits and is a raw byte, not a codepoint
+                        // \x is the only escape that names a raw byte rather than a codepoint,
+                        // so it's the only one allowed to wrap 0x80-0xFF into a negative i8
                         Some('x') => {
                             let hex = &inner[2..];
-                            u8::from_str_radix(hex, 16).ok()
+                            #[allow(clippy::cast_possible_wrap)]
+                            let wrapped =
+                                u8::from_str_radix(hex, 16).ok().map(|b| i32::from(b as i8));
+                            wrapped.unwrap_or(0)
                         }
                         Some('u' | 'U') => {
                             let hex = &inner[2..];
                             u32::from_str_radix(hex, 16)
                                 .ok()
-                                .and_then(|v| u8::try_from(v).ok())
+                                .and_then(|n| i32::try_from(n).ok())
+                                .unwrap_or(0)
                         }
-                        Some('t') => Some(b'\t'),
-                        Some('a') => Some(0x07),
-                        Some('b') => Some(0x08),
-                        Some('n') => Some(b'\n'),
-                        Some('r') => Some(b'\r'),
-                        Some('v') => Some(0x0b),
-                        Some('f') => Some(0x0c),
-                        Some('0') => Some(0),
-                        Some('\\') => Some(b'\\'),
-                        Some('"') => Some(b'"'),
-                        Some('\'') => Some(b'\''),
+                        Some('t') => i32::from(b'\t'),
+                        Some('a') => 0x07,
+                        Some('b') => 0x08,
+                        Some('n') => i32::from(b'\n'),
+                        Some('r') => i32::from(b'\r'),
+                        Some('v') => 0x0b,
+                        Some('f') => 0x0c,
+                        Some('0') | None => 0,
+                        Some('\\') => i32::from(b'\\'),
+                        Some('"') => i32::from(b'"'),
+                        Some('\'') => i32::from(b'\''),
                         Some(other) => {
                             self.diagnostics.push(Diagnostic {
                                 message: format!("Unknown escape sequence '\\{other}'"),
                                 range: token.text_range(),
                                 severity: DiagnosticSeverity::Warning,
                             });
-                            None
+                            0
                         }
-                        None => None,
                     }
                 } else {
                     let ch = inner.chars().next();
-                    ch.and_then(|c| u8::try_from(c).ok())
+                    ch.and_then(|c| u8::try_from(c).ok()).map_or(0, i32::from)
                 };
-
-                // Character literals are a signed 8-bit value: byte 0x80-0xFF wraps to -128..-1
-                #[allow(clippy::cast_possible_wrap)]
-                let value = byte.map_or(0, |b| i32::from(b as i8));
 
                 ExpressionKind::Literal(Type::Primitive(Primitive::Integer(Some(value))))
             }
             LiteralExpressionKind::Float => {
                 let text = token.text();
-                let value = text.parse::<f32>().unwrap_or(0.0);
+                let signed_text = if NEGATIVE {
+                    format!("-{text}")
+                } else {
+                    text.to_owned()
+                };
+                let value = signed_text.parse::<f32>().unwrap_or(0.0);
 
                 ExpressionKind::Literal(Type::Primitive(Primitive::Float(Some(value))))
             }
@@ -5533,7 +5595,15 @@ impl<'db> Resolver<'db> {
     }
 
     fn negation_operator(&mut self, expr: &PrefixUnaryExpression) -> NullableExprKind {
-        let operand = self.expr_to_type_with_range(&expr.operand()?);
+        let operand_expr = expr.operand()?;
+        if let Expr::Literal(lit) = &operand_expr {
+            let kind = self.literal_expression::<true>(lit)?;
+            self.range_to_expr
+                .insert(operand_expr.syntax().text_range(), kind.clone());
+            return Some(kind);
+        }
+
+        let operand = self.expr_to_type_with_range(&operand_expr);
 
         Some(ExpressionKind::Literal(match &operand.kind {
             Type::Primitive(Primitive::Integer(Some(value))) => {

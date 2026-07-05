@@ -459,58 +459,21 @@ impl<'a> Lexer<'a> {
     }
 
     // Called after body character of a string / char literal is expected
-    fn literal_character(&mut self) -> Option<char> {
+    fn literal_character(&mut self) -> Option<usize> {
         match self.peek() {
             None | Some('\r' | '\n') => None,
 
             Some('\\') => match self.next_and_peek() {
-                Some('x') => Some(self.hex_escape(2)),
-                Some('u') => Some(self.hex_escape(4)),
-                Some('U') => Some(self.hex_escape(8)),
+                Some('x') => {
+                    self.hex_escape::<2>();
+                    Some(1)
+                }
+                Some('u') => Some(self.hex_escape::<4>().len_utf8()),
+                Some('U') => Some(self.hex_escape::<8>().len_utf8()),
 
-                Some('t') => {
+                Some('t' | 'a' | 'b' | 'n' | 'r' | 'v' | 'f' | '0' | '\\' | '"' | '\'') => {
                     self.next();
-                    Some('\t')
-                }
-                Some('a') => {
-                    self.next();
-                    Some('\x07')
-                }
-                Some('b') => {
-                    self.next();
-                    Some('\x08')
-                }
-                Some('n') => {
-                    self.next();
-                    Some('\n')
-                }
-                Some('r') => {
-                    self.next();
-                    Some('\r')
-                }
-                Some('v') => {
-                    self.next();
-                    Some('\x0b')
-                }
-                Some('f') => {
-                    self.next();
-                    Some('\x0c')
-                }
-                Some('0') => {
-                    self.next();
-                    Some('\0')
-                }
-                Some('\\') => {
-                    self.next();
-                    Some('\\')
-                }
-                Some('"') => {
-                    self.next();
-                    Some('"')
-                }
-                Some('\'') => {
-                    self.next();
-                    Some('\'')
+                    Some(1)
                 }
 
                 Some(esc) => {
@@ -522,7 +485,7 @@ impl<'a> Lexer<'a> {
                         range: TextRange::new(start, end),
                     });
 
-                    Some('\\')
+                    Some(1)
                 }
 
                 None => None,
@@ -531,7 +494,7 @@ impl<'a> Lexer<'a> {
             Some(chr) => {
                 self.next();
 
-                Some(chr)
+                Some(chr.len_utf8())
             }
         }
     }
@@ -573,7 +536,7 @@ impl<'a> Lexer<'a> {
                 break;
             }
 
-            let Some(chr) = self.literal_character() else {
+            let Some(char_len) = self.literal_character() else {
                 self.error(SyntaxError {
                     message: "Unterminated character literal".to_owned(),
                     range: self.cursor_range(),
@@ -581,7 +544,7 @@ impl<'a> Lexer<'a> {
                 break;
             };
 
-            len += chr.len_utf8();
+            len += char_len;
         }
 
         if len == 0 {
@@ -627,7 +590,7 @@ impl<'a> Lexer<'a> {
     }
 
     // \x12, \u1234, \U12345678
-    fn hex_escape(&mut self, digits: u8) -> char {
+    fn hex_escape<const DIGITS: u8>(&mut self) -> char {
         assert!(matches!(self.peek(), Some('x' | 'u' | 'U')));
         self.next();
 
@@ -643,7 +606,7 @@ impl<'a> Lexer<'a> {
 
         let mut value: u32 = 0;
 
-        for _i in 0..digits {
+        for _i in 0..DIGITS {
             let Some(chr) = self.peek() else {
                 break;
             };
