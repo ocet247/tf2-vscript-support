@@ -1,5 +1,9 @@
 # Changelog
 
+## [3.3.6]
+- Fix find references not working correctly
+- Properly resolve constructor references
+
 ## [3.3.5]
 - Properly resolve all literals
 - Add 'integer too big/small' diagnostic
