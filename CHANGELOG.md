@@ -1,5 +1,8 @@
 # Changelog
 
+## [3.3.11]
+- Fix plain name function statement not adding symbols
+
 ## [3.3.10]
 - Fix `folded.nut` functions having no parameters
 - Improve type inference for function parameters and bodies
