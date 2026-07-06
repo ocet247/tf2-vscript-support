@@ -1,7 +1,7 @@
 # Changelog
 
 ## [3.3.8]
-- Fix Windows non normalised url breaking some features
+- Fix Windows non-normalised url breaking some features
 - Add more script name literal validation
 
 ## [3.3.7]

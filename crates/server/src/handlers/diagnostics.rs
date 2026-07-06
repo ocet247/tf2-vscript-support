@@ -1,4 +1,4 @@
-use db::{Url, file_iter};
+use db::{File, file_iter};
 use lsp_types::{
     Diagnostic, DiagnosticSeverity, DiagnosticTag, DocumentDiagnosticParams,
     DocumentDiagnosticReport, DocumentDiagnosticReportResult, FullDocumentDiagnosticReport,
@@ -15,10 +15,13 @@ pub fn handle_diagnostics<Db: VScriptDatabase>(
     db: &Db,
     params: DocumentDiagnosticParams,
 ) -> anyhow::Result<DocumentDiagnosticReportResult> {
-    let uri = &params.text_document.uri;
+    let url = &params.text_document.uri;
+    let file = db
+        .get_file(url)
+        .ok_or_else(|| anyhow::format_err!("File not found in workspace"))?;
 
-    let mut diagnostics = compute_syntax_diagnostics(db, uri)?;
-    diagnostics.extend(compute_semantic_diagnostics(db, uri)?);
+    let mut diagnostics = compute_syntax_diagnostics(db, file);
+    diagnostics.extend(compute_semantic_diagnostics(db, file));
 
     Ok(DocumentDiagnosticReportResult::Report(
         DocumentDiagnosticReport::Full(RelatedFullDocumentDiagnosticReport {
@@ -31,6 +34,7 @@ pub fn handle_diagnostics<Db: VScriptDatabase>(
     ))
 }
 
+#[allow(clippy::unnecessary_wraps)]
 pub fn handle_workspace_diagnostics<Db: VScriptDatabase>(
     db: &Db,
     _params: WorkspaceDiagnosticParams,
@@ -56,13 +60,13 @@ pub fn handle_workspace_diagnostics<Db: VScriptDatabase>(
 
     let mut items = Vec::new();
 
-    for (url, _) in file_iter(db) {
-        let mut diagnostics = compute_syntax_diagnostics(db, &url)?;
-        diagnostics.extend(compute_semantic_diagnostics(db, &url)?);
+    for (uri, file) in file_iter(db) {
+        let mut diagnostics = compute_syntax_diagnostics(db, file);
+        diagnostics.extend(compute_semantic_diagnostics(db, file));
 
         items.push(WorkspaceDocumentDiagnosticReport::Full(
             WorkspaceFullDocumentDiagnosticReport {
-                uri: url,
+                uri,
                 version: None,
                 full_document_diagnostic_report: FullDocumentDiagnosticReport {
                     result_id: None,
@@ -77,18 +81,11 @@ pub fn handle_workspace_diagnostics<Db: VScriptDatabase>(
     ))
 }
 
-fn compute_syntax_diagnostics<Db: VScriptDatabase>(
-    db: &Db,
-    url: &Url,
-) -> anyhow::Result<Vec<Diagnostic>> {
-    let file = db
-        .get_file(url)
-        .ok_or_else(|| anyhow::format_err!("File not found in workspace"))?;
-
+fn compute_syntax_diagnostics<Db: VScriptDatabase>(db: &Db, file: File) -> Vec<Diagnostic> {
     let line_idx = positions::line_index(db, file);
     let parse = parse(db, file);
 
-    Ok(parse
+    parse
         .errors()
         .iter()
         .filter_map(|error| {
@@ -98,22 +95,14 @@ fn compute_syntax_diagnostics<Db: VScriptDatabase>(
                 ..Default::default()
             })
         })
-        .collect())
+        .collect()
 }
 
-fn compute_semantic_diagnostics<Db: VScriptDatabase>(
-    db: &Db,
-    url: &Url,
-) -> anyhow::Result<Vec<Diagnostic>> {
-    let file = db
-        .get_file(url)
-        .ok_or_else(|| anyhow::format_err!("File not found in workspace"))?;
+fn compute_semantic_diagnostics<Db: VScriptDatabase>(db: &Db, file: File) -> Vec<Diagnostic> {
+    let line_idx = positions::line_index(db, file);
     let ctx = SourceCtx::new(db, file);
 
-    let line_idx = positions::line_index(db, file);
-
-    Ok(ctx
-        .diagnostics()
+    ctx.diagnostics()
         .iter()
         .filter_map(|diagnostic| {
             let (severity, tags) = match diagnostic.severity {
@@ -143,5 +132,5 @@ fn compute_semantic_diagnostics<Db: VScriptDatabase>(
                 ..Default::default()
             })
         })
-        .collect())
+        .collect()
 }
