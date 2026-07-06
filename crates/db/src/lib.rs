@@ -48,6 +48,9 @@ pub trait BaseDatabase: salsa::Database {
         self.open_file_with_key(key, url.clone(), text)
     }
 
+    /// # Errors
+    /// If path is not absolute/malformed
+    /// If file does not exist
     fn open_file_from_path(&self, path: &Path) -> Result<File, String> {
         let key = normalize_file_path(path);
         if let Some(file) = self.get_file_from_key(&key) {

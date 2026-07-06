@@ -11,7 +11,7 @@ use rustc_hash::{FxHashMap, FxHashSet};
 use sq_3_parser::{SyntaxKind, SyntaxToken, TextRange, TextSize};
 
 use crate::{
-    arena::{ClassId, Container, EnumId, ImportTarget, SourceArena, TableData, TableId},
+    arena::{ClassId, EnumId, ImportTarget, SourceArena, TableData, TableId},
     db::{
         top_const_members, top_root_members, top_source_and_const_members,
         top_source_and_root_members, top_source_members,
@@ -19,7 +19,9 @@ use crate::{
     symbol::{FlatSymbolTable, to_flat_symbol_table},
 };
 
-pub use arena::{ArenaId, FunctionData, FunctionId, ParamsState, ScopeId, SymbolId, TypeState};
+pub use arena::{
+    ArenaId, Container, FunctionData, FunctionId, ParamsState, ScopeId, SymbolId, TypeState,
+};
 pub use db::{
     Database, UnreachableCode, UnusedVariables, VScriptDatabase, VScriptDbConfig,
     VScriptDbInitConfig, parse, source_symbol,

@@ -5,10 +5,8 @@ use std::path::Path;
 
 #[must_use]
 pub fn normalize_file_url(url: &Url) -> String {
-    url.to_file_path().map_or_else(
-        |()| format!("uri:{}", url.as_str()),
-        |path| normalize_file_path(&path),
-    )
+    url.to_file_path()
+        .map_or_else(|()| url.to_string(), |path| normalize_file_path(&path))
 }
 
 #[must_use]
