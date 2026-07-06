@@ -1,6 +1,8 @@
 use db::file_iter;
 use lsp_types::{Location, ReferenceParams};
-use resolver::{ArenaId, Source, SourceCtx, SymbolKind, VScriptDatabase, parse, token_name_range};
+use resolver::{
+    ArenaId, Container, Source, SourceCtx, SymbolKind, VScriptDatabase, parse, token_name_range,
+};
 
 use crate::positions;
 
@@ -31,7 +33,6 @@ pub fn handle_references<Db: VScriptDatabase>(
     };
     let reference = ctx.get(reference_id);
     // can't do token.text() if the token is a string that got unquoted
-    let name = reference.name.as_ref();
     let name_range = reference.name_range;
 
     let mut all_locations = Vec::new();
@@ -60,9 +61,23 @@ pub fn handle_references<Db: VScriptDatabase>(
         return Ok(Some(all_locations));
     }
 
+    let name = reference.name.as_ref();
+    let class_name = if name == "constructor" {
+        reference.typ.to_function().ok().and_then(|function_id| {
+            match ctx.get(function_id).container {
+                Container::Class(class_id) | Container::Instance(class_id) => {
+                    ctx.get(class_id).symbol.map(|s| ctx.get(s).name.as_ref())
+                }
+                Container::Table(_) | Container::Enum(_) => None,
+            }
+        })
+    } else {
+        None
+    };
+
     for (uri, candidate_file) in file_iter(db) {
         let text = candidate_file.text(db);
-        if !text.contains(name) {
+        if !text.contains(name) && class_name.is_none_or(|name| !text.contains(name)) {
             continue;
         }
 
