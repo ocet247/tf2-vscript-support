@@ -1,5 +1,9 @@
 # Changelog
 
+## [3.3.9]
+- Fix diagnostics not showing up on Windows
+- Also search for class name when resolving constructor references
+
 ## [3.3.8]
 - Fix Windows non-normalised url breaking some features
 - Add more script name literal validation
