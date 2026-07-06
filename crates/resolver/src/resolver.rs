@@ -347,7 +347,6 @@ impl<'db> Resolver<'db> {
 
         if let Some(vscript_lib) = db.vscript_lib()
             && vscript_lib != file
-            && Some(file) != db.folded_lib()
         {
             libs.push(vscript_lib);
         }
