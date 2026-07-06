@@ -197,6 +197,12 @@ enum NewSlotResult {
     NotAllowed,
 }
 
+#[derive(Debug, Clone, Copy)]
+enum FunctionContainerError {
+    SingleName,
+    FailedToResolve,
+}
+
 #[derive(Debug, Default)]
 struct SymbolDocInfo {
     description: Option<String>,
@@ -347,6 +353,7 @@ impl<'db> Resolver<'db> {
 
         if let Some(vscript_lib) = db.vscript_lib()
             && vscript_lib != file
+            && Some(file) != db.squirrel_lib()
         {
             libs.push(vscript_lib);
         }
@@ -354,6 +361,7 @@ impl<'db> Resolver<'db> {
         // Include by default for now
         if let Some(folded_lib) = db.folded_lib()
             && folded_lib != file
+            && Some(file) != db.squirrel_lib()
             && Some(file) != db.vscript_lib()
         {
             libs.push(folded_lib);
@@ -3543,9 +3551,11 @@ impl<'db> Resolver<'db> {
         &mut self,
         id: FunctionId,
         name: &QualifiedName,
-    ) -> Option<Container> {
+    ) -> Result<Container, FunctionContainerError> {
         let mut parts = name.parts();
-        let (range, first_name) = get_name(&parts.next()?)?;
+        let (range, first_name) =
+            get_name(&parts.next().ok_or(FunctionContainerError::SingleName)?)
+                .ok_or(FunctionContainerError::FailedToResolve)?;
 
         let offset = name.syntax().text_range().end();
 
@@ -3582,7 +3592,7 @@ impl<'db> Resolver<'db> {
                     severity: DiagnosticSeverity::Information,
                 });
             }
-            return None;
+            return Err(FunctionContainerError::FailedToResolve);
         };
 
         let mut typ = TypeWithRange {
@@ -3604,10 +3614,11 @@ impl<'db> Resolver<'db> {
             ];
 
             let NewSlotResult::CanAdd(container) = self.new_slot(&typ, &arguments) else {
-                return None;
+                return Err(FunctionContainerError::FailedToResolve);
             };
 
-            let (range, name) = get_name(&segment)?;
+            let (range, name) =
+                get_name(&segment).ok_or(FunctionContainerError::FailedToResolve)?;
 
             let id = self
                 .members_of_container(
@@ -3616,7 +3627,8 @@ impl<'db> Resolver<'db> {
                     false,
                 )
                 .into_iter()
-                .find_map(|(member_name, id)| (member_name == name).then_some(id))?;
+                .find_map(|(member_name, id)| (member_name == name).then_some(id))
+                .ok_or(FunctionContainerError::FailedToResolve)?;
 
             typ = TypeWithRange {
                 kind: self.get(id).typ.clone(),
@@ -3625,7 +3637,12 @@ impl<'db> Resolver<'db> {
             self.new_reference(range, id);
         }
 
-        let range = name.name()?.identifier()?.text_range();
+        let range = name
+            .name()
+            .ok_or(FunctionContainerError::FailedToResolve)?
+            .identifier()
+            .ok_or(FunctionContainerError::FailedToResolve)?
+            .text_range();
 
         let arguments = [
             TypeWithRange {
@@ -3639,9 +3656,9 @@ impl<'db> Resolver<'db> {
         ];
 
         if let NewSlotResult::CanAdd(container) = self.new_slot(&typ, &arguments) {
-            Some(container)
+            Ok(container)
         } else {
-            None
+            Err(FunctionContainerError::FailedToResolve)
         }
     }
 
@@ -3701,14 +3718,19 @@ impl<'db> Resolver<'db> {
             })
         };
 
-        if let Some(container) = container {
-            self.add_container_member(container, name, symbol);
-            if let Some(function) = self.get_mut(id) {
-                function.container = container;
-                function.symbol = Some(symbol);
-            }
-        } else if let Some(function) = self.get_mut(id) {
+        if let Some(function) = self.get_mut(id) {
             function.symbol = Some(symbol);
+        }
+
+        let container = match container {
+            Ok(container) => container,
+            Err(FunctionContainerError::SingleName) => self.container,
+            Err(FunctionContainerError::FailedToResolve) => return,
+        };
+
+        self.add_container_member(container, name, symbol);
+        if let Some(function) = self.get_mut(id) {
+            function.container = container;
         }
     }
 
