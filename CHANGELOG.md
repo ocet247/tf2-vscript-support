@@ -1,5 +1,10 @@
 # Changelog
 
+## [3.3.10]
+- Fix `folded.nut` functions having no parameters
+- Improve type inference for function parameters and bodies
+- Other minor fixes
+
 ## [3.3.9]
 - Fix diagnostics not showing up on Windows
 - Also search for class name when resolving constructor references
