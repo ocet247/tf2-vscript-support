@@ -4,7 +4,7 @@ use std::{
     time::Instant,
 };
 
-use db::{BaseDatabase, DashMap, File, normalize_file_path};
+use db::{BaseDatabase, DashMap, File, Url};
 use rustc_hash::FxHashMap;
 use salsa::Setter;
 use sq_3_parser::Parse;
@@ -22,7 +22,7 @@ pub struct Database {
     storage: salsa::Storage<Self>,
     config: VScriptDbConfig,
     files: Arc<DashMap<String, File>>,
-    urls: Arc<DashMap<File, String>>,
+    urls: Arc<DashMap<File, Url>>,
     builtins: Option<Arc<Builtins>>,
     tf2_root_key: Option<String>,
     scripts_key: Option<String>,
@@ -41,7 +41,7 @@ impl BaseDatabase for Database {
         &self.files
     }
 
-    fn get_keys(&self) -> &DashMap<File, String> {
+    fn get_urls(&self) -> &DashMap<File, Url> {
         &self.urls
     }
 }
@@ -207,16 +207,7 @@ impl VScriptDatabase for Database {
         }
 
         let abs_path = PathBuf::from(scripts).join(normalised);
-        let key = normalize_file_path(&abs_path);
-
-        if let Some(file) = self.get_file_from_key(&key) {
-            return Ok(file);
-        }
-
-        let text =
-            std::fs::read_to_string(&abs_path).map_err(|_| "File does not exist".to_owned())?;
-
-        Ok(self.open_file_with_key(key, text))
+        self.open_file_from_path(&abs_path)
     }
 
     fn script_literals(&self) -> Vec<String> {
@@ -354,33 +345,12 @@ impl Database {
                 continue;
             };
 
-            let key = db::normalize_file_path(&path);
-            if self.get_file_from_key(&key).is_some() {
-                continue;
-            }
-            let Ok(text) = std::fs::read_to_string(&path) else {
-                continue;
-            };
-            self.open_file_with_key(key, text);
+            let _ = self.open_file_from_path(&path);
         }
-    }
-
-    /// Converts a `&Path` to a URL and opens the file.
-    /// Used only during init where we receive `PathBuf` from config.
-    fn open_file_from_path(&self, path: &Path) -> Option<File> {
-        let path = dunce::canonicalize(path).ok()?;
-        let key = db::normalize_file_path(&path);
-
-        if let Some(file) = self.get_file_from_key(&key) {
-            return Some(file);
-        }
-
-        let text = std::fs::read_to_string(&path).ok()?;
-        Some(self.open_file_with_key(key, text))
     }
 
     fn init_builtins(&mut self, path: &Path) -> Option<File> {
-        let builtins = self.open_file_from_path(path)?;
+        let builtins = self.open_file_from_path(path).ok()?;
         builtins
             .set_text(self)
             .with_durability(salsa::Durability::HIGH);
@@ -462,7 +432,7 @@ impl Database {
     }
 
     fn init_stdlib_file(&mut self, path: &Path) -> Option<File> {
-        let lib = self.open_file_from_path(path)?;
+        let lib = self.open_file_from_path(path).ok()?;
         lib.set_text(self).with_durability(salsa::Durability::HIGH);
         Some(lib)
     }

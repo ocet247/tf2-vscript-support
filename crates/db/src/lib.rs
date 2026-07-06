@@ -1,8 +1,9 @@
 mod normalize_path;
+use std::path::Path;
+
 pub use dashmap::DashMap;
 pub use lsp_types::Url;
 
-use crate::normalize_path::key_to_url;
 pub use crate::normalize_path::{normalize_file_path, normalize_file_url};
 
 #[salsa::input]
@@ -13,39 +14,58 @@ pub struct File {
 }
 
 pub fn file_iter<Db: BaseDatabase>(db: &Db) -> impl Iterator<Item = (Url, File)> {
-    db.get_files().iter().map(|entry| {
-        let (url, file) = entry.pair();
-        (key_to_url(url), *file)
+    db.get_urls().iter().map(|entry| {
+        let (file, url) = entry.pair();
+        (url.clone(), *file)
     })
 }
 
 #[salsa::db]
 pub trait BaseDatabase: salsa::Database {
     fn get_files(&self) -> &DashMap<String, File>;
-    fn get_keys(&self) -> &DashMap<File, String>;
+    fn get_urls(&self) -> &DashMap<File, Url>;
 
     fn get_file(&self, url: &Url) -> Option<File> {
         let key = normalize_file_url(url);
         self.get_file_from_key(&key)
     }
 
+    fn get_file_from_path(&self, path: &Path) -> Option<File> {
+        let key = normalize_file_path(path);
+        self.get_file_from_key(&key)
+    }
+
     fn get_file_from_key(&self, key: &str) -> Option<File> {
-        self.get_files().get(key).map(|file| *file)
+        self.get_files().get(key).map(|f| *f)
     }
 
     fn get_url(&self, file: &File) -> Option<Url> {
-        self.get_keys().get(file).map(|path| key_to_url(&path))
+        self.get_urls().get(file).map(|u| u.clone())
     }
 
     fn open_file(&self, url: &Url, text: String) -> File {
         let key = normalize_file_url(url);
-        self.open_file_with_key(key, text)
+        self.open_file_with_key(key, url.clone(), text)
     }
 
-    fn open_file_with_key(&self, key: String, text: String) -> File {
+    fn open_file_from_path(&self, path: &Path) -> Result<File, String> {
+        let key = normalize_file_path(path);
+        if let Some(file) = self.get_file_from_key(&key) {
+            return Ok(file);
+        }
+        let url = Url::from_file_path(path).map_err(|()| "Invalid absolute path".to_owned())?;
+        let text = std::fs::read_to_string(path).map_err(|_| "File does not exist".to_owned())?;
+        Ok(self.open_file_with_key(key, url, text))
+    }
+
+    fn open_file_with_key(&self, key: String, url: Url, text: String) -> File {
+        if let Some(file) = self.get_file_from_key(&key) {
+            self.get_urls().insert(file, url);
+            return file;
+        }
         let file = File::new(self, text);
-        self.get_files().insert(key.clone(), file);
-        self.get_keys().insert(file, key);
+        self.get_files().insert(key, file);
+        self.get_urls().insert(file, url);
         file
     }
 
@@ -56,7 +76,7 @@ pub trait BaseDatabase: salsa::Database {
 
     fn delete_file_with_key(&self, key: &str) -> Option<File> {
         let file = *self.get_files().get(key)?;
-        self.get_keys().remove(&file);
+        self.get_urls().remove(&file);
         self.get_files().remove(key);
         Some(file)
     }

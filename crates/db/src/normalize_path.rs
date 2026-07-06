@@ -13,17 +13,10 @@ pub fn normalize_file_url(url: &Url) -> String {
 
 #[must_use]
 pub fn normalize_file_path(path: &Path) -> String {
-    dunce::simplified(path)
-        .to_string_lossy()
-        .replace('\\', "/")
-        .to_lowercase()
-}
-
-#[must_use]
-#[allow(clippy::missing_panics_doc)]
-pub fn key_to_url(key: &str) -> Url {
-    key.strip_prefix("uri:").map_or_else(
-        || Url::from_file_path(key).expect("Properly encoded"),
-        |uri| Url::parse(uri).expect("Properly encoded"),
-    )
+    let s = dunce::simplified(path).to_string_lossy();
+    if cfg!(any(windows, target_os = "macos")) {
+        s.replace('\\', "/").to_lowercase()
+    } else {
+        s.to_string()
+    }
 }

@@ -21,7 +21,6 @@ use sq_3_parser::{
         TypeOfExpression, VarTag, VariableDeclaration, WhileStatement, YieldStatement,
     },
 };
-use std::path::PathBuf;
 use string_literals::CLASSNAMES_TO_CLASSES;
 
 use crate::{
