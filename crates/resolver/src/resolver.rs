@@ -3707,11 +3707,8 @@ impl<'db> Resolver<'db> {
                 function.container = container;
                 function.symbol = Some(symbol);
             }
-        } else {
-            self.add_current_container_member(name, symbol);
-            if let Some(function) = self.get_mut(id) {
-                function.symbol = Some(symbol);
-            }
+        } else if let Some(function) = self.get_mut(id) {
+            function.symbol = Some(symbol);
         }
     }
 
