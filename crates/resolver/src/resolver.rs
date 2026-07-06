@@ -29,9 +29,9 @@ use crate::{
     UnusedVariables, VScriptDatabase,
     arena::{
         ArenaAlloc, ArenaId, ArrayData, ArrayId, ClassData, ClassId, Container, EnumData, EnumId,
-        FunctionData, FunctionId, ImportTarget, ParamsState, Scope, ScopeId, SourceArena,
-        StringLiteralData, StringLiteralId, SymbolId, TableData, TableId, TypeConversionError,
-        TypeState,
+        FunctionData, FunctionFlags, FunctionId, ImportTarget, ParamsState, Scope, ScopeId,
+        SourceArena, StringLiteralData, StringLiteralId, SymbolId, TableData, TableId,
+        TypeConversionError, TypeState,
     },
     db::NativeFunction,
     symbol::{
@@ -2029,6 +2029,7 @@ impl<'db> Resolver<'db> {
         let idx = self.arena.alloc(FunctionData {
             symbol: None,
             range,
+            node: SyntaxNodePtr::new(node.syntax()),
             params_end: node.parameter_list().map(|p| p.syntax().text_range().end()),
             container: self.container,
             bindenv,
@@ -2037,7 +2038,7 @@ impl<'db> Resolver<'db> {
             ret: TypeState::Absent,
             throws: TypeState::Absent,
             yields: TypeState::Absent,
-            is_no_discard: false,
+            flags: FunctionFlags::default(),
         });
 
         let id = FunctionId::new(self.file, idx);
@@ -2301,7 +2302,7 @@ impl<'db> Resolver<'db> {
                     }
                 }
                 Tag::NoDiscard(_) => {
-                    self.arena[entry.idx].is_no_discard = true;
+                    self.arena[entry.idx].flags |= FunctionFlags::NO_DISCARD;
                 }
                 Tag::Var(tag) => {
                     self.var_tag(&tag);
@@ -2399,6 +2400,15 @@ impl<'db> Resolver<'db> {
 
         for idx in stale_ids {
             self.arena[idx].flags |= SymbolFlags::STALE;
+        }
+
+        let stale_ids: Vec<_> = self
+            .all_functions()
+            .filter_map(|(idx, f)| range.contains_range(f.node.text_range()).then_some(idx))
+            .collect();
+
+        for idx in stale_ids {
+            self.arena[idx].flags |= FunctionFlags::STALE;
         }
 
         self.diagnostics.retain(|d| !range.contains_range(d.range));
@@ -3793,7 +3803,7 @@ impl<'db> Resolver<'db> {
                 "Default constructor produces no side effects so returned object should not be ignored".to_owned()
             }
             FunctionIdResolution::Function(id) => {
-                if !self.get(id).is_no_discard {
+                if !self.get(id).flags.intersects(FunctionFlags::NO_DISCARD) {
                     return;
                 }
 

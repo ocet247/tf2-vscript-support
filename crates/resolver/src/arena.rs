@@ -2,6 +2,7 @@ use std::cmp::Reverse;
 
 use la_arena::{Arena, Idx};
 use line_index::{TextRange, TextSize};
+use sq_3_parser::SyntaxNodePtr;
 
 use crate::{
     File, SymbolFlags, VScriptDatabase,
@@ -190,6 +191,7 @@ pub struct EnumData {
 pub struct FunctionData {
     pub symbol: Option<SymbolId>,
     pub range: TextRange,
+    pub node: SyntaxNodePtr,
     // For inlay hints
     pub params_end: Option<TextSize>,
     pub ret: TypeState,
@@ -199,7 +201,16 @@ pub struct FunctionData {
     pub params_state: ParamsState,
     pub yields: TypeState,
     pub throws: TypeState,
-    pub is_no_discard: bool,
+    pub flags: FunctionFlags,
+}
+
+bitflags::bitflags! {
+    #[derive(Debug, Default, Clone, Copy, PartialEq, Eq)]
+    pub struct FunctionFlags: u8 {
+        // The function body has rerun and replaced this function id with another one
+        const STALE = 1 << 0;
+        const NO_DISCARD = 1 << 1;
+    }
 }
 
 #[derive(Debug, Default, Clone, PartialEq)]
@@ -306,6 +317,8 @@ impl SourceArena {
     }
 
     pub fn all_functions(&self) -> impl Iterator<Item = (Idx<FunctionData>, &FunctionData)> {
-        self.functions.iter()
+        self.functions
+            .iter()
+            .filter(|(_, s)| !s.flags.intersects(FunctionFlags::STALE))
     }
 }
