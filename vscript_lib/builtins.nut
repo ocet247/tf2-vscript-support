@@ -318,7 +318,7 @@ class array {
      * @(value: any, index: integer) -> any |
      * @(value: any, index: integer, self: array) -> any
      * ```
-     * @returns {this}
+     * @returns {array}
      */
     function map(func);
 
