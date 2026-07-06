@@ -4,7 +4,7 @@ use la_arena::{Arena, Idx};
 use line_index::{TextRange, TextSize};
 
 use crate::{
-    File, VScriptDatabase,
+    File, SymbolFlags, VScriptDatabase,
     db::source_symbol,
     symbol::{Primitive, Symbol, SymbolTable, Type},
 };
@@ -300,7 +300,9 @@ impl SourceArena {
     }
 
     pub fn all_symbols(&self) -> impl Iterator<Item = (Idx<Symbol>, &Symbol)> {
-        self.symbols.iter()
+        self.symbols
+            .iter()
+            .filter(|(_, s)| !s.flags.intersects(SymbolFlags::STALE))
     }
 
     pub fn all_functions(&self) -> impl Iterator<Item = (Idx<FunctionData>, &FunctionData)> {

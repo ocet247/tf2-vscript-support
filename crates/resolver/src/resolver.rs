@@ -1,19 +1,19 @@
 use la_arena::Idx;
-use rustc_hash::FxHashMap;
+use rustc_hash::{FxHashMap, FxHashSet};
 use sq_3_parser::{
     AstNode, SyntaxKind, SyntaxNode, SyntaxNodePtr, SyntaxToken, TextRange, TextSize,
     ast::{
         self, ArrayLiteralExpression, BaseExpression, BinaryExpression, BinaryOperator,
         BlockStatement, BreakStatement, CallExpression, ClassExpression, ClassStatement,
-        CloneExpression, ConditionalExpression, ConstStatement, Constructor, ContinueStatement,
+        CloneExpression, ConditionalExpression, ConstStatement, ContinueStatement,
         DeleteExpression, DoWhileStatement, DocComment, DocType, ElementAccessExpression,
         EnumStatement, Expr, ExpressionStatement, ExpressionWrapper, ForEachStatement,
         ForInitialiserKind, ForStatement, FunctionBody, FunctionExpression, FunctionStatement,
         HasBody, HasDoc, HasDocDescription, HasDocName, HasDocType, HasDocTypes, HasName,
         HasOperand, IfStatement, IsClass, IsClassMember, IsFunction, LambdaExpression,
         LiteralExpression, LiteralExpressionKind, LocalFunctionDeclaration,
-        LocalVariableDeclaration, Member, MemberAccessExpression, MemberName, Method, Name,
-        Parameter, ParenthesisedExpression, PostfixUpdateExpression, PostfixUpdateOperator,
+        LocalVariableDeclaration, Member, MemberAccessExpression, MemberName, Name, Parameter,
+        ParenthesisedExpression, PostfixUpdateExpression, PostfixUpdateOperator,
         PrefixUnaryExpression, PrefixUnaryOperator, PrefixUpdateExpression, PrefixUpdateOperator,
         Property, QualifiedName, RawCallExpression, ResumeExpression, ReturnStatement,
         RootAccessExpression, SourceFile, Stmt, StringNameKind, SwitchClause, SwitchStatement,
@@ -228,11 +228,18 @@ pub struct Resolver<'db> {
     dead_code: bool,
 
     function: Option<Idx<FunctionData>>,
-    // At the last stage where we evaluate the bodies of functions that haven't been called
-    // once we make constructor have precedence over normal functions/methods so that
-    // the object is initalised and property types are inferred before running other methods
-    deferred_constructors: FxHashMap<Idx<FunctionData>, DeferredFunctionTrace>,
-    deferred_functions: FxHashMap<Idx<FunctionData>, DeferredFunctionTrace>,
+    /// Persists for the lifetime of the resolver — a function's trace gets checked
+    /// out (removed) while its body is being resolved and checked back in when done.
+    /// Never deleted, so a function can be re-resolved as many times as a call site
+    /// genuinely widens one of its parameters.
+    traces: FxHashMap<Idx<FunctionData>, DeferredFunctionTrace>,
+    /// Whether a function's @doc tags have been folded into its param types yet.
+    /// This must happen exactly once — see `resolve_deferred_function_entry`.
+    resolved_once: FxHashSet<Idx<FunctionData>>,
+    /// Insertion order, used only for the end-of-file backstop pass over functions
+    /// that were never called from anywhere (dead code, or values only ever handed
+    /// to an opaque native sink).
+    pending_functions: Vec<Idx<FunctionData>>,
 
     range_to_expr: FxHashMap<TextRange, ExpressionKind>,
     range_to_symbol: FxHashMap<TextRange, SymbolId>,
@@ -371,8 +378,9 @@ impl<'db> Resolver<'db> {
             const_table,
             root_table,
             function: None,
-            deferred_functions: FxHashMap::default(),
-            deferred_constructors: FxHashMap::default(),
+            traces: FxHashMap::default(),
+            resolved_once: FxHashSet::default(),
+            pending_functions: Vec::new(),
             range_to_expr: FxHashMap::default(),
             range_to_symbol: FxHashMap::default(),
             doc_to_symbol: FxHashMap::default(),
@@ -401,30 +409,29 @@ impl<'db> Resolver<'db> {
 
         // Resolve remaining functions
         let offset = node.syntax().text_range().end() + TextSize::new(1);
-        loop {
-            // Violationg of DRY but I don't care
-            let entry = if let Some(idx) = this.deferred_constructors.keys().next().copied() {
-                DeferredFunctionEntry {
-                    trace: this
-                        .deferred_constructors
-                        .remove(&idx)
-                        .expect("We just got this index"),
-                    idx,
-                }
-            } else if let Some(idx) = this.deferred_functions.keys().next().copied() {
-                DeferredFunctionEntry {
-                    trace: this
-                        .deferred_functions
-                        .remove(&idx)
-                        .expect("We just got this index"),
-                    idx,
-                }
-            } else {
-                break;
-            };
+        let mut function_i = 0;
 
-            this.resolve_function_doc(&entry, offset);
-            this.resolve_deferred_function_entry(&entry);
+        loop {
+            while function_i < this.pending_functions.len()
+                && this
+                    .resolved_once
+                    .contains(&this.pending_functions[function_i])
+            {
+                function_i += 1;
+            }
+
+            if function_i < this.pending_functions.len() {
+                let idx = this.pending_functions[function_i];
+                function_i += 1;
+                if let Some(trace) = this.traces.remove(&idx) {
+                    let entry = DeferredFunctionEntry { idx, trace };
+                    this.resolve_function_doc(&entry, offset);
+                    this.resolve_deferred_function_entry(entry);
+                }
+                continue;
+            }
+
+            break;
         }
 
         if !is_native && this.db.config().unused_variables != UnusedVariables::Off {
@@ -1761,11 +1768,22 @@ impl<'db> Resolver<'db> {
                     return Some(Type::ANY);
                 };
 
-                let data = self.deferred_entry(id);
-                if let Some(ref data) = data {
-                    self.resolve_function_doc(data, range.end());
+                let idx = id.idx();
+                let first_encounter = id.file() == self.file && !self.resolved_once.contains(&idx);
+
+                // Doc tags must be folded in exactly once — see the comment on
+                // `resolve_deferred_function_entry`.
+                let mut data = if first_encounter {
+                    self.deferred_entry(id)
+                } else {
+                    None
+                };
+
+                if let Some(ref d) = data {
+                    self.resolve_function_doc(d, range.end());
                 }
 
+                let mut params_changed = false;
                 for (count, argument) in arguments.iter().cloned().enumerate() {
                     let Some(&param) = self.get(id).params.get(count) else {
                         let ParamsState::VarArgs(_, vargv) = self.get(id).params_state else {
@@ -1781,35 +1799,51 @@ impl<'db> Resolver<'db> {
                             continue;
                         };
 
-                        let typ = self.get(vargv).typ.clone();
+                        let vargv_typ = self.get(vargv).typ.clone();
 
-                        let Type::Primitive(Primitive::Array(Some(id))) = typ else {
+                        let Type::Primitive(Primitive::Array(Some(array_id))) = vargv_typ else {
                             continue;
                         };
 
+                        let old = self.get(array_id).kind.clone();
                         let new_typ = self.update_type(
-                            &self.get(id).kind.clone(),
+                            &old,
                             self.get(vargv).is_type_explicit,
                             argument,
                             CheckTypeSource::VarArgs,
                         );
 
-                        if let Some(array) = self.get_mut(id) {
+                        if new_typ != old {
+                            params_changed = true;
+                        }
+
+                        if let Some(array) = self.get_mut(array_id) {
                             array.kind = new_typ;
                         }
                         continue;
                     };
 
+                    let old = self.get(param).typ.clone();
                     let new = self.update_type(
-                        &self.get(param).typ.clone(),
+                        &old,
                         self.get(param).is_type_explicit,
                         argument,
                         CheckTypeSource::Parameter,
                     );
 
+                    if new != old {
+                        params_changed = true;
+                    }
+
                     if let Some(param) = self.get_mut(param) {
                         param.typ = new;
                     }
+                }
+
+                // Wasn't the first time, but this call just taught us something
+                // new about a parameter - go re-walk the body with it.
+                if data.is_none() && !first_encounter && params_changed {
+                    data = self.deferred_entry(id);
                 }
 
                 let least_params_required = match self.get(id).params_state {
@@ -1829,12 +1863,8 @@ impl<'db> Resolver<'db> {
                     });
                 }
 
-                // We resolve the params first so we can get param type substitution before we run the body
-                // However since we reuse the result, the function body can have errors that it wouldn't have
-                // if we get the new type information? Probably not since function body must complete
-                // with the exact type the user has passed in
                 if let Some(data) = data {
-                    self.resolve_deferred_function_entry(&data);
+                    self.resolve_deferred_function_entry(data);
                 }
 
                 if let Some(native) = self.db.check_native(id)
@@ -2021,18 +2051,8 @@ impl<'db> Resolver<'db> {
             self.collect_params(id.idx(), param_list.parameters())
         });
 
-        let map = if Constructor::can_cast(node.syntax().kind()) {
-            &mut self.deferred_constructors
-        } else if let Some(method) = Method::cast(node.syntax().clone())
-            && let Some(name_token) = method.name().and_then(|n| n.identifier())
-            && name_token.text() == "constructor"
-        {
-            &mut self.deferred_constructors
-        } else {
-            &mut self.deferred_functions
-        };
-
-        map.insert(
+        self.pending_functions.push(id.idx());
+        self.traces.insert(
             id.idx(),
             DeferredFunctionTrace {
                 node: Box::new(node.clone()),
@@ -2046,6 +2066,16 @@ impl<'db> Resolver<'db> {
         self.function = save_idx;
 
         id
+    }
+
+    fn deferred_entry(&mut self, id: FunctionId) -> Option<DeferredFunctionEntry> {
+        if id.file() != self.file {
+            return None;
+        }
+
+        let idx = id.idx();
+        let trace = self.traces.remove(&idx)?;
+        Some(DeferredFunctionEntry { idx, trace })
     }
 
     fn resolve_variable_doc<T: HasDoc>(
@@ -2309,20 +2339,31 @@ impl<'db> Resolver<'db> {
         insert_symbol(&mut self.current_scope().locals, text.into(), id);
     }
 
-    fn resolve_deferred_function_entry(&mut self, entry: &DeferredFunctionEntry) {
-        // No reason to change stuff if function has no body
-        let Some(body) = entry.trace.node.body() else {
+    fn resolve_deferred_function_entry(&mut self, entry: DeferredFunctionEntry) {
+        let DeferredFunctionEntry { idx, trace } = entry;
+
+        if self.resolved_once.contains(&idx) {
+            // We've walked this body before under a narrower parameter type;
+            // clear out the symbols/diagnostics that run produced so we don't
+            // end up with duplicates or spurious "unused variable" hits on
+            // orphaned locals from the earlier pass.
+            let body_range = self.arena[idx].range;
+            self.purge_range_bookkeeping(body_range);
+        }
+
+        let Some(body) = trace.node.body() else {
+            self.resolved_once.insert(idx);
+            self.traces.insert(idx, trace);
             return;
         };
 
-        let function = &self.arena[entry.idx];
-
+        let function = &self.arena[idx];
         let save_container = self.container;
         self.container = function.bindenv.unwrap_or(function.container);
         let save_scope = self.scope;
-        self.scope = entry.trace.scope;
+        self.scope = trace.scope;
         let save_function = self.function;
-        self.function = Some(entry.idx);
+        self.function = Some(idx);
         let save_dead_code = self.dead_code;
         self.dead_code = false;
         let save_break = self.can_break;
@@ -2330,7 +2371,7 @@ impl<'db> Resolver<'db> {
         let save_continue = self.can_continue;
         self.can_continue = false;
 
-        self.process_deferred_function_body(&body, entry.idx);
+        self.process_deferred_function_body(&body, idx);
 
         self.container = save_container;
         self.scope = save_scope;
@@ -2338,6 +2379,29 @@ impl<'db> Resolver<'db> {
         self.dead_code = save_dead_code;
         self.can_break = save_break;
         self.can_continue = save_continue;
+
+        self.resolved_once.insert(idx);
+        self.traces.insert(idx, trace);
+    }
+
+    /// Drops everything keyed by a range inside `range` - used to clear a function
+    /// body's previous-run bookkeeping (locals, references, diagnostics) before
+    /// re-resolving it with wider parameter types.
+    fn purge_range_bookkeeping(&mut self, range: TextRange) {
+        // Mark every symbol whose defining node falls inside the re-resolved
+        // body as stale, so arena-wide consumers (inlay hints, workspace
+        // symbols) can filter them out. la_arena has no removal, so this flag
+        // is the only way to "delete" a symbol.
+        let stale_ids: Vec<_> = self
+            .all_symbols()
+            .filter_map(|(idx, s)| range.contains_range(s.node.text_range()).then_some(idx))
+            .collect();
+
+        for idx in stale_ids {
+            self.arena[idx].flags |= SymbolFlags::STALE;
+        }
+
+        self.diagnostics.retain(|d| !range.contains_range(d.range));
     }
 
     fn process_deferred_function_body(&mut self, body: &FunctionBody, idx: Idx<FunctionData>) {
@@ -2366,22 +2430,6 @@ impl<'db> Resolver<'db> {
                 }
             }
         }
-    }
-
-    fn deferred_entry(&mut self, id: FunctionId) -> Option<DeferredFunctionEntry> {
-        // If function is external it is already resolved
-        if id.file() != self.file {
-            return None;
-        }
-
-        let idx = id.idx();
-        // If function is not in deferred_functions it is already resolved
-        let trace = self
-            .deferred_constructors
-            .remove(&idx)
-            .or_else(|| self.deferred_functions.remove(&idx))?;
-
-        Some(DeferredFunctionEntry { idx, trace })
     }
 
     fn set_symbol(&mut self, typ: &Type, symbol: SymbolId) {
