@@ -2,7 +2,7 @@ use lsp_types::{
     DocumentSymbol, DocumentSymbolParams, DocumentSymbolResponse, SymbolKind as LspSymbolKind,
     SymbolTag,
 };
-use resolver::{DisplayType, SourceCtx, Source, Symbol, SymbolFlags, VScriptDatabase};
+use resolver::{DisplayType, Source, SourceCtx, Symbol, SymbolFlags, VScriptDatabase};
 
 use crate::positions;
 
@@ -18,10 +18,7 @@ pub fn handle_document_symbol<Db: VScriptDatabase>(
 
     let line_idx = positions::line_index(db, file);
 
-    let mut symbols: Vec<_> = ctx
-        .all_symbols()
-        .map(|(_, symbol)| symbol)
-        .collect();
+    let mut symbols: Vec<_> = ctx.all_symbols().map(|(_, symbol)| symbol).collect();
 
     symbols.sort_by(|a, b| {
         let a_range = a.node.text_range();
@@ -63,9 +60,6 @@ pub fn handle_document_symbol<Db: VScriptDatabase>(
 
         if !symbol.node.text_range().contains_range(symbol.name_range) {
             log::error!("'name_range' is outside of 'range'");
-            dbg!(symbol);
-            dbg!(range);
-            dbg!(name_range);
             return;
         }
 
