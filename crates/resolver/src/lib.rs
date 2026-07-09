@@ -7,6 +7,7 @@ use std::{collections::hash_map::Entry, fmt::Write as _};
 
 use ::db::File;
 use la_arena::Idx;
+use phf::phf_set;
 use rustc_hash::{FxHashMap, FxHashSet};
 use sq_3_parser::{SyntaxKind, SyntaxToken, TextRange, TextSize};
 
@@ -1272,3 +1273,9 @@ pub struct SourceSymbol {
     symbol_to_ranges: FxHashMap<SymbolId, Vec<TextRange>>,
     diagnostics: Vec<Diagnostic>,
 }
+
+pub static METAMETHODS: phf::Set<&'static str> = phf_set! {
+    "_add", "_sub", "_mul", "_div", "_modulo", "_unm", "_typeof",
+    "_nexti", "_cmp", "_call", "_cloned", "_newslot", "_delslot",
+    "_tostring", "_newmember", "_inherited", "_get", "_set"
+};

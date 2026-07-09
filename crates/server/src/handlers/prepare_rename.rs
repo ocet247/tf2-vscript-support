@@ -1,5 +1,7 @@
 use lsp_types::{PrepareRenameResponse, TextDocumentPositionParams};
-use resolver::{Source, SourceCtx, VScriptDatabase, parse, token_name_range};
+use resolver::{
+    METAMETHODS, Source, SourceCtx, SymbolKind, VScriptDatabase, parse, token_name_range,
+};
 
 use crate::positions;
 
@@ -23,13 +25,24 @@ pub fn handle_prepare_rename<Db: VScriptDatabase>(
         .right_biased()
         .ok_or_else(|| anyhow::format_err!("No token found"))?;
 
-    let text_range = token_name_range(&token);
+    let range = token_name_range(&token);
 
-    if ctx.symbol_at(text_range).is_none() {
+    let Some(symbol_id) = ctx.symbol_at(range) else {
         return Ok(None);
+    };
+
+    let symbol = ctx.get(symbol_id);
+    if matches!(symbol.kind, SymbolKind::Property { .. }) {
+        let name = file.text(db)[range.start().into()..range.end().into()].to_string();
+
+        if name == "constructor" || METAMETHODS.contains(&name) {
+            return Err(anyhow::format_err!(
+                "Renaming a metamethod or constructor is not allowed because it might break implicit behavior."
+            ));
+        }
     }
 
-    let range = positions::range(line_idx, text_range)
+    let range = positions::range(line_idx, range)
         .ok_or_else(|| anyhow::format_err!("Couldn't convert text range to lsp range"))?;
 
     Ok(Some(PrepareRenameResponse::Range(range)))
