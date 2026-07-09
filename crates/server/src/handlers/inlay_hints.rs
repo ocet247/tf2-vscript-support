@@ -1,11 +1,11 @@
 use line_index::{LineIndex, TextRange};
 use lsp_types::{
-    InlayHint, InlayHintKind, InlayHintLabel, InlayHintParams, InlayHintTooltip, MarkupContent,
-    MarkupKind,
+    InlayHint, InlayHintKind, InlayHintLabel, InlayHintLabelPart, InlayHintParams,
+    InlayHintTooltip, Location, MarkupContent, MarkupKind,
 };
 use resolver::{
-    ExpressionKind, FunctionIdResolution, LocalKind, Primitive, Source, SourceCtx, SymbolKind,
-    Type, TypeFlags, TypeState, VScriptDatabase, parse,
+    ArenaId, ExpressionKind, FunctionIdResolution, LocalKind, Primitive, Source, SourceCtx,
+    SymbolId, SymbolKind, Type, TypeFlags, TypeState, VScriptDatabase, parse,
 };
 use sq_3_parser::{
     AstNode as _, SyntaxNode,
@@ -59,6 +59,15 @@ pub fn handle_inlay_hint<Db: VScriptDatabase>(
     }
 }
 
+fn symbol_location(ctx: &SourceCtx, symbol_id: SymbolId) -> Option<Location> {
+    let file = symbol_id.file();
+    let symbol = ctx.get(symbol_id);
+    let uri = ctx.db().get_url(&file)?;
+    let line_idx = positions::line_index(ctx.db(), file);
+    let range = positions::range(line_idx, symbol.name_range)?;
+    Some(Location { uri, range })
+}
+
 fn type_hints(
     line_idx: &LineIndex,
     ctx: &SourceCtx,
@@ -109,25 +118,36 @@ fn type_hints(
                     return None;
                 }
 
-                let label = format!(": {}", ctx.type_to_str(&symbol.typ));
-                let tooltip = if let Ok(id) = symbol.typ.to_instance()
+                let position = positions::range(line_idx, symbol.name_range)?.end;
+                let label_text = format!(": {}", ctx.type_to_str(&symbol.typ));
+                let (label, tooltip) = if let Ok(id) = symbol.typ.to_instance()
                     && let Some(class_symbol_id) = ctx.get(id).symbol
                 {
-                    let content = ctx.symbol_markdown(class_symbol_id);
-
-                    Some(InlayHintTooltip::MarkupContent(MarkupContent {
-                        kind: MarkupKind::Markdown,
-                        value: content,
-                    }))
+                    if let Some(location) = symbol_location(ctx, class_symbol_id) {
+                        (
+                            InlayHintLabel::LabelParts(vec![InlayHintLabelPart {
+                                value: label_text,
+                                tooltip: None,
+                                location: Some(location),
+                                command: None,
+                            }]),
+                            None,
+                        )
+                    } else {
+                        let content = ctx.symbol_markdown(class_symbol_id);
+                        let tooltip = Some(InlayHintTooltip::MarkupContent(MarkupContent {
+                            kind: MarkupKind::Markdown,
+                            value: content,
+                        }));
+                        (InlayHintLabel::String(label_text), tooltip)
+                    }
                 } else {
-                    None
+                    (InlayHintLabel::String(label_text), None)
                 };
-
-                let position = positions::range(line_idx, symbol.name_range)?.end;
 
                 Some(InlayHint {
                     position,
-                    label: InlayHintLabel::String(label),
+                    label,
                     kind: Some(InlayHintKind::TYPE),
                     text_edits: None,
                     tooltip,
@@ -308,8 +328,6 @@ fn parameter_hints(
                             return None;
                         }
 
-                        // E.g. a single argument and param name is not a bool or possibly null
-                        // since otherwise in most cases it's clear without the hint regardless
                         if func.params.len() == 1 {
                             let flags = ctx.get(func.params[0]).typ.type_flags();
 
@@ -320,7 +338,6 @@ fn parameter_hints(
                             }
                         }
 
-                        // e.g. passing a variable that has the similar name as the param
                         if let ast::Expr::Name(n) = &arg
                             && n.identifier().is_some_and(|t| {
                                 t.text().to_lowercase().contains(&param.name.to_lowercase())
@@ -330,13 +347,34 @@ fn parameter_hints(
                         }
 
                         let position = positions::range(line_idx, arg.syntax().text_range())?.start;
+                        let label_text = format!("{}:", param.name);
+                        let (label, tooltip) = if let Some(location) =
+                            symbol_location(ctx, param_id)
+                        {
+                            (
+                                InlayHintLabel::LabelParts(vec![InlayHintLabelPart {
+                                    value: label_text,
+                                    tooltip: None,
+                                    location: Some(location),
+                                    command: None,
+                                }]),
+                                None,
+                            )
+                        } else {
+                            let content = ctx.symbol_markdown(param_id);
+                            let tooltip = Some(InlayHintTooltip::MarkupContent(MarkupContent {
+                                kind: MarkupKind::Markdown,
+                                value: content,
+                            }));
+                            (InlayHintLabel::String(label_text), tooltip)
+                        };
 
                         Some(InlayHint {
                             position,
-                            label: InlayHintLabel::String(format!("{}:", param.name)),
+                            label,
                             kind: Some(InlayHintKind::PARAMETER),
                             text_edits: None,
-                            tooltip: None,
+                            tooltip,
                             padding_left: Some(false),
                             padding_right: Some(true),
                             data: None,
