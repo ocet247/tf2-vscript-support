@@ -3537,6 +3537,7 @@ impl<'db> Resolver<'db> {
                 range: stmt.syntax().text_range(),
             },
             false,
+            true,
         );
 
         let save_symbol = self.container;
@@ -4007,7 +4008,11 @@ impl<'db> Resolver<'db> {
             CheckTypeSource::Return,
         );
 
-        self.arena[function].ret = TypeState::NotExplicit(new);
+        self.arena[function].ret = if is_explicit {
+            TypeState::Explicit(new)
+        } else {
+            TypeState::NotExplicit(new)
+        };
     }
 
     fn yield_statement(&mut self, stmt: &YieldStatement) {
@@ -4039,7 +4044,11 @@ impl<'db> Resolver<'db> {
 
         let new = self.update_type(&yields, is_explicit, value, CheckTypeSource::Yield);
 
-        self.arena[function].yields = TypeState::NotExplicit(new);
+        self.arena[function].yields = if is_explicit {
+            TypeState::Explicit(new)
+        } else {
+            TypeState::NotExplicit(new)
+        };
     }
 
     fn continue_statement(&mut self, stmt: &ContinueStatement) {
@@ -4163,7 +4172,11 @@ impl<'db> Resolver<'db> {
             CheckTypeSource::Throw,
         );
 
-        self.arena[function].throws = TypeState::NotExplicit(new);
+        self.arena[function].throws = if is_explicit {
+            TypeState::Explicit(new)
+        } else {
+            TypeState::NotExplicit(new)
+        };
     }
 
     fn expr_to_type(&mut self, expr: &Expr) -> Type {
@@ -4959,6 +4972,7 @@ impl<'db> Resolver<'db> {
         name: Option<AssignmentLeftHandSide>,
         value: TypeWithRange,
         show_inlay_hint: bool,
+        is_literal: bool,
     ) {
         match name {
             Some(AssignmentLeftHandSide::CanCreate {
@@ -5018,7 +5032,8 @@ impl<'db> Resolver<'db> {
                 if let NewSlotResult::CanAdd(container) = result {
                     self.add_container_member(container, new_key, symbol);
 
-                    if let Ok(id) = value.kind.to_function()
+                    if is_literal
+                        && let Ok(id) = value.kind.to_function()
                         && let Some(function) = self.get_mut(id)
                     {
                         function.container = container;
@@ -5105,7 +5120,8 @@ impl<'db> Resolver<'db> {
                     if let NewSlotResult::CanAdd(container) = result {
                         self.add_container_member(container, name, symbol);
 
-                        if let Ok(id) = value.kind.to_function()
+                        if is_literal
+                            && let Ok(id) = value.kind.to_function()
                             && let Some(function) = self.get_mut(id)
                         {
                             function.container = container;
@@ -5172,8 +5188,8 @@ impl<'db> Resolver<'db> {
                     .text_range(),
             },
         );
-
-        self.expr_new_symbol(expr, left, right, true);
+        let is_literal = matches!(right_kind, Some(ExpressionKind::Literal(_)));
+        self.expr_new_symbol(expr, left, right, true, is_literal);
 
         right_kind
     }
@@ -5199,7 +5215,13 @@ impl<'db> Resolver<'db> {
             },
         );
 
+        // Binds right hand side function expression to the variable on the left
+        // local a = {}
+        // a.func <- function() {
+        // ...
+        // }
         if let Some(container) = lhs_container(left.as_ref())
+            && matches!(right_kind, Some(ExpressionKind::Literal(_)))
             && let Ok(id) = right.kind.to_function()
             && let Some(function) = self.get_mut(id)
         {
