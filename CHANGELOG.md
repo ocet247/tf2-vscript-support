@@ -1,5 +1,10 @@
 # Changelog
 
+## [3.3.12]
+- Add locations for suitable inlay hints
+- Fix container reassignment that was meant for function expressions working for symbols as well
+- Disallow renaming metamethods and constructors to prevent breaking implicit behaviour
+
 ## [3.3.11]
 - Fix plain name function statement not adding symbols
 
