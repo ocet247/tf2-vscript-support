@@ -6101,13 +6101,22 @@ fn remove_falsy_from_type(typ: &Type) -> Type {
 
 fn remove_truthy_from_type(typ: &Type) -> Type {
     match typ {
-        Type::Primitive(Primitive::Bool(_)) => Type::Primitive(Primitive::Bool(Some(false))),
-        Type::Primitive(Primitive::Null) => Type::NULL,
-        // We know it must be 0/0.0 if truthy is excluded, but only when the
-        // literal value was already known - otherwise leave it (can't narrow
-        // "some unknown integer" down to exactly 0 safely)
-        // Type::Primitive(Primitive::Integer(Some(0))) => typ.clone(),
-        // Type::Primitive(Primitive::Float(Some(f))) if *f == 0.0 => typ.clone(),
+        Type::Primitive(prim) if is_falsy_primitive(prim) => Type::ANY,
+        Type::Union(union) => {
+            let primitives = union
+                .primitives
+                .iter()
+                .filter_map(|p| match p {
+                    _ if !is_falsy_primitive(p) => None,
+                    // known-falsy-or-not scalars collapse to their nonzero/true state
+                    Primitive::Bool(None) => Some(Primitive::Bool(Some(false))),
+                    Primitive::Integer(None) => Some(Primitive::Integer(Some(0))),
+                    Primitive::Float(None) => Some(Primitive::Float(Some(0.0))),
+                    other => Some(*other),
+                })
+                .collect();
+            rebuild_union(primitives)
+        }
         _ => typ.clone(),
     }
 }
