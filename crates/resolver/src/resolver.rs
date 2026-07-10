@@ -3938,16 +3938,9 @@ impl<'db> Resolver<'db> {
     }
 
     fn condition_symbol(&self, expr: &Expr) -> Option<SymbolId> {
-        match expr {
-            Expr::Parenthesised(expr) => {
-                expr.inner().and_then(|inner| self.condition_symbol(&inner))
-            }
-            Expr::Name(expr) => {
-                let ident = expr.identifier()?;
-                let offset = ident.text_range().end();
-                self.resolve_name(ident.text(), offset)
-            }
-            _ => None,
+        match self.expr_kind_at(expr.syntax().text_range()) {
+            None | Some(ExpressionKind::Literal(_)) => None,
+            Some(ExpressionKind::Symbol(id)) => Some(*id),
         }
     }
 
@@ -5837,19 +5830,24 @@ impl<'db> Resolver<'db> {
                 .map(|t| t.add_null());
         }
 
+        let is_weaponbase = text.starts_with("tf_weaponb");
         // tf_weapon_* but not tf_weaponbase_*
-        if text.starts_with("tf_weap") && !text.starts_with("tf_weaponb") {
+        if text.starts_with("tf_weap") && !is_weaponbase {
             return self
                 .db
                 .instance_from_vscript_lib("CTFWeaponBase")
                 .map(|t| t.add_null());
         }
 
-        // tf_wearable*
-        if text.starts_with("tf_wear") {
+        // tf_wearable* tf_weapon_* as CEconEntity or tf_weaponbase_* as CBaseAnimating
+        if text.starts_with("tf_w") {
             return self
                 .db
-                .instance_from_vscript_lib("CEconEntity")
+                .instance_from_vscript_lib(if is_weaponbase {
+                    "CBaseAnimating"
+                } else {
+                    "CEconEntity"
+                })
                 .map(|t| t.add_null());
         }
 
