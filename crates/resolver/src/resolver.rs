@@ -5830,24 +5830,23 @@ impl<'db> Resolver<'db> {
                 .map(|t| t.add_null());
         }
 
-        let is_weaponbase = text.starts_with("tf_weaponb");
-        // tf_weapon_* but not tf_weaponbase_*
-        if text.starts_with("tf_weap") && !is_weaponbase {
+        // tf_weapon_* as CTFWeaponBase or tf_weaponbase_* as CBaseAnimating
+        if text.starts_with("tf_weap") {
             return self
                 .db
-                .instance_from_vscript_lib("CTFWeaponBase")
+                .instance_from_vscript_lib(if text.starts_with("tf_weaponb") {
+                    "CBaseAnimating"
+                } else {
+                    "CTFWeaponBase"
+                })
                 .map(|t| t.add_null());
         }
 
-        // tf_wearable* tf_weapon_* as CEconEntity or tf_weaponbase_* as CBaseAnimating
+        // tf_wearable* | tf_weapon_*
         if text.starts_with("tf_w") {
             return self
                 .db
-                .instance_from_vscript_lib(if is_weaponbase {
-                    "CBaseAnimating"
-                } else {
-                    "CEconEntity"
-                })
+                .instance_from_vscript_lib("CEconEntity")
                 .map(|t| t.add_null());
         }
 
