@@ -27,7 +27,7 @@ pub fn handle_hover<Db: VScriptDatabase>(
     let range = token_name_range(&token);
 
     let content = if let Some(id) = ctx.symbol_at(range) {
-        ctx.symbol_markdown(id)
+        ctx.symbol_markdown(id, offset)
     } else if token.kind() == SyntaxKind::Identifier {
         format!("```sqDoc\n{}: any\n```", token.text())
     } else {

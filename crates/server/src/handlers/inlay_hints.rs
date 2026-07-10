@@ -134,7 +134,7 @@ fn type_hints(
                             None,
                         )
                     } else {
-                        let content = ctx.symbol_markdown(class_symbol_id);
+                        let content = ctx.symbol_markdown(class_symbol_id, symbol.name_range.end());
                         let tooltip = Some(InlayHintTooltip::MarkupContent(MarkupContent {
                             kind: MarkupKind::Markdown,
                             value: content,
@@ -361,7 +361,7 @@ fn parameter_hints(
                                 None,
                             )
                         } else {
-                            let content = ctx.symbol_markdown(param_id);
+                            let content = ctx.symbol_markdown(param_id, param.name_range.end());
                             let tooltip = Some(InlayHintTooltip::MarkupContent(MarkupContent {
                                 kind: MarkupKind::Markdown,
                                 value: content,

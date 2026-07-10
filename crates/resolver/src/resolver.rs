@@ -271,7 +271,7 @@ impl Source for Resolver<'_> {
         &self.imports
     }
 
-    fn scope(&self, _offset: TextSize) -> ScopeId {
+    fn scope(&self, _: TextSize) -> ScopeId {
         self.scope
     }
 
@@ -488,6 +488,69 @@ impl<'db> Resolver<'db> {
         id
     }
 
+    #[allow(clippy::too_many_arguments)]
+    fn symbol_with_info<T: HasDoc>(
+        &mut self,
+        node: &T,
+        kind: SymbolKind,
+        name: Box<str>,
+        name_range: TextRange,
+        extra_flags: SymbolFlags,
+        fallback_type: Type,
+        check_type: Option<(TypeWithRange, CheckTypeSource)>,
+    ) -> SymbolId {
+        let sym_node = SyntaxNodePtr::new(node.syntax());
+        if let Some(info) = self.resolve_variable_doc(node, &name, name_range) {
+            let typ = info.typ.as_ref().map_or(fallback_type, |doc_type| {
+                check_type.map_or_else(
+                    || doc_type.clone(),
+                    |(expr_type, source)| {
+                        self.check_type(doc_type, &expr_type.kind, source, expr_type.range)
+                    },
+                )
+            });
+            let id = self.symbol(Symbol {
+                name: name.clone(),
+                kind,
+                name_range,
+                node: sym_node,
+                is_type_explicit: info.typ.is_some(),
+                typ,
+                description: info.description,
+                flags: extra_flags | info.flags,
+            });
+            self.doc_to_symbol.insert(info.range, id);
+            id
+        } else {
+            self.symbol(Symbol {
+                name,
+                kind,
+                name_range,
+                node: sym_node,
+                is_type_explicit: false,
+                typ: fallback_type,
+                description: None,
+                flags: extra_flags,
+            })
+        }
+    }
+
+    fn set_symbol(&mut self, typ: &Type, symbol: SymbolId) {
+        if let Ok(id) = typ.to_class()
+            && let Some(class) = self.get_mut(id)
+            && class.symbol.is_none()
+        {
+            class.symbol = Some(symbol);
+        }
+
+        if let Ok(id) = typ.to_function()
+            && let Some(function) = self.get_mut(id)
+            && function.symbol.is_none()
+        {
+            function.symbol = Some(symbol);
+        }
+    }
+
     fn class(&mut self, class: &impl IsClass) -> ClassId {
         let expr = class.extends().and_then(|e| e.expression());
 
@@ -577,6 +640,7 @@ impl<'db> Resolver<'db> {
             locals: SymbolTable::default(),
             range,
             function: self.function,
+            flow_types: FxHashMap::default(),
         });
     }
 
@@ -1096,7 +1160,6 @@ impl<'db> Resolver<'db> {
         }
     }
 
-    #[allow(clippy::too_many_lines)]
     fn collect_params(
         &mut self,
         idx: Idx<FunctionData>,
@@ -1116,9 +1179,6 @@ impl<'db> Resolver<'db> {
                         self.collect_expr(&expr);
                         continue;
                     };
-
-                    let kind = SymbolKind::Local(LocalKind::Parameter);
-                    let node = SyntaxNodePtr::new(var.syntax());
 
                     let Some(expr) = var.initialiser().and_then(|i| i.expression()) else {
                         match params_state {
@@ -1142,33 +1202,15 @@ impl<'db> Resolver<'db> {
                             ParamsState::NoDefault => {}
                         }
 
-                        let id = if let Some(info) =
-                            self.resolve_variable_doc(&var, &name, name_range)
-                        {
-                            let id = self.symbol(Symbol {
-                                name: name.clone(),
-                                kind,
-                                name_range,
-                                node,
-                                is_type_explicit: info.typ.is_some(),
-                                typ: info.typ.unwrap_or(Type::ANY),
-                                description: info.description,
-                                flags: info.flags,
-                            });
-                            self.doc_to_symbol.insert(info.range, id);
-                            id
-                        } else {
-                            self.symbol(Symbol {
-                                name: name.clone(),
-                                kind,
-                                name_range,
-                                node,
-                                is_type_explicit: false,
-                                typ: Type::ANY,
-                                description: None,
-                                flags: SymbolFlags::default(),
-                            })
-                        };
+                        let id = self.symbol_with_info(
+                            &var,
+                            SymbolKind::Local(LocalKind::Parameter),
+                            name.clone(),
+                            name_range,
+                            SymbolFlags::default(),
+                            Type::ANY,
+                            None,
+                        );
 
                         insert_symbol(&mut self.current_scope().locals, name, id);
                         self.arena[idx].params.push(id);
@@ -1190,41 +1232,15 @@ impl<'db> Resolver<'db> {
                     // ```
                     let typ = expr_type.kind.add_any();
 
-                    let id = if let Some(info) = self.resolve_variable_doc(&var, &name, name_range)
-                    {
-                        let typ = info.typ.as_ref().map_or(typ, |doc_type| {
-                            self.check_type(
-                                doc_type,
-                                &expr_type.kind,
-                                CheckTypeSource::Variable,
-                                expr_type.range,
-                            )
-                        });
-
-                        let id = self.symbol(Symbol {
-                            name: name.clone(),
-                            kind,
-                            name_range,
-                            node,
-                            is_type_explicit: info.typ.is_some(),
-                            typ,
-                            description: info.description,
-                            flags: info.flags,
-                        });
-                        self.doc_to_symbol.insert(info.range, id);
-                        id
-                    } else {
-                        self.symbol(Symbol {
-                            name: name.clone(),
-                            kind,
-                            name_range,
-                            node,
-                            is_type_explicit: false,
-                            typ,
-                            description: None,
-                            flags: SymbolFlags::default(),
-                        })
-                    };
+                    let id = self.symbol_with_info(
+                        &var,
+                        SymbolKind::Local(LocalKind::Parameter),
+                        name.clone(),
+                        name_range,
+                        SymbolFlags::default(),
+                        typ,
+                        Some((expr_type, CheckTypeSource::Parameter)),
+                    );
 
                     insert_symbol(&mut self.current_scope().locals, name, id);
                     self.arena[idx].params.push(id);
@@ -2449,22 +2465,6 @@ impl<'db> Resolver<'db> {
         }
     }
 
-    fn set_symbol(&mut self, typ: &Type, symbol: SymbolId) {
-        if let Ok(id) = typ.to_class()
-            && let Some(class) = self.get_mut(id)
-            && class.symbol.is_none()
-        {
-            class.symbol = Some(symbol);
-        }
-
-        if let Ok(id) = typ.to_function()
-            && let Some(function) = self.get_mut(id)
-            && function.symbol.is_none()
-        {
-            function.symbol = Some(symbol);
-        }
-    }
-
     fn native_function(
         &mut self,
         kind: NativeFunction,
@@ -2551,7 +2551,9 @@ impl<'db> Resolver<'db> {
                 let expr = n.expression()?;
                 let kind = self.collect_expr(&expr);
 
-                if self.expr_kind_to_type(kind.as_ref()) == Type::NULL {
+                if self.expr_kind_to_type(kind.as_ref(), expr.syntax().text_range().end())
+                    == Type::NULL
+                {
                     self.diagnostics.push(Diagnostic {
                         message: "'null' cannot be a name".to_owned(),
                         range: expr.syntax().text_range(),
@@ -2621,57 +2623,28 @@ impl<'db> Resolver<'db> {
                 };
 
                 let typ = Type::Primitive(Primitive::Function(Some(id)));
-                let kind = SymbolKind::Property {
-                    show_inlay_hint: false,
-                };
-                let node = SyntaxNodePtr::new(method.syntax());
 
-                let symbol =
-                    if let Some(info) = self.resolve_variable_doc(method, &name, name_range) {
-                        let typ = info.typ.as_ref().map_or_else(
-                            || typ.clone(),
-                            |doc_type| {
-                                self.check_type(
-                                    doc_type,
-                                    &typ,
-                                    CheckTypeSource::Variable,
-                                    method.function_token().map_or_else(
-                                        || method.syntax().text_range(),
-                                        |t| t.text_range(),
-                                    ),
-                                )
-                            },
-                        );
+                let symbol = self.symbol_with_info(
+                    method,
+                    SymbolKind::Property {
+                        show_inlay_hint: false,
+                    },
+                    name.clone(),
+                    name_range,
+                    SymbolFlags::default(),
+                    typ.clone(),
+                    Some((
+                        TypeWithRange {
+                            kind: typ,
+                            range: method
+                                .function_token()
+                                .map_or_else(|| method.syntax().text_range(), |t| t.text_range()),
+                        },
+                        CheckTypeSource::Variable,
+                    )),
+                );
 
-                        let id = self.symbol(Symbol {
-                            name: name.clone(),
-                            kind,
-                            name_range,
-                            node,
-                            is_type_explicit: info.typ.is_some(),
-                            typ,
-                            description: info.description,
-                            flags: info.flags,
-                        });
-                        self.doc_to_symbol.insert(info.range, id);
-                        id
-                    } else {
-                        self.symbol(Symbol {
-                            name: name.clone(),
-                            kind,
-                            name_range,
-                            node,
-                            is_type_explicit: false,
-                            typ,
-                            description: None,
-                            flags: SymbolFlags::default(),
-                        })
-                    };
-
-                if let Some(function) = self.get_mut(id) {
-                    function.symbol = Some(symbol);
-                }
-
+                self.arena[id.idx()].symbol = Some(symbol);
                 self.add_current_container_member(name, symbol);
             }
             Member::Constructor(constructor) => {
@@ -2680,111 +2653,36 @@ impl<'db> Resolver<'db> {
                 let Some(keyword) = constructor.constructor_keyword() else {
                     return;
                 };
+                let name_range = keyword.text_range();
 
                 let typ = Type::Primitive(Primitive::Function(Some(id)));
-                let kind = SymbolKind::Property {
-                    show_inlay_hint: false,
-                };
-                let name_range = keyword.text_range();
-                let node = SyntaxNodePtr::new(constructor.syntax());
 
-                let symbol = if let Some(info) =
-                    self.resolve_variable_doc(constructor, "constructor", name_range)
-                {
-                    let typ = info.typ.as_ref().map_or_else(
-                        || typ.clone(),
-                        |doc_type| {
-                            self.check_type(
-                                doc_type,
-                                &typ,
-                                CheckTypeSource::Variable,
-                                constructor.function_token().map_or_else(
-                                    || constructor.syntax().text_range(),
-                                    |t| t.text_range(),
-                                ),
-                            )
+                let symbol = self.symbol_with_info(
+                    constructor,
+                    SymbolKind::Property {
+                        show_inlay_hint: false,
+                    },
+                    "constructor".into(),
+                    name_range,
+                    SymbolFlags::default(),
+                    typ.clone(),
+                    Some((
+                        TypeWithRange {
+                            kind: typ,
+                            range: constructor.constructor_keyword().map_or_else(
+                                || constructor.syntax().text_range(),
+                                |t| t.text_range(),
+                            ),
                         },
-                    );
+                        CheckTypeSource::Variable,
+                    )),
+                );
 
-                    let id = self.symbol(Symbol {
-                        name: "constructor".into(),
-                        kind,
-                        name_range,
-                        node,
-                        is_type_explicit: info.typ.is_some(),
-                        typ,
-                        description: info.description,
-                        flags: info.flags,
-                    });
-                    self.doc_to_symbol.insert(info.range, id);
-                    id
-                } else {
-                    self.symbol(Symbol {
-                        name: "constructor".into(),
-                        kind,
-                        name_range,
-                        node,
-                        is_type_explicit: false,
-                        typ,
-                        description: None,
-                        flags: SymbolFlags::default(),
-                    })
-                };
-
-                if let Some(function) = self.get_mut(id) {
-                    function.symbol = Some(symbol);
-                }
-
+                self.arena[id.idx()].symbol = Some(symbol);
                 self.add_current_container_member("constructor".into(), symbol);
             }
         }
     }
-
-    // fn symbol_with_info<T: HasDoc>(
-    //     &mut self,
-    //     whole_node: &T,
-    //     kind: SymbolKind,
-    //     name: &str,
-    //     name_range: TextRange,
-    //     flags: SymbolFlags,
-    //     fallback_type: Type,
-    //     check_type: Option<(TypeWithRange, CheckTypeSource)>,
-    // ) -> SymbolId {
-    //     let node = SyntaxNodePtr::new(whole_node.syntax());
-
-    //     if let Some(info) = self.resolve_variable_doc(whole_node) {
-    //         let typ = info.typ.as_ref().map_or(fallback_type.clone(), |doc_type| {
-    //             let Some((expr_type, source)) = check_type else {
-    //                 return doc_type.clone();
-    //             };
-    //             self.check_type(doc_type, &expr_type.kind, source, expr_type.range)
-    //         });
-
-    //         let id = self.symbol(Symbol {
-    //             name: name.into(),
-    //             kind,
-    //             name_range,
-    //             node,
-    //             is_type_explicit: info.typ.is_some(),
-    //             typ,
-    //             description: info.description,
-    //             flags: flags | info.flags,
-    //         });
-    //         self.doc_to_symbol.insert(info.range, id);
-    //         id
-    //     } else {
-    //         self.symbol(Symbol {
-    //             name: name.into(),
-    //             kind,
-    //             name_range,
-    //             node,
-    //             is_type_explicit: false,
-    //             typ: fallback_type,
-    //             description: None,
-    //             flags,
-    //         })
-    //     }
-    // }
 
     fn collect_class_member(&mut self, member: &Member) {
         match member {
@@ -2798,63 +2696,32 @@ impl<'db> Resolver<'db> {
                 };
 
                 let typ = Type::Primitive(Primitive::Function(Some(id)));
-                let kind = SymbolKind::Property {
-                    show_inlay_hint: false,
-                };
-                let node = SyntaxNodePtr::new(method.syntax());
 
-                let flags = if did_swap {
-                    SymbolFlags::default()
-                } else {
-                    SymbolFlags::STATIC
-                };
-
-                let symbol =
-                    if let Some(info) = self.resolve_variable_doc(method, &name, name_range) {
-                        let typ = info.typ.as_ref().map_or_else(
-                            || typ.clone(),
-                            |doc_type| {
-                                self.check_type(
-                                    doc_type,
-                                    &typ,
-                                    CheckTypeSource::Variable,
-                                    method.function_token().map_or_else(
-                                        || method.syntax().text_range(),
-                                        |t| t.text_range(),
-                                    ),
-                                )
-                            },
-                        );
-
-                        let id = self.symbol(Symbol {
-                            name: name.clone(),
-                            kind,
-                            name_range,
-                            node,
-                            is_type_explicit: info.typ.is_some(),
-                            typ,
-                            description: info.description,
-                            flags: flags | info.flags,
-                        });
-                        self.doc_to_symbol.insert(info.range, id);
-                        id
+                let symbol = self.symbol_with_info(
+                    method,
+                    SymbolKind::Property {
+                        show_inlay_hint: false,
+                    },
+                    name.clone(),
+                    name_range,
+                    if did_swap {
+                        SymbolFlags::default()
                     } else {
-                        self.symbol(Symbol {
-                            name: name.clone(),
-                            kind,
-                            name_range,
-                            node,
-                            is_type_explicit: false,
-                            typ,
-                            description: None,
-                            flags,
-                        })
-                    };
+                        SymbolFlags::STATIC
+                    },
+                    typ.clone(),
+                    Some((
+                        TypeWithRange {
+                            kind: typ,
+                            range: method
+                                .function_token()
+                                .map_or_else(|| method.syntax().text_range(), |t| t.text_range()),
+                        },
+                        CheckTypeSource::Variable,
+                    )),
+                );
 
-                if let Some(function) = self.get_mut(id) {
-                    function.symbol = Some(symbol);
-                }
-
+                self.arena[id.idx()].symbol = Some(symbol);
                 self.add_current_container_member(name, symbol);
             }
             Member::Constructor(constructor) => {
@@ -2864,76 +2731,49 @@ impl<'db> Resolver<'db> {
                 let Some(keyword) = constructor.constructor_keyword() else {
                     return;
                 };
+                let name_range = keyword.text_range();
 
                 let typ = Type::Primitive(Primitive::Function(Some(id)));
-                let kind = SymbolKind::Property {
-                    show_inlay_hint: false,
-                };
-                let name_range = keyword.text_range();
-                let node = SyntaxNodePtr::new(constructor.syntax());
 
-                let flags = if did_swap {
-                    SymbolFlags::default()
-                } else {
-                    SymbolFlags::STATIC
-                };
-
-                let symbol = if let Some(info) =
-                    self.resolve_variable_doc(constructor, "constructor", name_range)
-                {
-                    let typ = info.typ.as_ref().map_or_else(
-                        || typ.clone(),
-                        |doc_type| {
-                            self.check_type(
-                                doc_type,
-                                &typ,
-                                CheckTypeSource::Variable,
-                                constructor.function_token().map_or_else(
-                                    || constructor.syntax().text_range(),
-                                    |t| t.text_range(),
-                                ),
-                            )
+                let symbol = self.symbol_with_info(
+                    constructor,
+                    SymbolKind::Property {
+                        show_inlay_hint: false,
+                    },
+                    "constructor".into(),
+                    name_range,
+                    if did_swap {
+                        SymbolFlags::default()
+                    } else {
+                        SymbolFlags::STATIC
+                    },
+                    typ.clone(),
+                    Some((
+                        TypeWithRange {
+                            kind: typ,
+                            range: constructor.constructor_keyword().map_or_else(
+                                || constructor.syntax().text_range(),
+                                |t| t.text_range(),
+                            ),
                         },
-                    );
+                        CheckTypeSource::Variable,
+                    )),
+                );
 
-                    let id = self.symbol(Symbol {
-                        name: "constructor".into(),
-                        kind,
-                        name_range,
-                        node,
-                        is_type_explicit: info.typ.is_some(),
-                        typ,
-                        description: info.description,
-                        flags: flags | info.flags,
-                    });
-                    self.doc_to_symbol.insert(info.range, id);
-                    id
-                } else {
-                    self.symbol(Symbol {
-                        name: "constructor".into(),
-                        kind,
-                        name_range,
-                        node,
-                        is_type_explicit: false,
-                        typ,
-                        description: None,
-                        flags,
-                    })
-                };
-
-                if let Some(function) = self.get_mut(id) {
-                    function.symbol = Some(symbol);
-                }
-
+                self.arena[id.idx()].symbol = Some(symbol);
                 self.add_current_container_member("constructor".into(), symbol);
             }
         }
     }
 
     fn collect_table_property(&mut self, property: &Property) {
-        let expr_typ = property
-            .value()
-            .map_or(Type::ANY, |v| self.expr_to_type(&v));
+        let expr_typ = property.value().map_or_else(
+            || TypeWithRange {
+                kind: Type::ANY,
+                range: property.syntax().text_range(),
+            },
+            |v| self.expr_to_type_with_range(&v),
+        );
 
         let Some(name_node) = property.name() else {
             return;
@@ -2943,56 +2783,33 @@ impl<'db> Resolver<'db> {
             return;
         };
 
-        let kind = SymbolKind::Property {
-            show_inlay_hint: true,
-        };
-        let typ = expr_typ.add_any();
-        let node = SyntaxNodePtr::new(property.syntax());
+        let typ = expr_typ.kind.add_any();
 
-        let symbol = if let Some(info) = self.resolve_variable_doc(property, &name, name_range) {
-            let error_range = property.value().map_or_else(
-                || property.syntax().text_range(),
-                |v| v.syntax().text_range(),
-            );
-
-            let typ = info.typ.as_ref().map_or(typ, |doc_type| {
-                self.check_type(doc_type, &expr_typ, CheckTypeSource::Variable, error_range)
-            });
-
-            let id = self.symbol(Symbol {
-                name: name.clone(),
-                kind,
-                name_range,
-                node,
-                is_type_explicit: info.typ.is_some(),
-                typ,
-                description: info.description,
-                flags: info.flags,
-            });
-            self.doc_to_symbol.insert(info.range, id);
-            id
-        } else {
-            self.symbol(Symbol {
-                name: name.clone(),
-                kind,
-                name_range,
-                node,
-                is_type_explicit: false,
-                typ,
-                description: None,
-                flags: SymbolFlags::default(),
-            })
-        };
+        let symbol = self.symbol_with_info(
+            property,
+            SymbolKind::Property {
+                show_inlay_hint: true,
+            },
+            name.clone(),
+            name_range,
+            SymbolFlags::default(),
+            typ,
+            Some((expr_typ, CheckTypeSource::Variable)),
+        );
 
         self.add_current_container_member(name, symbol);
     }
 
     fn collect_class_property(&mut self, property: &Property) {
-        let expr_typ = property
-            .value()
-            .map_or(Type::ANY, |v| self.expr_to_type(&v));
+        let expr_typ = property.value().map_or_else(
+            || TypeWithRange {
+                kind: Type::ANY,
+                range: property.syntax().text_range(),
+            },
+            |v| self.expr_to_type_with_range(&v),
+        );
 
-        let did_swap = self.try_swap_to_instance(property, expr_typ.to_function().ok());
+        let did_swap = self.try_swap_to_instance(property, expr_typ.kind.to_function().ok());
 
         let Some(name_node) = property.name() else {
             return;
@@ -3002,65 +2819,42 @@ impl<'db> Resolver<'db> {
             return;
         };
 
-        let kind = SymbolKind::Property {
-            show_inlay_hint: true,
-        };
-        let typ = expr_typ.add_any();
-        let flags = if did_swap {
-            SymbolFlags::default()
-        } else {
-            SymbolFlags::STATIC
-        };
-        let node = SyntaxNodePtr::new(property.syntax());
+        let typ = expr_typ.kind.add_any();
 
-        let symbol = if let Some(info) = self.resolve_variable_doc(property, &name, name_range) {
-            let error_range = property.value().map_or_else(
-                || property.syntax().text_range(),
-                |v| v.syntax().text_range(),
-            );
-
-            let typ = info.typ.as_ref().map_or(typ, |doc_type| {
-                self.check_type(doc_type, &expr_typ, CheckTypeSource::Variable, error_range)
-            });
-
-            let id = self.symbol(Symbol {
-                name: name.clone(),
-                kind,
-                name_range,
-                node,
-                is_type_explicit: info.typ.is_some(),
-                typ,
-                description: info.description,
-                flags: flags | info.flags,
-            });
-            self.doc_to_symbol.insert(info.range, id);
-            id
-        } else {
-            self.symbol(Symbol {
-                name: name.clone(),
-                kind,
-                name_range,
-                node,
-                is_type_explicit: false,
-                typ,
-                description: None,
-                flags,
-            })
-        };
+        let symbol = self.symbol_with_info(
+            property,
+            SymbolKind::Property {
+                show_inlay_hint: true,
+            },
+            name.clone(),
+            name_range,
+            if did_swap {
+                SymbolFlags::default()
+            } else {
+                SymbolFlags::STATIC
+            },
+            typ,
+            Some((expr_typ, CheckTypeSource::Variable)),
+        );
 
         self.add_current_container_member(name, symbol);
     }
 
     /// returns whether the value was assigned via '=' (used to increment the internal auto assign counter)
     fn collect_enum_property(&mut self, property: &Property, default_value: i32) -> bool {
-        let (has_value, typ) = property.value().map_or(
-            (
-                false,
-                Type::Primitive(Primitive::Integer(Some(default_value))),
-            ),
+        let (has_value, expr_typ) = property.value().map_or_else(
+            || {
+                (
+                    false,
+                    TypeWithRange {
+                        kind: Type::Primitive(Primitive::Integer(Some(default_value))),
+                        range: property.syntax().text_range(),
+                    },
+                )
+            },
             |expr| {
                 self.check_constant(&expr);
-                (true, self.expr_to_type(&expr))
+                (true, self.expr_to_type_with_range(&expr))
             },
         );
 
@@ -3072,44 +2866,15 @@ impl<'db> Resolver<'db> {
             return has_value;
         };
 
-        let kind = SymbolKind::EnumMember;
-        let node = SyntaxNodePtr::new(property.syntax());
-
-        let symbol = if let Some(info) = self.resolve_variable_doc(property, &name, name_range) {
-            let error_range = property.value().map_or_else(
-                || property.syntax().text_range(),
-                |v| v.syntax().text_range(),
-            );
-
-            let typ = info.typ.as_ref().map_or_else(
-                || typ.clone(),
-                |doc_type| self.check_type(doc_type, &typ, CheckTypeSource::Variable, error_range),
-            );
-
-            let id = self.symbol(Symbol {
-                name: name.clone(),
-                kind,
-                name_range,
-                node,
-                is_type_explicit: info.typ.is_some(),
-                typ,
-                description: info.description,
-                flags: info.flags,
-            });
-            self.doc_to_symbol.insert(info.range, id);
-            id
-        } else {
-            self.symbol(Symbol {
-                name: name.clone(),
-                kind,
-                name_range,
-                node,
-                is_type_explicit: false,
-                typ,
-                description: None,
-                flags: SymbolFlags::default(),
-            })
-        };
+        let symbol = self.symbol_with_info(
+            property,
+            SymbolKind::EnumMember,
+            name.clone(),
+            name_range,
+            SymbolFlags::default(),
+            expr_typ.kind.clone(),
+            Some((expr_typ, CheckTypeSource::Variable)),
+        );
 
         self.add_current_container_member(name, symbol);
 
@@ -3176,6 +2941,7 @@ impl<'db> Resolver<'db> {
                 continue;
             };
 
+            // No symbol_with_info call here since we need to resolve doc comment of the declaration as well
             let kind = SymbolKind::Local(LocalKind::Variable);
             let node = SyntaxNodePtr::new(var.syntax());
             let Some(expr) = var.initialiser().and_then(|i| i.expression()) else {
@@ -3265,51 +3031,25 @@ impl<'db> Resolver<'db> {
         };
 
         let typ = Type::Primitive(Primitive::Function(Some(id)));
-        let kind = SymbolKind::Local(LocalKind::Function);
-        let node = SyntaxNodePtr::new(decl.syntax());
-        let symbol = if let Some(info) = self.resolve_variable_doc(decl, &name, name_range) {
-            let typ = info.typ.as_ref().map_or_else(
-                || typ.clone(),
-                |doc_type| {
-                    self.check_type(
-                        doc_type,
-                        &typ,
-                        CheckTypeSource::Variable,
-                        decl.function_token()
-                            .map_or_else(|| decl.syntax().text_range(), |t| t.text_range()),
-                    )
+        let symbol = self.symbol_with_info(
+            decl,
+            SymbolKind::Local(LocalKind::Function),
+            name.clone(),
+            name_range,
+            SymbolFlags::default(),
+            typ.clone(),
+            Some((
+                TypeWithRange {
+                    kind: typ,
+                    range: decl
+                        .function_token()
+                        .map_or_else(|| decl.syntax().text_range(), |t| t.text_range()),
                 },
-            );
+                CheckTypeSource::Variable,
+            )),
+        );
 
-            let id = self.symbol(Symbol {
-                name: name.clone(),
-                node,
-                name_range,
-                kind,
-                is_type_explicit: info.typ.is_some(),
-                typ,
-                description: info.description,
-                flags: info.flags,
-            });
-            self.doc_to_symbol.insert(info.range, id);
-            id
-        } else {
-            self.symbol(Symbol {
-                name: name.clone(),
-                node,
-                name_range,
-                kind,
-                is_type_explicit: false,
-                typ,
-                description: None,
-                flags: SymbolFlags::default(),
-            })
-        };
-
-        if let Some(function) = self.get_mut(id) {
-            function.symbol = Some(symbol);
-        }
-
+        self.arena[id.idx()].symbol = Some(symbol);
         insert_symbol(&mut self.current_scope().locals, name, symbol);
     }
 
@@ -3322,61 +3062,30 @@ impl<'db> Resolver<'db> {
     }
 
     fn const_statement(&mut self, stmt: &ConstStatement) {
-        let typ = stmt
-            .value()
-            .and_then(|v| v.expression())
-            .map_or(Type::ANY, |expr| {
+        let expr_typ = stmt.value().and_then(|v| v.expression()).map_or_else(
+            || TypeWithRange {
+                kind: Type::ANY,
+                range: stmt.syntax().text_range(),
+            },
+            |expr| {
                 self.check_constant(&expr);
-                self.expr_to_type(&expr)
-            });
+                self.expr_to_type_with_range(&expr)
+            },
+        );
 
         let Some((name_range, name)) = get_name(stmt) else {
             return;
         };
 
-        let kind = SymbolKind::Constant;
-        let node = SyntaxNodePtr::new(stmt.syntax());
-        let symbol = if let Some(info) = self.resolve_variable_doc(stmt, &name, name_range) {
-            let typ = info.typ.as_ref().map_or_else(
-                || typ.clone(),
-                |doc_type| {
-                    self.check_type(
-                        doc_type,
-                        &typ,
-                        CheckTypeSource::Variable,
-                        stmt.value().and_then(|v| v.expression()).map_or_else(
-                            || stmt.syntax().text_range(),
-                            |v| v.syntax().text_range(),
-                        ),
-                    )
-                },
-            );
-
-            let id = self.symbol(Symbol {
-                name: name.clone(),
-                node,
-                name_range,
-                kind,
-                is_type_explicit: info.typ.is_some(),
-                typ,
-                description: info.description,
-                flags: SymbolFlags::CONST | info.flags,
-            });
-
-            self.doc_to_symbol.insert(info.range, id);
-            id
-        } else {
-            self.symbol(Symbol {
-                name: name.clone(),
-                node,
-                name_range,
-                kind,
-                is_type_explicit: false,
-                typ,
-                description: None,
-                flags: SymbolFlags::CONST,
-            })
-        };
+        let symbol = self.symbol_with_info(
+            stmt,
+            SymbolKind::Constant,
+            name.clone(),
+            name_range,
+            SymbolFlags::CONST,
+            expr_typ.kind.clone(),
+            Some((expr_typ, CheckTypeSource::Variable)),
+        );
 
         insert_symbol(&mut self.arena[self.const_table].members, name, symbol);
     }
@@ -3402,45 +3111,21 @@ impl<'db> Resolver<'db> {
         if let Some(key) = stmt.key()
             && let Some((name_range, name)) = get_name(&key)
         {
-            let kind = SymbolKind::Local(LocalKind::Variable);
-            let node = SyntaxNodePtr::new(key.syntax());
-            let symbol = if let Some(info) = self.resolve_variable_doc(&key, &name, name_range) {
-                let typ = info.typ.as_ref().map_or_else(
-                    || key_type.clone(),
-                    |doc_type| {
-                        self.check_type(
-                            doc_type,
-                            &key_type,
-                            CheckTypeSource::Variable,
-                            stmt.syntax().text_range(),
-                        )
+            let symbol = self.symbol_with_info(
+                &key,
+                SymbolKind::Local(LocalKind::Variable),
+                name.clone(),
+                name_range,
+                SymbolFlags::default(),
+                key_type.clone(),
+                Some((
+                    TypeWithRange {
+                        kind: key_type,
+                        range: key.syntax().text_range(),
                     },
-                );
-                let id = self.symbol(Symbol {
-                    name: name.clone(),
-                    node,
-                    name_range,
-                    kind,
-                    is_type_explicit: info.typ.is_some(),
-                    typ,
-                    description: info.description,
-                    flags: info.flags,
-                });
-
-                self.doc_to_symbol.insert(info.range, id);
-                id
-            } else {
-                self.symbol(Symbol {
-                    name: name.clone(),
-                    node,
-                    name_range,
-                    kind,
-                    is_type_explicit: false,
-                    typ: key_type,
-                    description: None,
-                    flags: SymbolFlags::default(),
-                })
-            };
+                    CheckTypeSource::Variable,
+                )),
+            );
 
             insert_symbol(&mut self.current_scope().locals, name, symbol);
         }
@@ -3448,45 +3133,21 @@ impl<'db> Resolver<'db> {
         if let Some(value) = stmt.value()
             && let Some((name_range, name)) = get_name(&value)
         {
-            let kind = SymbolKind::Local(LocalKind::Variable);
-            let node = SyntaxNodePtr::new(value.syntax());
-            let symbol = if let Some(info) = self.resolve_variable_doc(&value, &name, name_range) {
-                let typ = info.typ.as_ref().map_or_else(
-                    || value_type.clone(),
-                    |doc_type| {
-                        self.check_type(
-                            doc_type,
-                            &value_type,
-                            CheckTypeSource::Variable,
-                            stmt.syntax().text_range(),
-                        )
+            let symbol = self.symbol_with_info(
+                &value,
+                SymbolKind::Local(LocalKind::Variable),
+                name.clone(),
+                name_range,
+                SymbolFlags::default(),
+                value_type.clone(),
+                Some((
+                    TypeWithRange {
+                        kind: value_type,
+                        range: value.syntax().text_range(),
                     },
-                );
-                let id = self.symbol(Symbol {
-                    name: name.clone(),
-                    node,
-                    name_range,
-                    kind,
-                    is_type_explicit: info.typ.is_some(),
-                    typ,
-                    description: info.description,
-                    flags: info.flags,
-                });
-
-                self.doc_to_symbol.insert(info.range, id);
-                id
-            } else {
-                self.symbol(Symbol {
-                    name: name.clone(),
-                    node,
-                    name_range,
-                    kind,
-                    is_type_explicit: false,
-                    typ: value_type,
-                    description: None,
-                    flags: SymbolFlags::default(),
-                })
-            };
+                    CheckTypeSource::Variable,
+                )),
+            );
 
             insert_symbol(&mut self.current_scope().locals, name, symbol);
         }
@@ -3676,52 +3337,28 @@ impl<'db> Resolver<'db> {
         };
 
         let typ = Type::Primitive(Primitive::Function(Some(id)));
-        let kind = SymbolKind::Property {
-            show_inlay_hint: false,
-        };
-        let node = SyntaxNodePtr::new(stmt.syntax());
-        let symbol = if let Some(info) = self.resolve_variable_doc(stmt, &name, name_range) {
-            let typ = info.typ.as_ref().map_or_else(
-                || typ.clone(),
-                |doc_type| {
-                    self.check_type(
-                        doc_type,
-                        &typ,
-                        CheckTypeSource::Variable,
-                        stmt.function_token()
-                            .map_or_else(|| stmt.syntax().text_range(), |t| t.text_range()),
-                    )
+
+        let symbol = self.symbol_with_info(
+            stmt,
+            SymbolKind::Property {
+                show_inlay_hint: false,
+            },
+            name.clone(),
+            name_range,
+            SymbolFlags::default(),
+            typ.clone(),
+            Some((
+                TypeWithRange {
+                    kind: typ,
+                    range: stmt
+                        .function_token()
+                        .map_or_else(|| stmt.syntax().text_range(), |t| t.text_range()),
                 },
-            );
+                CheckTypeSource::Variable,
+            )),
+        );
 
-            let id = self.symbol(Symbol {
-                name: name.clone(),
-                node,
-                name_range,
-                kind,
-                is_type_explicit: info.typ.is_some(),
-                typ,
-                description: info.description,
-                flags: info.flags,
-            });
-            self.doc_to_symbol.insert(info.range, id);
-            id
-        } else {
-            self.symbol(Symbol {
-                name: name.clone(),
-                node,
-                name_range,
-                kind,
-                is_type_explicit: false,
-                typ,
-                description: None,
-                flags: SymbolFlags::default(),
-            })
-        };
-
-        if let Some(function) = self.get_mut(id) {
-            function.symbol = Some(symbol);
-        }
+        self.arena[id.idx()].symbol = Some(symbol);
 
         let container = match container {
             Ok(container) => container,
@@ -3740,45 +3377,22 @@ impl<'db> Resolver<'db> {
 
         if let Some((name_range, name)) = get_name(stmt) {
             let typ = Type::Enum(id);
-            let kind = SymbolKind::Constant;
-            let node = SyntaxNodePtr::new(stmt.syntax());
-            let symbol = if let Some(info) = self.resolve_variable_doc(stmt, &name, name_range) {
-                let typ = info.typ.as_ref().map_or_else(
-                    || typ.clone(),
-                    |doc_type| {
-                        self.check_type(
-                            doc_type,
-                            &typ,
-                            CheckTypeSource::Variable,
-                            stmt.syntax().text_range(),
-                        )
-                    },
-                );
 
-                let id = self.symbol(Symbol {
-                    name: name.clone(),
-                    node,
-                    name_range,
-                    kind,
-                    is_type_explicit: info.typ.is_some(),
-                    typ,
-                    description: info.description,
-                    flags: info.flags,
-                });
-                self.doc_to_symbol.insert(info.range, id);
-                id
-            } else {
-                self.symbol(Symbol {
-                    name: name.clone(),
-                    node,
-                    name_range,
-                    kind,
-                    is_type_explicit: false,
-                    typ,
-                    description: None,
-                    flags: SymbolFlags::default(),
-                })
-            };
+            let symbol = self.symbol_with_info(
+                stmt,
+                SymbolKind::Constant,
+                name.clone(),
+                name_range,
+                SymbolFlags::CONST,
+                typ.clone(),
+                Some((
+                    TypeWithRange {
+                        kind: typ,
+                        range: stmt.syntax().text_range(),
+                    },
+                    CheckTypeSource::Variable,
+                )),
+            );
 
             self.arena[id.idx()].symbol = Some(symbol);
 
@@ -3849,18 +3463,25 @@ impl<'db> Resolver<'db> {
     }
 
     fn if_statement(&mut self, stmt: &IfStatement) {
-        if let Some(condition) = stmt.condition() {
-            self.collect_expr(&condition);
+        let condition = stmt.condition();
+        if let Some(condition) = condition.as_ref() {
+            self.collect_expr(condition);
         }
 
         if let Some(then_stmt) = stmt.statement() {
             self.enter_scope(then_stmt.syntax().text_range());
+            if let Some(condition) = condition.as_ref() {
+                self.apply_condition_narrowing(condition, true);
+            }
             self.collect_stmt(&then_stmt);
             self.exit_scope();
         }
 
         if let Some(else_stmt) = stmt.else_branch().and_then(|e| e.statement()) {
             self.enter_scope(else_stmt.syntax().text_range());
+            if let Some(condition) = condition.as_ref() {
+                self.apply_condition_narrowing(condition, false);
+            }
             self.collect_stmt(&else_stmt);
             self.exit_scope();
         }
@@ -4093,46 +3714,21 @@ impl<'db> Resolver<'db> {
             && let Some((name_range, name)) = get_name(&binding)
         {
             let typ = Type::STRING.add_any();
-            let kind = SymbolKind::Local(LocalKind::Exception);
-            let node = SyntaxNodePtr::new(binding.syntax());
-            let symbol = if let Some(info) = self.resolve_variable_doc(&binding, &name, name_range)
-            {
-                let typ = info.typ.as_ref().map_or_else(
-                    || typ.clone(),
-                    |doc_type| {
-                        self.check_type(
-                            doc_type,
-                            &typ,
-                            CheckTypeSource::Variable,
-                            stmt.syntax().text_range(),
-                        )
+            let symbol = self.symbol_with_info(
+                &binding,
+                SymbolKind::Local(LocalKind::Exception),
+                name.clone(),
+                name_range,
+                SymbolFlags::default(),
+                typ.clone(),
+                Some((
+                    TypeWithRange {
+                        kind: typ,
+                        range: binding.syntax().text_range(),
                     },
-                );
-
-                let id = self.symbol(Symbol {
-                    name: name.clone(),
-                    node,
-                    name_range,
-                    kind,
-                    is_type_explicit: info.typ.is_some(),
-                    typ,
-                    description: info.description,
-                    flags: info.flags,
-                });
-                self.doc_to_symbol.insert(info.range, id);
-                id
-            } else {
-                self.symbol(Symbol {
-                    name: name.clone(),
-                    node,
-                    name_range,
-                    kind,
-                    is_type_explicit: false,
-                    typ,
-                    description: None,
-                    flags: SymbolFlags::default(),
-                })
-            };
+                    CheckTypeSource::Variable,
+                )),
+            );
 
             insert_symbol(&mut self.current_scope().locals, name, symbol);
         }
@@ -4181,7 +3777,178 @@ impl<'db> Resolver<'db> {
 
     fn expr_to_type(&mut self, expr: &Expr) -> Type {
         let kind = self.collect_expr(expr);
-        self.expr_kind_to_type(kind.as_ref())
+        self.expr_kind_to_type(kind.as_ref(), expr.syntax().text_range().end())
+    }
+
+    fn apply_condition_narrowing(&mut self, condition: &Expr, truthy: bool) {
+        match condition {
+            Expr::Parenthesised(expr) => {
+                if let Some(inner) = expr.inner() {
+                    self.apply_condition_narrowing(&inner, truthy);
+                }
+            }
+
+            // !x -> flip truthiness and recurse into the operand
+            Expr::PrefixUnary(expr) => {
+                if let Some((PrefixUnaryOperator::LogicalNot, _)) = expr.operator()
+                    && let Some(operand) = expr.operand()
+                {
+                    self.apply_condition_narrowing(&operand, !truthy);
+                }
+            }
+
+            Expr::Binary(expr) => {
+                let Some((operator, _)) = expr.operator() else {
+                    return;
+                };
+
+                match operator {
+                    // a && b: only the *truthy* branch is safe to narrow conjunctively.
+                    // If it's false we don't know which operand failed.
+                    BinaryOperator::LogicalAnd if truthy => {
+                        if let Some(lhs) = expr.lhs() {
+                            self.apply_condition_narrowing(&lhs, true);
+                        }
+                        if let Some(rhs) = expr.rhs() {
+                            self.apply_condition_narrowing(&rhs, true);
+                        }
+                    }
+                    // a || b: mirror image, only the falsy branch (both false) is safe.
+                    BinaryOperator::LogicalOr if !truthy => {
+                        if let Some(lhs) = expr.lhs() {
+                            self.apply_condition_narrowing(&lhs, false);
+                        }
+                        if let Some(rhs) = expr.rhs() {
+                            self.apply_condition_narrowing(&rhs, false);
+                        }
+                    }
+                    BinaryOperator::Equals | BinaryOperator::NotEquals => {
+                        self.apply_equality_narrowing(expr, operator, truthy);
+                    }
+                    BinaryOperator::InstanceOf => {
+                        self.apply_instanceof_narrowing(expr, truthy);
+                    }
+                    _ => {}
+                }
+            }
+
+            // Bare `if (x)` / leaf of `&&`/`||` recursion — plain truthiness check
+            _ => self.apply_truthy_narrowing(condition, truthy),
+        }
+    }
+
+    fn apply_equality_narrowing(
+        &mut self,
+        expr: &BinaryExpression,
+        operator: BinaryOperator,
+        truthy: bool,
+    ) {
+        let (Some(lhs), Some(rhs)) = (expr.lhs(), expr.rhs()) else {
+            return;
+        };
+        let is_eq = (operator == BinaryOperator::Equals) == truthy;
+
+        // x == null / null == x / x != null / null != x
+        if is_null_literal(&lhs) || is_null_literal(&rhs) {
+            let symbol_expr = if is_null_literal(&lhs) { rhs } else { lhs };
+            let Some(symbol) = self.condition_symbol(&symbol_expr) else {
+                return;
+            };
+            let current = self.symbol_type_at(symbol, symbol_expr.syntax().text_range().end());
+
+            let narrowed = if is_eq {
+                Type::NULL
+            } else {
+                remove_null_from_type(&current)
+            };
+            self.current_scope().flow_types.insert(symbol, narrowed);
+            return;
+        }
+
+        // typeof x == "string" / "string" == typeof x
+        if let Some((operand, text_expr)) = typeof_pair(lhs, rhs) {
+            let Some(symbol) = self.condition_symbol(&operand) else {
+                return;
+            };
+            let Some(text) = self.literal_string_text(&text_expr) else {
+                return;
+            };
+            let current = self.symbol_type_at(symbol, operand.syntax().text_range().end());
+
+            let narrowed = if is_eq {
+                typeof_name_to_type(&text).unwrap_or(current)
+            } else {
+                remove_typeof_from_type(&current, &text)
+            };
+            self.current_scope().flow_types.insert(symbol, narrowed);
+        }
+    }
+
+    fn apply_instanceof_narrowing(&mut self, expr: &BinaryExpression, truthy: bool) {
+        // Falsy branch of `instanceof` doesn't pin down a precise type generically so
+        // only narrow the truthy side.
+        if !truthy {
+            return;
+        }
+        let (Some(lhs), Some(rhs)) = (expr.lhs(), expr.rhs()) else {
+            return;
+        };
+        let Some(symbol) = self.condition_symbol(&lhs) else {
+            return;
+        };
+
+        // rhs was already resolved during normal expr collection of the binary
+        // expression, so pull its recorded type instead of re-evaluating it.
+        let class_type = self.type_at(rhs.syntax().text_range());
+        let Ok(class_id) = class_type.to_class() else {
+            return;
+        };
+
+        self.current_scope()
+            .flow_types
+            .insert(symbol, Type::Primitive(Primitive::Instance(Some(class_id))));
+    }
+
+    fn apply_truthy_narrowing(&mut self, expr: &Expr, truthy: bool) {
+        let Some(symbol) = self.condition_symbol(expr) else {
+            return;
+        };
+        let current = self.symbol_type_at(symbol, expr.syntax().text_range().end());
+
+        let narrowed = if truthy {
+            remove_falsy_from_type(&current)
+        } else {
+            remove_truthy_from_type(&current)
+        };
+        self.current_scope().flow_types.insert(symbol, narrowed);
+    }
+
+    fn literal_string_text(&mut self, expr: &Expr) -> Option<Box<str>> {
+        let Expr::Literal(lit) = expr else {
+            return None;
+        };
+        let (kind, token) = lit.token()?;
+        let name_kind = match kind {
+            LiteralExpressionKind::String => StringNameKind::Normal,
+            LiteralExpressionKind::VerbatimString => StringNameKind::Verbatim,
+            _ => return None,
+        };
+        let id = self.string(&(name_kind, token));
+        Some(self.get(id).text.clone())
+    }
+
+    fn condition_symbol(&self, expr: &Expr) -> Option<SymbolId> {
+        match expr {
+            Expr::Parenthesised(expr) => {
+                expr.inner().and_then(|inner| self.condition_symbol(&inner))
+            }
+            Expr::Name(expr) => {
+                let ident = expr.identifier()?;
+                let offset = ident.text_range().end();
+                self.resolve_name(ident.text(), offset)
+            }
+            _ => None,
+        }
     }
 
     fn expr_to_type_with_range(&mut self, expr: &Expr) -> TypeWithRange {
@@ -4556,7 +4323,7 @@ impl<'db> Resolver<'db> {
 
         let expr_kind = self.collect_expr(&index)?;
 
-        match self.expr_kind_to_type(Some(&expr_kind)) {
+        match self.expr_kind_to_type(Some(&expr_kind), expr.syntax().text_range().end()) {
             Type::Primitive(Primitive::String {
                 literal: Some(id), ..
             }) => {
@@ -4651,12 +4418,12 @@ impl<'db> Resolver<'db> {
             Expr::MemberAccess(expr) => {
                 let object = expr.object()?;
                 let expr = self.expr_kind_at(object.syntax().text_range())?;
-                Some(self.expr_kind_to_type(Some(expr)))
+                Some(self.expr_kind_to_type(Some(expr), object.syntax().text_range().end()))
             }
             Expr::ElementAccess(expr) => {
                 let object = expr.object()?;
                 let expr = self.expr_kind_at(object.syntax().text_range())?;
-                Some(self.expr_kind_to_type(Some(expr)))
+                Some(self.expr_kind_to_type(Some(expr), object.syntax().text_range().end()))
             }
             Expr::RootAccess(_) => Some(Type::Primitive(Primitive::Table(Some(self.root_table())))),
             _ => None,
@@ -4826,7 +4593,8 @@ impl<'db> Resolver<'db> {
                     return Some(AssignmentLeftHandSide::NonStringName {
                         parent: obj,
                         name: TypeWithRange {
-                            kind: self.expr_kind_to_type(kind.as_ref()),
+                            kind: self
+                                .expr_kind_to_type(kind.as_ref(), expr.syntax().text_range().end()),
                             range: index.syntax().text_range(),
                         },
                         expr_range,
@@ -4965,7 +4733,6 @@ impl<'db> Resolver<'db> {
     }
 
     // Also used by class statement
-    #[allow(clippy::too_many_lines)]
     fn expr_new_symbol<T: HasDoc>(
         &mut self,
         expr: &T,
@@ -4990,50 +4757,23 @@ impl<'db> Resolver<'db> {
                 }
 
                 let typ = value.kind.clone();
-                let kind = SymbolKind::Property { show_inlay_hint };
-                let node = SyntaxNodePtr::new(expr.syntax());
-                let symbol = if let Some(info) =
-                    self.resolve_variable_doc(expr, &new_key, name_range)
-                {
-                    let typ = info.typ.as_ref().map_or_else(
-                        || typ.clone(),
-                        |doc_type| {
-                            self.check_type(doc_type, &typ, CheckTypeSource::Variable, expr_range)
-                        },
-                    );
+                let symbol = self.symbol_with_info(
+                    expr,
+                    SymbolKind::Property { show_inlay_hint },
+                    new_key.clone(),
+                    name_range,
+                    SymbolFlags::default(),
+                    typ.clone(),
+                    Some((value, CheckTypeSource::Variable)),
+                );
 
-                    let id = self.symbol(Symbol {
-                        name: new_key.clone(),
-                        node,
-                        name_range,
-                        kind,
-                        is_type_explicit: info.typ.is_some(),
-                        typ,
-                        description: info.description,
-                        flags: info.flags,
-                    });
-                    self.doc_to_symbol.insert(info.range, id);
-                    id
-                } else {
-                    self.symbol(Symbol {
-                        name: new_key.clone(),
-                        node,
-                        name_range,
-                        kind,
-                        is_type_explicit: false,
-                        typ,
-                        description: None,
-                        flags: SymbolFlags::default(),
-                    })
-                };
-
-                self.set_symbol(&value.kind, symbol);
+                self.set_symbol(&typ, symbol);
 
                 if let NewSlotResult::CanAdd(container) = result {
                     self.add_container_member(container, new_key, symbol);
 
                     if is_literal
-                        && let Ok(id) = value.kind.to_function()
+                        && let Ok(id) = typ.to_function()
                         && let Some(function) = self.get_mut(id)
                     {
                         function.container = container;
@@ -5074,54 +4814,23 @@ impl<'db> Resolver<'db> {
 
                     let name = self.get(symbol).name.clone();
                     let typ = value.kind.clone();
-                    let kind = SymbolKind::Property { show_inlay_hint };
-                    let node = SyntaxNodePtr::new(expr.syntax());
-                    let symbol =
-                        if let Some(info) = self.resolve_variable_doc(expr, &name, name_range) {
-                            let typ = info.typ.as_ref().map_or_else(
-                                || typ.clone(),
-                                |doc_type| {
-                                    self.check_type(
-                                        doc_type,
-                                        &typ,
-                                        CheckTypeSource::Variable,
-                                        expr_range,
-                                    )
-                                },
-                            );
+                    let symbol = self.symbol_with_info(
+                        expr,
+                        SymbolKind::Property { show_inlay_hint },
+                        name.clone(),
+                        name_range,
+                        SymbolFlags::default(),
+                        typ.clone(),
+                        Some((value, CheckTypeSource::Variable)),
+                    );
 
-                            let id = self.symbol(Symbol {
-                                name: name.clone(),
-                                node,
-                                name_range,
-                                kind,
-                                is_type_explicit: info.typ.is_some(),
-                                typ,
-                                description: info.description,
-                                flags: info.flags,
-                            });
-                            self.doc_to_symbol.insert(info.range, id);
-                            id
-                        } else {
-                            self.symbol(Symbol {
-                                name: name.clone(),
-                                node,
-                                name_range,
-                                kind,
-                                is_type_explicit: false,
-                                typ,
-                                description: None,
-                                flags: SymbolFlags::default(),
-                            })
-                        };
-
-                    self.set_symbol(&value.kind, symbol);
+                    self.set_symbol(&typ, symbol);
 
                     if let NewSlotResult::CanAdd(container) = result {
                         self.add_container_member(container, name, symbol);
 
                         if is_literal
-                            && let Ok(id) = value.kind.to_function()
+                            && let Ok(id) = typ.to_function()
                             && let Some(function) = self.get_mut(id)
                         {
                             function.container = container;
@@ -5178,7 +4887,9 @@ impl<'db> Resolver<'db> {
                 range: expr.syntax().text_range(),
             },
             |r| TypeWithRange {
-                kind: self.expr_kind_to_type(Some(r)).add_any(),
+                kind: self
+                    .expr_kind_to_type(Some(r), expr.syntax().text_range().end())
+                    .add_any(),
                 range: expr
                     .rhs()
                     .expect(
@@ -5204,7 +4915,7 @@ impl<'db> Resolver<'db> {
                 range: expr.syntax().text_range(),
             },
             |r| TypeWithRange {
-                kind: self.expr_kind_to_type(Some(r)),
+                kind: self.expr_kind_to_type(Some(r), expr.syntax().text_range().end()),
                 range: expr
                     .rhs()
                     .expect(
@@ -5277,8 +4988,9 @@ impl<'db> Resolver<'db> {
                 );
 
                 if let Some(symbol) = self.get_mut(symbol) {
-                    symbol.typ = new;
+                    symbol.typ = new.clone();
                 }
+                self.current_scope().flow_types.insert(symbol, new);
             }
             Some(AssignmentLeftHandSide::NonStringName {
                 parent,
@@ -5609,8 +5321,9 @@ impl<'db> Resolver<'db> {
                 );
 
                 if let Some(symbol) = self.get_mut(symbol) {
-                    symbol.typ = new;
+                    symbol.typ = new.clone();
                 }
+                self.current_scope().flow_types.insert(symbol, new);
                 Some(typ)
             }
             Some(AssignmentLeftHandSide::NonStringName {
@@ -6245,4 +5958,169 @@ fn parent_doc(node: &SyntaxNode) -> Option<DocComment> {
                     // /** ... */
                     // local a = function() {}
                     LocalVariableDeclaration::cast(parent.parent()?)?.doc())
+}
+
+fn is_null_literal(expr: &Expr) -> bool {
+    match expr {
+        Expr::Literal(expr) => expr
+            .token()
+            .and_then(|(kind, _)| match kind {
+                LiteralExpressionKind::Null => Some(()),
+                _ => None,
+            })
+            .is_some(),
+        _ => false,
+    }
+}
+
+fn remove_null_from_type(typ: &Type) -> Type {
+    match typ {
+        Type::Primitive(Primitive::Null | Primitive::Any) => Type::ANY,
+        Type::Union(union) => {
+            let mut primitives = Vec::with_capacity(union.primitives.len());
+            for primitive in union.primitives.iter() {
+                if !matches!(primitive, Primitive::Null) {
+                    primitives.push(*primitive);
+                }
+            }
+
+            match primitives.as_slice() {
+                [] => Type::ANY,
+                [primitive] => Type::Primitive(*primitive),
+                _ => Type::Union(Union {
+                    flags: union.flags & !TypeFlags::NULL,
+                    primitives: primitives.into(),
+                }),
+            }
+        }
+        _ => typ.clone(),
+    }
+}
+
+fn unwrap_parens(mut expr: Expr) -> Expr {
+    while let Expr::Parenthesised(paren) = &expr {
+        let Some(inner) = paren.inner() else { break };
+        expr = inner;
+    }
+    expr
+}
+
+/// If either side of an equality is `typeof <operand>`, returns `(operand, other_side)`.
+fn typeof_pair(lhs: Expr, rhs: Expr) -> Option<(Expr, Expr)> {
+    if let Expr::TypeOf(t) = unwrap_parens(lhs.clone()) {
+        return Some((t.operand()?, rhs));
+    }
+    if let Expr::TypeOf(t) = unwrap_parens(rhs) {
+        return Some((t.operand()?, lhs));
+    }
+    None
+}
+
+fn typeof_name_to_type(text: &str) -> Option<Type> {
+    Some(match text {
+        "null" => Type::NULL,
+        "integer" => Type::INTEGER,
+        "float" => Type::FLOAT,
+        "string" => Type::STRING,
+        "bool" => Type::BOOL,
+        "table" => Type::TABLE,
+        "array" => Type::ARRAY,
+        "class" => Type::CLASS,
+        "instance" => Type::INSTANCE,
+        "generator" => Type::GENERATOR,
+        "thread" => Type::THREAD,
+        "weakref" => Type::WEAKREF,
+        "native function" | "function" => Type::FUNCTION,
+        _ => return None,
+    })
+}
+
+fn primitive_matches_typeof(prim: &Primitive, text: &str) -> bool {
+    matches!(
+        (prim, text),
+        (Primitive::Null, "null")
+            | (Primitive::Integer(_), "integer")
+            | (Primitive::Float(_), "float")
+            | (Primitive::String { .. }, "string")
+            | (Primitive::Bool(_), "bool")
+            | (Primitive::Table(_), "table")
+            | (Primitive::Array(_), "array")
+            | (Primitive::Class(_), "class")
+            | (Primitive::Instance(_), "instance")
+            | (Primitive::Generator(_), "generator")
+            | (Primitive::Thread(_), "thread")
+            | (Primitive::Weakref, "weakref")
+            | (Primitive::Function(_), "nativefunction" | "function")
+    )
+}
+
+fn remove_typeof_from_type(typ: &Type, text: &str) -> Type {
+    match typ {
+        Type::Primitive(prim) if primitive_matches_typeof(prim, text) => Type::ANY,
+        Type::Union(union) => {
+            let primitives: Vec<_> = union
+                .primitives
+                .iter()
+                .copied()
+                .filter(|p| !primitive_matches_typeof(p, text))
+                .collect();
+            rebuild_union(primitives)
+        }
+        _ => typ.clone(),
+    }
+}
+
+fn is_falsy_primitive(prim: &Primitive) -> bool {
+    matches!(
+        prim,
+        Primitive::Null | Primitive::Bool(Some(false)) | Primitive::Integer(Some(0))
+    ) || matches!(prim, Primitive::Float(Some(f)) if *f == 0.0) // covers -0.0 too
+}
+
+fn remove_falsy_from_type(typ: &Type) -> Type {
+    match typ {
+        Type::Primitive(prim) if is_falsy_primitive(prim) => Type::ANY,
+        Type::Union(union) => {
+            let primitives = union
+                .primitives
+                .iter()
+                .filter_map(|p| match p {
+                    _ if is_falsy_primitive(p) => None,
+                    // known-falsy-or-not scalars collapse to their nonzero/true state
+                    Primitive::Bool(None) => Some(Primitive::Bool(Some(true))),
+                    Primitive::Integer(None) => Some(Primitive::Integer(None)), // can't pin to nonzero
+                    Primitive::Float(None) => Some(Primitive::Float(None)),
+                    other => Some(*other),
+                })
+                .collect();
+            rebuild_union(primitives)
+        }
+        _ => typ.clone(),
+    }
+}
+
+fn remove_truthy_from_type(typ: &Type) -> Type {
+    match typ {
+        Type::Primitive(Primitive::Bool(_)) => Type::Primitive(Primitive::Bool(Some(false))),
+        Type::Primitive(Primitive::Null) => Type::NULL,
+        // We know it must be 0/0.0 if truthy is excluded, but only when the
+        // literal value was already known - otherwise leave it (can't narrow
+        // "some unknown integer" down to exactly 0 safely)
+        // Type::Primitive(Primitive::Integer(Some(0))) => typ.clone(),
+        // Type::Primitive(Primitive::Float(Some(f))) if *f == 0.0 => typ.clone(),
+        _ => typ.clone(),
+    }
+}
+
+fn rebuild_union(primitives: Vec<Primitive>) -> Type {
+    match primitives.as_slice() {
+        [] => Type::ANY,
+        [p] => Type::Primitive(*p),
+        _ => Type::Union(Union {
+            flags: primitives
+                .iter()
+                .fold(TypeFlags::empty(), |f, p| f | p.type_flags()),
+            primitives: primitives.into(),
+        }),
+    }
 }

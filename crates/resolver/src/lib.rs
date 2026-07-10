@@ -126,6 +126,7 @@ enum GetMembersInner {
     Const,
 }
 
+#[derive(Debug, Clone, Copy)]
 pub enum FunctionMarkdown<'a> {
     Full(&'a str),
     Anonymous,
@@ -834,12 +835,25 @@ pub trait Source {
         )
     }
 
-    fn expr_kind_to_type(&self, maybe_kind: Option<&ExpressionKind>) -> Type {
+    fn expr_kind_to_type(&self, maybe_kind: Option<&ExpressionKind>, offset: TextSize) -> Type {
         match maybe_kind {
             Some(ExpressionKind::Literal(typ)) => typ.clone(),
-            Some(ExpressionKind::Symbol(symbol)) => self.get(*symbol).typ.clone(),
+            Some(ExpressionKind::Symbol(symbol)) => self.symbol_type_at(*symbol, offset),
             None => Type::default(),
         }
+    }
+
+    fn symbol_type_at(&self, symbol: SymbolId, offset: TextSize) -> Type {
+        let mut scope = Some(self.scope(offset));
+
+        while let Some(current_scope) = scope {
+            if let Some(typ) = self.arena()[current_scope].flow_types.get(&symbol) {
+                return typ.clone();
+            }
+            scope = self.arena()[current_scope].parent;
+        }
+
+        self.get(symbol).typ.clone()
     }
 
     fn expr_kind_at(&self, range: TextRange) -> Option<&ExpressionKind> {
@@ -851,7 +865,7 @@ pub trait Source {
     }
 
     fn type_at(&self, text_range: TextRange) -> Type {
-        self.expr_kind_to_type(self.expr_kind_at(text_range))
+        self.expr_kind_to_type(self.expr_kind_at(text_range), text_range.end())
     }
 
     fn primitive_to_str(&self, primitive: &Primitive) -> Box<str> {
@@ -928,18 +942,62 @@ pub trait Source {
     fn type_to_str(&self, typ: &Type) -> Box<str> {
         self.type_to_str_impl(typ, |prim| self.primitive_to_str(prim))
     }
+}
 
-    fn symbol_detail(&self, id: SymbolId) -> String {
-        let s = self.get(id);
-        match Primitive::try_from(&s.typ) {
+#[must_use]
+pub fn token_name_range(token: &SyntaxToken) -> TextRange {
+    let token_range = token.text_range();
+    match token.kind() {
+        SyntaxKind::String => {
+            let text = token.text();
+            let left = u32::from(text.starts_with('"'));
+            let right = u32::from(text.ends_with('"'));
+
+            TextRange::new(
+                token_range.start() + TextSize::new(left),
+                token_range.end() - TextSize::new(right),
+            )
+        }
+        SyntaxKind::VerbatimString => {
+            let text = token.text();
+            let left = if text.starts_with("@\"") { 2 } else { 0 };
+            let right = u32::from(text.ends_with('"'));
+
+            TextRange::new(
+                token_range.start() + TextSize::new(left),
+                token_range.end() - TextSize::new(right),
+            )
+        }
+        _ => token_range,
+    }
+}
+
+pub struct SourceCtx<'db>(&'db dyn VScriptDatabase, File);
+
+impl<'db> SourceCtx<'db> {
+    pub fn new(db: &'db dyn VScriptDatabase, file: File) -> Self {
+        // Wait until ready: source symbol has been computed
+        source_symbol(db, file);
+        Self(db, file)
+    }
+
+    fn source(&self) -> &SourceSymbol {
+        source_symbol(self.0, self.1)
+    }
+
+    #[must_use]
+    pub fn symbol_detail(&self, id: SymbolId, offset: TextSize) -> String {
+        let typ = self.symbol_type_at(id, offset);
+        match Primitive::try_from(&typ) {
             Ok(Primitive::Function(Some(id))) => {
                 self.function_markdown(FunctionMarkdown::Anonymous, id)
             }
-            _ => self.type_to_str(&s.typ).into_string(),
+            _ => self.type_to_str(&typ).into_string(),
         }
     }
 
-    fn symbol_markdown(&self, id: SymbolId) -> String {
+    #[must_use]
+    pub fn symbol_markdown(&self, id: SymbolId, offset: TextSize) -> String {
         let s = self.get(id);
         let mut str = "\n```sqDoc\n".to_owned();
 
@@ -989,6 +1047,7 @@ pub trait Source {
 
         let name = quote_if_cant_use_identifier(&s.name);
 
+        let typ = self.symbol_type_at(id, offset);
         match s.kind {
             SymbolKind::Local(_) => str.push_str("local "),
             SymbolKind::Property { .. } => {
@@ -997,7 +1056,7 @@ pub trait Source {
                 }
             }
             SymbolKind::Constant | SymbolKind::EnumMember => {
-                let type_text = match s.typ {
+                let type_text = match typ {
                     Type::Enum(id) => {
                         let _ = write!(str, "enum {name}");
 
@@ -1048,7 +1107,7 @@ pub trait Source {
             }
         }
 
-        match Primitive::try_from(&s.typ) {
+        match Primitive::try_from(&typ) {
             Ok(Primitive::Function(Some(id))) => {
                 let signature = self.function_markdown(FunctionMarkdown::Full(&name), id);
                 str.push_str(&signature);
@@ -1069,7 +1128,7 @@ pub trait Source {
                 }
             }
             _ => {
-                let _ = write!(str, "{}: {}", name, self.type_to_str(&s.typ));
+                let _ = write!(str, "{}: {}", name, self.type_to_str(&typ));
             }
         }
 
@@ -1077,7 +1136,8 @@ pub trait Source {
         str
     }
 
-    fn function_markdown(&self, kind: FunctionMarkdown, id: FunctionId) -> String {
+    #[must_use]
+    pub fn function_markdown(&self, kind: FunctionMarkdown, id: FunctionId) -> String {
         let func = self.get(id);
         let mut label = match kind {
             FunctionMarkdown::Anonymous => "@(".to_owned(),
@@ -1151,48 +1211,6 @@ pub trait Source {
         }
 
         label
-    }
-}
-
-#[must_use]
-pub fn token_name_range(token: &SyntaxToken) -> TextRange {
-    let token_range = token.text_range();
-    match token.kind() {
-        SyntaxKind::String => {
-            let text = token.text();
-            let left = u32::from(text.starts_with('"'));
-            let right = u32::from(text.ends_with('"'));
-
-            TextRange::new(
-                token_range.start() + TextSize::new(left),
-                token_range.end() - TextSize::new(right),
-            )
-        }
-        SyntaxKind::VerbatimString => {
-            let text = token.text();
-            let left = if text.starts_with("@\"") { 2 } else { 0 };
-            let right = u32::from(text.ends_with('"'));
-
-            TextRange::new(
-                token_range.start() + TextSize::new(left),
-                token_range.end() - TextSize::new(right),
-            )
-        }
-        _ => token_range,
-    }
-}
-
-pub struct SourceCtx<'db>(&'db dyn VScriptDatabase, File);
-
-impl<'db> SourceCtx<'db> {
-    pub fn new(db: &'db dyn VScriptDatabase, file: File) -> Self {
-        // Wait until ready: source symbol has been computed
-        source_symbol(db, file);
-        Self(db, file)
-    }
-
-    fn source(&self) -> &SourceSymbol {
-        source_symbol(self.0, self.1)
     }
 }
 

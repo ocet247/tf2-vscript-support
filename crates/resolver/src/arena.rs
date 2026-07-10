@@ -2,6 +2,7 @@ use std::cmp::Reverse;
 
 use la_arena::{Arena, Idx};
 use line_index::{TextRange, TextSize};
+use rustc_hash::FxHashMap;
 use sq_3_parser::SyntaxNodePtr;
 
 use crate::{
@@ -241,12 +242,13 @@ pub struct StringLiteralData {
     pub unquoted_range: TextRange,
 }
 
-#[derive(Debug, Default, Clone, PartialEq, Eq)]
+#[derive(Debug, Default, Clone, PartialEq)]
 pub struct Scope {
     pub range: TextRange,
     pub locals: SymbolTable,
     pub parent: Option<Idx<Self>>,
     pub function: Option<Idx<FunctionData>>,
+    pub flow_types: FxHashMap<SymbolId, Type>,
 }
 
 pub type ScopeId = Idx<Scope>;

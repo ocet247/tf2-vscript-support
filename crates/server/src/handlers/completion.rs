@@ -905,10 +905,10 @@ fn completions_flat(
                 command,
                 insert_text_format,
                 tags: symbol_tags(symbol),
-                detail: Some(ctx.symbol_detail(id)),
+                detail: Some(ctx.symbol_detail(id, offset)),
                 documentation: Some(Documentation::MarkupContent(MarkupContent {
                     kind: MarkupKind::Markdown,
-                    value: ctx.symbol_markdown(id),
+                    value: ctx.symbol_markdown(id, offset),
                 })),
                 ..Default::default()
             }
@@ -938,9 +938,9 @@ fn completions_from_object(
         let tags = symbol_tags(symbol);
         let documentation = Some(Documentation::MarkupContent(MarkupContent {
             kind: MarkupKind::Markdown,
-            value: ctx.symbol_markdown(id),
+            value: ctx.symbol_markdown(id, offset),
         }));
-        let detail = Some(ctx.symbol_detail(id));
+        let detail = Some(ctx.symbol_detail(id, offset));
 
         if can_use_identifier(&label) {
             let insert_text = None;
@@ -1074,10 +1074,10 @@ fn completions_from_object_as_string(
             command,
             insert_text_format,
             tags: symbol_tags(symbol),
-            detail: Some(ctx.symbol_detail(id)),
+            detail: Some(ctx.symbol_detail(id, offset)),
             documentation: Some(Documentation::MarkupContent(MarkupContent {
                 kind: MarkupKind::Markdown,
-                value: ctx.symbol_markdown(id),
+                value: ctx.symbol_markdown(id, offset),
             })),
             ..Default::default()
         })
@@ -1114,8 +1114,8 @@ fn completions_inside_string(
         _ => kind.values().map_or(vec![], |sets| {
             sets.iter()
                 .flat_map(|set| set.1.iter())
-                .map(|value| CompletionItem {
-                    label: (*value).to_string(),
+                .map(|&value| CompletionItem {
+                    label: value.to_owned(),
                     kind: Some(CompletionItemKind::VALUE),
                     text_edit: Some(CompletionTextEdit::Edit(TextEdit {
                         range,
@@ -1160,10 +1160,10 @@ fn completions_root(
             command,
             insert_text_format,
             tags: symbol_tags(symbol),
-            detail: Some(ctx.symbol_detail(id)),
+            detail: Some(ctx.symbol_detail(id, offset)),
             documentation: Some(Documentation::MarkupContent(MarkupContent {
                 kind: MarkupKind::Markdown,
-                value: ctx.symbol_markdown(id),
+                value: ctx.symbol_markdown(id, offset),
             })),
             ..Default::default()
         }
