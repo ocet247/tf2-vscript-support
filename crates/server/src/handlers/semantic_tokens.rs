@@ -4,7 +4,7 @@ use lsp_types::{
     SemanticTokensRangeResult, SemanticTokensResult,
 };
 use resolver::{
-    DisplayType, SourceCtx, LocalKind, Source, Symbol, SymbolFlags, SymbolKind, Type,
+    DisplayType, LocalKind, Source, SourceCtx, Symbol, SymbolFlags, SymbolKind, Type,
     VScriptDatabase,
 };
 
@@ -40,11 +40,7 @@ pub fn handle_semantic_tokens_full<Db: VScriptDatabase>(
 
     let line_idx = positions::line_index(db, file);
 
-    let mut entries: Vec<_> = ctx
-        .range_to_symbol()
-        .clone()
-        .into_iter()
-        .collect();
+    let mut entries: Vec<_> = ctx.range_to_symbol().clone().into_iter().collect();
     entries.sort_by_key(|(range, _)| range.start());
 
     let mut prev_line = 0u32;
@@ -88,11 +84,7 @@ pub fn handle_semantic_tokens_range<Db: VScriptDatabase>(
     let highlight_range = positions::text_range(line_idx, params.range)
         .ok_or_else(|| anyhow::format_err!("Range is out of bounds"))?;
 
-    let mut entries: Vec<_> = ctx
-        .range_to_symbol()
-        .clone()
-        .into_iter()
-        .collect();
+    let mut entries: Vec<_> = ctx.range_to_symbol().clone().into_iter().collect();
     entries.sort_by_key(|(range, _)| range.start());
 
     let mut prev_line = 0u32;

@@ -205,15 +205,28 @@ fn on_notifications<Db: VScriptDatabase + Clone + RefUnwindSafe>(
                 .content_changes
                 .into_iter()
                 .filter_map(|change| {
-                    let range = change.range.expect("Incremental changes always have range");
+                    let Some(range) = change.range else {
+                        text = change.text;
+                        return None;
+                    };
                     let text_range = positions::text_range(line_index, range)?;
-                    Some((text_range, change.text))
+                    let range: std::ops::Range<usize> = text_range.into();
+                    if range.end > text.len() {
+                        log::error!(
+                            "Invalid edit range {:?}, document length {}",
+                            range,
+                            text.len()
+                        );
+                        return None;
+                    }
+
+                    Some((range, change.text))
                 })
                 .collect();
 
-            changes.sort_by_key(|(range, _)| range.start());
-            for (text_range, new_text) in changes.into_iter().rev() {
-                text.replace_range(std::ops::Range::<usize>::from(text_range), &new_text);
+            changes.sort_by_key(|(range, _)| range.start);
+            for (range, new_text) in changes.into_iter().rev() {
+                text.replace_range(range, &new_text);
             }
 
             file.set_text(&mut session.db).to(text);
