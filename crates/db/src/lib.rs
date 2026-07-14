@@ -11,6 +11,7 @@ pub use crate::normalize_path::{normalize_file_path, normalize_file_url};
 pub struct File {
     #[returns(ref)]
     pub text: String,
+    pub version: i32,
 }
 
 pub fn file_iter<Db: BaseDatabase>(db: &Db) -> impl Iterator<Item = (Url, File)> {
@@ -66,7 +67,7 @@ pub trait BaseDatabase: salsa::Database {
             self.get_urls().insert(file, url);
             return file;
         }
-        let file = File::new(self, text);
+        let file = File::new(self, text, 0);
         self.get_files().insert(key, file);
         self.get_urls().insert(file, url);
         file

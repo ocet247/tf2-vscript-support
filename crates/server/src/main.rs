@@ -198,6 +198,11 @@ fn on_notifications<Db: VScriptDatabase + Clone + RefUnwindSafe>(
                 .get_file(uri)
                 .ok_or_else(|| anyhow::format_err!("File not found in workspace"))?;
 
+            let new_version = file.version(&session.db) + 1;
+            if params.text_document.version != new_version {
+                return Err(anyhow::format_err!("Document versions are out of sync"));
+            }
+
             let mut text = file.text(&session.db).clone();
             let line_index = positions::line_index(&session.db, file);
 
@@ -230,6 +235,7 @@ fn on_notifications<Db: VScriptDatabase + Clone + RefUnwindSafe>(
             }
 
             file.set_text(&mut session.db).to(text);
+            file.set_version(&mut session.db).to(new_version);
 
             Ok(())
         })
