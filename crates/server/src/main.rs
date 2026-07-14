@@ -183,10 +183,11 @@ fn on_notifications<Db: VScriptDatabase + Clone + RefUnwindSafe>(
         .on_mut::<DidOpenTextDocument>(|session, params| {
             let uri = &params.text_document.uri;
             let text = params.text_document.text;
+            let version = params.text_document.version;
             if let Some(file) = session.db.get_file(uri) {
                 file.set_text(&mut session.db).to(text);
             } else {
-                session.db.open_file(uri, text);
+                session.db.open_file(uri, text, version);
             }
 
             Ok(())
@@ -262,7 +263,7 @@ fn on_notifications<Db: VScriptDatabase + Clone + RefUnwindSafe>(
                         if let Some(file) = session.db.get_file(uri) {
                             file.set_text(&mut session.db).to(text);
                         } else {
-                            session.db.open_file(uri, text);
+                            session.db.open_file(uri, text, 1);
                         }
                     }
                     FileChangeType::DELETED => {
