@@ -3175,6 +3175,7 @@ impl<'db> Resolver<'db> {
         }
         if let Some(condition) = stmt.condition().and_then(|c| c.expression()) {
             self.collect_expr(&condition);
+            self.apply_condition_narrowing(&condition, true);
         }
         if let Some(increment) = stmt.increment().and_then(|i| i.expression()) {
             self.collect_expr(&increment);
@@ -3490,6 +3491,7 @@ impl<'db> Resolver<'db> {
     fn while_statement(&mut self, stmt: &WhileStatement) {
         if let Some(condition) = stmt.condition() {
             self.collect_expr(&condition);
+            self.apply_condition_narrowing(&condition, true);
         }
 
         if let Some(body) = stmt.body() {
@@ -3827,6 +3829,11 @@ impl<'db> Resolver<'db> {
                     }
                     BinaryOperator::InstanceOf => {
                         self.apply_instanceof_narrowing(expr, truthy);
+                    }
+                    BinaryOperator::Assign | BinaryOperator::NewSlot => {
+                        if let Some(lhs) = expr.lhs() {
+                            self.apply_condition_narrowing(&lhs, truthy);
+                        }
                     }
                     _ => {}
                 }
@@ -4467,67 +4474,58 @@ impl<'db> Resolver<'db> {
                     (name_token.text() == name.as_ref()).then_some(id)
                 };
 
-                let locals = self.local_members(offset).into_iter().find_map(filter);
-
-                if let Some(symbol) = locals {
-                    return Some(AssignmentLeftHandSide::Exists {
-                        parent: None,
-                        symbol,
-                        name_range: expr_range,
-                        expr_range,
-                    });
-                }
-
-                let consts = self
-                    .members_of_table(
+                let locals = || self.local_members(offset).into_iter().find_map(filter);
+                let consts = || {
+                    self.members_of_table(
                         self.const_table(),
                         FindSymbol::OnlyBefore(offset),
                         ImportMembers::Const,
                         false,
                     )
                     .into_iter()
-                    .find_map(filter);
-
-                if let Some(symbol) = consts {
-                    return Some(AssignmentLeftHandSide::Exists {
-                        parent: None,
-                        symbol,
-                        name_range: expr_range,
-                        expr_range,
-                    });
-                }
-
-                let members = self
-                    .members_of_container(
+                    .find_map(filter)
+                };
+                let members = || {
+                    self.members_of_container(
                         self.execution_container(),
                         FindSymbol::BeforeIfInExecutionRange(offset, self.scope),
                         false,
                     )
                     .into_iter()
-                    .find_map(filter);
-
-                if let Some(symbol) = members {
-                    return Some(AssignmentLeftHandSide::Exists {
-                        parent: Some(self.execution_container().into()),
-                        symbol,
-                        name_range: expr_range,
-                        expr_range,
-                    });
-                }
-
-                let root = self
-                    .members_of_table(
+                    .find_map(filter)
+                };
+                let root = || {
+                    self.members_of_table(
                         self.root_table(),
                         FindSymbol::BeforeIfInExecutionRange(offset, self.scope),
                         ImportMembers::Root,
                         false,
                     )
                     .into_iter()
-                    .find_map(filter);
+                    .find_map(filter)
+                };
 
-                if let Some(symbol) = root {
+                // Locals/consts sit outside any container, so they carry no `parent`
+                // (that's what makes reassigning them at container precedence illegal -
+                // see the "Cannot create a new slot..." diagnostic elsewhere).
+                let found = locals()
+                    .map(|id| (id, None))
+                    .or_else(|| consts().map(|id| (id, None)))
+                    .or_else(|| members().map(|id| (id, Some(self.execution_container().into()))))
+                    .or_else(|| {
+                        root().map(|id| {
+                            (
+                                id,
+                                Some(Type::Primitive(Primitive::Table(Some(self.root_table())))),
+                            )
+                        })
+                    });
+
+                if let Some((symbol, parent)) = found {
+                    self.range_to_expr
+                        .insert(expr_range, ExpressionKind::Symbol(symbol));
                     return Some(AssignmentLeftHandSide::Exists {
-                        parent: Some(Type::Primitive(Primitive::Table(Some(self.root_table())))),
+                        parent,
                         symbol,
                         name_range: expr_range,
                         expr_range,
@@ -4564,11 +4562,15 @@ impl<'db> Resolver<'db> {
                             name_range,
                             expr_range,
                         },
-                        |id| AssignmentLeftHandSide::Exists {
-                            parent: Some(obj.clone()),
-                            symbol: id,
-                            name_range,
-                            expr_range,
+                        |id| {
+                            self.range_to_expr
+                                .insert(expr_range, ExpressionKind::Symbol(id));
+                            AssignmentLeftHandSide::Exists {
+                                parent: Some(obj.clone()),
+                                symbol: id,
+                                name_range,
+                                expr_range,
+                            }
                         },
                     ),
                 )
@@ -4614,11 +4616,15 @@ impl<'db> Resolver<'db> {
                             name_range,
                             expr_range,
                         },
-                        |id| AssignmentLeftHandSide::Exists {
-                            parent: Some(obj.clone()),
-                            symbol: id,
-                            name_range,
-                            expr_range,
+                        |id| {
+                            self.range_to_expr
+                                .insert(expr_range, ExpressionKind::Symbol(id));
+                            AssignmentLeftHandSide::Exists {
+                                parent: Some(obj.clone()),
+                                symbol: id,
+                                name_range,
+                                expr_range,
+                            }
                         },
                     ),
                 )
@@ -4645,11 +4651,15 @@ impl<'db> Resolver<'db> {
                             name_range,
                             expr_range,
                         },
-                        |id| AssignmentLeftHandSide::Exists {
-                            parent: Some(Type::Primitive(Primitive::Table(Some(root)))),
-                            symbol: id,
-                            name_range,
-                            expr_range,
+                        |id| {
+                            self.range_to_expr
+                                .insert(expr_range, ExpressionKind::Symbol(id));
+                            AssignmentLeftHandSide::Exists {
+                                parent: Some(Type::Primitive(Primitive::Table(Some(root)))),
+                                symbol: id,
+                                name_range,
+                                expr_range,
+                            }
                         },
                     ),
                 )
@@ -4760,6 +4770,9 @@ impl<'db> Resolver<'db> {
                     Some((value, CheckTypeSource::Variable)),
                 );
 
+                self.range_to_expr
+                    .insert(expr_range, ExpressionKind::Symbol(symbol));
+
                 self.set_symbol(&typ, symbol);
 
                 if let NewSlotResult::CanAdd(container) = result {
@@ -4817,6 +4830,9 @@ impl<'db> Resolver<'db> {
                         Some((value, CheckTypeSource::Variable)),
                     );
 
+                    self.range_to_expr
+                        .insert(expr_range, ExpressionKind::Symbol(symbol));
+
                     self.set_symbol(&typ, symbol);
 
                     if let NewSlotResult::CanAdd(container) = result {
@@ -4846,13 +4862,13 @@ impl<'db> Resolver<'db> {
             }
             Some(AssignmentLeftHandSide::NonStringName {
                 parent,
-                name: key,
+                name,
                 expr_range,
             }) => {
                 let container = Container::try_from(&parent);
                 let id = value.kind.to_function();
 
-                let arguments = [key, value];
+                let arguments = [name, value];
                 let operand = TypeWithRange {
                     kind: parent,
                     range: expr_range,
