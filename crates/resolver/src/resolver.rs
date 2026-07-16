@@ -29,8 +29,8 @@ use crate::{
     UnusedVariables, VScriptDatabase,
     arena::{
         ArenaAlloc, ArenaId, ArrayData, ArrayId, ClassData, ClassId, Container, EnumData, EnumId,
-        FunctionData, FunctionFlags, FunctionId, ImportTarget, ParamsState, Scope, ScopeId,
-        SourceArena, StringLiteralData, StringLiteralId, SymbolId, TableData, TableId,
+        FunctionData, FunctionFlags, FunctionId, ImportTarget, Inherits, ParamsState, Scope,
+        ScopeId, SourceArena, StringLiteralData, StringLiteralId, SymbolId, TableData, TableId,
         TypeConversionError, TypeState,
     },
     db::NativeFunction,
@@ -557,7 +557,7 @@ impl<'db> Resolver<'db> {
         let inherits = if let Some(expr) = expr {
             let typ = self.expr_to_type(&expr);
             match typ.to_class() {
-                Ok(id) => Some(id),
+                Ok(id) => Inherits::Yes(id),
                 Err(ToPrimitiveError::WrongType) => {
                     self.diagnostics.push(Diagnostic {
                         message: format!(
@@ -567,12 +567,14 @@ impl<'db> Resolver<'db> {
                         range: expr.syntax().text_range(),
                         ..Default::default()
                     });
-                    None
+                    Inherits::YesButUnknown
                 }
-                Err(ToPrimitiveError::WrongTypeWithAny | ToPrimitiveError::NotSpecific) => None,
+                Err(ToPrimitiveError::WrongTypeWithAny | ToPrimitiveError::NotSpecific) => {
+                    Inherits::YesButUnknown
+                }
             }
         } else {
-            None
+            Inherits::No
         };
 
         ClassId::new(
@@ -924,7 +926,7 @@ impl<'db> Resolver<'db> {
                         return Some(original);
                     }
                     let class = self.get(id);
-                    class_id = class.inherits;
+                    class_id = class.inherits.into();
                 }
 
                 // If we have a function that specifies return only as a mutual superclass
@@ -955,7 +957,7 @@ impl<'db> Resolver<'db> {
                         return Some(original);
                     }
                     let class = self.get(id);
-                    class_id = class.inherits;
+                    class_id = class.inherits.into();
                 }
 
                 None
@@ -2585,13 +2587,17 @@ impl<'db> Resolver<'db> {
             return;
         };
 
-        let Some(base_id) = self.get(class_id).inherits else {
-            self.diagnostics.push(Diagnostic {
-                message: "Current class does have a base class to use '@override'".to_owned(),
-                range: name_range,
-                severity: DiagnosticSeverity::Warning,
-            });
-            return;
+        let base_id = match self.get(class_id).inherits {
+            Inherits::Yes(base_id) => base_id,
+            Inherits::YesButUnknown => return,
+            Inherits::No => {
+                self.diagnostics.push(Diagnostic {
+                    message: "Current class does have a base class to use '@override'".to_owned(),
+                    range: name_range,
+                    severity: DiagnosticSeverity::Warning,
+                });
+                return;
+            }
         };
 
         let found = self
@@ -4265,26 +4271,30 @@ impl<'db> Resolver<'db> {
     }
 
     fn base_expression(&mut self, expr: &BaseExpression) -> ExpressionKind {
-        if let Container::Class(id) = self.execution_container() {
-            let class = self.get(id);
-            if let Some(inherits) = class.inherits {
-                ExpressionKind::Literal(Type::Primitive(Primitive::Class(Some(inherits))))
-            } else {
+        match self.execution_container() {
+            Container::Class(id) | Container::Instance(id) => match self.get(id).inherits {
+                Inherits::Yes(inherits) => {
+                    ExpressionKind::Literal(Type::Primitive(Primitive::Class(Some(inherits))))
+                }
+                Inherits::YesButUnknown => ExpressionKind::Literal(Type::ANY),
+                Inherits::No => {
+                    self.diagnostics.push(Diagnostic {
+                        message: "Accessing 'base' in a class that doesn't have a superclass"
+                            .to_owned(),
+                        range: expr.syntax().text_range(),
+                        severity: DiagnosticSeverity::Warning,
+                    });
+                    ExpressionKind::Literal(Type::NULL)
+                }
+            },
+            _ => {
                 self.diagnostics.push(Diagnostic {
-                    message: "Accessing 'base' in a class that doesn't have a superclass"
-                        .to_owned(),
+                    message: "Accessing 'base' inside non-class execution scope".to_owned(),
                     range: expr.syntax().text_range(),
                     severity: DiagnosticSeverity::Warning,
                 });
                 ExpressionKind::Literal(Type::NULL)
             }
-        } else {
-            self.diagnostics.push(Diagnostic {
-                message: "Accessing 'base' inside non-class execution scope".to_owned(),
-                range: expr.syntax().text_range(),
-                severity: DiagnosticSeverity::Warning,
-            });
-            ExpressionKind::Literal(Type::NULL)
         }
     }
 

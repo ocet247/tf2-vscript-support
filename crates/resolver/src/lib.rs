@@ -12,7 +12,7 @@ use rustc_hash::{FxHashMap, FxHashSet};
 use sq_3_parser::{SyntaxKind, SyntaxToken, TextRange, TextSize};
 
 use crate::{
-    arena::{ClassId, EnumId, ImportTarget, SourceArena, TableData, TableId},
+    arena::{ClassId, EnumId, ImportTarget, Inherits, SourceArena, TableData, TableId},
     db::{
         top_const_members, top_root_members, top_source_and_const_members,
         top_source_and_root_members, top_source_members,
@@ -346,7 +346,7 @@ pub trait Source {
         let class = self.get(class);
         let mut result = class.members.clone();
 
-        if let Some(superclass) = class.inherits {
+        if let Inherits::Yes(superclass) = class.inherits {
             let superclass_members = self.additional_class_members(superclass);
             for (k, v) in superclass_members {
                 result.entry(k).or_insert(v);
