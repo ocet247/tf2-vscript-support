@@ -1,5 +1,8 @@
 # Changelog
 
+## [3.4.2]
+- Fix symbols being doubled inside function bodies
+
 ## [3.4.1]
 - Fix function body rerunning breaking renaming
 
