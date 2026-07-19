@@ -1,5 +1,9 @@
 # Changelog
 
+## [3.4.0]
+- Add block-scoped simple type narrowing
+- Fix 'base' produces misleading errors when inherited class couldn't be resolved
+
 ## [3.3.12]
 - Add locations for suitable inlay hints
 - Fix container reassignment that was meant for function expressions working for symbols as well
