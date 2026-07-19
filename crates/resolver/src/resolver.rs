@@ -483,6 +483,20 @@ impl<'db> Resolver<'db> {
 
     fn symbol(&mut self, symbol: Symbol) -> SymbolId {
         let name_range = symbol.name_range;
+        if let Some(&id) = self.range_to_symbol.get(&name_range) {
+            // Same declaration site as a prior walk — update in place instead
+            // of allocating a duplicate. Identity (SymbolId) stays stable across
+            // re-resolution, so anything holding a reference to it stays valid.
+            if let Some(existing) = self.get_mut(id) {
+                existing.typ = symbol.typ;
+                existing.is_type_explicit = symbol.is_type_explicit;
+                existing.flags = symbol.flags;
+                existing.description = symbol.description;
+            }
+            self.new_reference(name_range, id);
+            return id;
+        }
+
         let id = SymbolId::new(self.file, self.arena.alloc(symbol));
         self.new_reference(name_range, id);
         id
@@ -2055,7 +2069,6 @@ impl<'db> Resolver<'db> {
             symbol: None,
             range,
             node: SyntaxNodePtr::new(node.syntax()),
-            params_end: node.parameter_list().map(|p| p.syntax().text_range().end()),
             container: self.container,
             bindenv,
             params: Vec::new(),
@@ -2418,15 +2431,6 @@ impl<'db> Resolver<'db> {
         // body as stale, so arena-wide consumers (inlay hints, workspace
         // symbols) can filter them out. la_arena has no removal, so this flag
         // is the only way to "delete" a symbol.
-        let stale_ids: Vec<_> = self
-            .all_symbols()
-            .filter_map(|(idx, s)| range.contains_range(s.node.text_range()).then_some(idx))
-            .collect();
-
-        for idx in stale_ids {
-            self.arena[idx].flags |= SymbolFlags::STALE;
-        }
-
         let stale_ids: Vec<_> = self
             .all_functions()
             .filter_map(|(idx, f)| range.contains_range(f.node.text_range()).then_some(idx))

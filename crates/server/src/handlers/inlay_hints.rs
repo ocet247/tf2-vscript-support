@@ -49,7 +49,7 @@ pub fn handle_inlay_hint<Db: VScriptDatabase>(
     }
 
     if db.config().return_value_hints {
-        hints.extend(return_value_hints(line_idx, &ctx, range));
+        hints.extend(return_value_hints(&syntax, line_idx, &ctx, range));
     }
 
     if hints.is_empty() {
@@ -387,12 +387,19 @@ fn parameter_hints(
 }
 
 fn return_value_hints(
+    root: &SyntaxNode,
     line_idx: &LineIndex,
     ctx: &SourceCtx,
     range: TextRange,
 ) -> impl Iterator<Item = InlayHint> {
     ctx.all_functions().filter_map(move |(_, func)| {
-        let offset = func.params_end?;
+        let parameter_list = func
+            .node
+            .to_node(root)
+            .children()
+            .find_map(ast::ParameterList::cast)?;
+
+        let offset = parameter_list.syntax().text_range().end();
         if !range.contains(offset) {
             return None;
         }

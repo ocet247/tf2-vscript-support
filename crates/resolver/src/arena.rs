@@ -6,7 +6,7 @@ use rustc_hash::FxHashMap;
 use sq_3_parser::SyntaxNodePtr;
 
 use crate::{
-    File, SymbolFlags, VScriptDatabase,
+    File, VScriptDatabase,
     db::source_symbol,
     symbol::{Primitive, Symbol, SymbolTable, Type},
 };
@@ -210,8 +210,6 @@ pub struct FunctionData {
     pub symbol: Option<SymbolId>,
     pub range: TextRange,
     pub node: SyntaxNodePtr,
-    // For inlay hints
-    pub params_end: Option<TextSize>,
     pub ret: TypeState,
     pub container: Container,
     pub bindenv: Option<Container>,
@@ -330,9 +328,7 @@ impl SourceArena {
     }
 
     pub fn all_symbols(&self) -> impl Iterator<Item = (Idx<Symbol>, &Symbol)> {
-        self.symbols
-            .iter()
-            .filter(|(_, s)| !s.flags.intersects(SymbolFlags::STALE))
+        self.symbols.iter()
     }
 
     pub fn all_functions(&self) -> impl Iterator<Item = (Idx<FunctionData>, &FunctionData)> {

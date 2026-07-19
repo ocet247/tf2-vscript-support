@@ -46,8 +46,6 @@ pub struct Symbol {
 bitflags::bitflags! {
     #[derive(Debug, Default, Clone, Copy, PartialEq, Eq)]
     pub struct SymbolFlags: u8 {
-        // The function body has rerun and replaced this symbol with another one
-        const STALE = 1 << 0;
         const CONST = 1 << 1;
         const STATIC = 1 << 2;
         const HIDE = 1 << 3;
