@@ -2436,6 +2436,10 @@ impl<'db> Resolver<'db> {
             self.arena[idx].flags |= FunctionFlags::STALE;
         }
 
+        self.symbol_to_ranges.retain(|_, ranges| {
+            ranges.retain(|r| !range.contains_range(*r));
+            !ranges.is_empty()
+        });
         self.diagnostics.retain(|d| !range.contains_range(d.range));
     }
 
