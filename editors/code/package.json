@@ -41,7 +41,7 @@
     "@types/node": "^20.19.27",
     "@types/vscode": "^1.93.0",
     "@vscode/vsce": "^3.7.1",
-    "esbuild": "^0.25.5",
+    "esbuild": "^0.28.0",
     "eslint": "^9.13.0",
     "typescript": "^5.8.2",
     "typescript-eslint": "^8.26.0",
