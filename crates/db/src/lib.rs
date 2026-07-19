@@ -11,7 +11,7 @@ pub use crate::normalize_path::{normalize_file_path, normalize_file_url};
 pub struct File {
     #[returns(ref)]
     pub text: String,
-    pub version: i32,
+    // pub version: i32,
 }
 
 pub fn file_iter<Db: BaseDatabase>(db: &Db) -> impl Iterator<Item = (Url, File)> {
@@ -44,9 +44,9 @@ pub trait BaseDatabase: salsa::Database {
         self.get_urls().get(file).map(|u| u.clone())
     }
 
-    fn open_file(&self, url: &Url, text: String, version: i32) -> File {
+    fn open_file(&self, url: &Url, text: String /* , version: i32 */) -> File {
         let key = normalize_file_url(url);
-        self.open_file_with_key(key, url.clone(), text, version)
+        self.open_file_with_key(key, url.clone(), text /* , version */)
     }
 
     /// # Errors
@@ -59,15 +59,20 @@ pub trait BaseDatabase: salsa::Database {
         }
         let url = Url::from_file_path(path).map_err(|()| "Invalid absolute path".to_owned())?;
         let text = std::fs::read_to_string(path).map_err(|_| "File does not exist".to_owned())?;
-        Ok(self.open_file_with_key(key, url, text, 1))
+        Ok(self.open_file_with_key(key, url, text /* , 1 */))
     }
 
-    fn open_file_with_key(&self, key: String, url: Url, text: String, version: i32) -> File {
+    fn open_file_with_key(
+        &self,
+        key: String,
+        url: Url,
+        text: String, /* , version: i32 */
+    ) -> File {
         if let Some(file) = self.get_file_from_key(&key) {
             self.get_urls().insert(file, url);
             return file;
         }
-        let file = File::new(self, text, version);
+        let file = File::new(self, text /* , version */);
         self.get_files().insert(key, file);
         self.get_urls().insert(file, url);
         file
