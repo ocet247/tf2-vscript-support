@@ -1,5 +1,8 @@
 # Changelog
 
+## [3.4.1]
+- Fix function body rerunning breaking renaming
+
 ## [3.4.0]
 - Add block-scoped simple type narrowing
 - Fix 'base' produces misleading errors when inherited class couldn't be resolved
