@@ -245,7 +245,7 @@ pub trait Source {
     fn range_to_expr(&self) -> &FxHashMap<TextRange, ExpressionKind>;
     fn range_to_symbol(&self) -> &FxHashMap<TextRange, SymbolId>;
     fn doc_to_symbol(&self) -> &FxHashMap<TextRange, SymbolId>;
-    fn symbol_to_ranges(&self) -> &FxHashMap<SymbolId, Vec<TextRange>>;
+    fn symbol_to_ranges(&self) -> &FxHashMap<SymbolId, FxHashSet<TextRange>>;
     fn diagnostics(&self) -> &[Diagnostic];
 
     fn get<T>(&self, id: T) -> &T::Data
@@ -1267,7 +1267,7 @@ impl Source for SourceCtx<'_> {
         &self.source().doc_to_symbol
     }
 
-    fn symbol_to_ranges(&self) -> &FxHashMap<SymbolId, Vec<TextRange>> {
+    fn symbol_to_ranges(&self) -> &FxHashMap<SymbolId, FxHashSet<TextRange>> {
         &self.source().symbol_to_ranges
     }
 
@@ -1288,7 +1288,7 @@ pub struct SourceSymbol {
     range_to_expr: FxHashMap<TextRange, ExpressionKind>,
     range_to_symbol: FxHashMap<TextRange, SymbolId>,
     doc_to_symbol: FxHashMap<TextRange, SymbolId>,
-    symbol_to_ranges: FxHashMap<SymbolId, Vec<TextRange>>,
+    symbol_to_ranges: FxHashMap<SymbolId, FxHashSet<TextRange>>,
     diagnostics: Vec<Diagnostic>,
 }
 

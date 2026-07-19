@@ -250,7 +250,7 @@ pub struct Resolver<'db> {
     range_to_expr: FxHashMap<TextRange, ExpressionKind>,
     range_to_symbol: FxHashMap<TextRange, SymbolId>,
     doc_to_symbol: FxHashMap<TextRange, SymbolId>,
-    symbol_to_ranges: FxHashMap<SymbolId, Vec<TextRange>>,
+    symbol_to_ranges: FxHashMap<SymbolId, FxHashSet<TextRange>>,
     diagnostics: Vec<Diagnostic>,
 }
 
@@ -299,7 +299,7 @@ impl Source for Resolver<'_> {
         &self.doc_to_symbol
     }
 
-    fn symbol_to_ranges(&self) -> &FxHashMap<SymbolId, Vec<TextRange>> {
+    fn symbol_to_ranges(&self) -> &FxHashMap<SymbolId, FxHashSet<TextRange>> {
         &self.symbol_to_ranges
     }
 
@@ -477,8 +477,10 @@ impl<'db> Resolver<'db> {
         self.range_to_symbol.insert(range, id);
         self.symbol_to_ranges
             .entry(id)
-            .and_modify(|list| list.push(range))
-            .or_insert_with(|| vec![range]);
+            .and_modify(|list| {
+                list.insert(range);
+            })
+            .or_insert_with(|| FxHashSet::from_iter([range]));
     }
 
     fn symbol(&mut self, symbol: Symbol) -> SymbolId {
@@ -1933,8 +1935,10 @@ impl<'db> Resolver<'db> {
                 {
                     self.symbol_to_ranges
                         .entry(id)
-                        .and_modify(|list| list.push(range))
-                        .or_insert_with(|| vec![range]);
+                        .and_modify(|list| {
+                            list.insert(range);
+                        })
+                        .or_insert_with(|| FxHashSet::from_iter([range]));
 
                     self.callable(
                         context,
