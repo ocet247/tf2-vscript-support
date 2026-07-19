@@ -345,7 +345,7 @@ class array {
      * @type {function}
      * @param {function} func `@(pre_value: any, current_value: any) -> any`
      * @param {any} init Defaults to `null`
-     * @returns {this}
+     * @returns {any}
      */
     function reduce(func, init = null);
 
