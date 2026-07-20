@@ -4,7 +4,9 @@ use rustc_hash::FxHashMap;
 use sq_3_parser::{SyntaxNodePtr, TextRange};
 use string_literals::StringLiteralValues;
 
-use crate::arena::{ArrayId, ClassId, EnumId, FunctionId, StringLiteralId, SymbolId, TableId};
+use crate::arena::{
+    ArrayId, ClassId, EnumId, FunctionId, GeneratorId, StringLiteralId, SymbolId, TableId,
+};
 
 macro_rules! primitive_accessor {
     (
@@ -302,7 +304,7 @@ impl Type {
     primitive_accessor!(
         to_generator,
         GENERATOR,
-        FunctionId,
+        GeneratorId,
         Primitive::Generator(id) => id
     );
 
@@ -352,7 +354,7 @@ pub enum Primitive {
     Table(Option<TableId>),
     Class(Option<ClassId>),
     Function(Option<FunctionId>),
-    Generator(Option<FunctionId>),
+    Generator(Option<GeneratorId>),
     Thread(Option<FunctionId>),
     Weakref,
     This,

@@ -5,9 +5,9 @@ use lsp_types::{
     MarkupKind, TextEdit,
 };
 use resolver::{
-    DisplayType, ExpressionKind, FindSymbol, FunctionId, ImportMembers, ParamsState, Primitive,
-    ScopeId, Source, SourceCtx, StringKind, Symbol, SymbolFlags, SymbolKind, Type, TypeFlags,
-    TypeState, VScriptDatabase, can_use_identifier, parse,
+    DisplayType, ExpressionKind, FindSymbol, FunctionBack, FunctionId, ImportMembers, ParamsState,
+    Primitive, ScopeId, Source, SourceCtx, StringKind, Symbol, SymbolFlags, SymbolKind, Type,
+    TypeFlags, VScriptDatabase, can_use_identifier, parse,
 };
 use sq_3_parser::{
     AstNode, SyntaxKind, SyntaxNode, TextRange, TextSize,
@@ -811,9 +811,9 @@ fn modify_if_function(
     };
 
     if let Some(id) = id {
-        let func = ctx.get(id);
+        let sg = &ctx.get(id).signature;
 
-        if func.params.is_empty() && !matches!(func.params_state, ParamsState::VarArgs(_, _)) {
+        if sg.params.is_empty() && !matches!(sg.params_state, ParamsState::VarArgs(_, _)) {
             let (label, insert_text) = modify(label, insert_text, "()", "()");
             return FunctionCompletion {
                 label,
@@ -1276,6 +1276,7 @@ fn completions_doc_type(ctx: &SourceCtx<'_>, offset: TextSize) -> Vec<Completion
 
 fn completions_doc_param_names(id: FunctionId, ctx: &SourceCtx) -> Vec<CompletionItem> {
     ctx.get(id)
+        .signature
         .params
         .iter()
         .map(|id| {
@@ -1303,8 +1304,8 @@ fn completion_doc_auto_generated(
             ctx.type_to_str(typ.null_to_any()),
         );
         let mut stop_idx = 1u16;
-        let func = ctx.get(id);
-        for param in &func.params {
+        let sg = &ctx.get(id).signature;
+        for param in &sg.params {
             stop_idx += 1;
 
             let symbol = ctx.get(*param);
@@ -1317,18 +1318,8 @@ fn completion_doc_auto_generated(
             );
         }
 
-        match &func.ret {
-            TypeState::Absent => {}
-            TypeState::Explicit(typ) => {
-                stop_idx += 1;
-
-                let _ = write!(
-                    text,
-                    "\n * @returns {{${{{stop_idx}:{}}}}}",
-                    ctx.type_to_str(typ)
-                );
-            }
-            TypeState::NotExplicit(typ) => {
+        match &sg.back {
+            FunctionBack::Return(typ) => {
                 if *typ != Type::NULL {
                     stop_idx += 1;
 
@@ -1339,42 +1330,7 @@ fn completion_doc_auto_generated(
                     );
                 }
             }
-        }
-
-        match &func.throws {
-            TypeState::Absent => {}
-            TypeState::Explicit(typ) => {
-                stop_idx += 1;
-
-                let _ = write!(
-                    text,
-                    "\n * @throws {{${{{stop_idx}:{}}}}}",
-                    ctx.type_to_str(typ)
-                );
-            }
-            TypeState::NotExplicit(typ) => {
-                stop_idx += 1;
-
-                let _ = write!(
-                    text,
-                    "\n * @throws {{${{{stop_idx}:{}}}}}",
-                    ctx.type_to_str(typ.null_to_any())
-                );
-            }
-        }
-
-        match &func.yields {
-            TypeState::Absent => {}
-            TypeState::Explicit(typ) => {
-                stop_idx += 1;
-
-                let _ = write!(
-                    text,
-                    "\n * @yields {{${{{stop_idx}:{}}}}}",
-                    ctx.type_to_str(typ)
-                );
-            }
-            TypeState::NotExplicit(typ) => {
+            FunctionBack::Yield(typ) => {
                 stop_idx += 1;
 
                 let _ = write!(
@@ -1383,6 +1339,16 @@ fn completion_doc_auto_generated(
                     ctx.type_to_str(typ.null_to_any())
                 );
             }
+        }
+
+        if let Some(throws) = &sg.throws {
+            stop_idx += 1;
+
+            let _ = write!(
+                text,
+                "\n * @throws {{${{{stop_idx}:{}}}}}",
+                ctx.type_to_str(throws)
+            );
         }
 
         let _ = write!(text, "\n */");

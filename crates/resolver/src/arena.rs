@@ -3,12 +3,17 @@ use std::cmp::Reverse;
 use la_arena::{Arena, Idx};
 use line_index::{TextRange, TextSize};
 use rustc_hash::FxHashMap;
-use sq_3_parser::SyntaxNodePtr;
 
 use crate::{
-    File, VScriptDatabase,
+    File, FunctionFlags, VScriptDatabase,
+    array::ArrayData,
+    class::ClassData,
     db::source_symbol,
+    enum_::EnumData,
+    function::FunctionData,
+    generator::GeneratorData,
     symbol::{Primitive, Symbol, SymbolTable, Type},
+    table::TableData,
 };
 
 pub trait ArenaId: Clone + Copy + PartialEq + Eq {
@@ -57,6 +62,7 @@ arena_id!(ClassId => ClassData);
 arena_id!(EnumId => EnumData);
 arena_id!(FunctionId => FunctionData);
 arena_id!(ArrayId => ArrayData);
+arena_id!(GeneratorId => GeneratorData);
 arena_id!(StringLiteralId => StringLiteralData);
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
@@ -169,87 +175,6 @@ impl TryFrom<&Type> for ImportTarget {
     }
 }
 
-#[derive(Default, Debug, Clone, PartialEq, Eq)]
-pub struct TableData {
-    pub delegate: Option<TableId>,
-    pub members: SymbolTable,
-}
-
-#[derive(Debug, Default, Clone, Copy, PartialEq, Eq)]
-pub enum Inherits {
-    #[default]
-    No,
-    YesButUnknown,
-    Yes(ClassId),
-}
-
-impl From<Inherits> for Option<ClassId> {
-    fn from(value: Inherits) -> Self {
-        match value {
-            Inherits::No | Inherits::YesButUnknown => None,
-            Inherits::Yes(id) => Some(id),
-        }
-    }
-}
-
-#[derive(Debug, Default, Clone, PartialEq, Eq)]
-pub struct ClassData {
-    pub symbol: Option<SymbolId>,
-    pub inherits: Inherits,
-    pub members: SymbolTable,
-}
-
-#[derive(Debug, Default, Clone, PartialEq, Eq)]
-pub struct EnumData {
-    pub symbol: Option<SymbolId>,
-    pub members: SymbolTable,
-}
-
-#[derive(Debug, Clone, PartialEq)]
-pub struct FunctionData {
-    pub symbol: Option<SymbolId>,
-    pub range: TextRange,
-    pub node: SyntaxNodePtr,
-    pub ret: TypeState,
-    pub container: Container,
-    pub bindenv: Option<Container>,
-    pub params: Vec<SymbolId>,
-    pub params_state: ParamsState,
-    pub yields: TypeState,
-    pub throws: TypeState,
-    pub flags: FunctionFlags,
-}
-
-bitflags::bitflags! {
-    #[derive(Debug, Default, Clone, Copy, PartialEq, Eq)]
-    pub struct FunctionFlags: u8 {
-        // The function body has rerun and replaced this function id with another one
-        const STALE = 1 << 0;
-        const NO_DISCARD = 1 << 1;
-    }
-}
-
-#[derive(Debug, Default, Clone, PartialEq)]
-pub enum TypeState {
-    #[default]
-    Absent,
-    NotExplicit(Type),
-    Explicit(Type),
-}
-
-#[derive(Debug, Default, Clone, PartialEq, Eq)]
-pub enum ParamsState {
-    #[default]
-    NoDefault,
-    Default(usize),
-    VarArgs(usize, SymbolId),
-}
-
-#[derive(Debug, PartialEq)]
-pub struct ArrayData {
-    pub kind: Type,
-}
-
 #[derive(Debug, PartialEq, Eq)]
 pub struct StringLiteralData {
     pub text: Box<str>,
@@ -303,14 +228,15 @@ macro_rules! impl_source_arena {
 }
 
 impl_source_arena! {
-    symbols:   Symbol,
-    scopes:    Scope,
-    tables:    TableData,
-    classes:   ClassData,
-    enums:     EnumData,
-    functions: FunctionData,
-    arrays:    ArrayData,
-    strings:   StringLiteralData,
+    symbols:    Symbol,
+    scopes:     Scope,
+    tables:     TableData,
+    classes:    ClassData,
+    enums:      EnumData,
+    functions:  FunctionData,
+    arrays:     ArrayData,
+    generators: GeneratorData,
+    strings:    StringLiteralData,
 }
 
 impl SourceArena {

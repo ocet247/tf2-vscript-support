@@ -3,8 +3,8 @@ use lsp_types::{
     SignatureHelpParams, SignatureInformation,
 };
 use resolver::{
-    ExpressionKind, FunctionIdResolution, ParamsState, Primitive, Source, SourceCtx, Type,
-    TypeState, VScriptDatabase, parse,
+    ExpressionKind, FunctionBack, FunctionIdResolution, ParamsState, Primitive, Source, SourceCtx,
+    Type, VScriptDatabase, parse,
 };
 use sq_3_parser::{AstNode, ast};
 use std::fmt::Write as _;
@@ -80,15 +80,16 @@ pub fn handle_signature_help<Db: VScriptDatabase>(
     }
 
     let func = ctx.get(id);
+    let sg = &func.signature;
     let mut label = format!("{name}(");
     let mut param_infos: Vec<ParameterInformation> = Vec::new();
-    let default_after = if let ParamsState::Default(after) = func.params_state {
+    let default_after = if let ParamsState::Default(after) = sg.params_state {
         Some(after)
     } else {
         None
     };
 
-    for (i, &param_id) in func.params.iter().enumerate() {
+    for (i, &param_id) in sg.params.iter().enumerate() {
         if i > 0 {
             label.push_str(", ");
         }
@@ -118,8 +119,8 @@ pub fn handle_signature_help<Db: VScriptDatabase>(
         });
     }
 
-    if let ParamsState::VarArgs(after, vararg_id) = func.params_state {
-        if !func.params.is_empty() {
+    if let ParamsState::VarArgs(after, vararg_id) = sg.params_state {
+        if !sg.params.is_empty() {
             label.push_str(", ");
         }
 
@@ -150,16 +151,18 @@ pub fn handle_signature_help<Db: VScriptDatabase>(
     }
 
     label.push(')');
-    if func.throws != TypeState::Absent {
+    if sg.throws.is_some() {
         label.push('!');
     }
 
-    match &func.ret {
-        TypeState::Absent => {}
-        TypeState::NotExplicit(typ) | TypeState::Explicit(typ) => {
+    match &sg.back {
+        FunctionBack::Return(typ) => {
             if *typ != Type::NULL {
                 let _ = write!(label, " -> {}", ctx.type_to_str(typ));
             }
+        }
+        FunctionBack::Yield(typ) => {
+            let _ = write!(label, " ~> {}", ctx.type_to_str(typ));
         }
     }
 

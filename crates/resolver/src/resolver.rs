@@ -12,32 +12,38 @@ use sq_3_parser::{
         HasBody, HasDoc, HasDocDescription, HasDocName, HasDocType, HasDocTypes, HasName,
         HasOperand, IfStatement, IsClass, IsClassMember, IsFunction, LambdaExpression,
         LiteralExpression, LiteralExpressionKind, LocalFunctionDeclaration,
-        LocalVariableDeclaration, Member, MemberAccessExpression, MemberName, Name, Parameter,
-        ParenthesisedExpression, PostfixUpdateExpression, PostfixUpdateOperator,
-        PrefixUnaryExpression, PrefixUnaryOperator, PrefixUpdateExpression, PrefixUpdateOperator,
-        Property, QualifiedName, RawCallExpression, ResumeExpression, ReturnStatement,
-        RootAccessExpression, SourceFile, Stmt, StringNameKind, SwitchClause, SwitchStatement,
-        TableLiteralExpression, Tag, ThisExpression, ThrowStatement, TryStatement,
-        TypeOfExpression, VarTag, VariableDeclaration, WhileStatement, YieldStatement,
+        LocalVariableDeclaration, Member, MemberAccessExpression, MemberName, Name, NoDiscardTag,
+        ParamTag, Parameter, ParenthesisedExpression, PostfixUpdateExpression,
+        PostfixUpdateOperator, PrefixUnaryExpression, PrefixUnaryOperator, PrefixUpdateExpression,
+        PrefixUpdateOperator, Property, QualifiedName, RawCallExpression, ResumeExpression,
+        ReturnStatement, ReturnTag, RootAccessExpression, SourceFile, StaticTag, Stmt,
+        StringNameKind, SwitchClause, SwitchStatement, TableLiteralExpression, Tag, ThisExpression,
+        ThisTag, ThrowStatement, ThrowTag, TryStatement, TypeOfExpression, VarArgsTag, VarTag,
+        VariableDeclaration, WhileStatement, YieldStatement, YieldTag,
     },
 };
 use string_literals::CLASSNAMES_TO_CLASSES;
 
 use crate::{
-    Diagnostic, DiagnosticSeverity, ExpressionKind, File, FindSymbol, FunctionIdResolution,
-    ImportMembers, NullableExprKind, Source, SourceSymbol, TypeWithRange, UnreachableCode,
-    UnusedVariables, VScriptDatabase,
+    Diagnostic, DiagnosticSeverity, ExpressionKind, File, FindSymbol, FunctionBack, FunctionData,
+    FunctionFlags, FunctionIdResolution, FunctionSignature, ImportMembers, NullableExprKind,
+    ParamsState, Source, SourceSymbol, TypeWithRange, UnreachableCode, UnusedVariables,
+    VScriptDatabase,
     arena::{
-        ArenaAlloc, ArenaId, ArrayData, ArrayId, ClassData, ClassId, Container, EnumData, EnumId,
-        FunctionData, FunctionFlags, FunctionId, ImportTarget, Inherits, ParamsState, Scope,
-        ScopeId, SourceArena, StringLiteralData, StringLiteralId, SymbolId, TableData, TableId,
-        TypeConversionError, TypeState,
+        ArenaAlloc, ArenaId, ArrayId, ClassId, Container, EnumId, FunctionId, GeneratorId,
+        ImportTarget, Scope, ScopeId, SourceArena, StringLiteralData, StringLiteralId, SymbolId,
+        TableId, TypeConversionError,
     },
+    array::ArrayData,
+    class::{ClassData, Inherits},
     db::NativeFunction,
+    enum_::EnumData,
+    generator::GeneratorData,
     symbol::{
         LocalKind, Primitive, StringKind, Symbol, SymbolFlags, SymbolKind, SymbolTable,
         ToPrimitiveError, Type, TypeFlags, Union, insert_symbol, merge_types,
     },
+    table::TableData,
 };
 
 macro_rules! dispatch_union {
@@ -605,6 +611,10 @@ impl<'db> Resolver<'db> {
 
     fn array(&mut self, kind: Type) -> ArrayId {
         ArrayId::new(self.file, self.arena.alloc(ArrayData { kind }))
+    }
+
+    fn generator(&mut self, ret: Type) -> GeneratorId {
+        GeneratorId::new(self.file, self.arena.alloc(GeneratorData { ret }))
     }
 
     fn string(&mut self, token_result: &(StringNameKind, SyntaxToken)) -> StringLiteralId {
@@ -1231,7 +1241,8 @@ impl<'db> Resolver<'db> {
                         );
 
                         insert_symbol(&mut self.current_scope().locals, name, id);
-                        self.arena[idx].params.push(id);
+                        // TODO: if signature was explicitly assigned, check the validity of said param
+                        self.arena[idx].signature.params.push(id);
                         raw_param_types.push(None);
                         continue;
                     };
@@ -1261,7 +1272,8 @@ impl<'db> Resolver<'db> {
                     );
 
                     insert_symbol(&mut self.current_scope().locals, name, id);
-                    self.arena[idx].params.push(id);
+                    // TODO: if signature was explicitly assigned, check the validity of said param
+                    self.arena[idx].signature.params.push(id);
 
                     match params_state {
                         ParamsState::NoDefault => {
@@ -1317,7 +1329,7 @@ impl<'db> Resolver<'db> {
             }
         }
 
-        self.arena[idx].params_state = params_state;
+        self.arena[idx].signature.params_state = params_state;
         raw_param_types
     }
 
@@ -1736,17 +1748,11 @@ impl<'db> Resolver<'db> {
                 let typ = kind.map_or(Type::ANY, |id| self.get(id).kind.clone());
                 Some((Type::INTEGER, typ))
             }
-            Primitive::String { .. } => Some((Type::INTEGER, Type::INTEGER)),
             Primitive::Generator(id) => {
-                let typ = id.map_or(Type::ANY, |id| match &self.get(id).yields {
-                    TypeState::Absent => Type::ANY,
-                    TypeState::Explicit(typ) | TypeState::NotExplicit(typ) => {
-                        typ.this_to_concrete(&Type::ANY)
-                    }
-                });
-
+                let typ = id.map_or(Type::ANY, |id| self.get(id).ret.clone());
                 Some((Type::INTEGER, typ))
             }
+            Primitive::String { .. } => Some((Type::INTEGER, Type::INTEGER)),
             Primitive::Class(_) => Some((Type::STRING.add_any(), Type::ANY)),
             _ => {
                 let arguments = [TypeWithRange {
@@ -1826,13 +1832,14 @@ impl<'db> Resolver<'db> {
 
                 let mut params_changed = false;
                 for (count, argument) in arguments.iter().cloned().enumerate() {
-                    let Some(&param) = self.get(id).params.get(count) else {
-                        let ParamsState::VarArgs(_, vargv) = self.get(id).params_state else {
+                    let Some(&param) = self.get(id).signature.params.get(count) else {
+                        let ParamsState::VarArgs(_, vargv) = self.get(id).signature.params_state
+                        else {
                             self.diagnostics.push(Diagnostic {
                                 message: format!(
                                     "Passing {} parameters when only {} is possible",
                                     count + 1,
-                                    self.get(id).params.len()
+                                    &self.get(id).signature.params.len()
                                 ),
                                 range: argument.range,
                                 ..Default::default()
@@ -1887,8 +1894,8 @@ impl<'db> Resolver<'db> {
                     data = self.deferred_entry(id);
                 }
 
-                let least_params_required = match self.get(id).params_state {
-                    ParamsState::NoDefault => self.get(id).params.len(),
+                let least_params_required = match self.get(id).signature.params_state {
+                    ParamsState::NoDefault => self.get(id).signature.params.len(),
                     ParamsState::Default(from) | ParamsState::VarArgs(from, _) => from,
                 };
 
@@ -1914,15 +1921,11 @@ impl<'db> Resolver<'db> {
                     return Some(override_return);
                 }
 
-                Some(if self.get(id).yields == TypeState::Absent {
-                    match &self.get(id).ret {
-                        TypeState::Absent => Type::ANY,
-                        TypeState::Explicit(typ) | TypeState::NotExplicit(typ) => {
-                            typ.this_to_concrete(context)
-                        }
+                Some(match &self.get(id).signature.back {
+                    FunctionBack::Return(typ) => typ.this_to_concrete(context),
+                    FunctionBack::Yield(typ) => {
+                        Type::Primitive(Primitive::Generator(Some(self.generator(typ.clone()))))
                     }
-                } else {
-                    Type::Primitive(Primitive::Generator(Some(id)))
                 })
             }
             Primitive::Class(id) => {
@@ -2070,16 +2073,12 @@ impl<'db> Resolver<'db> {
         };
 
         let idx = self.arena.alloc(FunctionData {
+            signature: FunctionSignature::default(),
             symbol: None,
             range,
             node: SyntaxNodePtr::new(node.syntax()),
             container: self.container,
             bindenv,
-            params: Vec::new(),
-            params_state: ParamsState::NoDefault,
-            ret: TypeState::Absent,
-            throws: TypeState::Absent,
-            yields: TypeState::Absent,
             flags: FunctionFlags::default(),
         });
 
@@ -2203,155 +2202,231 @@ impl<'db> Resolver<'db> {
 
         for tag in doc.tags() {
             match tag {
-                Tag::Return(tag) => {
-                    let Some(typ) = tag.typ() else {
-                        continue;
-                    };
-
-                    let doc_type = self.doc_type(typ.types(), offset);
-
-                    if let Some(typ) = doc_type {
-                        self.arena[entry.idx].ret = TypeState::Explicit(typ);
-                    }
-                }
-                Tag::Param(tag) => {
-                    let Some(param_name) = tag.name().and_then(|n| n.identifier()) else {
-                        continue;
-                    };
-                    let text = param_name.text();
-
-                    let Some((idx, &param_id)) = self.arena[entry.idx]
-                        .params
-                        .iter()
-                        .enumerate()
-                        .rev()
-                        .find(|(_, id)| self.get(**id).name.as_ref() == text)
-                    else {
-                        self.diagnostics.push(Diagnostic {
-                            message: format!("Couldn't find param '{text}'"),
-                            range: param_name.text_range(),
-                            severity: DiagnosticSeverity::Information,
-                        });
-                        continue;
-                    };
-
-                    self.new_reference(param_name.text_range(), param_id);
-
-                    if let Some(param) = self.get_mut(param_id)
-                        && let Some(desc) = tag.description()
-                    {
-                        param.description = desc.content();
-                    }
-
-                    let Some(typ) = tag.typ() else {
-                        continue;
-                    };
-
-                    let Some(doc_type) = self.doc_type(typ.types(), offset) else {
-                        continue;
-                    };
-
-                    let doc_type = doc_type.this_to_concrete(&self.execution_container().into());
-
-                    let new_type = if let Some(param_type) = &entry.trace.raw_param_types[idx] {
-                        self.check_type(
-                            &doc_type,
-                            &param_type.kind,
-                            CheckTypeSource::Parameter,
-                            param_type.range,
-                        )
-                    } else {
-                        doc_type
-                    };
-
-                    if let Some(param) = self.get_mut(param_id) {
-                        param.typ = new_type;
-                        param.is_type_explicit = true;
-                    }
-                }
-                Tag::Throw(tag) => {
-                    let Some(typ) = tag.typ() else {
-                        continue;
-                    };
-
-                    if let Some(doc_type) = self.doc_type(typ.types(), offset) {
-                        self.arena[entry.idx].throws = TypeState::Explicit(doc_type);
-                    }
-                }
-                Tag::Yield(tag) => {
-                    let Some(typ) = tag.typ() else {
-                        continue;
-                    };
-
-                    if let Some(doc_type) = self.doc_type(typ.types(), offset) {
-                        self.arena[entry.idx].yields = TypeState::Explicit(doc_type);
-                    }
-                }
-                Tag::VarArgs(tag) => {
-                    let ParamsState::VarArgs(_, id) = self.arena[entry.idx].params_state else {
-                        continue;
-                    };
-
-                    if let Some(symbol) = self.get_mut(id)
-                        && let Some(desc) = tag.description()
-                    {
-                        symbol.description = desc.content();
-                    }
-
-                    let Some(typ) = tag.typ() else {
-                        continue;
-                    };
-
-                    let Some(doc_type) = self.doc_type(typ.types(), offset) else {
-                        continue;
-                    };
-
-                    let doc_type = doc_type.this_to_concrete(&self.execution_container().into());
-
-                    let array = self.array(doc_type);
-                    if let Some(symbol) = self.get_mut(id) {
-                        symbol.typ = Type::Primitive(Primitive::Array(Some(array)));
-                        symbol.is_type_explicit = true;
-                    }
-                }
-                Tag::This(tag) => {
-                    let Some(tag_type) = tag.typ() else {
-                        continue;
-                    };
-
-                    let Some(doc_type) = self.doc_type(tag_type.types(), offset) else {
-                        continue;
-                    };
-
-                    let doc_type = doc_type.this_to_concrete(&self.execution_container().into());
-
-                    if let Ok(container) = Container::try_from(&doc_type) {
-                        self.arena[entry.idx].bindenv = Some(container);
-                    } else if !doc_type.type_flags().intersects(TypeFlags::ANY) {
-                        self.diagnostics.push(Diagnostic {
-                            message: format!(
-                                "Trying to use '{}' as function's environment",
-                                self.type_to_str_generic(&doc_type)
-                            ),
-                            range: tag_type.syntax().text_range(),
-                            severity: DiagnosticSeverity::Warning,
-                        });
-                    }
-                }
-                Tag::Static(_) => {
-                    if let Container::Instance(id) = self.arena[entry.idx].container {
-                        self.arena[entry.idx].container = Container::Class(id);
-                    }
-                }
-                Tag::NoDiscard(_) => {
-                    self.arena[entry.idx].flags |= FunctionFlags::NO_DISCARD;
-                }
-                Tag::Var(tag) => {
-                    self.var_tag(&tag);
-                }
+                Tag::Return(tag) => self.return_tag(&tag, offset, entry.idx),
+                Tag::Param(tag) => self.param_tag(&tag, offset, entry),
+                Tag::Throw(tag) => self.throw_tag(&tag, offset, entry.idx),
+                Tag::Yield(tag) => self.yield_tag(&tag, offset, entry.idx),
+                Tag::VarArgs(tag) => self.var_args_tag(&tag, offset, entry.idx),
+                Tag::This(tag) => self.this_tag(&tag, offset, entry.idx),
+                Tag::Static(tag) => self.static_tag(&tag, entry.idx),
+                Tag::NoDiscard(tag) => self.no_discard_tag(&tag, entry.idx),
+                Tag::Var(tag) => self.var_tag(&tag),
                 _ => {}
             }
         }
+    }
+
+    fn return_tag(&mut self, tag: &ReturnTag, offset: TextSize, idx: Idx<FunctionData>) {
+        if self.arena[idx]
+            .flags
+            .intersects(FunctionFlags::RETURN_EXPLICIT)
+        {
+            self.diagnostics.push(Diagnostic {
+                message: "Duplicated @return tag. This tag is being ignored".to_owned(),
+                range: tag.syntax().text_range(),
+                severity: DiagnosticSeverity::Information,
+            });
+            return;
+        }
+
+        if self.arena[idx]
+            .flags
+            .intersects(FunctionFlags::YIELD_EXPLICIT)
+        {
+            self.diagnostics.push(Diagnostic {
+                message: "Function cannot both yield and return. This tag is being ignored"
+                    .to_owned(),
+                range: tag.syntax().text_range(),
+                severity: DiagnosticSeverity::Information,
+            });
+            return;
+        }
+
+        let Some(typ) = tag.typ() else {
+            return;
+        };
+
+        let doc_type = self.doc_type(typ.types(), offset);
+
+        if let Some(typ) = doc_type {
+            self.arena[idx].flags |= FunctionFlags::RETURN_EXPLICIT;
+            self.arena[idx].signature.back = FunctionBack::Return(typ);
+        }
+    }
+
+    fn param_tag(&mut self, tag: &ParamTag, offset: TextSize, entry: &DeferredFunctionEntry) {
+        let Some(param_name) = tag.name().and_then(|n| n.identifier()) else {
+            return;
+        };
+
+        let text = param_name.text();
+
+        let Some((idx, &param_id)) = self.arena[entry.idx]
+            .signature
+            .params
+            .iter()
+            .enumerate()
+            .rev()
+            .find(|(_, id)| self.get(**id).name.as_ref() == text)
+        else {
+            self.diagnostics.push(Diagnostic {
+                message: format!("Couldn't find param '{text}'"),
+                range: param_name.text_range(),
+                severity: DiagnosticSeverity::Information,
+            });
+            return;
+        };
+
+        self.new_reference(param_name.text_range(), param_id);
+
+        if let Some(param) = self.get_mut(param_id)
+            && let Some(desc) = tag.description()
+        {
+            param.description = desc.content();
+        }
+
+        let Some(typ) = tag.typ() else {
+            return;
+        };
+
+        let Some(doc_type) = self.doc_type(typ.types(), offset) else {
+            return;
+        };
+
+        let doc_type = doc_type.this_to_concrete(&self.execution_container().into());
+
+        let new_type = if let Some(param_type) = &entry.trace.raw_param_types[idx] {
+            self.check_type(
+                &doc_type,
+                &param_type.kind,
+                CheckTypeSource::Parameter,
+                param_type.range,
+            )
+        } else {
+            doc_type
+        };
+
+        if let Some(param) = self.get_mut(param_id) {
+            param.typ = new_type;
+            param.is_type_explicit = true;
+        }
+    }
+
+    fn throw_tag(&mut self, tag: &ThrowTag, offset: TextSize, idx: Idx<FunctionData>) {
+        self.arena[idx].flags |= FunctionFlags::THROW_EXPLICIT;
+
+        let Some(typ) = tag.typ() else { return };
+
+        if let Some(doc_type) = self.doc_type(typ.types(), offset) {
+            self.arena[idx].signature.throws = Some(doc_type);
+        }
+    }
+
+    fn yield_tag(&mut self, tag: &YieldTag, offset: TextSize, idx: Idx<FunctionData>) {
+        if self.arena[idx]
+            .flags
+            .intersects(FunctionFlags::YIELD_EXPLICIT)
+        {
+            self.diagnostics.push(Diagnostic {
+                message: "Duplicated @yield tag. This tag is being ignored".to_owned(),
+                range: tag.syntax().text_range(),
+                severity: DiagnosticSeverity::Information,
+            });
+            return;
+        }
+
+        if self.arena[idx]
+            .flags
+            .intersects(FunctionFlags::RETURN_EXPLICIT)
+        {
+            self.diagnostics.push(Diagnostic {
+                message: "Function cannot both yield and return. This tag is being ignored"
+                    .to_owned(),
+                range: tag.syntax().text_range(),
+                severity: DiagnosticSeverity::Information,
+            });
+            return;
+        }
+
+        self.arena[idx].flags |= FunctionFlags::YIELD_EXPLICIT;
+        self.arena[idx].signature.back = FunctionBack::Yield(Type::ANY);
+
+        let Some(typ) = tag.typ() else { return };
+
+        if let Some(doc_type) = self.doc_type(typ.types(), offset) {
+            self.arena[idx].signature.back = FunctionBack::Yield(doc_type);
+        }
+    }
+
+    fn var_args_tag(&mut self, tag: &VarArgsTag, offset: TextSize, idx: Idx<FunctionData>) {
+        let ParamsState::VarArgs(_, id) = self.arena[idx].signature.params_state else {
+            return;
+        };
+
+        if let Some(symbol) = self.get_mut(id)
+            && let Some(desc) = tag.description()
+        {
+            symbol.description = desc.content();
+        }
+
+        let Some(typ) = tag.typ() else {
+            return;
+        };
+
+        let Some(doc_type) = self.doc_type(typ.types(), offset) else {
+            return;
+        };
+
+        let doc_type = doc_type.this_to_concrete(&self.execution_container().into());
+        let array = self.array(doc_type);
+        if let Some(symbol) = self.get_mut(id) {
+            symbol.typ = Type::Primitive(Primitive::Array(Some(array)));
+            symbol.is_type_explicit = true;
+        }
+    }
+
+    fn this_tag(&mut self, tag: &ThisTag, offset: TextSize, idx: Idx<FunctionData>) {
+        let Some(tag_type) = tag.typ() else {
+            return;
+        };
+
+        let Some(doc_type) = self.doc_type(tag_type.types(), offset) else {
+            return;
+        };
+
+        let doc_type = doc_type.this_to_concrete(&self.execution_container().into());
+
+        if let Ok(container) = Container::try_from(&doc_type) {
+            self.arena[idx].bindenv = Some(container);
+        } else if !doc_type.type_flags().intersects(TypeFlags::ANY) {
+            self.diagnostics.push(Diagnostic {
+                message: format!(
+                    "Trying to use '{}' as function's environment",
+                    self.type_to_str_generic(&doc_type)
+                ),
+                range: tag_type.syntax().text_range(),
+                severity: DiagnosticSeverity::Warning,
+            });
+        }
+    }
+
+    fn static_tag(&mut self, _tag: &StaticTag, idx: Idx<FunctionData>) {
+        if let Container::Instance(id) = self.arena[idx].container {
+            self.arena[idx].container = Container::Class(id);
+        }
+    }
+
+    fn no_discard_tag(&mut self, tag: &NoDiscardTag, idx: Idx<FunctionData>) {
+        if self.arena[idx].flags.intersects(FunctionFlags::NO_DISCARD) {
+            self.diagnostics.push(Diagnostic {
+                message: "Duplicated @nodiscard tag. This tag has no additional effect".to_owned(),
+                range: tag.syntax().text_range(),
+                severity: DiagnosticSeverity::Information,
+            });
+            return;
+        }
+
+        self.arena[idx].flags |= FunctionFlags::NO_DISCARD;
     }
 
     fn var_tag(&mut self, tag: &VarTag) {
@@ -2456,25 +2531,17 @@ impl<'db> Resolver<'db> {
             FunctionBody::Expr(expr) => {
                 let new_ret = self.expr_to_type_with_range(expr);
 
-                let (ret, is_explicit) = match self.arena[idx].ret.clone() {
-                    TypeState::Absent => {
-                        self.arena[idx].ret = TypeState::NotExplicit(new_ret.kind);
-                        return;
-                    }
-                    TypeState::Explicit(typ) => (typ, true),
-                    TypeState::NotExplicit(typ) => (typ, false),
+                let ret = match &self.arena[idx].signature.back {
+                    FunctionBack::Return(ret) => ret.clone(),
+                    // Lambdas can't be generators -> omit error?
+                    FunctionBack::Yield(_) => return,
                 };
 
-                let new = self.update_type(&ret, is_explicit, new_ret, CheckTypeSource::Return);
-
-                self.arena[idx].ret = TypeState::Explicit(new);
+                let new = self.update_type(&ret, true, new_ret, CheckTypeSource::Return);
+                self.arena[idx].signature.back = FunctionBack::Return(new);
             }
             FunctionBody::Stmt(stmt) => {
                 self.collect_stmt(stmt);
-
-                if self.arena[idx].ret == TypeState::Absent {
-                    self.arena[idx].ret = TypeState::NotExplicit(Type::NULL);
-                }
             }
         }
     }
@@ -3019,7 +3086,7 @@ impl<'db> Resolver<'db> {
                     name_range,
                     kind,
                     is_type_explicit: info.typ.is_some(),
-                    typ: info.typ.unwrap_or(typ),
+                    typ,
                     description: info.description,
                     flags: info.flags,
                 });
@@ -3630,14 +3697,14 @@ impl<'db> Resolver<'db> {
             return;
         };
 
-        let (ret, is_explicit) = match self.arena[function].ret.clone() {
-            TypeState::Absent => {
-                self.arena[function].ret = TypeState::NotExplicit(value.kind);
-                return;
-            }
-            TypeState::Explicit(typ) => (typ, true),
-            TypeState::NotExplicit(typ) => (typ, false),
+        let ret = match &self.arena[function].signature.back {
+            FunctionBack::Return(ret) => ret.clone(),
+            FunctionBack::Yield(_) => return,
         };
+
+        let is_explicit = self.arena[function]
+            .flags
+            .intersects(FunctionFlags::RETURN_EXPLICIT);
 
         let new = self.update_type(
             &ret,
@@ -3649,11 +3716,7 @@ impl<'db> Resolver<'db> {
             CheckTypeSource::Return,
         );
 
-        self.arena[function].ret = if is_explicit {
-            TypeState::Explicit(new)
-        } else {
-            TypeState::NotExplicit(new)
-        };
+        self.arena[function].signature.back = FunctionBack::Return(new);
     }
 
     fn yield_statement(&mut self, stmt: &YieldStatement) {
@@ -3674,22 +3737,43 @@ impl<'db> Resolver<'db> {
             return;
         };
 
-        let (yields, is_explicit) = match self.arena[function].yields.clone() {
-            TypeState::Absent => {
-                self.arena[function].yields = TypeState::NotExplicit(value.kind);
+        if self.arena[function]
+            .flags
+            .intersects(FunctionFlags::RETURN_EXPLICIT)
+        {
+            self.diagnostics.push(Diagnostic {
+                message: "Yielding while having explicit return value. \
+                    Turning function into a generator prevents the caller from retrieving any returned values".to_owned(),
+                range: stmt.syntax().text_range(),
+                severity: DiagnosticSeverity::Warning,
+            });
+        }
+
+        let yields = match &self.arena[function].signature.back {
+            // Yielding will always result in a generator, return values are ignored and return
+            // is only used as a stop sign for the generator
+            FunctionBack::Return(_) => {
+                self.arena[function].signature.back = FunctionBack::Yield(value.kind);
                 return;
             }
-            TypeState::Explicit(typ) => (typ, true),
-            TypeState::NotExplicit(typ) => (typ, false),
+            FunctionBack::Yield(yields) => yields.clone(),
         };
 
-        let new = self.update_type(&yields, is_explicit, value, CheckTypeSource::Yield);
+        let is_explicit = self.arena[function]
+            .flags
+            .intersects(FunctionFlags::YIELD_EXPLICIT);
 
-        self.arena[function].yields = if is_explicit {
-            TypeState::Explicit(new)
-        } else {
-            TypeState::NotExplicit(new)
-        };
+        let new = self.update_type(
+            &yields,
+            is_explicit,
+            TypeWithRange {
+                kind: value.kind,
+                range: stmt.syntax().text_range(),
+            },
+            CheckTypeSource::Yield,
+        );
+
+        self.arena[function].signature.back = FunctionBack::Yield(new);
     }
 
     fn continue_statement(&mut self, stmt: &ContinueStatement) {
@@ -3769,14 +3853,14 @@ impl<'db> Resolver<'db> {
             return;
         };
 
-        let (throws, is_explicit) = match self.arena[function].throws.clone() {
-            TypeState::Absent => {
-                self.arena[function].throws = TypeState::NotExplicit(value);
-                return;
-            }
-            TypeState::Explicit(typ) => (typ, true),
-            TypeState::NotExplicit(typ) => (typ, false),
+        let Some(throws) = self.arena[function].signature.throws.clone() else {
+            self.arena[function].signature.throws = Some(value);
+            return;
         };
+
+        let is_explicit = self.arena[function]
+            .flags
+            .intersects(FunctionFlags::THROW_EXPLICIT);
 
         let new = self.update_type(
             &throws,
@@ -3788,11 +3872,7 @@ impl<'db> Resolver<'db> {
             CheckTypeSource::Throw,
         );
 
-        self.arena[function].throws = if is_explicit {
-            TypeState::Explicit(new)
-        } else {
-            TypeState::NotExplicit(new)
-        };
+        self.arena[function].signature.throws = Some(new);
     }
 
     fn expr_to_type(&mut self, expr: &Expr) -> Type {
@@ -5639,12 +5719,7 @@ impl<'db> Resolver<'db> {
     fn resume_expression(&mut self, expr: &ResumeExpression) -> NullableExprKind {
         let typ = self.expr_to_type(&expr.operand()?);
         match typ.to_generator() {
-            Ok(id) => Some(ExpressionKind::Literal(match &self.get(id).yields {
-                TypeState::Absent => Type::ANY,
-                TypeState::Explicit(typ) | TypeState::NotExplicit(typ) => {
-                    typ.this_to_concrete(&Type::ANY)
-                }
-            })),
+            Ok(id) => Some(ExpressionKind::Literal(self.get(id).ret.clone())),
             Err(ToPrimitiveError::WrongType) => {
                 self.diagnostics.push(Diagnostic {
                     message: "Only generators can be resumed".to_owned(),

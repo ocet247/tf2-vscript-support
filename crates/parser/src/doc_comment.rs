@@ -299,7 +299,7 @@ impl<'a> DocComment<'a> {
                 self.possible_type();
                 SyntaxKind::YieldTag
             }
-            "varargs" | "vargv" => {
+            "varargs" | "vararg" | "vargv" => {
                 self.possible_type();
                 SyntaxKind::VarArgsTag
             }

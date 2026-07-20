@@ -1,7 +1,13 @@
 mod arena;
+mod array;
+mod class;
 mod db;
+mod enum_;
+mod function;
+mod generator;
 mod resolver;
 mod symbol;
+mod table;
 
 use std::{collections::hash_map::Entry, fmt::Write as _};
 
@@ -12,21 +18,22 @@ use rustc_hash::{FxHashMap, FxHashSet};
 use sq_3_parser::{SyntaxKind, SyntaxToken, TextRange, TextSize};
 
 use crate::{
-    arena::{ClassId, EnumId, ImportTarget, Inherits, SourceArena, TableData, TableId},
+    arena::{ClassId, EnumId, ImportTarget, SourceArena, TableId},
+    class::Inherits,
     db::{
         top_const_members, top_root_members, top_source_and_const_members,
         top_source_and_root_members, top_source_members,
     },
     symbol::{FlatSymbolTable, to_flat_symbol_table},
+    table::TableData,
 };
 
-pub use arena::{
-    ArenaId, Container, FunctionData, FunctionId, ParamsState, ScopeId, SymbolId, TypeState,
-};
+pub use arena::{ArenaId, Container, FunctionId, ScopeId, SymbolId};
 pub use db::{
     Database, UnreachableCode, UnusedVariables, VScriptDatabase, VScriptDbConfig,
     VScriptDbInitConfig, parse, source_symbol,
 };
+pub use function::{FunctionBack, FunctionData, FunctionFlags, FunctionSignature, ParamsState};
 pub use symbol::{
     DisplayType, LocalKind, Primitive, StringKind, Symbol, SymbolFlags, SymbolKind, SymbolTable,
     ToPrimitiveError, Type, TypeFlags,
@@ -1144,13 +1151,15 @@ impl<'db> SourceCtx<'db> {
             FunctionMarkdown::Full(name) => format!("function {name}("),
         };
 
-        let default_after = if let ParamsState::Default(after) = func.params_state {
+        let sg = &func.signature;
+
+        let default_after = if let ParamsState::Default(after) = sg.params_state {
             Some(after)
         } else {
             None
         };
 
-        for (i, &param_id) in func.params.iter().enumerate() {
+        for (i, &param_id) in sg.params.iter().enumerate() {
             if i > 0 {
                 label.push_str(", ");
             }
@@ -1171,8 +1180,8 @@ impl<'db> SourceCtx<'db> {
             }
         }
 
-        if let ParamsState::VarArgs(_, id) = func.params_state {
-            if !func.params.is_empty() {
+        if let ParamsState::VarArgs(_, id) = sg.params_state {
+            if !sg.params.is_empty() {
                 label.push_str(", ");
             }
             match kind {
@@ -1197,16 +1206,18 @@ impl<'db> SourceCtx<'db> {
 
         label.push(')');
 
-        if func.throws != TypeState::Absent {
+        if sg.throws.is_some() {
             label.push('!');
         }
 
-        match &func.ret {
-            TypeState::Absent => {}
-            TypeState::NotExplicit(typ) | TypeState::Explicit(typ) => {
+        match &sg.back {
+            FunctionBack::Return(typ) => {
                 if *typ != Type::NULL {
                     let _ = write!(label, " -> {}", self.type_to_str(typ));
                 }
+            }
+            FunctionBack::Yield(typ) => {
+                let _ = write!(label, " ~> {}", self.type_to_str(typ));
             }
         }
 

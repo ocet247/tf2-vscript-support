@@ -4,8 +4,8 @@ use lsp_types::{
     InlayHintTooltip, Location, MarkupContent, MarkupKind,
 };
 use resolver::{
-    ArenaId, ExpressionKind, FunctionIdResolution, LocalKind, Primitive, Source, SourceCtx,
-    SymbolId, SymbolKind, Type, TypeFlags, TypeState, VScriptDatabase, parse,
+    ArenaId, ExpressionKind, FunctionBack, FunctionIdResolution, LocalKind, Primitive, Source,
+    SourceCtx, SymbolId, SymbolKind, Type, TypeFlags, VScriptDatabase, parse,
 };
 use sq_3_parser::{
     AstNode as _, SyntaxNode,
@@ -312,11 +312,11 @@ fn parameter_hints(
                 return None;
             };
 
-            let func = ctx.get(func_id);
+            let sg = &ctx.get(func_id).signature;
 
             Some(
                 call.arguments()
-                    .zip(func.params.iter().copied())
+                    .zip(sg.params.iter().copied())
                     .filter_map(move |(arg, param_id)| {
                         if !range.contains_range(arg.syntax().text_range()) {
                             return None;
@@ -328,8 +328,8 @@ fn parameter_hints(
                             return None;
                         }
 
-                        if func.params.len() == 1 {
-                            let flags = ctx.get(func.params[0]).typ.type_flags();
+                        if sg.params.len() == 1 {
+                            let flags = ctx.get(sg.params[0]).typ.type_flags();
 
                             if !flags.intersects(TypeFlags::BOOL)
                                 && !flags.intersects(TypeFlags::NULL)
@@ -406,14 +406,16 @@ fn return_value_hints(
 
         let position = positions::position(line_idx, offset)?;
 
-        let text = match &func.ret {
-            TypeState::Absent => return None,
-            TypeState::NotExplicit(typ) | TypeState::Explicit(typ) => {
+        let text = match &func.signature.back {
+            FunctionBack::Return(typ) => {
                 if *typ == Type::NULL {
                     return None;
                 }
 
                 format!("-> {}", ctx.type_to_str(typ))
+            }
+            FunctionBack::Yield(typ) => {
+                format!("~> {}", ctx.type_to_str(typ))
             }
         };
 

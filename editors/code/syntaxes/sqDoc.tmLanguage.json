@@ -199,7 +199,7 @@
       "name": "support.type.squirrel"
     },
     {
-      "match": "(?<=->\\s*)[\\w\\s\\|\\[\\]]*",
+      "match": "(?<=[~-]>\\s*)[\\w\\s\\|\\[\\]]*",
       "name": "support.type.squirrel"
     },
     {
