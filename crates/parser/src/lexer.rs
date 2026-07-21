@@ -361,7 +361,6 @@ impl<'a> Lexer<'a> {
                 }
                 _ => SyntaxKind::Minus,
             },
-
             '+' => match self.next_and_peek() {
                 Some('+') => self.next_and_return(SyntaxKind::PlusPlus),
                 Some('=') => self.next_and_return(SyntaxKind::PlusEquals),
@@ -369,6 +368,20 @@ impl<'a> Lexer<'a> {
             },
 
             '0'..='9' => self.number(),
+
+            '\0' => {
+                self.next();
+
+                if self.peek().is_some() {
+                    self.error_at_token(
+                        "Squirrel terminates file processing after encountering a NULL byte. \
+                        Anything that goes after won't have any effect on the program"
+                            .to_owned(),
+                    );
+                }
+
+                SyntaxKind::Unknown
+            }
 
             _ if chr.is_alphabetic() || chr == '_' || chr == '$' => self.identifier_or_keyword(),
 
