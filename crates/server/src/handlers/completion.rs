@@ -787,7 +787,7 @@ fn modify_if_function(
     }
     // we don't use ctx.to_function_id since
     // we don't want () autocompletion on classes and such
-    let Ok(Primitive::Function(id)) = Primitive::try_from(&symbol.typ) else {
+    let Ok(Primitive::Function(Some(id))) = Primitive::try_from(&symbol.typ) else {
         return FunctionCompletion {
             label,
             insert_text,
@@ -810,17 +810,15 @@ fn modify_if_function(
         }
     };
 
-    if let Some(id) = id {
-        let sg = &ctx.get(id).signature;
+    let func = &ctx.get(id);
 
-        if sg.params.is_empty() && !matches!(sg.params_state, ParamsState::VarArgs(_, _)) {
-            let (label, insert_text) = modify(label, insert_text, "()", "()");
-            return FunctionCompletion {
-                label,
-                insert_text,
-                ..Default::default()
-            };
-        }
+    if func.params.is_empty() && !matches!(func.params_state, ParamsState::VarArgs(_, _)) {
+        let (label, insert_text) = modify(label, insert_text, "()", "()");
+        return FunctionCompletion {
+            label,
+            insert_text,
+            ..Default::default()
+        };
     }
 
     let (label, insert_text) = modify(label, insert_text, "(…)", "($1)");
@@ -1276,7 +1274,6 @@ fn completions_doc_type(ctx: &SourceCtx<'_>, offset: TextSize) -> Vec<Completion
 
 fn completions_doc_param_names(id: FunctionId, ctx: &SourceCtx) -> Vec<CompletionItem> {
     ctx.get(id)
-        .signature
         .params
         .iter()
         .map(|id| {
@@ -1304,8 +1301,9 @@ fn completion_doc_auto_generated(
             ctx.type_to_str(typ.null_to_any()),
         );
         let mut stop_idx = 1u16;
-        let sg = &ctx.get(id).signature;
-        for param in &sg.params {
+        let func = ctx.get(id);
+
+        for param in &func.params {
             stop_idx += 1;
 
             let symbol = ctx.get(*param);
@@ -1318,7 +1316,7 @@ fn completion_doc_auto_generated(
             );
         }
 
-        match &sg.back {
+        match &func.back {
             FunctionBack::Return(typ) => {
                 if *typ != Type::NULL {
                     stop_idx += 1;
@@ -1341,7 +1339,7 @@ fn completion_doc_auto_generated(
             }
         }
 
-        if let Some(throws) = &sg.throws {
+        if let Some(throws) = &func.throws {
             stop_idx += 1;
 
             let _ = write!(

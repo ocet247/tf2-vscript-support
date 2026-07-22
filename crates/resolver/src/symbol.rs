@@ -134,7 +134,7 @@ impl From<&Symbol> for DisplayType {
                 Ok(Primitive::Class(_)) => Self::Class,
                 Ok(Primitive::Function(_)) => Self::Function,
                 _ => match value.kind {
-                    SymbolKind::Local(_) => Self::Variable,
+                    SymbolKind::Shape | SymbolKind::Local(_) => Self::Variable,
                     SymbolKind::Constant => Self::Constant,
                     SymbolKind::Property { .. } => Self::Field,
                     SymbolKind::EnumMember => Self::EnumMember,
@@ -358,6 +358,7 @@ pub enum Primitive {
     Thread(Option<FunctionId>),
     Weakref,
     This,
+    // Signature(Option<SignatureId>),
 }
 
 impl Primitive {
@@ -395,6 +396,7 @@ pub enum SymbolKind {
     Constant,
     EnumMember,
     Property { show_inlay_hint: bool },
+    Shape,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]

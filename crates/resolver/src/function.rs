@@ -23,23 +23,23 @@ impl Default for FunctionBack {
     }
 }
 
-#[derive(Debug, Default, Clone, PartialEq)]
-pub struct FunctionSignature {
-    pub params: Vec<SymbolId>,
-    pub params_state: ParamsState,
-    pub back: FunctionBack,
-    pub throws: Option<Type>,
-}
-
-#[derive(Debug, Clone, PartialEq)]
-pub struct FunctionData {
-    pub signature: FunctionSignature,
-    pub symbol: Option<SymbolId>,
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct FunctionImpl {
     pub range: TextRange,
     pub node: SyntaxNodePtr,
     pub container: Container,
     pub bindenv: Option<Container>,
     pub flags: FunctionFlags,
+}
+
+#[derive(Debug, Default, Clone, PartialEq)]
+pub struct FunctionData {
+    pub params: Vec<SymbolId>,
+    pub params_state: ParamsState,
+    pub back: FunctionBack,
+    pub throws: Option<Type>,
+    pub symbol: Option<SymbolId>,
+    pub imp: Option<FunctionImpl>,
 }
 
 bitflags::bitflags! {

@@ -100,6 +100,14 @@ impl<'a> DocComment<'a> {
         Some(ch)
     }
 
+    fn peek_n<const N: u8>(&self) -> Option<char> {
+        let mut chars = self.text[self.pos.into()..].chars();
+        for _ in 0..N - 1 {
+            chars.next()?;
+        }
+        chars.next()
+    }
+
     fn next_char_range(&self) -> TextRange {
         let next_pos = self.peek().map_or(self.pos, |ch| {
             self.pos + TextSize::new(u32::try_from(ch.len_utf8()).unwrap_or(u32::MAX))
@@ -213,13 +221,13 @@ impl<'a> DocComment<'a> {
         }
     }
 
-    fn identifier(&mut self, message: String) -> TextRange {
+    fn identifier(&mut self, error: String) -> TextRange {
         if !self
             .peek()
             .is_some_and(|c| c.is_ascii_alphabetic() || c == '_')
         {
             self.errors.push(SyntaxError {
-                message,
+                message: error,
                 range: self.next_char_range(),
             });
             return TextRange::empty(self.pos);
@@ -343,18 +351,25 @@ impl<'a> DocComment<'a> {
 
         loop {
             let m = self.start();
-            if self.peek() == Some('[') {
-                assert_eq!(self.char_token(SyntaxKind::DocOpenBracket), Some('['));
-                self.parse_types();
-                self.expect(']', SyntaxKind::DocCloseBracket);
+            match self.peek() {
+                Some('[') => {
+                    assert_eq!(self.char_token(SyntaxKind::DocOpenBracket), Some('['));
+                    self.parse_types();
+                    self.expect(']', SyntaxKind::DocCloseBracket);
 
-                self.finish(m, SyntaxKind::DocTypeArray);
-            } else {
-                let ident = self.identifier("Expected type's name".to_owned());
-                if ident.is_empty() {
-                    self.drop(m);
-                } else {
-                    self.finish(m, SyntaxKind::DocTypeName);
+                    self.finish(m, SyntaxKind::DocTypeArray);
+                }
+                Some('@') => {
+                    self.parse_function_type();
+                    self.finish(m, SyntaxKind::DocTypeFunction);
+                }
+                _ => {
+                    let ident = self.identifier("Expected type's name".to_owned());
+                    if ident.is_empty() {
+                        self.drop(m);
+                    } else {
+                        self.finish(m, SyntaxKind::DocTypeName);
+                    }
                 }
             }
 
@@ -373,6 +388,77 @@ impl<'a> DocComment<'a> {
                 _ => return,
             }
         }
+    }
+
+    fn parse_function_type(&mut self) -> SyntaxKind {
+        assert_eq!(self.char_token(SyntaxKind::DocAt), Some('@'));
+        self.expect('(', SyntaxKind::DocOpenParenthesis);
+        self.skip_trivia();
+
+        if self.peek() != Some(')') {
+            loop {
+                let param_m = self.start();
+                let is_var_arg = if (self.peek(), self.peek_n::<2>(), self.peek_n::<3>())
+                    == (Some('.'), Some('.'), Some('.'))
+                {
+                    let start = self.start_token();
+                    self.next();
+                    self.next();
+                    self.next();
+                    self.finish_token(start, SyntaxKind::DocEllipsis);
+                    true
+                } else {
+                    false
+                };
+                self.identifier("Param name expected.".to_owned());
+
+                self.skip_trivia();
+                if self.peek() == Some('?') {
+                    if is_var_arg {
+                        self.errors.push(SyntaxError {
+                            message: "Variable argument cannot have default value".to_owned(),
+                            range: self.next_char_range(),
+                        });
+                    }
+                    self.char_token(SyntaxKind::DocQuestion);
+                }
+                self.skip_trivia();
+                self.expect(':', SyntaxKind::DocColon);
+                self.skip_trivia();
+                self.parse_types();
+
+                self.finish(param_m, SyntaxKind::DocFunctionParameter);
+                self.skip_trivia();
+                if self.peek() == Some(',') {
+                    self.char_token(SyntaxKind::DocComma);
+                    self.skip_trivia();
+                } else {
+                    break;
+                }
+            }
+        }
+        self.expect(')', SyntaxKind::DocCloseParenthesis);
+        self.skip_trivia();
+
+        let arrow = match (self.peek(), self.peek_n::<2>()) {
+            (Some('-'), Some('>')) => SyntaxKind::DocArrow,
+            (Some('~'), Some('>')) => SyntaxKind::DocGeneratorArrow,
+            // Lone '-' or '~' with no following '>' - most likely a typo.
+            // Don't consume it; let the caller (parse_types / expect) surface
+            // whatever it actually is rather than swallowing a char here.
+            _ => return SyntaxKind::DocTypeFunction,
+        };
+
+        let ret_m = self.start();
+        let start = self.start_token();
+        self.next();
+        self.next();
+        self.finish_token(start, arrow);
+        self.skip_trivia();
+        self.parse_types();
+        self.finish(ret_m, SyntaxKind::DocFunctionReturn);
+
+        SyntaxKind::DocTypeFunction
     }
 
     fn parse_tag_type(&mut self) {

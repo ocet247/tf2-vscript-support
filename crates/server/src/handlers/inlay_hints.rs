@@ -312,11 +312,11 @@ fn parameter_hints(
                 return None;
             };
 
-            let sg = &ctx.get(func_id).signature;
+            let func = ctx.get(func_id);
 
             Some(
                 call.arguments()
-                    .zip(sg.params.iter().copied())
+                    .zip(func.params.iter().copied())
                     .filter_map(move |(arg, param_id)| {
                         if !range.contains_range(arg.syntax().text_range()) {
                             return None;
@@ -328,8 +328,8 @@ fn parameter_hints(
                             return None;
                         }
 
-                        if sg.params.len() == 1 {
-                            let flags = ctx.get(sg.params[0]).typ.type_flags();
+                        if func.params.len() == 1 {
+                            let flags = ctx.get(func.params[0]).typ.type_flags();
 
                             if !flags.intersects(TypeFlags::BOOL)
                                 && !flags.intersects(TypeFlags::NULL)
@@ -392,8 +392,8 @@ fn return_value_hints(
     ctx: &SourceCtx,
     range: TextRange,
 ) -> impl Iterator<Item = InlayHint> {
-    ctx.all_functions().filter_map(move |(_, func)| {
-        let parameter_list = func
+    ctx.all_functions().filter_map(move |(_, func, imp)| {
+        let parameter_list = imp
             .node
             .to_node(root)
             .children()
@@ -406,7 +406,7 @@ fn return_value_hints(
 
         let position = positions::position(line_idx, offset)?;
 
-        let text = match &func.signature.back {
+        let text = match &func.back {
             FunctionBack::Return(typ) => {
                 if *typ == Type::NULL {
                     return None;

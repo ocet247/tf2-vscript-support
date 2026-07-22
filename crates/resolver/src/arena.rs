@@ -10,7 +10,7 @@ use crate::{
     class::ClassData,
     db::source_symbol,
     enum_::EnumData,
-    function::FunctionData,
+    function::{FunctionData, FunctionImpl},
     generator::GeneratorData,
     symbol::{Primitive, Symbol, SymbolTable, Type},
     table::TableData,
@@ -234,6 +234,7 @@ impl_source_arena! {
     classes:    ClassData,
     enums:      EnumData,
     functions:  FunctionData,
+    impls:      FunctionImpl,
     arrays:     ArrayData,
     generators: GeneratorData,
     strings:    StringLiteralData,
@@ -257,9 +258,13 @@ impl SourceArena {
         self.symbols.iter()
     }
 
-    pub fn all_functions(&self) -> impl Iterator<Item = (Idx<FunctionData>, &FunctionData)> {
-        self.functions
-            .iter()
-            .filter(|(_, s)| !s.flags.intersects(FunctionFlags::STALE))
+    pub fn all_functions(
+        &self,
+    ) -> impl Iterator<Item = (Idx<FunctionData>, &FunctionData, &FunctionImpl)> {
+        self.functions.iter().filter_map(|(idx, s)| {
+            let imp = s.imp.as_ref()?;
+
+            (!imp.flags.intersects(FunctionFlags::STALE)).then_some((idx, s, imp))
+        })
     }
 }

@@ -1070,7 +1070,8 @@ impl HasDocTypes for DocTagType {}
 
 ast_enum!(DocType {
     Name(DocTypeName),
-    Array(DocTypeArray)
+    Array(DocTypeArray),
+    Function(DocTypeFunction),
 });
 
 ast_node!(DocTypeName, DocTypeName);
@@ -1083,6 +1084,55 @@ impl DocTypeName {
 
 ast_node!(DocTypeArray, DocTypeArray);
 impl HasDocTypes for DocTypeArray {}
+
+ast_node!(DocFunctionParameter, DocFunctionParameter);
+impl HasDocTypes for DocFunctionParameter {}
+
+impl DocFunctionParameter {
+    #[must_use]
+    pub fn question_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.0, SyntaxKind::DocQuestion)
+    }
+
+    #[must_use]
+    pub fn ellipsis_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.0, SyntaxKind::DocEllipsis)
+    }
+
+    #[must_use]
+    pub fn identifier(&self) -> Option<SyntaxToken> {
+        support::token(&self.0, SyntaxKind::DocIdentifier)
+    }
+}
+
+ast_node!(DocFunctionReturn, DocFunctionReturn);
+impl HasDocTypes for DocFunctionReturn {}
+
+ast_token_enum!(ArrowKind {
+    DocArrow => Normal,
+    DocGeneratorArrow => Generator,
+});
+
+impl DocFunctionReturn {
+    #[must_use]
+    pub fn arrow_token(&self) -> Option<(ArrowKind, SyntaxToken)> {
+        ArrowKind::token(&self.0)
+    }
+}
+
+ast_node!(DocTypeFunction, DocTypeFunction);
+
+impl DocTypeFunction {
+    #[must_use]
+    pub fn parameters(&self) -> AstChildren<DocFunctionParameter> {
+        support::children(self.syntax())
+    }
+
+    #[must_use]
+    pub fn ret(&self) -> Option<DocFunctionReturn> {
+        support::child(&self.0)
+    }
+}
 
 ast_enum!(Tag {
     Return(ReturnTag),

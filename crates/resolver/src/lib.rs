@@ -24,6 +24,7 @@ use crate::{
         top_const_members, top_root_members, top_source_and_const_members,
         top_source_and_root_members, top_source_members,
     },
+    function::FunctionImpl,
     symbol::{FlatSymbolTable, to_flat_symbol_table},
     table::TableData,
 };
@@ -33,7 +34,7 @@ pub use db::{
     Database, UnreachableCode, UnusedVariables, VScriptDatabase, VScriptDbConfig,
     VScriptDbInitConfig, parse, source_symbol,
 };
-pub use function::{FunctionBack, FunctionData, FunctionFlags, FunctionSignature, ParamsState};
+pub use function::{FunctionBack, FunctionData, FunctionFlags, ParamsState};
 pub use symbol::{
     DisplayType, LocalKind, Primitive, StringKind, Symbol, SymbolFlags, SymbolKind, SymbolTable,
     ToPrimitiveError, Type, TypeFlags,
@@ -254,17 +255,27 @@ pub trait Source {
     fn doc_to_symbol(&self) -> &FxHashMap<TextRange, SymbolId>;
     fn symbol_to_ranges(&self) -> &FxHashMap<SymbolId, FxHashSet<TextRange>>;
     fn diagnostics(&self) -> &[Diagnostic];
+    fn extensions(&self) -> &FxHashMap<ImportTarget, SymbolTable>;
 
     fn get<T>(&self, id: T) -> &T::Data
     where
         T: ArenaId,
         SourceArena: std::ops::Index<Idx<T::Data>, Output = T::Data>;
 
+    fn imp(&self, idx: Idx<FunctionData>) -> &FunctionImpl {
+        self.arena()[idx]
+            .imp
+            .as_ref()
+            .expect("Functions that are stored by Idx should have an implementation")
+    }
+
     fn all_symbols(&self) -> impl Iterator<Item = (Idx<Symbol>, &Symbol)> {
         self.arena().all_symbols()
     }
 
-    fn all_functions(&self) -> impl Iterator<Item = (Idx<FunctionData>, &FunctionData)> {
+    fn all_functions(
+        &self,
+    ) -> impl Iterator<Item = (Idx<FunctionData>, &FunctionData, &FunctionImpl)> {
         self.arena().all_functions()
     }
 
@@ -335,9 +346,15 @@ pub trait Source {
         to_flat_symbol_table(enum_.members.clone())
     }
 
-    fn additional_table_members(&self, table: TableId) -> SymbolTable {
-        let table = self.get(table);
+    fn additional_table_members(&self, id: TableId) -> SymbolTable {
+        let table = self.get(id);
         let mut result = table.members.clone();
+
+        if let Some(members) = self.extensions().get(&ImportTarget::Table(id)).cloned() {
+            for (k, v) in members {
+                result.entry(k).or_insert(v);
+            }
+        }
 
         if let Some(delegate) = table.delegate {
             let delegate_members = self.additional_table_members(delegate);
@@ -349,9 +366,15 @@ pub trait Source {
         result
     }
 
-    fn additional_class_members(&self, class: ClassId) -> SymbolTable {
-        let class = self.get(class);
+    fn additional_class_members(&self, id: ClassId) -> SymbolTable {
+        let class = self.get(id);
         let mut result = class.members.clone();
+
+        if let Some(members) = self.extensions().get(&ImportTarget::Class(id)).cloned() {
+            for (k, v) in members {
+                result.entry(k).or_insert(v);
+            }
+        }
 
         if let Inherits::Yes(superclass) = class.inherits {
             let superclass_members = self.additional_class_members(superclass);
@@ -424,7 +447,7 @@ pub trait Source {
 
     fn get_scope_execution_range(&self, scope: ScopeId) -> Option<TextRange> {
         let idx = self.arena()[scope].function?;
-        let function = &self.arena()[idx];
+        let function = &self.imp(idx);
         Some(function.range)
     }
 
@@ -432,8 +455,8 @@ pub trait Source {
         self.arena()[scope].function.map_or_else(
             || Container::Table(self.source_table()),
             |idx| {
-                let function = &self.arena()[idx];
-                function.bindenv.unwrap_or(function.container)
+                let imp = &self.imp(idx);
+                imp.bindenv.unwrap_or(imp.container)
             },
         )
     }
@@ -725,6 +748,7 @@ pub trait Source {
         let imports = self.import_members(imports);
 
         if hide_unnecessary {
+            dbg!(&imports);
             for (k, v) in imports {
                 if self.get(v).flags.intersects(SymbolFlags::HIDE) {
                     members.remove(&k);
@@ -1056,7 +1080,7 @@ impl<'db> SourceCtx<'db> {
 
         let typ = self.symbol_type_at(id, offset);
         match s.kind {
-            SymbolKind::Local(_) => str.push_str("local "),
+            SymbolKind::Shape | SymbolKind::Local(_) => str.push_str("local "),
             SymbolKind::Property { .. } => {
                 if s.flags.intersects(SymbolFlags::STATIC) {
                     str.push_str("static ");
@@ -1120,7 +1144,7 @@ impl<'db> SourceCtx<'db> {
                 str.push_str(&signature);
             }
             Ok(Primitive::Function(None)) => {
-                let _ = write!(str, "function {name}()");
+                let _ = write!(str, "function {name}(...vargv: any) -> any");
             }
             Ok(Primitive::Class(id)) => {
                 let _ = write!(str, "class {name}");
@@ -1151,15 +1175,13 @@ impl<'db> SourceCtx<'db> {
             FunctionMarkdown::Full(name) => format!("function {name}("),
         };
 
-        let sg = &func.signature;
-
-        let default_after = if let ParamsState::Default(after) = sg.params_state {
+        let default_after = if let ParamsState::Default(after) = func.params_state {
             Some(after)
         } else {
             None
         };
 
-        for (i, &param_id) in sg.params.iter().enumerate() {
+        for (i, &param_id) in func.params.iter().enumerate() {
             if i > 0 {
                 label.push_str(", ");
             }
@@ -1180,8 +1202,8 @@ impl<'db> SourceCtx<'db> {
             }
         }
 
-        if let ParamsState::VarArgs(_, id) = sg.params_state {
-            if !sg.params.is_empty() {
+        if let ParamsState::VarArgs(_, id) = func.params_state {
+            if !func.params.is_empty() {
                 label.push_str(", ");
             }
             match kind {
@@ -1206,11 +1228,11 @@ impl<'db> SourceCtx<'db> {
 
         label.push(')');
 
-        if sg.throws.is_some() {
+        if func.throws.is_some() {
             label.push('!');
         }
 
-        match &sg.back {
+        match &func.back {
             FunctionBack::Return(typ) => {
                 if *typ != Type::NULL {
                     let _ = write!(label, " -> {}", self.type_to_str(typ));
@@ -1285,6 +1307,10 @@ impl Source for SourceCtx<'_> {
     fn diagnostics(&self) -> &[Diagnostic] {
         &self.source().diagnostics
     }
+
+    fn extensions(&self) -> &FxHashMap<ImportTarget, SymbolTable> {
+        &self.source().extensions
+    }
 }
 
 #[derive(Debug, PartialEq)]
@@ -1295,6 +1321,7 @@ pub struct SourceSymbol {
     const_table: Idx<TableData>,
     root_table: Idx<TableData>,
     source_table: Idx<TableData>,
+    extensions: FxHashMap<ImportTarget, SymbolTable>,
 
     range_to_expr: FxHashMap<TextRange, ExpressionKind>,
     range_to_symbol: FxHashMap<TextRange, SymbolId>,

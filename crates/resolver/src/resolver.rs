@@ -3,14 +3,14 @@ use rustc_hash::{FxHashMap, FxHashSet};
 use sq_3_parser::{
     AstNode, SyntaxKind, SyntaxNode, SyntaxNodePtr, SyntaxToken, TextRange, TextSize,
     ast::{
-        self, ArrayLiteralExpression, BaseExpression, BinaryExpression, BinaryOperator,
+        self, ArrayLiteralExpression, ArrowKind, BaseExpression, BinaryExpression, BinaryOperator,
         BlockStatement, BreakStatement, CallExpression, ClassExpression, ClassStatement,
         CloneExpression, ConditionalExpression, ConstStatement, ContinueStatement,
-        DeleteExpression, DoWhileStatement, DocComment, DocType, ElementAccessExpression,
-        EnumStatement, Expr, ExpressionStatement, ExpressionWrapper, ForEachStatement,
-        ForInitialiserKind, ForStatement, FunctionBody, FunctionExpression, FunctionStatement,
-        HasBody, HasDoc, HasDocDescription, HasDocName, HasDocType, HasDocTypes, HasName,
-        HasOperand, IfStatement, IsClass, IsClassMember, IsFunction, LambdaExpression,
+        DeleteExpression, DoWhileStatement, DocComment, DocType, DocTypeFunction,
+        ElementAccessExpression, EnumStatement, Expr, ExpressionStatement, ExpressionWrapper,
+        ForEachStatement, ForInitialiserKind, ForStatement, FunctionBody, FunctionExpression,
+        FunctionStatement, HasBody, HasDoc, HasDocDescription, HasDocName, HasDocType, HasDocTypes,
+        HasName, HasOperand, IfStatement, IsClass, IsClassMember, IsFunction, LambdaExpression,
         LiteralExpression, LiteralExpressionKind, LocalFunctionDeclaration,
         LocalVariableDeclaration, Member, MemberAccessExpression, MemberName, Name, NoDiscardTag,
         ParamTag, Parameter, ParenthesisedExpression, PostfixUpdateExpression,
@@ -26,9 +26,8 @@ use string_literals::CLASSNAMES_TO_CLASSES;
 
 use crate::{
     Diagnostic, DiagnosticSeverity, ExpressionKind, File, FindSymbol, FunctionBack, FunctionData,
-    FunctionFlags, FunctionIdResolution, FunctionSignature, ImportMembers, NullableExprKind,
-    ParamsState, Source, SourceSymbol, TypeWithRange, UnreachableCode, UnusedVariables,
-    VScriptDatabase,
+    FunctionFlags, FunctionIdResolution, ImportMembers, NullableExprKind, ParamsState, Source,
+    SourceSymbol, TypeWithRange, UnreachableCode, UnusedVariables, VScriptDatabase,
     arena::{
         ArenaAlloc, ArenaId, ArrayId, ClassId, Container, EnumId, FunctionId, GeneratorId,
         ImportTarget, Scope, ScopeId, SourceArena, StringLiteralData, StringLiteralId, SymbolId,
@@ -38,6 +37,7 @@ use crate::{
     class::{ClassData, Inherits},
     db::NativeFunction,
     enum_::EnumData,
+    function::FunctionImpl,
     generator::GeneratorData,
     symbol::{
         LocalKind, Primitive, StringKind, Symbol, SymbolFlags, SymbolKind, SymbolTable,
@@ -258,6 +258,8 @@ pub struct Resolver<'db> {
     doc_to_symbol: FxHashMap<TextRange, SymbolId>,
     symbol_to_ranges: FxHashMap<SymbolId, FxHashSet<TextRange>>,
     diagnostics: Vec<Diagnostic>,
+
+    extensions: FxHashMap<ImportTarget, SymbolTable>,
 }
 
 impl Source for Resolver<'_> {
@@ -324,6 +326,10 @@ impl Source for Resolver<'_> {
 
     fn diagnostics(&self) -> &[Diagnostic] {
         &self.diagnostics
+    }
+
+    fn extensions(&self) -> &FxHashMap<ImportTarget, SymbolTable> {
+        &self.extensions
     }
 }
 
@@ -399,6 +405,7 @@ impl<'db> Resolver<'db> {
             doc_to_symbol: FxHashMap::default(),
             symbol_to_ranges: FxHashMap::default(),
             diagnostics: Vec::new(),
+            extensions: FxHashMap::default(),
         };
 
         let mut is_native = false;
@@ -464,6 +471,7 @@ impl<'db> Resolver<'db> {
             doc_to_symbol: this.doc_to_symbol,
             symbol_to_ranges: this.symbol_to_ranges,
             diagnostics: this.diagnostics,
+            extensions: this.extensions,
         }
     }
 
@@ -477,6 +485,13 @@ impl<'db> Resolver<'db> {
         }
 
         Some(&mut self.arena[id.idx()])
+    }
+
+    fn imp_mut(&mut self, idx: Idx<FunctionData>) -> &mut FunctionImpl {
+        self.arena[idx]
+            .imp
+            .as_mut()
+            .expect("Functions that are stored by Idx should have an implementation")
     }
 
     fn new_reference(&mut self, range: TextRange, id: SymbolId) {
@@ -680,13 +695,12 @@ impl<'db> Resolver<'db> {
     }
 
     fn execution_container(&self) -> Container {
-        self.function.map_or_else(
-            || Container::Table(self.source_table()),
-            |id| {
-                let function = &self.arena[id];
-                function.bindenv.unwrap_or(function.container)
-            },
-        )
+        self.function
+            .and_then(|idx| self.arena[idx].imp.as_ref())
+            .map_or_else(
+                || Container::Table(self.source_table()),
+                |imp| imp.bindenv.unwrap_or(imp.container),
+            )
     }
 
     fn add_current_container_member(&mut self, name: Box<str>, symbol: SymbolId) {
@@ -698,17 +712,30 @@ impl<'db> Resolver<'db> {
             Container::Table(id) => {
                 if let Some(t) = self.get_mut(id) {
                     insert_symbol(&mut t.members, name, symbol);
+                } else {
+                    insert_symbol(
+                        self.extensions.entry(ImportTarget::Table(id)).or_default(),
+                        name,
+                        symbol,
+                    );
                 }
             }
             Container::Class(id) | Container::Instance(id) => {
                 if let Some(c) = self.get_mut(id) {
                     insert_symbol(&mut c.members, name, symbol);
+                } else {
+                    insert_symbol(
+                        self.extensions.entry(ImportTarget::Class(id)).or_default(),
+                        name,
+                        symbol,
+                    );
                 }
             }
             Container::Enum(id) => {
                 if let Some(e) = self.get_mut(id) {
                     insert_symbol(&mut e.members, name, symbol);
                 }
+                // Can't add a symbol to an enum
             }
         }
     }
@@ -723,8 +750,11 @@ impl<'db> Resolver<'db> {
         if let Container::Class(id) = self.container
             && member.static_keyword().is_none()
         {
-            if let Some(func) = method_id.and_then(|id| self.get_mut(id)) {
-                func.container = Container::Instance(id);
+            if let Some(imp) = method_id
+                .and_then(|id| self.get_mut(id))
+                .and_then(|data| data.imp.as_mut())
+            {
+                imp.container = Container::Instance(id);
             }
 
             true
@@ -856,7 +886,112 @@ impl<'db> Resolver<'db> {
                 let typ = self.doc_type(array.types(), offset).unwrap_or(Type::ANY);
                 Type::Primitive(Primitive::Array(Some(self.array(typ))))
             }
+            DocType::Function(func) => {
+                let id = self.doc_function_signature(func, offset);
+                Type::Primitive(Primitive::Function(Some(id)))
+            }
         })
+    }
+
+    fn doc_function_signature(&mut self, func: &DocTypeFunction, offset: TextSize) -> FunctionId {
+        let idx = self.arena.alloc(FunctionData {
+            imp: None,
+            ..Default::default()
+        });
+
+        let mut params_state = ParamsState::NoDefault;
+
+        for (count, param) in func.parameters().enumerate() {
+            let typ = self.doc_type(param.types(), offset).unwrap_or(Type::ANY);
+
+            let (name_range, name) = param.identifier().map_or_else(
+                || {
+                    (
+                        param.syntax().text_range(),
+                        format!("arg{count}").into_boxed_str(),
+                    )
+                },
+                |tok| (tok.text_range(), tok.text().into()),
+            );
+
+            if param.ellipsis_token().is_some() {
+                let array = self.array(typ);
+                let symbol = self.symbol(Symbol {
+                    name,
+                    typ: Type::Primitive(Primitive::Array(Some(array))),
+                    kind: SymbolKind::Shape,
+                    name_range,
+                    node: SyntaxNodePtr::new(param.syntax()),
+                    description: None,
+                    flags: SymbolFlags::default(),
+                    is_type_explicit: true,
+                });
+
+                if matches!(params_state, ParamsState::VarArgs(_, _)) {
+                    self.diagnostics.push(Diagnostic {
+                        message: "There can't be 2 varied arguments in a function signature"
+                            .to_owned(),
+                        range: param.syntax().text_range(),
+                        ..Default::default()
+                    });
+                } else {
+                    params_state = ParamsState::VarArgs(count, symbol);
+                }
+                continue;
+            }
+
+            let symbol = self.symbol(Symbol {
+                name,
+                typ,
+                kind: SymbolKind::Shape,
+                name_range,
+                node: SyntaxNodePtr::new(param.syntax()),
+                description: None,
+                flags: SymbolFlags::default(),
+                is_type_explicit: true,
+            });
+
+            self.arena[idx].params.push(symbol);
+
+            match params_state {
+                ParamsState::NoDefault => {
+                    if param.question_token().is_some() {
+                        params_state = ParamsState::Default(count);
+                    }
+                }
+                ParamsState::Default(_) => {
+                    if param.question_token().is_none() {
+                        self.diagnostics.push(Diagnostic {
+                            message: "Non-optional parameter cannot follow an optional parameter"
+                                .to_owned(),
+                            range: param.syntax().text_range(),
+                            ..Default::default()
+                        });
+                    }
+                }
+                ParamsState::VarArgs(var_args_at, _) => {
+                    self.diagnostics.push(Diagnostic {
+                        message: "Parameters cannot be preceded by varied arguments".to_owned(),
+                        range: param.syntax().text_range(),
+                        ..Default::default()
+                    });
+                    params_state = ParamsState::Default(var_args_at);
+                }
+            }
+        }
+
+        self.arena[idx].params_state = params_state;
+
+        let back = func.ret().map_or(FunctionBack::Return(Type::NULL), |ret| {
+            let ret_type = self.doc_type(ret.types(), offset).unwrap_or(Type::ANY);
+            match ret.arrow_token() {
+                Some((ArrowKind::Generator, _)) => FunctionBack::Yield(ret_type),
+                _ => FunctionBack::Return(ret_type),
+            }
+        });
+        self.arena[idx].back = back;
+
+        FunctionId::new(self.file, idx)
     }
 
     fn doc_type(
@@ -1004,7 +1139,7 @@ impl<'db> Resolver<'db> {
             (Primitive::Table(None), Primitive::Table(Some(_)))
             | (Primitive::Class(None), Primitive::Class(Some(_)))
             | (Primitive::Array(None), Primitive::Array(Some(_)))
-            | (Primitive::Function(None), Primitive::Function(Some(_)))
+            | (Primitive::Function(None), Primitive::Function(_))
             | (Primitive::Generator(None), Primitive::Generator(Some(_)))
             | (Primitive::Thread(None), Primitive::Thread(Some(_)))
             | (Primitive::Integer(None), Primitive::Integer(Some(_)))
@@ -1242,7 +1377,7 @@ impl<'db> Resolver<'db> {
 
                         insert_symbol(&mut self.current_scope().locals, name, id);
                         // TODO: if signature was explicitly assigned, check the validity of said param
-                        self.arena[idx].signature.params.push(id);
+                        self.arena[idx].params.push(id);
                         raw_param_types.push(None);
                         continue;
                     };
@@ -1273,7 +1408,7 @@ impl<'db> Resolver<'db> {
 
                     insert_symbol(&mut self.current_scope().locals, name, id);
                     // TODO: if signature was explicitly assigned, check the validity of said param
-                    self.arena[idx].signature.params.push(id);
+                    self.arena[idx].params.push(id);
 
                     match params_state {
                         ParamsState::NoDefault => {
@@ -1329,7 +1464,7 @@ impl<'db> Resolver<'db> {
             }
         }
 
-        self.arena[idx].signature.params_state = params_state;
+        self.arena[idx].params_state = params_state;
         raw_param_types
     }
 
@@ -1811,10 +1946,7 @@ impl<'db> Resolver<'db> {
     ) -> Option<Type> {
         match callable {
             Primitive::Function(id) => {
-                let Some(id) = id else {
-                    return Some(Type::ANY);
-                };
-
+                let id = id?;
                 let idx = id.idx();
                 let first_encounter = id.file() == self.file && !self.resolved_once.contains(&idx);
 
@@ -1832,14 +1964,13 @@ impl<'db> Resolver<'db> {
 
                 let mut params_changed = false;
                 for (count, argument) in arguments.iter().cloned().enumerate() {
-                    let Some(&param) = self.get(id).signature.params.get(count) else {
-                        let ParamsState::VarArgs(_, vargv) = self.get(id).signature.params_state
-                        else {
+                    let Some(&param) = self.get(id).params.get(count) else {
+                        let ParamsState::VarArgs(_, vargv) = self.get(id).params_state else {
                             self.diagnostics.push(Diagnostic {
                                 message: format!(
                                     "Passing {} parameters when only {} is possible",
                                     count + 1,
-                                    &self.get(id).signature.params.len()
+                                    &self.get(id).params.len()
                                 ),
                                 range: argument.range,
                                 ..Default::default()
@@ -1894,8 +2025,8 @@ impl<'db> Resolver<'db> {
                     data = self.deferred_entry(id);
                 }
 
-                let least_params_required = match self.get(id).signature.params_state {
-                    ParamsState::NoDefault => self.get(id).signature.params.len(),
+                let least_params_required = match self.get(id).params_state {
+                    ParamsState::NoDefault => self.get(id).params.len(),
                     ParamsState::Default(from) | ParamsState::VarArgs(from, _) => from,
                 };
 
@@ -1921,7 +2052,7 @@ impl<'db> Resolver<'db> {
                     return Some(override_return);
                 }
 
-                Some(match &self.get(id).signature.back {
+                Some(match &self.get(id).back {
                     FunctionBack::Return(typ) => typ.this_to_concrete(context),
                     FunctionBack::Yield(typ) => {
                         Type::Primitive(Primitive::Generator(Some(self.generator(typ.clone()))))
@@ -2073,13 +2204,14 @@ impl<'db> Resolver<'db> {
         };
 
         let idx = self.arena.alloc(FunctionData {
-            signature: FunctionSignature::default(),
-            symbol: None,
-            range,
-            node: SyntaxNodePtr::new(node.syntax()),
-            container: self.container,
-            bindenv,
-            flags: FunctionFlags::default(),
+            imp: Some(FunctionImpl {
+                range,
+                node: SyntaxNodePtr::new(node.syntax()),
+                container: self.container,
+                bindenv,
+                flags: FunctionFlags::default(),
+            }),
+            ..Default::default()
         });
 
         let id = FunctionId::new(self.file, idx);
@@ -2217,7 +2349,8 @@ impl<'db> Resolver<'db> {
     }
 
     fn return_tag(&mut self, tag: &ReturnTag, offset: TextSize, idx: Idx<FunctionData>) {
-        if self.arena[idx]
+        if self
+            .imp(idx)
             .flags
             .intersects(FunctionFlags::RETURN_EXPLICIT)
         {
@@ -2229,7 +2362,8 @@ impl<'db> Resolver<'db> {
             return;
         }
 
-        if self.arena[idx]
+        if self
+            .imp(idx)
             .flags
             .intersects(FunctionFlags::YIELD_EXPLICIT)
         {
@@ -2249,8 +2383,8 @@ impl<'db> Resolver<'db> {
         let doc_type = self.doc_type(typ.types(), offset);
 
         if let Some(typ) = doc_type {
-            self.arena[idx].flags |= FunctionFlags::RETURN_EXPLICIT;
-            self.arena[idx].signature.back = FunctionBack::Return(typ);
+            self.imp_mut(idx).flags |= FunctionFlags::RETURN_EXPLICIT;
+            self.arena[idx].back = FunctionBack::Return(typ);
         }
     }
 
@@ -2262,7 +2396,6 @@ impl<'db> Resolver<'db> {
         let text = param_name.text();
 
         let Some((idx, &param_id)) = self.arena[entry.idx]
-            .signature
             .params
             .iter()
             .enumerate()
@@ -2313,17 +2446,18 @@ impl<'db> Resolver<'db> {
     }
 
     fn throw_tag(&mut self, tag: &ThrowTag, offset: TextSize, idx: Idx<FunctionData>) {
-        self.arena[idx].flags |= FunctionFlags::THROW_EXPLICIT;
+        self.imp_mut(idx).flags |= FunctionFlags::THROW_EXPLICIT;
 
         let Some(typ) = tag.typ() else { return };
 
         if let Some(doc_type) = self.doc_type(typ.types(), offset) {
-            self.arena[idx].signature.throws = Some(doc_type);
+            self.arena[idx].throws = Some(doc_type);
         }
     }
 
     fn yield_tag(&mut self, tag: &YieldTag, offset: TextSize, idx: Idx<FunctionData>) {
-        if self.arena[idx]
+        if self
+            .imp(idx)
             .flags
             .intersects(FunctionFlags::YIELD_EXPLICIT)
         {
@@ -2335,7 +2469,8 @@ impl<'db> Resolver<'db> {
             return;
         }
 
-        if self.arena[idx]
+        if self
+            .imp(idx)
             .flags
             .intersects(FunctionFlags::RETURN_EXPLICIT)
         {
@@ -2348,18 +2483,18 @@ impl<'db> Resolver<'db> {
             return;
         }
 
-        self.arena[idx].flags |= FunctionFlags::YIELD_EXPLICIT;
-        self.arena[idx].signature.back = FunctionBack::Yield(Type::ANY);
+        self.imp_mut(idx).flags |= FunctionFlags::YIELD_EXPLICIT;
+        self.arena[idx].back = FunctionBack::Yield(Type::ANY);
 
         let Some(typ) = tag.typ() else { return };
 
         if let Some(doc_type) = self.doc_type(typ.types(), offset) {
-            self.arena[idx].signature.back = FunctionBack::Yield(doc_type);
+            self.arena[idx].back = FunctionBack::Yield(doc_type);
         }
     }
 
     fn var_args_tag(&mut self, tag: &VarArgsTag, offset: TextSize, idx: Idx<FunctionData>) {
-        let ParamsState::VarArgs(_, id) = self.arena[idx].signature.params_state else {
+        let ParamsState::VarArgs(_, id) = self.arena[idx].params_state else {
             return;
         };
 
@@ -2397,7 +2532,7 @@ impl<'db> Resolver<'db> {
         let doc_type = doc_type.this_to_concrete(&self.execution_container().into());
 
         if let Ok(container) = Container::try_from(&doc_type) {
-            self.arena[idx].bindenv = Some(container);
+            self.imp_mut(idx).bindenv = Some(container);
         } else if !doc_type.type_flags().intersects(TypeFlags::ANY) {
             self.diagnostics.push(Diagnostic {
                 message: format!(
@@ -2411,13 +2546,13 @@ impl<'db> Resolver<'db> {
     }
 
     fn static_tag(&mut self, _tag: &StaticTag, idx: Idx<FunctionData>) {
-        if let Container::Instance(id) = self.arena[idx].container {
-            self.arena[idx].container = Container::Class(id);
+        if let Container::Instance(id) = self.imp(idx).container {
+            self.imp_mut(idx).container = Container::Class(id);
         }
     }
 
     fn no_discard_tag(&mut self, tag: &NoDiscardTag, idx: Idx<FunctionData>) {
-        if self.arena[idx].flags.intersects(FunctionFlags::NO_DISCARD) {
+        if self.imp(idx).flags.intersects(FunctionFlags::NO_DISCARD) {
             self.diagnostics.push(Diagnostic {
                 message: "Duplicated @nodiscard tag. This tag has no additional effect".to_owned(),
                 range: tag.syntax().text_range(),
@@ -2426,7 +2561,7 @@ impl<'db> Resolver<'db> {
             return;
         }
 
-        self.arena[idx].flags |= FunctionFlags::NO_DISCARD;
+        self.imp_mut(idx).flags |= FunctionFlags::NO_DISCARD;
     }
 
     fn var_tag(&mut self, tag: &VarTag) {
@@ -2465,7 +2600,7 @@ impl<'db> Resolver<'db> {
             // clear out the symbols/diagnostics that run produced so we don't
             // end up with duplicates or spurious "unused variable" hits on
             // orphaned locals from the earlier pass.
-            let body_range = self.arena[idx].range;
+            let body_range = self.imp(idx).range;
             self.purge_range_bookkeeping(body_range);
         }
 
@@ -2475,9 +2610,9 @@ impl<'db> Resolver<'db> {
             return;
         };
 
-        let function = &self.arena[idx];
+        let imp = self.imp(idx);
         let save_container = self.container;
-        self.container = function.bindenv.unwrap_or(function.container);
+        self.container = imp.bindenv.unwrap_or(imp.container);
         let save_scope = self.scope;
         self.scope = trace.scope;
         let save_function = self.function;
@@ -2512,11 +2647,11 @@ impl<'db> Resolver<'db> {
         // is the only way to "delete" a symbol.
         let stale_ids: Vec<_> = self
             .all_functions()
-            .filter_map(|(idx, f)| range.contains_range(f.node.text_range()).then_some(idx))
+            .filter_map(|(idx, _, imp)| range.contains_range(imp.node.text_range()).then_some(idx))
             .collect();
 
         for idx in stale_ids {
-            self.arena[idx].flags |= FunctionFlags::STALE;
+            self.imp_mut(idx).flags |= FunctionFlags::STALE;
         }
 
         self.symbol_to_ranges.retain(|_, ranges| {
@@ -2531,14 +2666,14 @@ impl<'db> Resolver<'db> {
             FunctionBody::Expr(expr) => {
                 let new_ret = self.expr_to_type_with_range(expr);
 
-                let ret = match &self.arena[idx].signature.back {
+                let ret = match &self.arena[idx].back {
                     FunctionBack::Return(ret) => ret.clone(),
                     // Lambdas can't be generators -> omit error?
                     FunctionBack::Yield(_) => return,
                 };
 
                 let new = self.update_type(&ret, true, new_ret, CheckTypeSource::Return);
-                self.arena[idx].signature.back = FunctionBack::Return(new);
+                self.arena[idx].back = FunctionBack::Return(new);
             }
             FunctionBody::Stmt(stmt) => {
                 self.collect_stmt(stmt);
@@ -3453,7 +3588,7 @@ impl<'db> Resolver<'db> {
         };
 
         self.add_container_member(container, name, symbol);
-        if let Some(function) = self.get_mut(id) {
+        if let Some(function) = self.get_mut(id).and_then(|data| data.imp.as_mut()) {
             function.container = container;
         }
     }
@@ -3522,7 +3657,7 @@ impl<'db> Resolver<'db> {
                 "Default constructor produces no side effects so returned object should not be ignored".to_owned()
             }
             FunctionIdResolution::Function(id) => {
-                if !self.get(id).flags.intersects(FunctionFlags::NO_DISCARD) {
+                if !self.get(id).imp.as_ref().is_some_and(|i| i.flags.intersects(FunctionFlags::NO_DISCARD)) {
                     return;
                 }
 
@@ -3697,12 +3832,13 @@ impl<'db> Resolver<'db> {
             return;
         };
 
-        let ret = match &self.arena[function].signature.back {
+        let ret = match &self.arena[function].back {
             FunctionBack::Return(ret) => ret.clone(),
             FunctionBack::Yield(_) => return,
         };
 
-        let is_explicit = self.arena[function]
+        let is_explicit = self
+            .imp(function)
             .flags
             .intersects(FunctionFlags::RETURN_EXPLICIT);
 
@@ -3716,7 +3852,7 @@ impl<'db> Resolver<'db> {
             CheckTypeSource::Return,
         );
 
-        self.arena[function].signature.back = FunctionBack::Return(new);
+        self.arena[function].back = FunctionBack::Return(new);
     }
 
     fn yield_statement(&mut self, stmt: &YieldStatement) {
@@ -3737,7 +3873,8 @@ impl<'db> Resolver<'db> {
             return;
         };
 
-        if self.arena[function]
+        if self
+            .imp(function)
             .flags
             .intersects(FunctionFlags::RETURN_EXPLICIT)
         {
@@ -3749,17 +3886,18 @@ impl<'db> Resolver<'db> {
             });
         }
 
-        let yields = match &self.arena[function].signature.back {
+        let yields = match &self.arena[function].back {
             // Yielding will always result in a generator, return values are ignored and return
             // is only used as a stop sign for the generator
             FunctionBack::Return(_) => {
-                self.arena[function].signature.back = FunctionBack::Yield(value.kind);
+                self.arena[function].back = FunctionBack::Yield(value.kind);
                 return;
             }
             FunctionBack::Yield(yields) => yields.clone(),
         };
 
-        let is_explicit = self.arena[function]
+        let is_explicit = self
+            .imp(function)
             .flags
             .intersects(FunctionFlags::YIELD_EXPLICIT);
 
@@ -3773,7 +3911,7 @@ impl<'db> Resolver<'db> {
             CheckTypeSource::Yield,
         );
 
-        self.arena[function].signature.back = FunctionBack::Yield(new);
+        self.arena[function].back = FunctionBack::Yield(new);
     }
 
     fn continue_statement(&mut self, stmt: &ContinueStatement) {
@@ -3853,12 +3991,13 @@ impl<'db> Resolver<'db> {
             return;
         };
 
-        let Some(throws) = self.arena[function].signature.throws.clone() else {
-            self.arena[function].signature.throws = Some(value);
+        let Some(throws) = self.arena[function].throws.clone() else {
+            self.arena[function].throws = Some(value);
             return;
         };
 
-        let is_explicit = self.arena[function]
+        let is_explicit = self
+            .imp(function)
             .flags
             .intersects(FunctionFlags::THROW_EXPLICIT);
 
@@ -3872,7 +4011,7 @@ impl<'db> Resolver<'db> {
             CheckTypeSource::Throw,
         );
 
-        self.arena[function].signature.throws = Some(new);
+        self.arena[function].throws = Some(new);
     }
 
     fn expr_to_type(&mut self, expr: &Expr) -> Type {
@@ -4883,8 +5022,9 @@ impl<'db> Resolver<'db> {
                     if is_literal
                         && let Ok(id) = typ.to_function()
                         && let Some(function) = self.get_mut(id)
+                        && let Some(imp) = function.imp.as_mut()
                     {
-                        function.container = container;
+                        imp.container = container;
                     }
                 }
             }
@@ -4943,8 +5083,9 @@ impl<'db> Resolver<'db> {
                         if is_literal
                             && let Ok(id) = typ.to_function()
                             && let Some(function) = self.get_mut(id)
+                            && let Some(imp) = function.imp.as_mut()
                         {
-                            function.container = container;
+                            imp.container = container;
                         }
                     }
                 } else {
@@ -4980,8 +5121,9 @@ impl<'db> Resolver<'db> {
                 if let Ok(container) = container
                     && let Ok(id) = id
                     && let Some(function) = self.get_mut(id)
+                    && let Some(imp) = function.imp.as_mut()
                 {
-                    function.container = container;
+                    imp.container = container;
                 }
             }
             _ => {}
@@ -5046,8 +5188,9 @@ impl<'db> Resolver<'db> {
             && matches!(right_kind, Some(ExpressionKind::Literal(_)))
             && let Ok(id) = right.kind.to_function()
             && let Some(function) = self.get_mut(id)
+            && let Some(imp) = function.imp.as_mut()
         {
-            function.container = container;
+            imp.container = container;
         }
 
         match left {
@@ -5805,7 +5948,7 @@ impl<'db> Resolver<'db> {
         let new = FunctionId::new(
             self.file,
             self.arena.alloc(FunctionData {
-                container,
+                imp: None,
                 ..old.clone()
             }),
         );

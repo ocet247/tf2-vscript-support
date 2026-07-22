@@ -48,7 +48,7 @@ pub fn handle_semantic_tokens_full<Db: VScriptDatabase>(
 
     let tokens = entries
         .into_iter()
-        .map(|(text_range, id)| {
+        .filter_map(|(text_range, id)| {
             let symbol = ctx.get(id);
             symbol_to_semantic_token(
                 symbol,
@@ -57,6 +57,7 @@ pub fn handle_semantic_tokens_full<Db: VScriptDatabase>(
                 &mut prev_line,
                 &mut prev_start,
             )
+            .transpose()
         })
         .collect::<anyhow::Result<Vec<_>>>()?;
 
@@ -92,19 +93,17 @@ pub fn handle_semantic_tokens_range<Db: VScriptDatabase>(
 
     let tokens = entries
         .into_iter()
+        .filter(|(text_range, _)| highlight_range.contains_range(*text_range))
         .filter_map(|(text_range, id)| {
-            if !highlight_range.contains_range(text_range) {
-                return None;
-            }
-
             let symbol = ctx.get(id);
-            Some(symbol_to_semantic_token(
+            symbol_to_semantic_token(
                 symbol,
                 line_idx,
                 text_range,
                 &mut prev_line,
                 &mut prev_start,
-            ))
+            )
+            .transpose()
         })
         .collect::<anyhow::Result<Vec<_>>>()?;
 
@@ -124,7 +123,7 @@ fn symbol_to_semantic_token(
     text_range: TextRange,
     prev_line: &mut u32,
     prev_start: &mut u32,
-) -> anyhow::Result<SemanticToken> {
+) -> anyhow::Result<Option<SemanticToken>> {
     let mut modifiers = TokenModifier::empty();
 
     if symbol.flags.intersects(SymbolFlags::CONST) {
@@ -140,6 +139,7 @@ fn symbol_to_semantic_token(
     }
 
     let token_type = match symbol.kind {
+        SymbolKind::Shape => return Ok(None),
         SymbolKind::Local(kind) => match DisplayType::from(symbol) {
             DisplayType::Function => TokenType::Function,
             DisplayType::Class => TokenType::Class,
@@ -188,11 +188,11 @@ fn symbol_to_semantic_token(
     *prev_line = line;
     *prev_start = start;
 
-    Ok(SemanticToken {
+    Ok(Some(SemanticToken {
         delta_line,
         delta_start,
         length: length.into(),
         token_type: token_type as u32,
         token_modifiers_bitset: u32::from(modifiers.bits()),
-    })
+    }))
 }

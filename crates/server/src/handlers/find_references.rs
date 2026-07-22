@@ -64,11 +64,11 @@ pub fn handle_references<Db: VScriptDatabase>(
     let name = reference.name.as_ref();
     let class_name = if name == "constructor" {
         reference.typ.to_function().ok().and_then(|function_id| {
-            match ctx.get(function_id).container {
-                Container::Class(class_id) | Container::Instance(class_id) => {
+            match ctx.get(function_id).imp.as_ref().map(|i| i.container) {
+                Some(Container::Class(class_id) | Container::Instance(class_id)) => {
                     ctx.get(class_id).symbol.map(|s| ctx.get(s).name.as_ref())
                 }
-                Container::Table(_) | Container::Enum(_) => None,
+                None | Some(Container::Table(_) | Container::Enum(_)) => None,
             }
         })
     } else {
