@@ -252,6 +252,7 @@ pub struct Resolver<'db> {
     /// that were never called from anywhere (dead code, or values only ever handed
     /// to an opaque native sink).
     pending_functions: Vec<Idx<FunctionData>>,
+    pending_signature_checks: Vec<(FunctionId, FunctionId, TextRange)>,
 
     range_to_expr: FxHashMap<TextRange, ExpressionKind>,
     range_to_symbol: FxHashMap<TextRange, SymbolId>,
@@ -400,6 +401,7 @@ impl<'db> Resolver<'db> {
             traces: FxHashMap::default(),
             resolved_once: FxHashSet::default(),
             pending_functions: Vec::new(),
+            pending_signature_checks: Vec::new(),
             range_to_expr: FxHashMap::default(),
             range_to_symbol: FxHashMap::default(),
             doc_to_symbol: FxHashMap::default(),
@@ -452,6 +454,11 @@ impl<'db> Resolver<'db> {
             }
 
             break;
+        }
+
+        let checks = std::mem::take(&mut this.pending_signature_checks);
+        for (expected, actual, range) in checks {
+            this.check_function_signature(expected, actual, range);
         }
 
         if !is_native && this.db.config().unused_variables != UnusedVariables::Off {
@@ -894,11 +901,7 @@ impl<'db> Resolver<'db> {
     }
 
     fn doc_function_signature(&mut self, func: &DocTypeFunction, offset: TextSize) -> FunctionId {
-        let idx = self.arena.alloc(FunctionData {
-            imp: None,
-            ..Default::default()
-        });
-
+        let idx = self.arena.alloc(FunctionData::default());
         let mut params_state = ParamsState::NoDefault;
 
         for (count, param) in func.parameters().enumerate() {
@@ -919,7 +922,7 @@ impl<'db> Resolver<'db> {
                 let symbol = self.symbol(Symbol {
                     name,
                     typ: Type::Primitive(Primitive::Array(Some(array))),
-                    kind: SymbolKind::Shape,
+                    kind: SymbolKind::SignatureParameter,
                     name_range,
                     node: SyntaxNodePtr::new(param.syntax()),
                     description: None,
@@ -943,7 +946,7 @@ impl<'db> Resolver<'db> {
             let symbol = self.symbol(Symbol {
                 name,
                 typ,
-                kind: SymbolKind::Shape,
+                kind: SymbolKind::SignatureParameter,
                 name_range,
                 node: SyntaxNodePtr::new(param.syntax()),
                 description: None,
@@ -1146,11 +1149,16 @@ impl<'db> Resolver<'db> {
             | (Primitive::Float(None), Primitive::Float(Some(_)))
             | (Primitive::Bool(None), Primitive::Bool(Some(_))) => Some(other),
             //
-            (Primitive::String { .. }, Primitive::String { .. })
+            (Primitive::Function(Some(expected_id)), Primitive::Function(Some(actual_id))) => {
+                self.pending_signature_checks
+                    .push((expected_id, actual_id, error_range));
+                Some(original)
+            }
+            (Primitive::Function(Some(_)), Primitive::Function(None))
+            | (Primitive::String { .. }, Primitive::String { .. })
             | (Primitive::Table(_), Primitive::Table(_))
             | (Primitive::Class(_), Primitive::Class(_))
             | (Primitive::Array(_), Primitive::Array(_))
-            | (Primitive::Function(_), Primitive::Function(_))
             | (Primitive::Generator(_), Primitive::Generator(_))
             | (Primitive::Thread(_), Primitive::Thread(_))
             | (Primitive::Instance(_), Primitive::Instance(_))
@@ -1323,10 +1331,197 @@ impl<'db> Resolver<'db> {
         }
     }
 
+    fn function_arity(&self, id: FunctionId) -> (usize, usize, bool) {
+        let data = self.get(id);
+        let total = data.params.len();
+        match data.params_state {
+            ParamsState::NoDefault => (total, total, false),
+            ParamsState::Default(from) => (from, total, false),
+            ParamsState::VarArgs(from, _) => (from, total, true),
+        }
+    }
+
+    /// Non-mutating, non-diagnosing compatibility probe. Deliberately shallow for
+    /// nested function types (any two `Function` primitives are considered
+    /// compatible at this level) to avoid unbounded recursion through
+    /// self-referential callback signatures - full covariance/contravariance on
+    /// nested callbacks is out of scope here.
+    fn primitive_accepts(&self, target: Primitive, source: Primitive) -> bool {
+        if matches!(target, Primitive::Any) || matches!(source, Primitive::Any) {
+            return true;
+        }
+        match (target, source) {
+            (Primitive::Instance(Some(t)), Primitive::Instance(Some(s))) => {
+                let mut cur = Some(s);
+                while let Some(id) = cur {
+                    if id == t {
+                        return true;
+                    }
+                    cur = self.get(id).inherits.into();
+                }
+                false
+            }
+            (Primitive::Instance(_), Primitive::Instance(_))
+            | (Primitive::Function(_), Primitive::Function(_)) => true,
+            _ => std::mem::discriminant(&target) == std::mem::discriminant(&source),
+        }
+    }
+
+    fn type_accepts(&self, target: &Type, source: &Type) -> bool {
+        if target.type_flags().intersects(TypeFlags::ANY)
+            || source.type_flags().intersects(TypeFlags::ANY)
+        {
+            return true;
+        }
+        match (target, source) {
+            (Type::Primitive(t), Type::Primitive(s)) => self.primitive_accepts(*t, *s),
+            (Type::Union(t), Type::Primitive(s)) => {
+                t.primitives.iter().any(|p| self.primitive_accepts(*p, *s))
+            }
+            (Type::Primitive(t), Type::Union(s)) => {
+                s.primitives.iter().all(|p| self.primitive_accepts(*t, *p))
+            }
+            (Type::Union(t), Type::Union(s)) => s.primitives.iter().all(|sp| {
+                t.primitives
+                    .iter()
+                    .any(|tp| self.primitive_accepts(*tp, *sp))
+            }),
+            (Type::Enum(t), Type::Enum(s)) => t == s,
+            _ => false,
+        }
+    }
+
+    /// `expected` is the declared/doc shape a caller promises to invoke with;
+    /// `actual` is the concrete function being checked against it (an assigned
+    /// value, or an argument passed where `expected` is a parameter's type).
+    fn check_function_signature(
+        &mut self,
+        expected: FunctionId,
+        actual: FunctionId,
+        error_range: TextRange,
+    ) -> bool {
+        if expected == actual {
+            return true;
+        }
+
+        let mut ok = true;
+
+        let (exp_required, exp_total, exp_varargs) = self.function_arity(expected);
+        let (act_required, act_total, act_varargs) = self.function_arity(actual);
+
+        if act_required > exp_required {
+            self.diagnostics.push(Diagnostic {
+            message: format!(
+                "Function requires at least {act_required} parameter(s), but only {exp_required} would be provided"
+            ),
+            range: error_range,
+            severity: DiagnosticSeverity::Warning,
+        });
+            ok = false;
+        }
+
+        // Heuristic: if the expected side is variadic itself, its worst-case
+        // argument count isn't known statically, so we don't flag a max-count
+        // mismatch to avoid false positives.
+        if !act_varargs && !exp_varargs && act_total < exp_total {
+            self.diagnostics.push(Diagnostic {
+            message: format!(
+                "Function accepts at most {act_total} parameter(s), but {exp_total} would be provided"
+            ),
+            range: error_range,
+            severity: DiagnosticSeverity::Warning,
+        });
+            ok = false;
+        }
+
+        for i in 0..exp_total.min(act_total) {
+            let exp_param = self.get(expected).params[i];
+            let act_param = self.get(actual).params[i];
+
+            let exp_name = self.get(exp_param).name.clone();
+            let act_name = self.get(act_param).name.clone();
+            if exp_name != act_name && !act_name.starts_with('_') && !exp_name.starts_with('_') {
+                self.diagnostics.push(Diagnostic {
+                    message: format!(
+                        "Parameter {} is named '{act_name}' here, but '{exp_name}' in the expected signature",
+                        i + 1
+                    ),
+                    range: self.get(act_param).name_range,
+                    severity: DiagnosticSeverity::Information,
+                });
+            }
+
+            // Contravariant: the caller will pass `exp` values in; `act`'s
+            // declared param type must be able to accept them.
+            let exp_typ = self.get(exp_param).typ.clone();
+            let act_typ = self.get(act_param).typ.clone();
+            if !self.type_accepts(&act_typ, &exp_typ) {
+                self.diagnostics.push(Diagnostic {
+                message: format!(
+                    "Parameter '{}' expects '{}', which is incompatible with the caller-provided '{}'",
+                    act_name,
+                    self.type_to_str(&act_typ),
+                    self.type_to_str(&exp_typ),
+                ),
+                range: self.get(act_param).name_range,
+                severity: DiagnosticSeverity::Warning,
+            });
+                ok = false;
+            }
+        }
+
+        // Covariant: the caller reads `act`'s return; it must fit what `exp` promised.
+        match (
+            self.get(expected).back.clone(),
+            self.get(actual).back.clone(),
+        ) {
+            (FunctionBack::Return(exp_ret), FunctionBack::Return(act_ret)) => {
+                dbg!(&act_ret);
+                if !self.type_accepts(&exp_ret, &act_ret) {
+                    self.diagnostics.push(Diagnostic {
+                        message: format!(
+                            "Function returns '{}', which is incompatible with the expected return type '{}'",
+                            self.type_to_str(&act_ret),
+                            self.type_to_str(&exp_ret),
+                        ),
+                        range: error_range,
+                        severity: DiagnosticSeverity::Warning,
+                    });
+                    ok = false;
+                }
+            }
+            (FunctionBack::Yield(exp_ret), FunctionBack::Yield(act_ret)) => {
+                if !self.type_accepts(&exp_ret, &act_ret) {
+                    self.diagnostics.push(Diagnostic {
+                        message: format!(
+                            "Generator yields '{}', which is incompatible with the expected yield type '{}'",
+                            self.type_to_str(&act_ret),
+                            self.type_to_str(&exp_ret),
+                        ),
+                        range: error_range,
+                        severity: DiagnosticSeverity::Warning,
+                    });
+                    ok = false;
+                }
+            }
+            _ => {
+                self.diagnostics.push(Diagnostic {
+                    message: "One function returns while the other yields (generator mismatch)"
+                        .to_owned(),
+                    range: error_range,
+                    severity: DiagnosticSeverity::Warning,
+                });
+                ok = false;
+            }
+        }
+
+        ok
+    }
     fn collect_params(
         &mut self,
         idx: Idx<FunctionData>,
         parameters: impl Iterator<Item = Parameter>,
+        expected: Option<FunctionId>,
     ) -> Vec<Option<TypeWithRange>> {
         let mut raw_param_types = Vec::new();
         let mut params_state = ParamsState::NoDefault;
@@ -1365,18 +1560,21 @@ impl<'db> Resolver<'db> {
                             ParamsState::NoDefault => {}
                         }
 
+                        let fallback_typ = expected
+                            .and_then(|sig| self.get(sig).params.get(count).copied())
+                            .map_or(Type::ANY, |sym| self.get(sym).typ.clone());
+
                         let id = self.symbol_with_info(
                             &var,
                             SymbolKind::Local(LocalKind::Parameter),
                             name.clone(),
                             name_range,
                             SymbolFlags::default(),
-                            Type::ANY,
+                            fallback_typ,
                             None,
                         );
 
                         insert_symbol(&mut self.current_scope().locals, name, id);
-                        // TODO: if signature was explicitly assigned, check the validity of said param
                         self.arena[idx].params.push(id);
                         raw_param_types.push(None);
                         continue;
@@ -2174,7 +2372,11 @@ impl<'db> Resolver<'db> {
         }
     }
 
-    fn collect_function<T: IsFunction + Clone + 'static>(&mut self, node: &T) -> FunctionId {
+    fn collect_function<T: IsFunction + Clone + 'static>(
+        &mut self,
+        node: &T,
+        expected: Option<FunctionId>,
+    ) -> FunctionId {
         let bindenv = node
             .environment()
             .and_then(|e| e.expression())
@@ -2222,7 +2424,7 @@ impl<'db> Resolver<'db> {
         self.enter_scope(range);
 
         let raw_param_types = node.parameter_list().map_or_else(Vec::new, |param_list| {
-            self.collect_params(id.idx(), param_list.parameters())
+            self.collect_params(id.idx(), param_list.parameters(), expected)
         });
 
         self.pending_functions.push(id.idx());
@@ -2672,7 +2874,12 @@ impl<'db> Resolver<'db> {
                     FunctionBack::Yield(_) => return,
                 };
 
-                let new = self.update_type(&ret, true, new_ret, CheckTypeSource::Return);
+                let is_explicit = self
+                    .imp(idx)
+                    .flags
+                    .intersects(FunctionFlags::RETURN_EXPLICIT);
+
+                let new = self.update_type(&ret, is_explicit, new_ret, CheckTypeSource::Return);
                 self.arena[idx].back = FunctionBack::Return(new);
             }
             FunctionBody::Stmt(stmt) => {
@@ -2836,7 +3043,7 @@ impl<'db> Resolver<'db> {
         match member {
             Member::Property(property) => self.collect_table_property(property),
             Member::Method(method) => {
-                let id = self.collect_function(method);
+                let id = self.collect_function(method, None);
 
                 let Some((name_range, name)) = get_name(method) else {
                     return;
@@ -2868,7 +3075,7 @@ impl<'db> Resolver<'db> {
                 self.add_current_container_member(name, symbol);
             }
             Member::Constructor(constructor) => {
-                let id = self.collect_function(constructor);
+                let id = self.collect_function(constructor, None);
 
                 let Some(keyword) = constructor.constructor_keyword() else {
                     return;
@@ -2908,7 +3115,7 @@ impl<'db> Resolver<'db> {
         match member {
             Member::Property(property) => self.collect_class_property(property),
             Member::Method(method) => {
-                let id = self.collect_function(method);
+                let id = self.collect_function(method, None);
                 let did_swap = self.try_swap_to_instance(method, Some(id));
 
                 let Some((name_range, name)) = get_name(method) else {
@@ -2945,7 +3152,7 @@ impl<'db> Resolver<'db> {
                 self.add_current_container_member(name, symbol);
             }
             Member::Constructor(constructor) => {
-                let id = self.collect_function(constructor);
+                let id = self.collect_function(constructor, None);
                 let did_swap = self.try_swap_to_instance(constructor, Some(id));
 
                 let Some(keyword) = constructor.constructor_keyword() else {
@@ -3245,7 +3452,7 @@ impl<'db> Resolver<'db> {
     }
 
     fn local_function(&mut self, decl: &LocalFunctionDeclaration) {
-        let id = self.collect_function(decl);
+        let id = self.collect_function(decl, None);
         let Some((name_range, name)) = get_name(decl) else {
             return;
         };
@@ -3546,7 +3753,7 @@ impl<'db> Resolver<'db> {
     }
 
     fn function_statement(&mut self, stmt: &FunctionStatement) {
-        let id = self.collect_function(stmt);
+        let id = self.collect_function(stmt, None);
 
         let Some(qualified_name) = stmt.name() else {
             return;
@@ -4671,12 +4878,46 @@ impl<'db> Resolver<'db> {
         }
     }
 
+    fn expr_to_type_with_range_contextual(
+        &mut self,
+        expr: &Expr,
+        callee: Option<FunctionId>,
+        arg_index: usize,
+    ) -> TypeWithRange {
+        let expected = callee.and_then(|id| {
+            let param_symbol = *self.get(id).params.get(arg_index)?;
+            self.get(param_symbol).typ.to_function().ok()
+        });
+        let range = expr.syntax().text_range();
+
+        let kind = match (expected, expr) {
+            (Some(sig), Expr::Function(fexpr)) => {
+                Some(self.function_expression_with_expected(fexpr, Some(sig)))
+            }
+            (Some(sig), Expr::Lambda(lexpr)) => {
+                Some(self.lambda_expression_with_expected(lexpr, Some(sig)))
+            }
+            _ => self.collect_expr(expr),
+        };
+
+        if let Some(kind) = kind.clone() {
+            self.range_to_expr.insert(range, kind);
+        }
+
+        TypeWithRange {
+            kind: self.expr_kind_to_type(kind.as_ref(), range.end()),
+            range,
+        }
+    }
+
     fn call_expression(&mut self, expr: &CallExpression) -> NullableExprKind {
         let obj = self.expr_to_type_with_range(&expr.callee()?.expression()?);
+        let callee_id = obj.kind.to_function().ok();
 
         let arguments: Vec<_> = expr
             .arguments()
-            .map(|arg| self.expr_to_type_with_range(&arg))
+            .enumerate()
+            .map(|(i, arg)| self.expr_to_type_with_range_contextual(&arg, callee_id, i))
             .collect();
 
         let context = self
@@ -5837,7 +6078,8 @@ impl<'db> Resolver<'db> {
                 // ```
                 // is illegal
                 self.diagnostics.push(Diagnostic {
-                    message: "Cannot delete a variable with the same name as a local or constant due to the resolution precedence. Prepend variable name with `this.` if you wish to do that".to_owned(),
+                    message: "Cannot delete a variable with the same name as a local or constant due to the resolution precedence. \
+                        Prepend variable name with `this.` if you wish to do that".to_owned(),
                     range: name_range,
                     ..Default::default()
                 });
@@ -5907,12 +6149,28 @@ impl<'db> Resolver<'db> {
     }
 
     fn function_expression(&mut self, expr: &FunctionExpression) -> ExpressionKind {
-        let id = self.collect_function(expr);
+        self.function_expression_with_expected(expr, None)
+    }
+
+    fn function_expression_with_expected(
+        &mut self,
+        expr: &FunctionExpression,
+        expected: Option<FunctionId>,
+    ) -> ExpressionKind {
+        let id = self.collect_function(expr, expected);
         ExpressionKind::Literal(Type::Primitive(Primitive::Function(Some(id))))
     }
 
     fn lambda_expression(&mut self, expr: &LambdaExpression) -> ExpressionKind {
-        let id = self.collect_function(expr);
+        self.lambda_expression_with_expected(expr, None)
+    }
+
+    fn lambda_expression_with_expected(
+        &mut self,
+        expr: &LambdaExpression,
+        expected: Option<FunctionId>,
+    ) -> ExpressionKind {
+        let id = self.collect_function(expr, expected);
         ExpressionKind::Literal(Type::Primitive(Primitive::Function(Some(id))))
     }
 

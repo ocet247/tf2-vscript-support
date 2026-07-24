@@ -159,7 +159,7 @@ function setdebughook(hook_func);
 /**
  * Sets the runtime error handler.
  * @type {function}
- * @param {function|null} error_func `@(error: any)`
+ * @param {@(error: any)|null} error_func
  */
 function seterrorhandler(error_func);
 

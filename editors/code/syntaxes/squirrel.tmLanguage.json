@@ -79,7 +79,7 @@
           },
           "patterns": [
             {
-              "match": "((@)(?:param|var))\\b(?:\\s*((\\{)[^}\n]*(\\})))?(?:\\s*([A-Za-z_]\\w*))?",
+              "match": "((@)(?:param|var))\\b(?:\\s*(\\{)([^}\n]*)(\\}))?(?:\\s*([A-Za-z_]\\w*))?",
               "captures": {
                 "1": {
                   "name": "keyword.documentation.sqdoc"
@@ -88,10 +88,15 @@
                   "name": "punctuation.definition.block.tag.sqdoc"
                 },
                 "3": {
-                  "name": "entity.name.type.instance.sqdoc"
+                  "name": "punctuation.definition.bracket.curly.begin.sqdoc"
                 },
                 "4": {
-                  "name": "punctuation.definition.bracket.curly.begin.sqdoc"
+                  "name": "meta.type.sqdoc",
+                  "patterns": [
+                    {
+                      "include": "#doc-type"
+                    }
+                  ]
                 },
                 "5": {
                   "name": "punctuation.definition.bracket.curly.end.sqdoc"
@@ -102,7 +107,7 @@
               }
             },
             {
-              "match": "((@)(?:type|vargv|varargs|returns?|throws?|yields?|extends|this))\\b(?:\\s*((\\{)[^}\n]*(\\})))?",
+              "match": "((@)(?:type|vargv|varargs|returns?|throws?|yields?|extends|this))\\b(?:\\s*(\\{)([^}\n]*)(\\}))?",
               "captures": {
                 "1": {
                   "name": "keyword.documentation.sqdoc"
@@ -111,10 +116,15 @@
                   "name": "punctuation.definition.block.tag.sqdoc"
                 },
                 "3": {
-                  "name": "entity.name.type.instance.sqdoc"
+                  "name": "punctuation.definition.bracket.curly.begin.sqdoc"
                 },
                 "4": {
-                  "name": "punctuation.definition.bracket.curly.begin.sqdoc"
+                  "name": "meta.type.sqdoc",
+                  "patterns": [
+                    {
+                      "include": "#doc-type"
+                    }
+                  ]
                 },
                 "5": {
                   "name": "punctuation.definition.bracket.curly.end.sqdoc"
@@ -1713,6 +1723,79 @@
         {
           "name": "variable.other.squirrel",
           "match": "(?<![_A-Za-z])[_A-Za-z]\\w*\\b"
+        }
+      ]
+    },
+    "function-params": {
+      "begin": "\\(",
+      "beginCaptures": {
+        "0": {
+          "name": "meta.brace.round.squirrel punctuation.definition.parameters.begin.squirrel"
+        }
+      },
+      "end": "\\)",
+      "endCaptures": {
+        "0": {
+          "name": "meta.brace.round.squirrel punctuation.definition.parameters.end.squirrel"
+        }
+      },
+      "name": "meta.parameters.squirrel",
+      "patterns": [
+        {
+          "match": "\\.\\.\\.",
+          "name": "punctuation.definition.varargs.squirrel"
+        },
+        {
+          "match": "([A-Za-z_]\\w*|\"(?:\\\\.|[^\"\\\\])*\")(\\?)?\\s*(:)",
+          "captures": {
+            "1": {
+              "name": "variable.parameter.squirrel"
+            },
+            "2": {
+              "name": "keyword.operator.optional.squirrel"
+            },
+            "3": {
+              "name": "punctuation.colon.squirrel"
+            }
+          }
+        },
+        {
+          "match": ",",
+          "name": "punctuation.separator.comma.squirrel"
+        },
+        {
+          "include": "#doc-type"
+        }
+      ]
+    },
+    "doc-type": {
+      "patterns": [
+        {
+          "match": "@(?=\\()",
+          "name": "storage.type.function.squirrel"
+        },
+        {
+          "include": "#function-params"
+        },
+        {
+          "match": "->|~>",
+          "name": "keyword.operator.arrow.squirrel"
+        },
+        {
+          "match": "!",
+          "name": "keyword.operator.throws.squirrel"
+        },
+        {
+          "match": "\\|",
+          "name": "punctuation.separator.union.squirrel"
+        },
+        {
+          "match": "\\[|\\]",
+          "name": "punctuation.definition.array.squirrel"
+        },
+        {
+          "match": "[A-Za-z_]\\w*",
+          "name": "support.type.squirrel"
         }
       ]
     }

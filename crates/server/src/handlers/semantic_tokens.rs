@@ -139,7 +139,7 @@ fn symbol_to_semantic_token(
     }
 
     let token_type = match symbol.kind {
-        SymbolKind::Shape => return Ok(None),
+        SymbolKind::SignatureParameter => return Ok(None),
         SymbolKind::Local(kind) => match DisplayType::from(symbol) {
             DisplayType::Function => TokenType::Function,
             DisplayType::Class => TokenType::Class,

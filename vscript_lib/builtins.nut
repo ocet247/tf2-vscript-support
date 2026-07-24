@@ -248,12 +248,7 @@ class array {
      * Applies a function to all of the array's items and replaces the original value of each
      * element with the return value of the function.
      * @type {function}
-     * @param {function} func
-     * ```
-     * @(value: any) -> any |
-     * @(value: any, index: integer) -> any |
-     * @(value: any, index: integer, self: array) -> any
-     * ```
+     * @param {(@(value: any) -> any) | (@(value: any, index: integer) -> any) | (@(value: any, index: integer, self: array) -> any)} func
      * @returns {this}
      */
     function apply(func);
@@ -276,7 +271,7 @@ class array {
     /**
      * Applies a filter function to the array's items, storing the results in a new array.
      * @type {function}
-     * @param {function} condition `@(index: integer, value: any) -> bool`
+     * @param {@(index: integer, value: any) -> bool} condition
      * @returns {array}
      */
     function filter(condition);
@@ -312,12 +307,7 @@ class array {
      * Creates a new array of the same size. For each element in the original array invokes
      * the function func and assigns the return value to the corresponding element of the new array.
      * @type {function}
-     * @param {function} func
-     * ```sqDoc
-     * @(value: any) -> any |
-     * @(value: any, index: integer) -> any |
-     * @(value: any, index: integer, self: array) -> any
-     * ```
+     * @param {@(value: any, index?: integer, self?: array) -> any} func
      * @returns {array}
      */
     function map(func);
@@ -343,7 +333,7 @@ class array {
      * The function returns a single value which is then combined with the next item — and so on
      * until all items have been combined into a single value which the method returns.
      * @type {function}
-     * @param {function} func `@(pre_value: any, current_value: any) -> any`
+     * @param {@(pre_value: any, current_value: any) -> any} func
      * @param {any} init Defaults to `null`
      * @returns {any}
      */
@@ -396,7 +386,7 @@ class array {
      * The comparison function should take two parameters and return `-1` if the first value
      * should be placed before the second, `1` if it should follow, or `0` if they are equivalent.
      * @type {function}
-     * @param {function} compare `@(a: any, b: any) -> integer`. Defaults to `@(a, b) a <=> b`
+     * @param {@(a: any, b: any) -> integer} compare Defaults to `@(a, b) a <=> b`
      * @returns {this}
      */
     function sort(compare = @(a, b) a <=> b);
@@ -441,7 +431,7 @@ class table {
      * Invokes the function for each key-value pair; if it returns true, the value is added
      * to the new table at the same key.
      * @type {function}
-     * @param {function} func `@(key: any, value: any) -> bool`
+     * @param {@(key: any, value: any) -> bool} func
      * @returns {table}
      */
     function filter(func);
