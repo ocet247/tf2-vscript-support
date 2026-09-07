@@ -1,3 +1,5 @@
+use std::os::linux::raw::stat;
+
 use crate::{Event, Marker, SyntaxError, SyntaxKind, lexer::Token, token_set::TokenSet};
 use rowan::{TextRange, TextSize};
 
@@ -325,13 +327,24 @@ impl Parser {
         self.tokens[self.lookahead_index].kind
     }
 
+    // puts trailing comments inside the previous node
+    // e.g.
+    // `const a = 1; // comment`
+    fn maybe_attach_trailing_comments(&mut self) {
+        if self.has_preceding_new_line {
+            return;
+        }
+
+        self.consume_to_lookahead();
+        self.reset_comments();
+    }
+
     fn skip_trivia(&mut self) {
         self.has_preceding_new_line = false;
         loop {
             match self.token() {
                 SyntaxKind::Whitespace | SyntaxKind::Unknown => {}
                 SyntaxKind::LineFeed => {
-                    self.has_preceding_new_line = true;
                     if self.preceding_comments_index.is_some() {
                         // If there's more than 1 new line in between
                         // - don't attach the comments to the next node
@@ -340,8 +353,14 @@ impl Parser {
                             self.has_new_line_after_comment = false;
                         } else {
                             self.has_new_line_after_comment = true;
+                            self.maybe_attach_trailing_comments();
                         }
                     }
+                    self.has_preceding_new_line = true;
+                }
+                SyntaxKind::Eof => {
+                    self.maybe_attach_trailing_comments();
+                    break;
                 }
                 SyntaxKind::LineComment | SyntaxKind::BlockComment | SyntaxKind::DocComment => {
                     if self.preceding_comments_index.is_none() {
@@ -1375,7 +1394,9 @@ impl Parser {
 
     fn parse_end_of_statement(&mut self) {
         if self.at(SyntaxKind::Semicolon) {
+            let statement_finish = self.events.pop().expect("statement node is present");
             self.bump();
+            self.events.push(statement_finish);
             return;
         }
 
@@ -1888,6 +1909,7 @@ impl Parser {
         }
 
         self.finish(m, SyntaxKind::ConstStatement);
+
         // Here is the only place where statement itself parses end
         // Why? Because it's a squirrel lang
         self.parse_end_of_statement();
