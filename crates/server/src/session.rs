@@ -7,7 +7,9 @@ Licensed under GPL-3.0: https://www.gnu.org/licenses/gpl-3.0.html
 
 use anyhow::Error;
 use crossbeam_channel::select;
-use lsp_server::{Connection, ErrorCode, Message, Notification, Request, RequestId, Response};
+use lsp_server::{
+    Connection, ErrorCode, Message, Notification, Request, RequestId, Response, ResponseError,
+};
 use rustc_hash::FxHashMap;
 use std::{num::NonZeroUsize, panic::RefUnwindSafe, sync::Arc};
 
@@ -30,7 +32,7 @@ macro_rules! impl_handlers {
         }
 
         impl<Db: salsa::Database + Clone + Send + RefUnwindSafe> $struct_name<Db> {
-            fn on_with_intent<R>(
+            fn on_with_intent<R, const ALLOW_RETRYING: bool>(
                 &mut self,
                 intent: ThreadIntent,
                 handler: fn(&Db, R::Params) -> anyhow::Result<$result>,
@@ -44,28 +46,28 @@ macro_rules! impl_handlers {
                     Ok($serialize(result))
                 });
                 self.normal
-                    .insert(R::METHOD.to_string(), (callback, intent));
+                    .insert(R::METHOD.to_string(), (callback, intent, ALLOW_RETRYING));
                 self
             }
 
-            pub fn on<R>(
+            pub fn on<R, const ALLOW_RETRYING: bool>(
                 &mut self,
                 handler: fn(&Db, R::Params) -> anyhow::Result<$result>,
             ) -> &mut Self
             where
                 R: $method_trait,
             {
-                self.on_with_intent::<R>(ThreadIntent::Worker, handler)
+                self.on_with_intent::<R, ALLOW_RETRYING>(ThreadIntent::Worker, handler)
             }
 
-            pub fn on_latency_sensitive<R>(
+            pub fn on_latency_sensitive<R, const ALLOW_RETRYING: bool>(
                 &mut self,
                 handler: fn(&Db, R::Params) -> anyhow::Result<$result>,
             ) -> &mut Self
             where
                 R: $method_trait,
             {
-                self.on_with_intent::<R>(ThreadIntent::LatencySensitive, handler)
+                self.on_with_intent::<R, ALLOW_RETRYING>(ThreadIntent::LatencySensitive, handler)
             }
 
             pub fn on_mut<R>(
@@ -108,7 +110,7 @@ type Callback<Db> = Arc<
         + RefUnwindSafe
         + 'static,
 >;
-type CallbackWithIntent<Db> = (Callback<Db>, ThreadIntent);
+type CallbackWithIntent<Db> = (Callback<Db>, ThreadIntent, bool);
 type SyncMutCallback<Db> =
     Box<dyn Fn(&mut Session<Db>, serde_json::Value) -> anyhow::Result<serde_json::Value>>;
 
@@ -223,14 +225,29 @@ impl<Db: salsa::Database + Clone + Send + RefUnwindSafe> Session<Db> {
         let cb = Arc::clone(&callback.0);
         let intent = callback.1;
         let sender = self.task_sender.clone();
+        let allow_retrying = callback.2;
         self.task_pool.spawn(
             intent,
             std::panic::AssertUnwindSafe(move || {
                 let cb = cb.clone();
                 match salsa::Cancelled::catch(|| cb(&db, params)) {
-                    Err(e) => {
+                    Err(e) if allow_retrying => {
                         log::warn!("Cancelled request '{}': {}", req.method, e);
                         sender.send(Task::Retry(req)).unwrap();
+                    }
+                    Err(e) => {
+                        log::warn!("Cancelled request '{}': {}", req.method, e);
+                        sender
+                            .send(Task::Response(Response {
+                                id,
+                                result: None,
+                                error: Some(lsp_server::ResponseError {
+                                    code: ErrorCode::ContentModified as i32,
+                                    message: "content modified".into(),
+                                    data: None,
+                                }),
+                            }))
+                            .unwrap();
                     }
                     Ok(result) => match result {
                         Ok(result) => sender
@@ -343,9 +360,21 @@ fn response_error(id: RequestId, error: &anyhow::Error) -> Response {
     Response {
         id,
         result: None,
-        error: Some(lsp_server::ResponseError {
+        error: Some(ResponseError {
             code: ErrorCode::RequestFailed as i32,
             message: error.to_string(),
+            data: None,
+        }),
+    }
+}
+
+fn content_modified_error(id: RequestId) -> Response {
+    Response {
+        id,
+        result: None,
+        error: Some(ResponseError {
+            code: lsp_server::ErrorCode::ContentModified as i32,
+            message: "content modified".to_owned(),
             data: None,
         }),
     }

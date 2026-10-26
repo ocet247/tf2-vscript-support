@@ -152,28 +152,35 @@ fn main() -> Result<()> {
     Ok(())
 }
 
+const RETRY: bool = true;
+const NO_RETRY: bool = false;
+
 fn on_requests<Db: VScriptDatabase + Clone + RefUnwindSafe>(
     registry: &mut RequestHandlers<Db>,
 ) -> &mut RequestHandlers<Db> {
     registry
-        .on_latency_sensitive::<Completion>(handlers::handle_completion)
-        .on_latency_sensitive::<HoverRequest>(handlers::handle_hover)
-        .on_latency_sensitive::<PrepareRenameRequest>(handlers::handle_prepare_rename)
-        .on_latency_sensitive::<SemanticTokensFullRequest>(handlers::handle_semantic_tokens_full)
-        .on_latency_sensitive::<SemanticTokensRangeRequest>(handlers::handle_semantic_tokens_range)
-        .on_latency_sensitive::<SignatureHelpRequest>(handlers::handle_signature_help)
-        .on::<DocumentDiagnosticRequest>(handlers::handle_diagnostics)
-        .on::<WorkspaceDiagnosticRequest>(handlers::handle_workspace_diagnostics)
-        .on::<DocumentLinkRequest>(handlers::handle_document_link)
-        .on::<DocumentSymbolRequest>(handlers::handle_document_symbol)
-        .on::<References>(handlers::handle_references)
-        .on::<WorkspaceSymbolRequest>(handlers::handle_workspace_symbol)
-        .on::<GotoDefinition>(handlers::handle_go_to_definition)
-        .on::<GotoTypeDefinition>(handlers::handle_go_to_type_definition)
-        .on::<InlayHintRequest>(handlers::handle_inlay_hint)
-        .on::<Rename>(handlers::handle_rename)
-        .on::<SelectionRangeRequest>(handlers::handle_selection_range)
-        .on::<DocumentHighlightRequest>(handlers::handle_document_highlight)
+        .on_latency_sensitive::<Completion, RETRY>(handlers::handle_completion)
+        .on_latency_sensitive::<SemanticTokensFullRequest, RETRY>(
+            handlers::handle_semantic_tokens_full,
+        )
+        .on_latency_sensitive::<SemanticTokensRangeRequest, NO_RETRY>(
+            handlers::handle_semantic_tokens_range,
+        )
+        .on::<DocumentDiagnosticRequest, RETRY>(handlers::handle_diagnostics)
+        .on::<WorkspaceDiagnosticRequest, RETRY>(handlers::handle_workspace_diagnostics)
+        .on::<DocumentLinkRequest, RETRY>(handlers::handle_document_link)
+        .on::<DocumentSymbolRequest, RETRY>(handlers::handle_document_symbol)
+        .on::<WorkspaceSymbolRequest, RETRY>(handlers::handle_workspace_symbol)
+        .on::<HoverRequest, NO_RETRY>(handlers::handle_hover)
+        .on::<PrepareRenameRequest, NO_RETRY>(handlers::handle_prepare_rename)
+        .on::<Rename, NO_RETRY>(handlers::handle_rename)
+        .on::<SignatureHelpRequest, NO_RETRY>(handlers::handle_signature_help)
+        .on::<References, NO_RETRY>(handlers::handle_references)
+        .on::<GotoDefinition, NO_RETRY>(handlers::handle_go_to_definition)
+        .on::<GotoTypeDefinition, NO_RETRY>(handlers::handle_go_to_type_definition)
+        .on::<InlayHintRequest, NO_RETRY>(handlers::handle_inlay_hint)
+        .on::<SelectionRangeRequest, NO_RETRY>(handlers::handle_selection_range)
+        .on::<DocumentHighlightRequest, NO_RETRY>(handlers::handle_document_highlight)
 }
 
 fn on_notifications<Db: VScriptDatabase + Clone + RefUnwindSafe>(
@@ -287,10 +294,10 @@ fn on_notifications<Db: VScriptDatabase + Clone + RefUnwindSafe>(
             }
             Ok(())
         })
-        .on::<DidCloseTextDocument>(|_s, _p| Ok(()))
-        .on::<DidSaveTextDocument>(|_s, _p| Ok(()))
-        .on::<SetTrace>(|_s, _p| Ok(()))
-        .on::<LogTrace>(|_s, _p| Ok(()))
+        .on_mut::<DidCloseTextDocument>(|_s, _p| Ok(()))
+        .on_mut::<DidSaveTextDocument>(|_s, _p| Ok(()))
+        .on::<SetTrace, NO_RETRY>(|_s, _p| Ok(()))
+        .on::<LogTrace, NO_RETRY>(|_s, _p| Ok(()))
 }
 
 fn extract_init_config(params: &InitializeParams) -> VScriptDbInitConfig {
