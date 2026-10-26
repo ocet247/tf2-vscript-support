@@ -1,5 +1,3 @@
-use std::os::linux::raw::stat;
-
 use crate::{Event, Marker, SyntaxError, SyntaxKind, lexer::Token, token_set::TokenSet};
 use rowan::{TextRange, TextSize};
 

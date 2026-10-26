@@ -1476,7 +1476,6 @@ impl<'db> Resolver<'db> {
             self.get(actual).back.clone(),
         ) {
             (FunctionBack::Return(exp_ret), FunctionBack::Return(act_ret)) => {
-                dbg!(&act_ret);
                 if !self.type_accepts(&exp_ret, &act_ret) {
                     self.diagnostics.push(Diagnostic {
                         message: format!(
