@@ -214,6 +214,9 @@ impl TokenSet {
     pub const STATEMENT_OR_CLOSE_PARENTHESIS: Self =
         Self::NON_EXPRESSION_STATEMENT.union(Self::new(&[SyntaxKind::CloseParenthesis]));
 
+    pub const STATEMENT_OR_CLOSE_PARENTHESIS_OR_ELSE: Self =
+        Self::STATEMENT_OR_CLOSE_PARENTHESIS.union(Self::new(&[SyntaxKind::ElseKeyword]));
+
     pub const STATEMENT_OR_CLOSE_BRACKET: Self =
         Self::NON_EXPRESSION_STATEMENT.union(Self::new(&[SyntaxKind::CloseBracket]));
 
@@ -231,9 +234,13 @@ impl TokenSet {
     pub const COMMON_STATEMENT_OR_EXPRESSION: Self =
         Self::COMMON_EXPRESSION_STATEMENTS.union(Self::STATEMENT_WITH_SEMICOLON);
 
-    pub const FOREACH_RECOVERY: Self = Self::STATEMENT_OR_EXPRESSION
-        .union(Self::SEPARATORS)
-        .union(Self::new(&[SyntaxKind::CloseParenthesis]));
+    pub const FOREACH_RECOVERY: Self =
+        Self::STATEMENT_OR_EXPRESSION
+            .union(Self::SEPARATORS)
+            .union(Self::new(&[
+                SyntaxKind::CloseParenthesis,
+                SyntaxKind::InKeyword,
+            ]));
 
     pub const VARIABLE_RECOVERY: Self =
         Self::COMMON_STATEMENT_OR_EXPRESSION.union(Self::INIT_OPERATORS);

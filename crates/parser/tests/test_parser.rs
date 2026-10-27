@@ -39,14 +39,14 @@ mod tests {
     #[test]
     fn source_file_empty() {
         let parse = Parse::new("");
-        assert!(parse.errors().is_empty());
+        assert_eq!(parse.errors(), []);
         assert_eq!(parse.source_file().statements().count(), 0);
     }
 
     #[test]
     fn source_file_multiple_statements() {
         let parse = Parse::new("local a = 1\nlocal b = 2\nlocal c = 3");
-        assert!(parse.errors().is_empty());
+        assert_eq!(parse.errors(), []);
         assert_eq!(parse.source_file().statements().count(), 3);
     }
 

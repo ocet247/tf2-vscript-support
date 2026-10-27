@@ -1,4 +1,9 @@
-use crate::{Event, Marker, SyntaxError, SyntaxKind, lexer::Token, token_set::TokenSet};
+use crate::{
+    Event, Marker, SyntaxError,
+    SyntaxKind::{self, IfStatement},
+    lexer::Token,
+    token_set::TokenSet,
+};
 use rowan::{TextRange, TextSize};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
@@ -550,7 +555,14 @@ impl Parser {
         );
         self.fuel += 1;
 
-        if self.at(SyntaxKind::DecimalInteger) {
+        // Do not try to predict right tokens out of wrong ones
+        // if we're explicitly asked to not skip over them
+        // e.g.
+        // `if ( else {}`
+        // `foreach (k, in a) {}`
+        if self.at_set(recovery) {
+            self.error_at_token(self.expected_but_got(message));
+        } else if self.at(SyntaxKind::DecimalInteger) {
             // It would've been possible to make the identifier recovery where we have a
             // preceding number and identifier afterwards, but this can be valid syntax in
             // squirrel due to optionality of the commas. E.g. local abc = 0, a = [123abc]
@@ -564,8 +576,10 @@ impl Parser {
                 self.expected_but_got(message),
                 self.token().text()
             ));
+        } else if self.at_set(TokenSet::ALWAYS_RECOVER) {
+            self.error_at_token(self.expected_but_got(message));
         } else {
-            self.error_with_recovery(message, recovery);
+            self.error_and_advance(self.expected_but_got(message));
         }
         None
     }
@@ -1548,9 +1562,24 @@ impl Parser {
     fn parse_if_statement(&mut self) {
         let m = self.start();
         self.expect_or_panic(SyntaxKind::IfKeyword);
+
         self.expect(SyntaxKind::OpenParenthesis);
-        self.parse_comma_expression(TokenSet::STATEMENT_OR_CLOSE_PARENTHESIS);
+        self.parse_comma_expression(TokenSet::STATEMENT_OR_CLOSE_PARENTHESIS_OR_ELSE);
+        if self.at(SyntaxKind::ElseKeyword) {
+            self.parse_else_statement();
+            self.finish(m, IfStatement);
+            return;
+        }
+
         self.expect(SyntaxKind::CloseParenthesis);
+        if self.at(SyntaxKind::ElseKeyword) {
+            self.error_at_token(
+                "'if' must have a body before being prepended with 'else'".to_owned(),
+            );
+            self.parse_else_statement();
+            self.finish(m, SyntaxKind::IfStatement);
+            return;
+        }
 
         if !self.parse_statement(ParseStatement::StatementBody { parse_end: true }) {
             self.finish(m, SyntaxKind::IfStatement);
@@ -1558,12 +1587,16 @@ impl Parser {
         }
 
         if self.at(SyntaxKind::ElseKeyword) {
-            let m = self.start();
-            self.bump();
-            self.parse_statement(ParseStatement::StatementBody { parse_end: true });
-            self.finish(m, SyntaxKind::IfElseBranch);
+            self.parse_else_statement();
         }
         self.finish(m, SyntaxKind::IfStatement);
+    }
+
+    fn parse_else_statement(&mut self) {
+        let m = self.start();
+        self.expect_or_panic(SyntaxKind::ElseKeyword);
+        self.parse_statement(ParseStatement::StatementBody { parse_end: true });
+        self.finish(m, SyntaxKind::IfElseBranch);
     }
 
     // while (a) { a++ }
