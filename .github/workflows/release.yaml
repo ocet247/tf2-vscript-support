@@ -54,7 +54,6 @@ jobs:
         with:
           key: ${{ matrix.rust-target }}
           cache-targets: true
-          cache-bin: false
       - uses: actions/setup-node@v6
         with:
           node-version: 22
