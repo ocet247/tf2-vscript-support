@@ -2083,6 +2083,15 @@ impl Parser {
         let m = self.start();
         self.expect_or_panic(SyntaxKind::TryKeyword);
 
+        if self.at(SyntaxKind::CatchKeyword) {
+            self.error_at_token(
+                "'try' must have a body before being prepended with 'catch'".to_owned(),
+            );
+            self.parse_catch_clause();
+            self.finish(m, SyntaxKind::TryStatement);
+            return;
+        }
+
         if !self.parse_statement(ParseStatement::StatementBody { parse_end: false }) {
             self.finish(m, SyntaxKind::TryStatement);
             return;
